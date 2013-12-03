@@ -24,8 +24,9 @@ public class Application extends Controller {
         Form<Login> loginForm = form(Login.class).bindFromRequest();
         if (loginForm.hasErrors()) {
             return badRequest(login.render("Do I know you?", loginForm));
+        } else {
+            return redirect(routes.Application.home());
         }
-        return redirect(routes.Application.home());
     }
 
     public static Result rules() {
@@ -49,6 +50,13 @@ public class Application extends Controller {
     public static class Login {
         public String email;
         public String password;
+
+        public String validate() {
+            if (email == "" || password == "") {
+                return "You must provide input for all fields.";
+            }
+            return null;
+        }
     }
 
 }

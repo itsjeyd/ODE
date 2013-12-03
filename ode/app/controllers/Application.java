@@ -1,14 +1,31 @@
 package controllers;
 
 import play.*;
+import play.data.*;
 import play.mvc.*;
 
 import views.html.*;
+
+import static play.data.Form.*;
+
 
 public class Application extends Controller {
 
     public static Result home() {
         return ok(home.render("Hi! This is Ode."));
+    }
+
+    public static Result login() {
+        return ok(login.render("Hi! Use the form below to log in.",
+                               form(Login.class)));
+    }
+
+    public static Result authenticate() {
+        Form<Login> loginForm = form(Login.class).bindFromRequest();
+        if (loginForm.hasErrors()) {
+            return badRequest(login.render("Do I know you?", loginForm));
+        }
+        return redirect(routes.Application.home());
     }
 
     public static Result rules() {
@@ -25,6 +42,13 @@ public class Application extends Controller {
 
     public static Result features() {
         return ok(features.render("Hi! This is Ode's Feature Editor."));
+    }
+
+    // Forms
+
+    public static class Login {
+        public String email;
+        public String password;
     }
 
 }

@@ -5,6 +5,10 @@
 # Home page
 GET     /                           controllers.Application.home()
 
+# Authentication
+GET     /login                      controllers.Application.login()
+POST    /login                      controllers.Application.authenticate()
+
 # Browsing
 GET     /rules                      controllers.Application.rules()
 GET     /rules/:id                  controllers.Application.rule(id: Int)

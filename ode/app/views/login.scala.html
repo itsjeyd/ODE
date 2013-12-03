@@ -1,0 +1,17 @@
+@(message: String)(form: Form[Application.Login])
+
+@main("Ode: Login") {
+  @message
+  @helper.form(routes.Application.authenticate) {
+    <h1>Sign in</h2>
+    <p>
+      <input type="email" name="email" value="@form("email").value" placeholder="Email">
+    </p>
+    <p>
+      <input type="password" name="password" placeholder="Password">
+    </p>
+    <p>
+      <button type="submit">Login</button>
+    </p>
+  }
+}

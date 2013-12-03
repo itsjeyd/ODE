@@ -31,18 +31,22 @@ public class Application extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result rules() {
         return ok(rules.render("Hi! This is Ode's Rule Browser."));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result rule(int id) {
         return ok(rule.render("Hi! You are looking at rule " + id + "."));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result search() {
         return ok(search.render("Hi! This is Ode's Search Interface."));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result features() {
         return ok(features.render("Hi! This is Ode's Feature Editor."));
     }

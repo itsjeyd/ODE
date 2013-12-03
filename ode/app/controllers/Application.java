@@ -25,6 +25,8 @@ public class Application extends Controller {
         if (loginForm.hasErrors()) {
             return badRequest(login.render("Do I know you?", loginForm));
         } else {
+            session().clear();
+            session("email", loginForm.get().email);
             return redirect(routes.Application.home());
         }
     }

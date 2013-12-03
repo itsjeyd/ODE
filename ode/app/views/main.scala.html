@@ -27,23 +27,23 @@
         <ul class="nav navbar-nav navbar-right">
           @if(session().get("email")) {
             <li>
-              <a href="/rules">Browse</a>
+              <a href="@routes.Application.rules()">Browse</a>
             </li>
             <li>
-              <a href="/search">Search</a>
+              <a href="@routes.Application.search()">Search</a>
             </li>
             <li>
-              <a href="/features">Features</a>
+              <a href="@routes.Application.features()">Features</a>
             </li>
             <li>
               <a href="#">New</a>
             </li>
             <li>
-              <a href="/logout">Logout</a>
+              <a href="@routes.Application.logout()">Logout</a>
             </li>
           } else {
             <li>
-              <a href="/login">Login</a>
+              <a href="@routes.Application.login()">Login</a>
             </li>
           }
         </ul>

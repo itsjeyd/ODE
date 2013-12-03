@@ -31,6 +31,12 @@ public class Application extends Controller {
         }
     }
 
+    public static Result logout() {
+        session().clear();
+        flash("success", "Alright. See you around.");
+        return redirect(routes.Application.login());
+    }
+
     @Security.Authenticated(Secured.class)
     public static Result rules() {
         return ok(rules.render("Hi! This is Ode's Rule Browser."));

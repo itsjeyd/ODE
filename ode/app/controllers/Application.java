@@ -30,6 +30,7 @@ public class Application extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result logout() {
         session().clear();
         flash("success", "Alright. See you around.");

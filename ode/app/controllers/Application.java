@@ -11,7 +11,19 @@ import static play.data.Form.*;
 public class Application extends Controller {
 
     public static Result home() {
-        return ok(home.render("Hi! This is Ode."));
+        return ok(home.render("Hi! This is Ode.", form(Registration.class)));
+    }
+
+    public static Result register() {
+        Form<Registration> registrationForm = form(Registration.class).
+            bindFromRequest();
+        if (registrationForm.hasErrors()) {
+            return badRequest(
+                home.render("Hi! This is Ode.", registrationForm));
+        } else {
+            flash("success", "You've registered successfully.");
+            return redirect(routes.Application.home());
+        }
     }
 
     public static Result login() {
@@ -70,5 +82,7 @@ public class Application extends Controller {
             return null;
         }
     }
+
+    public static class Registration extends Login {}
 
 }

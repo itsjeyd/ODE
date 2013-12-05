@@ -1,5 +1,33 @@
-@(message: String)
+@(message: String)(form: Form[Application.Registration])
 
 @main("Welcome to Ode!") {
   @message
+  @helper.form(routes.Application.register) {
+    <h1>Register</h2>
+    <p>
+      <input type="email" name="email" value="@form("email").value" placeholder="Email">
+    </p>
+    <p>
+      <input type="password" name="password" placeholder="Password">
+    </p>
+    <p>
+      <button type="submit">Register</button>
+    </p>
+    @if(form.hasGlobalErrors) {
+      <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+          &times;
+        </button>
+        <strong>Error:</strong> @form.globalError.message
+      </div>
+    }
+    @if(flash.contains("success")) {
+      <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+          &times;
+        </button>
+        <strong>Success:</strong> @flash.get("success")
+      </div>
+    }
+  }
 }

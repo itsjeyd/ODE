@@ -14,6 +14,8 @@ import play.mvc.Security;
 
 import views.html.*;
 
+import neo4play.Neo4jService;
+
 import static play.data.Form.*;
 
 
@@ -39,10 +41,10 @@ public class Application extends Controller {
         ObjectNode nodeProperties = Json.newObject();
         nodeProperties.put("username", registrationForm.get().email);
         nodeProperties.put("password", registrationForm.get().password);
-        Promise<WS.Response> neo4j = WS.url(
-            "http://localhost:7474/db/data/node").setContentType(
-                "application/json").post(nodeProperties);
-        return neo4j.map(
+        Neo4jService neo4j = new Neo4jService();
+        Promise<WS.Response> neo4jResponse = neo4j.post(
+            "/node", nodeProperties);
+        return neo4jResponse.map(
             new Function<WS.Response, Result>() {
                 public Result apply(WS.Response response) {
                     flash("success", "You've registered successfully.");

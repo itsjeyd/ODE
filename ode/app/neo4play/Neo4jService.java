@@ -1,7 +1,9 @@
 package neo4play;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Promise;
 
@@ -34,5 +36,18 @@ public class Neo4jService {
         String fullURL = this.extendRootURL(resourceURL);
         return WS.url(fullURL).setContentType(this.contentType).
             post(content);
+    }
+
+    public Promise<WS.Response> createLabeledNodeWithProperties(
+        String label, JsonNode props) {
+        String fullURL = this.extendRootURL("/cypher");
+        String query = "CREATE (n:" + label + " { props }) RETURN n";
+        ObjectNode content = Json.newObject();
+        ObjectNode params = Json.newObject();
+        params.put("props", props);
+        content.put("query", query);
+        content.put("params", params);
+        return WS.url(fullURL).setContentType(this.contentType)
+            .post(content);
     }
 }

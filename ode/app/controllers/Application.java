@@ -8,10 +8,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import views.html.*;
-
-import models.Node;
 import models.User;
+import views.html.*;
 
 import static play.data.Form.*;
 
@@ -35,15 +33,15 @@ public class Application extends Controller {
             });
             return errorResult;
         }
-        Promise<Node> user = new User(registrationForm.get().email,
-                                      registrationForm.get().password)
+        Promise<User> user = new User(
+            registrationForm.get().email, registrationForm.get().password)
             .create();
-        return user.map(new Function<Node, Result>() {
-            public Result apply(Node node) {
-                if (node == null) {
-                    flash("error", "Something went wrong.");
+        return user.map(new Function<User, Result>() {
+            public Result apply(User user) {
+                if (user == null) {
+                    flash("error", "Registration failed.");
                 } else {
-                    flash("success", "You've registered successfully.");
+                    flash("success", "Registration successful.");
                 }
                 return redirect(routes.Application.home());
             }});

@@ -52,6 +52,17 @@ public class AuthTest extends WithApplication {
     }
 
     @Test
+    public void authenticateUnknownUser() {
+        Result result = callAction(
+            controllers.routes.ref.Application.authenticate(),
+            fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
+                "email", "foo@bar.com",
+                "password", "password")));
+        assertEquals(status(result), 400);
+        assertNull(session(result).get("email"));
+    }
+
+    @Test
     public void logoutSuccess() {
         Result result = callAction(
             controllers.routes.ref.Application.logout(),

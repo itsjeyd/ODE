@@ -17,7 +17,7 @@ import static play.data.Form.*;
 public class Application extends Controller {
 
     public static Result home() {
-        return ok(home.render("Hi! This is Ode.", form(Registration.class)));
+        return ok(home.render(form(Registration.class)));
     }
 
     public static Promise<Result> register() {
@@ -27,8 +27,7 @@ public class Application extends Controller {
             Promise<Result> errorResult = Promise.promise(
                 new Function0<Result>() {
                     public Result apply() {
-                        return badRequest(home.render(
-                            "Please try again.", registrationForm));
+                        return badRequest(home.render(registrationForm));
                 }
             });
             return errorResult;
@@ -86,7 +85,7 @@ public class Application extends Controller {
                     session().clear();
                     session("email", loginForm.get().email);
                     flash("success", "Login successful.");
-                    return redirect(routes.Application.home());
+                    return redirect(routes.Application.rules());
                 }
             }
         });

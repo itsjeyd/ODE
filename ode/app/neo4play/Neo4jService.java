@@ -3,9 +3,16 @@ package neo4play;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Promise;
+
+import utils.StringUtils;
 
 
 public class Neo4jService {
@@ -36,6 +43,23 @@ public class Neo4jService {
         String fullURL = this.extendRootURL(resourceURL);
         return WS.url(fullURL).setContentType(this.contentType).
             post(content);
+    }
+
+    public Promise<WS.Response> getLabeledNodeWithProperties(
+        String label, JsonNode props) {
+        String fullURL = this.extendRootURL("/cypher");
+        String query = "MATCH (n:" + label + ") WHERE ";
+        List<String> constraints = new ArrayList<String>();
+        for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
+             fields.hasNext(); ) {
+            constraints.add("n." + fields.next().toString());
+        }
+        query += StringUtils.join(constraints, " AND ");
+        query += " RETURN n";
+        ObjectNode content = Json.newObject();
+        content.put("query", query);
+        return WS.url(fullURL).setContentType(this.contentType)
+            .post(content);
     }
 
     public Promise<WS.Response> createLabeledNodeWithProperties(

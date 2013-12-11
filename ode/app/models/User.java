@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
@@ -32,6 +33,14 @@ public class User {
         return response.map(new CreatedFunction(this));
     }
 
+    public Promise<Boolean> exists() {
+        ObjectNode props = Json.newObject();
+        props.put("username", this.username);
+        Promise<WS.Response> response = dbService
+            .getLabeledNodeWithProperties(this.label, props);
+        return response.map(new ExistsFunction());
+    }
+
     private class CreatedFunction implements Function<WS.Response, User> {
         private User user;
         public CreatedFunction(User user) {
@@ -42,6 +51,16 @@ public class User {
                 return this.user;
             }
             return null;
+        }
+    }
+
+    private class ExistsFunction implements Function<WS.Response, Boolean> {
+        public Boolean apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            if (json.get("data").size() > 0) {
+                return true;
+            }
+            return false;
         }
     }
 }

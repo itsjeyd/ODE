@@ -33,18 +33,27 @@ public class Application extends Controller {
             });
             return errorResult;
         }
-        Promise<User> user = new User(
-            registrationForm.get().email, registrationForm.get().password)
-            .create();
-        return user.map(new Function<User, Result>() {
-            public Result apply(User user) {
-                if (user == null) {
-                    flash("error", "Registration failed.");
-                } else {
-                    flash("success", "Registration successful.");
+        final User user = new User(registrationForm.get().email,
+                                   registrationForm.get().password);
+        if (user.exists().get()) {
+            return Promise.promise(new Function0<Result>() {
+                public Result apply() {
+                    flash("error", "User already exists.");
+                    return redirect(routes.Application.home());
+                }});
+        } else {
+            Promise<User> newUser = user.create();
+            return newUser.map(new Function<User, Result>() {
+                public Result apply(User user) {
+                    if (user == null) {
+                        flash("error", "Registration failed.");
+                    } else {
+                        flash("success", "Registration successful.");
+                    }
+                    return redirect(routes.Application.home());
                 }
-                return redirect(routes.Application.home());
-            }});
+            });
+        }
     }
 
     public static Result login() {

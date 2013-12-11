@@ -28,7 +28,7 @@ public class Application extends Controller {
                 new Function0<Result>() {
                     public Result apply() {
                         return badRequest(home.render(
-                            "Hi! This is Ode.", registrationForm));
+                            "Please try again.", registrationForm));
                 }
             });
             return errorResult;

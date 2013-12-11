@@ -17,6 +17,8 @@ import static play.test.Helpers.header;
 import static play.test.Helpers.session;
 import static play.test.Helpers.status;
 
+import models.User;
+
 
 public class AuthTest extends WithApplication {
 
@@ -27,13 +29,15 @@ public class AuthTest extends WithApplication {
 
     @Test
     public void authenticateSuccess() {
+        User user = new User("foo@bar.com", "password").create().get();
         Result result = callAction(
             controllers.routes.ref.Application.authenticate(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
-                "email", "foo@bar.com",
-                "password", "password")));
+                "email", user.username,
+                "password", user.password)));
         assertEquals(status(result), 303);
-        assertEquals(session(result).get("email"), "foo@bar.com");
+        assertEquals(session(result).get("email"), user.username);
+        user.delete();
     }
 
     @Test

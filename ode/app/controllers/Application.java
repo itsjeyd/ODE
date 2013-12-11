@@ -56,8 +56,7 @@ public class Application extends Controller {
     }
 
     public static Result login() {
-        return ok(login.render("Hi! Use the form below to log in.",
-                               form(Login.class)));
+        return ok(login.render(form(Login.class)));
     }
 
     public static Promise<Result> authenticate() {
@@ -66,8 +65,7 @@ public class Application extends Controller {
             Promise<Result> errorResult = Promise.promise(
                 new Function0<Result>() {
                     public Result apply() {
-                        return badRequest(login.render("Please try again.",
-                                                       loginForm));
+                        return badRequest(login.render(loginForm));
                     }
                 }
             );
@@ -79,8 +77,7 @@ public class Application extends Controller {
             public Result apply(User user) {
                 if (user == null) {
                     flash("error", "Login failed: Unknown user.");
-                    return badRequest(login.render("Please try again.",
-                                                   loginForm));
+                    return badRequest(login.render(loginForm));
                 } else {
                     session().clear();
                     session("email", loginForm.get().email);

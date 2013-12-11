@@ -1,41 +1,46 @@
-@(message: String)(form: Form[Application.Login])
+@(form: Form[Application.Login])
 
 @main("Ode: Login") {
-  @message
-  @helper.form(routes.Application.authenticate) {
-    <h1>Sign in</h2>
-    <p>
-      <input type="email" name="email" value="@form("email").value" placeholder="Email">
-    </p>
-    <p>
-      <input type="password" name="password" placeholder="Password">
-    </p>
-    <p>
-      <button type="submit">Login</button>
-    </p>
-    @if(form.hasGlobalErrors) {
-      <div class="alert alert-danger alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-          &times;
-        </button>
-        <strong>Error:</strong> @form.globalError.message
-      </div>
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Hi!</h1>
+      <p>Use the form below to log in and start using Ode.</p>
+    </div>
+    @helper.form(routes.Application.authenticate) {
+      <h1>Sign in</h2>
+      <p>
+        <input type="email" name="email" value="@form("email").value" placeholder="Email">
+      </p>
+      <p>
+        <input type="password" name="password" placeholder="Password">
+      </p>
+      <p>
+        <button type="submit">Login</button>
+      </p>
+      @if(form.hasGlobalErrors) {
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+          </button>
+          <strong>Error:</strong> @form.globalError.message
+        </div>
+      }
+      @if(flash.contains("success")) {
+        <div class="alert alert-success alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+          </button>
+          <strong>Success:</strong> @flash.get("success")
+        </div>
+      }
+      @if(flash.contains("error")) {
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+          </button>
+          <strong>Error:</strong> @flash.get("error")
+        </div>
+      }
     }
-    @if(flash.contains("success")) {
-      <div class="alert alert-success alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-          &times;
-        </button>
-        <strong>Success:</strong> @flash.get("success")
-      </div>
-    }
-    @if(flash.contains("error")) {
-      <div class="alert alert-danger alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-          &times;
-        </button>
-        <strong>Error:</strong> @flash.get("error")
-      </div>
-    }
-  }
+  </div>
 }

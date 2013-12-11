@@ -50,6 +50,14 @@ public class User {
         return response.map(new GetFunction(this));
     }
 
+    public Promise<User> delete() {
+        ObjectNode props = Json.newObject();
+        props.put("username", this.username);
+        Promise<WS.Response> response = dbService
+            .deleteLabeledNodeWithProperties(this.label, props);
+        return response.map(new DeleteFunction(this));
+    }
+
     private class CreatedFunction implements Function<WS.Response, User> {
         private User user;
         public CreatedFunction(User user) {
@@ -84,6 +92,20 @@ public class User {
                 return this.user;
             }
             return null;
+        }
+    }
+
+    private class DeleteFunction implements Function<WS.Response, User> {
+        private User user;
+        public DeleteFunction(User user) {
+            this.user = user;
+        }
+        public User apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            if (json.get("data").size() == 0) {
+                return null;
+            }
+            return this.user;
         }
     }
 }

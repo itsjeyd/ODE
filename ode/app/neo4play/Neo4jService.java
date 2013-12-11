@@ -74,4 +74,21 @@ public class Neo4jService {
         return WS.url(fullURL).setContentType(this.contentType)
             .post(content);
     }
+
+    public Promise<WS.Response> deleteLabeledNodeWithProperties(
+        String label, JsonNode props) {
+        String fullURL = this.extendRootURL("/cypher");
+        String query = "MATCH (n:" + label + ") WHERE ";
+        List<String> constraints = new ArrayList<String>();
+        for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
+             fields.hasNext(); ) {
+            constraints.add("n." + fields.next().toString());
+        }
+        query += StringUtils.join(constraints, " AND ");
+        query += " DELETE n";
+        ObjectNode content = Json.newObject();
+        content.put("query",  query);
+        return WS.url(fullURL).setContentType(this.contentType)
+            .post(content);
+    }
 }

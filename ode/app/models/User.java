@@ -41,6 +41,15 @@ public class User {
         return response.map(new ExistsFunction());
     }
 
+    public Promise<User> get() {
+        ObjectNode props = Json.newObject();
+        props.put("username", this.username);
+        props.put("password", this.password);
+        Promise<WS.Response> response = dbService
+            .getLabeledNodeWithProperties(this.label, props);
+        return response.map(new GetFunction(this));
+    }
+
     private class CreatedFunction implements Function<WS.Response, User> {
         private User user;
         public CreatedFunction(User user) {
@@ -61,6 +70,20 @@ public class User {
                 return true;
             }
             return false;
+        }
+    }
+
+    private class GetFunction implements Function<WS.Response, User> {
+        private User user;
+        public GetFunction(User user) {
+            this.user = user;
+        }
+        public User apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            if (json.get("data").size() > 0) {
+                return this.user;
+            }
+            return null;
         }
     }
 }

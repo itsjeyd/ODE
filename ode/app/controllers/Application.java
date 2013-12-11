@@ -61,15 +61,35 @@ public class Application extends Controller {
                                form(Login.class)));
     }
 
-    public static Result authenticate() {
-        Form<Login> loginForm = form(Login.class).bindFromRequest();
+    public static Promise<Result> authenticate() {
+        final Form<Login> loginForm = form(Login.class).bindFromRequest();
         if (loginForm.hasErrors()) {
-            return badRequest(login.render("Do I know you?", loginForm));
-        } else {
-            session().clear();
-            session("email", loginForm.get().email);
-            return redirect(routes.Application.home());
+            Promise<Result> errorResult = Promise.promise(
+                new Function0<Result>() {
+                    public Result apply() {
+                        return badRequest(login.render("Please try again.",
+                                                       loginForm));
+                    }
+                }
+            );
+            return errorResult;
         }
+        Promise<User> user = new User(loginForm.get().email,
+                                      loginForm.get().password).get();
+        return user.map(new Function<User, Result>() {
+            public Result apply(User user) {
+                if (user == null) {
+                    flash("error", "Login failed: Unknown user.");
+                    return badRequest(login.render("Please try again.",
+                                                   loginForm));
+                } else {
+                    session().clear();
+                    session("email", loginForm.get().email);
+                    flash("success", "Login successful.");
+                    return redirect(routes.Application.home());
+                }
+            }
+        });
     }
 
     @Security.Authenticated(Secured.class)

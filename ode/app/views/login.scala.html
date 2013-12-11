@@ -29,5 +29,13 @@
         <strong>Success:</strong> @flash.get("success")
       </div>
     }
+    @if(flash.contains("error")) {
+      <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+          &times;
+        </button>
+        <strong>Error:</strong> @flash.get("error")
+      </div>
+    }
   }
 }

@@ -3,6 +3,7 @@ package controllers;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
+import play.mvc.Controller;
 import play.mvc.Result;
 import play.test.WithApplication;
 
@@ -137,6 +138,45 @@ public class AuthTest extends WithApplication {
         assertEquals(
             header("Location", logoutResult),
             routes.Application.login().url());
+    }
+
+    @Test
+    public void registerSuccess() {
+        User user = new User("foo@bar.com", "password");
+        Result result = callAction(
+            controllers.routes.ref.Application.register(),
+            fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
+                "email", user.username,
+                "password", user.password)));
+        assertEquals(status(result), 303);
+        assertThat(flash(result).get("success")).isEqualTo(
+            "Registration successful.");
+        assert(user.exists().get());
+        user.delete();
+    }
+
+    @Test
+    public void registerFailure() {
+        Result result = callAction(
+            controllers.routes.ref.Application.register(),
+            fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
+                "email", "",
+                "password", "")));
+        assertEquals(status(result), 400);
+    }
+
+    @Test
+    public void registerExistingUser() {
+        User user = new User("foo@bar.com", "password").create().get();
+        Result result = callAction(
+            controllers.routes.ref.Application.register(),
+            fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
+                "email", user.username,
+                "password", user.password)));
+        assertEquals(status(result), 303);
+        assertThat(flash(result).get("error")).isEqualTo(
+            "User already exists.");
+        user.delete();
     }
 
 }

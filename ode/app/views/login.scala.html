@@ -2,44 +2,55 @@
 
 @main("Ode: Login") {
   <div class="container">
-    <div class="jumbotron">
-      <h1>Hi!</h1>
-      <p>Use the form below to log in and start using Ode.</p>
-    </div>
-    @helper.form(routes.Application.authenticate) {
-      <h1>Sign in</h2>
-      <p>
-        <input type="email" name="email" value="@form("email").value" placeholder="Email">
-      </p>
-      <p>
-        <input type="password" name="password" placeholder="Password">
-      </p>
-      <p>
-        <button type="submit">Login</button>
-      </p>
-      @if(form.hasGlobalErrors) {
-        <div class="alert alert-danger alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          <strong>Error:</strong> @form.globalError.message
-        </div>
-      }
-      @if(flash.contains("success")) {
-        <div class="alert alert-success alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          <strong>Success:</strong> @flash.get("success")
-        </div>
-      }
-      @if(flash.contains("error")) {
-        <div class="alert alert-danger alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          <strong>Error:</strong> @flash.get("error")
-        </div>
+    @if(session().get("email")) {
+      <div class="jumbotron">
+        <h1>Hi!</h1>
+        <p>
+          You're already logged in, so there is no need to do that
+          again. Use the navigation bar at the top to browse and edit
+          content.
+        </p>
+      </div>
+    } else {
+      <div class="jumbotron">
+        <h1>Hi!</h1>
+        <p>Use the form below to log in and start using Ode.</p>
+      </div>
+      @helper.form(routes.Application.authenticate) {
+        <h1>Sign in</h2>
+        <p>
+          <input type="email" name="email" value="@form("email").value" placeholder="Email">
+        </p>
+        <p>
+          <input type="password" name="password" placeholder="Password">
+        </p>
+        <p>
+          <button type="submit">Login</button>
+        </p>
+        @if(form.hasGlobalErrors) {
+          <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            <strong>Error:</strong> @form.globalError.message
+          </div>
+        }
+        @if(flash.contains("success")) {
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            <strong>Success:</strong> @flash.get("success")
+          </div>
+        }
+        @if(flash.contains("error")) {
+          <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            <strong>Error:</strong> @flash.get("error")
+          </div>
+        }
       }
     }
   </div>

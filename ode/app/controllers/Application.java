@@ -82,7 +82,7 @@ public class Application extends Controller {
                     session().clear();
                     session("email", loginForm.get().email);
                     flash("success", "Login successful.");
-                    return redirect(routes.Application.rules());
+                    return redirect(routes.Application.home());
                 }
             }
         });

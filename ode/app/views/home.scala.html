@@ -2,51 +2,62 @@
 
 @main("Welcome to Ode!") {
   <div class="container">
-    <div class="jumbotron">
-      <h1>Hi! This is Ode.</h1>
-      <p>
-        Ode (Output DEsigner) will help you prototype and design
-        natural language output for your intelligent agent. To get
-        started with Ode, create an account by registering with your
-        e-mail address below, or <a href="@routes.Application.login()"
-        type="button" class="btn btn-xs btn-default">log in</a> if you
-        already have one.
-      </p>
-    </div>
-    @helper.form(routes.Application.register) {
-      <h1>Register</h2>
-      <p>
-        <input type="email" name="email" value="@form("email").value" placeholder="Email">
-      </p>
-      <p>
-        <input type="password" name="password" placeholder="Password">
-      </p>
-      <p>
-        <button type="submit">Register</button>
-      </p>
-      @if(form.hasGlobalErrors) {
-        <div class="alert alert-danger alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          <strong>Error:</strong> @form.globalError.message
-        </div>
-      }
-      @if(flash.contains("success")) {
-        <div class="alert alert-success alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          <strong>Success:</strong> @flash.get("success")
-        </div>
-      }
-      @if(flash.contains("error")) {
-        <div class="alert alert-danger alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          <strong>Error:</strong> @flash.get("error")
-        </div>
+    @if(session().get("email")) {
+      <div class="jumbotron">
+        <h1>Hi! This is Ode.</h1>
+        <p>
+          Ode (Output DEsigner) will help you prototype and design
+          natural language output for your intelligent agent. Use the
+          navigation bar at the top to find your way around.
+        </p>
+      </div>
+    } else {
+      <div class="jumbotron">
+        <h1>Hi! This is Ode.</h1>
+        <p>
+          Ode (Output DEsigner) will help you prototype and design
+          natural language output for your intelligent agent. To get
+          started with Ode, create an account by registering with your
+          e-mail address below, or <a href="@routes.Application.login()"
+          type="button" class="btn btn-xs btn-default">log in</a> if you
+          already have one.
+        </p>
+      </div>
+      @helper.form(routes.Application.register) {
+        <h1>Register</h2>
+        <p>
+          <input type="email" name="email" value="@form("email").value" placeholder="Email">
+        </p>
+        <p>
+          <input type="password" name="password" placeholder="Password">
+        </p>
+        <p>
+          <button type="submit">Register</button>
+        </p>
+        @if(form.hasGlobalErrors) {
+          <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            <strong>Error:</strong> @form.globalError.message
+          </div>
+        }
+        @if(flash.contains("success")) {
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            <strong>Success:</strong> @flash.get("success")
+          </div>
+        }
+        @if(flash.contains("error")) {
+          <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            <strong>Error:</strong> @flash.get("error")
+          </div>
+        }
       }
     }
   </div>

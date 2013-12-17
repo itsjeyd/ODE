@@ -9,9 +9,10 @@
         @for(feature <- features) {
           <p>@feature.name</p>
         }
+        <button id="show-feature-form" class="btn btn-info">New Feature</button>
       </div>
 
-      <div class="col-md-6">
+      <div id="feature-form" class="col-md-6">
         @helper.form(routes.Application.feature) {
           <p>
             <input type="text" name="name" value="@form("name").value" />

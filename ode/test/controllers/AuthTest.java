@@ -22,6 +22,7 @@ import models.User;
 
 
 public class AuthTest extends WithApplication {
+    private short ASYNC_TIMEOUT = 500;
 
     @Before
     public void setUp() {
@@ -30,7 +31,8 @@ public class AuthTest extends WithApplication {
 
     @Test
     public void authenticateSuccess() {
-        User user = new User("foo@bar.com", "password").create().get();
+        User user = new User("foo@bar.com", "password").create()
+            .get(ASYNC_TIMEOUT);
         Result result = callAction(
             controllers.routes.ref.Application.authenticate(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
@@ -38,7 +40,7 @@ public class AuthTest extends WithApplication {
                 "password", user.password)));
         assertEquals(status(result), 303);
         assertEquals(session(result).get("email"), user.username);
-        user.delete();
+        user.delete().get(ASYNC_TIMEOUT);
     }
 
     @Test
@@ -151,8 +153,8 @@ public class AuthTest extends WithApplication {
         assertEquals(status(result), 303);
         assertThat(flash(result).get("success")).isEqualTo(
             "Registration successful.");
-        assert(user.exists().get());
-        user.delete();
+        assert(user.exists().get(ASYNC_TIMEOUT));
+        user.delete().get(ASYNC_TIMEOUT);
     }
 
     @Test
@@ -167,7 +169,8 @@ public class AuthTest extends WithApplication {
 
     @Test
     public void registerExistingUser() {
-        User user = new User("foo@bar.com", "password").create().get();
+        User user = new User("foo@bar.com", "password").create()
+            .get(ASYNC_TIMEOUT);
         Result result = callAction(
             controllers.routes.ref.Application.register(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
@@ -176,7 +179,7 @@ public class AuthTest extends WithApplication {
         assertEquals(status(result), 303);
         assertThat(flash(result).get("error")).isEqualTo(
             "User already exists.");
-        user.delete();
+        user.delete().get(ASYNC_TIMEOUT);
     }
 
 }

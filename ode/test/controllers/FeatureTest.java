@@ -18,6 +18,7 @@ import models.Feature;
 
 
 public class FeatureTest extends WithApplication {
+    private short ASYNC_TIMEOUT = 500;
 
     @Before
     public void setUp() {
@@ -26,7 +27,7 @@ public class FeatureTest extends WithApplication {
 
     @Test
     public void featureSuccess() {
-        Feature feature = new Feature("Foo", "complex");
+        Feature feature = new Feature("NonExistingFeature", "complex");
         Result result = callAction(
             controllers.routes.ref.Application.feature(),
             fakeRequest()
@@ -37,13 +38,14 @@ public class FeatureTest extends WithApplication {
         assertEquals(status(result), 303);
         assertThat(flash(result).get("success")).isEqualTo(
             "Feature successfully created.");
-        assert(feature.exists().get());
-        feature.delete();
+        assert(feature.exists().get(ASYNC_TIMEOUT));
+        feature.delete().get(ASYNC_TIMEOUT);
     }
 
     @Test
     public void featureCreateExisting() {
-        Feature feature = new Feature("Foo", "complex").create().get();
+        Feature feature = new Feature("ExistingFeature", "atomic").create()
+            .get(ASYNC_TIMEOUT);
         Result result = callAction(
             controllers.routes.ref.Application.feature(),
             fakeRequest()
@@ -54,6 +56,6 @@ public class FeatureTest extends WithApplication {
         assertEquals(status(result), 303);
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");
-        feature.delete();
+        feature.delete().get(ASYNC_TIMEOUT);
     }
 }

@@ -3,7 +3,6 @@ package controllers;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.test.WithApplication;
 

@@ -1,5 +1,8 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -13,8 +16,8 @@ import neo4play.Neo4jService;
 
 
 public class Feature {
-    private Neo4jService dbService = new Neo4jService();
-    private String label = "Feature";
+    private static Neo4jService dbService = new Neo4jService();
+    private static String label = "Feature";
 
     public String name;
     public String type;
@@ -29,7 +32,7 @@ public class Feature {
         props.put("name", this.name);
         props.put("type", this.type);
         Promise<WS.Response> response = dbService
-            .createLabeledNodeWithProperties(this.label, props);
+            .createLabeledNodeWithProperties(label, props);
         return response.map(new CreatedFunction(this));
     }
 
@@ -37,7 +40,7 @@ public class Feature {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
         Promise<WS.Response> response = dbService
-            .getLabeledNodeWithProperties(this.label, props);
+            .getLabeledNodeWithProperties(label, props);
         return response.map(new ExistsFunction());
     }
 
@@ -45,8 +48,13 @@ public class Feature {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
         Promise<WS.Response> response = dbService
-            .deleteLabeledNodeWithProperties(this.label, props);
+            .deleteLabeledNodeWithProperties(label, props);
         return response.map(new DeleteFunction(this));
+    }
+
+    public static Promise<List<Feature>> all() {
+        Promise<WS.Response> response = dbService.getNodesByLabel(label);
+        return response.map(new AllFunction());
     }
 
     private class CreatedFunction implements Function<WS.Response, Feature> {
@@ -83,6 +91,22 @@ public class Feature {
                 return null;
             }
             return this.feature;
+        }
+    }
+
+    private static class AllFunction implements
+                                         Function<WS.Response, List<Feature>>
+    {
+        public List<Feature> apply(WS.Response response) {
+            List<Feature> features = new ArrayList<Feature>();
+            JsonNode json = response.asJson();
+            List<JsonNode> dataNodes = json.findValues("data");
+            for (JsonNode dataNode: dataNodes) {
+                String name = dataNode.get("name").asText();
+                String type = dataNode.get("type").asText();
+                features.add(new Feature(name, type));
+            }
+            return features;
         }
     }
 

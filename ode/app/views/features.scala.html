@@ -1,7 +1,10 @@
-@(form: Form[Application.FeatureForm])
+@(features: List[Feature])(form: Form[Application.FeatureForm])
 
 @main("Ode: Feature Editor") {
   <div class="container">
+    @for(feature <- features) {
+      <p>@feature.name</p>
+    }
     @helper.form(routes.Application.feature) {
       <p>
         <input type="text" name="name" value="@form("name").value" />

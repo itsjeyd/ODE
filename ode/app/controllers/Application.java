@@ -1,6 +1,9 @@
 package controllers;
 
 import play.data.*;
+import java.util.List;
+import java.util.ArrayList;
+
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
@@ -112,8 +115,13 @@ public class Application extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result features() {
-        return ok(features.render(form(FeatureForm.class)));
+    public static Promise<Result> features() {
+        Promise<List<Feature>> featureList = Feature.all();
+        return featureList.map(new Function<List<Feature>, Result>() {
+            public Result apply(List<Feature> featureList) {
+                return ok(features.render(featureList,
+                                          form(FeatureForm.class)));
+            }});
     }
 
     @Security.Authenticated(Secured.class)

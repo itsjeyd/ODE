@@ -91,4 +91,9 @@ public class Neo4jService {
         return WS.url(fullURL).setContentType(this.contentType)
             .post(content);
     }
+
+    public Promise<WS.Response> getNodesByLabel(String label) {
+        String fullURL = this.extendRootURL("/label/" + label + "/nodes");
+        return WS.url(fullURL).get();
+    }
 }

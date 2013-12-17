@@ -130,7 +130,6 @@ public class Application extends Controller {
             form(FeatureForm.class).bindFromRequest();
         final Feature feature = new Feature(featureForm.get().name,
                                             featureForm.get().type);
-        // Check if feature already exists: ...
         if (feature.exists().get()) {
             return Promise.promise(new Function0<Result>() {
                 public Result apply() {

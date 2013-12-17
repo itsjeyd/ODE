@@ -7,9 +7,16 @@
       <div class="col-md-3">
         <h3>Features</h3>
         @for(feature <- features) {
-          <p>@feature.name</p>
+          <p>
+            <a href="#" class="feature-item"
+               data-ftype="@feature.featureType">@feature.name</a>
+          </p>
         }
-        <button id="show-feature-form" class="btn btn-info">New Feature</button>
+        <p>
+          <button id="new-feature-button" class="btn btn-info">
+            New Feature
+          </button>
+        </p>
       </div>
 
       <div id="feature-form" class="col-md-6">
@@ -45,6 +52,17 @@
             </div>
           }
         }
+      </div>
+
+      <div id="feature-properties" class="col-md-6">
+        <h3 id="fname"></h3>
+        <p>
+          <input type="radio" name="type" value="complex" id="type-complex" />
+          <label for="type-complex">complex</label>
+          &nbsp;
+          <input type="radio" name="type" value="atomic" id="type-atomic"/>
+          <label for="type-atomic">atomic</label>
+        </p>
       </div>
 
     </div>

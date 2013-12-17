@@ -20,17 +20,17 @@ public class Feature {
     private static String label = "Feature";
 
     public String name;
-    public String type;
+    public String featureType;
 
     public Feature(String name, String type) {
         this.name = name;
-        this.type = type;
+        this.featureType = type;
     }
 
     public Promise<Feature> create() {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
-        props.put("type", this.type);
+        props.put("type", this.featureType);
         Promise<WS.Response> response = dbService
             .createLabeledNodeWithProperties(label, props);
         return response.map(new CreatedFunction(this));

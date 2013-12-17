@@ -33,7 +33,7 @@ public class FeatureTest extends WithApplication {
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
-                    "type", feature.type)));
+                    "type", feature.featureType)));
         assertEquals(status(result), 303);
         assertThat(flash(result).get("success")).isEqualTo(
             "Feature successfully created.");
@@ -50,7 +50,7 @@ public class FeatureTest extends WithApplication {
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
-                    "type", feature.type)));
+                    "type", feature.featureType)));
         assertEquals(status(result), 303);
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");

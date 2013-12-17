@@ -1,5 +1,38 @@
-@(message: String)
+@(form: Form[Application.FeatureForm])
 
 @main("Ode: Feature Editor") {
-  @message
+  <div class="container">
+    @helper.form(routes.Application.feature) {
+      <p>
+        <input type="text" name="name" value="@form("name").value" />
+      </p>
+      <p>
+        <input type="radio" name="type" value="complex" id="type_complex" />
+        <label for="type_complex">complex</label>
+      </p>
+      <p>
+        <input type="radio" name="type" value="atomic" id="type_atomic "/>
+        <label for="type_atomic">atomic</label>
+      </p>
+      <p>
+        <button type="submit">Save</button>
+      </p>
+      @if(flash.contains("success")) {
+        <div class="alert alert-success alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+          </button>
+          <strong>Success:</strong> @flash.get("success")
+        </div>
+      }
+      @if(flash.contains("error")) {
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+          </button>
+          <strong>Error:</strong> @flash.get("error")
+        </div>
+      }
+    }
+  </div>
 }

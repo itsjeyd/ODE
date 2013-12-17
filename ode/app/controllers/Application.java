@@ -8,6 +8,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import models.Feature;
 import models.User;
 import views.html.*;
 
@@ -112,7 +113,34 @@ public class Application extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result features() {
-        return ok(features.render("Hi! This is Ode's Feature Editor."));
+        return ok(features.render(form(FeatureForm.class)));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Promise<Result> feature() {
+        final Form<FeatureForm> featureForm =
+            form(FeatureForm.class).bindFromRequest();
+        final Feature feature = new Feature(featureForm.get().name,
+                                            featureForm.get().type);
+        // Check if feature already exists: ...
+        if (feature.exists().get()) {
+            return Promise.promise(new Function0<Result>() {
+                public Result apply() {
+                    flash("error", "Feature already exists.");
+                    return redirect(routes.Application.features());
+                }});
+        } else {
+            Promise<Feature> newFeature = feature.create();
+            return newFeature.map(new Function<Feature, Result>() {
+                public Result apply(Feature feature) {
+                    if (feature == null) {
+                        flash("error", "Feature creation failed.");
+                    } else {
+                        flash("success", "Feature successfully created.");
+                    }
+                    return redirect(routes.Application.features());
+                }});
+        }
     }
 
     // Forms
@@ -130,5 +158,10 @@ public class Application extends Controller {
     }
 
     public static class Registration extends Login {}
+
+    public static class FeatureForm {
+        public String name;
+        public String type;
+    }
 
 }

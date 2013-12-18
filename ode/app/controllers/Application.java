@@ -120,14 +120,14 @@ public class Application extends Controller {
         return featureList.map(new Function<List<Feature>, Result>() {
             public Result apply(List<Feature> featureList) {
                 return ok(features.render(featureList,
-                                          form(FeatureForm.class)));
+                                          form(NewFeatureForm.class)));
             }});
     }
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> feature() {
-        final Form<FeatureForm> featureForm =
-            form(FeatureForm.class).bindFromRequest();
+        final Form<NewFeatureForm> featureForm =
+            form(NewFeatureForm.class).bindFromRequest();
         final Feature feature = new Feature(featureForm.get().name,
                                             featureForm.get().type);
         if (feature.exists().get()) {
@@ -150,6 +150,15 @@ public class Application extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
+    public static Result updateFeature(String name) {
+        final Form<UpdateFeatureForm> featureForm =
+            form(UpdateFeatureForm.class).bindFromRequest();
+        final Feature feature = new Feature(name, featureForm.get().type);
+        Promise<Feature> updatedFeature = feature.update();
+        return redirect(routes.Application.features());
+    }
+
     // Forms
 
     public static class Login {
@@ -166,8 +175,12 @@ public class Application extends Controller {
 
     public static class Registration extends Login {}
 
-    public static class FeatureForm {
+    public static class NewFeatureForm {
         public String name;
+        public String type;
+    }
+
+    public static class UpdateFeatureForm {
         public String type;
     }
 

@@ -13,6 +13,8 @@ $(document).ready(function() {
   $(".feature-item").on("click", function(event) {
     $("#feature-form").hide();
     $("#feature-properties h3").text($(this).text());
+    $("#feature-properties form").prop(
+      "action", "/feature/" + $(this).text());
     $("#type-complex").removeProp("checked");
     $("#type-atomic").removeProp("checked");
     if ($(this).data("ftype") === "complex") {

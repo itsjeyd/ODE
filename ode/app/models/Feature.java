@@ -57,6 +57,17 @@ public class Feature {
         return response.map(new AllFunction());
     }
 
+    public Promise<Feature> update() {
+        ObjectNode oldProps = Json.newObject();
+        oldProps.put("name", this.name);
+        ObjectNode newProps = Json.newObject();
+        newProps.put("name", this.name);
+        newProps.put("type", this.featureType);
+        Promise<WS.Response> response = dbService
+            .updateNodeProperties(label, oldProps, newProps);
+        return response.map(new UpdateFunction(this));
+    }
+
     private class CreatedFunction implements Function<WS.Response, Feature> {
         private Feature feature;
         public CreatedFunction(Feature feature) {
@@ -107,6 +118,19 @@ public class Feature {
                 features.add(new Feature(name, type));
             }
             return features;
+        }
+    }
+
+    private class UpdateFunction implements Function<WS.Response, Feature> {
+        private Feature feature;
+        public UpdateFunction(Feature feature) {
+            this.feature = feature;
+        }
+        public Feature apply(WS.Response response) {
+            if (response.getStatus() == Status.NO_CONTENT) {
+                return this.feature;
+            }
+            return null;
         }
     }
 

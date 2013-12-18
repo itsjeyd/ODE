@@ -10,6 +10,7 @@ import java.util.Map;
 
 import play.libs.Json;
 import play.libs.WS;
+import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import utils.StringUtils;
@@ -96,4 +97,24 @@ public class Neo4jService {
         String fullURL = this.extendRootURL("/label/" + label + "/nodes");
         return WS.url(fullURL).get();
     }
+
+    public Promise<WS.Response> updateNodeProperties(
+        String label, JsonNode oldProps, final JsonNode newProps) {
+        Promise<WS.Response> response = this.getLabeledNodeWithProperties(
+            label, oldProps);
+        Promise<String> nodeURL = response.map(new NodeURLFunction());
+        return nodeURL.flatMap(new Function<String, Promise<WS.Response>>() {
+            public Promise<WS.Response> apply(String nodeURL) {
+                String fullURL = nodeURL + "/properties";
+                return WS.url(fullURL).put(newProps);
+            }});
+    }
+
+    private class NodeURLFunction implements Function<WS.Response, String> {
+        public String apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            return json.findValue("self").asText();
+        }
+    }
+
 }

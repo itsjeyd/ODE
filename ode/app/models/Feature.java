@@ -22,6 +22,10 @@ public class Feature {
     public String name;
     public String featureType;
 
+    public Feature(String name) {
+        this.name = name;
+    }
+
     public Feature(String name, String type) {
         this.name = name;
         this.featureType = type;
@@ -66,6 +70,31 @@ public class Feature {
         Promise<WS.Response> response = dbService
             .updateNodeProperties(label, oldProps, newProps);
         return response.map(new UpdateFunction(this));
+    }
+
+    public Promise<Feature> connectTo(Feature otherFeature,
+                                      String relationshipType) {
+        ObjectNode props = Json.newObject();
+        props.put("name", this.name);
+        ObjectNode otherProps = Json.newObject();
+        otherProps.put("name", otherFeature.name);
+        Promise<WS.Response> response = dbService
+            .createRelationship(
+                label, props, label, otherProps, relationshipType);
+        return response.map(new RelationshipCreatedFunction(this));
+    }
+
+    public Promise<Feature> connectTo(Value value, String relationshipType) {
+        System.out.println("Inside connectTo (value)");
+
+        ObjectNode props = Json.newObject();
+        props.put("name", this.name);
+        ObjectNode valueProps = Json.newObject();
+        valueProps.put("name", value.name);
+        Promise<WS.Response> response = dbService
+            .createRelationship(
+                label, props, Value.label, valueProps, relationshipType);
+        return response.map(new RelationshipCreatedFunction(this));
     }
 
     private class CreatedFunction implements Function<WS.Response, Feature> {
@@ -128,6 +157,20 @@ public class Feature {
         }
         public Feature apply(WS.Response response) {
             if (response.getStatus() == Status.NO_CONTENT) {
+                return this.feature;
+            }
+            return null;
+        }
+    }
+
+    private class RelationshipCreatedFunction
+        implements Function<WS.Response, Feature> {
+        private Feature feature;
+        public RelationshipCreatedFunction(Feature feature) {
+            this.feature = feature;
+        }
+        public Feature apply(WS.Response response) {
+            if (response.getStatus() == Status.CREATED) {
                 return this.feature;
             }
             return null;

@@ -12,6 +12,7 @@ import play.mvc.Security;
 
 import models.Feature;
 import models.User;
+import models.Value;
 import views.html.*;
 
 import static play.data.Form.*;
@@ -150,12 +151,27 @@ public class Application extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result updateFeature(String name) {
+    public static Promise<Result> updateFeature(String name) {
         final Form<UpdateFeatureForm> featureForm =
             form(UpdateFeatureForm.class).bindFromRequest();
         final Feature feature = new Feature(name, featureForm.get().type);
         Promise<Feature> updatedFeature = feature.update();
-        return redirect(routes.Application.features());
+        return updatedFeature.map(new Function<Feature, Result>() {
+            public Result apply(Feature feature) {
+                if (feature.featureType.equals("complex")) {
+                    Feature permittedFeature = new Feature(
+                        featureForm.get().feature);
+                    feature.connectTo(permittedFeature, "ALLOWS");
+                } else if (feature.featureType.equals("atomic")) {
+                    String valueName = featureForm.get().value;
+                    Value permittedValue = new Value(valueName);
+                    if (!permittedValue.exists().get()) {
+                        permittedValue.create();
+                    }
+                    feature.connectTo(permittedValue, "ALLOWS");
+                }
+                return redirect(routes.Application.features());
+            }});
     }
 
     // Forms
@@ -181,6 +197,8 @@ public class Application extends Controller {
 
     public static class UpdateFeatureForm {
         public String type;
+        public String feature;
+        public String value;
     }
 
 }

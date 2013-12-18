@@ -19,8 +19,12 @@ $(document).ready(function() {
     $("#type-atomic").removeProp("checked");
     if ($(this).data("ftype") === "complex") {
       $("#type-complex").prop("checked", "checked");
+      $("#permitted-values").hide();
+      $("#permitted-features").show();
     } else {
       $("#type-atomic").prop("checked", "checked");
+      $("#permitted-features").hide();
+      $("#permitted-values").show();
     }
     $("#feature-properties").show();
     $("#new-feature-button").show();

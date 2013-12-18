@@ -12,6 +12,7 @@ import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 
 import utils.StringUtils;
 
@@ -108,6 +109,33 @@ public class Neo4jService {
                 String fullURL = nodeURL + "/properties";
                 return WS.url(fullURL).put(newProps);
             }});
+    }
+
+    public Promise<WS.Response> createRelationship(
+        String startNodeLabel, JsonNode startNodeProps,
+        String endNodeLabel, JsonNode endNodeProps,
+        final String relationshipType) {
+        Promise<WS.Response> startNodeResponse = this
+            .getLabeledNodeWithProperties(startNodeLabel, startNodeProps);
+        Promise<String> startNodeURL = startNodeResponse.map(
+            new NodeURLFunction());
+        Promise<WS.Response> endNodeResponse = this
+            .getLabeledNodeWithProperties(endNodeLabel, endNodeProps);
+        Promise<String> endNodeURL = endNodeResponse.map(
+            new NodeURLFunction());
+        Promise<Tuple<String, String>> urls = startNodeURL.zip(
+            endNodeURL);
+        return urls.flatMap(
+            new Function<Tuple<String, String>, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(
+                    Tuple<String, String> urls) {
+                    String fullURL = urls._1 + "/relationships";
+                    ObjectNode content = Json.newObject();
+                    content.put("to", urls._2);
+                    content.put("type", relationshipType);
+                    return WS.url(fullURL).post(content);
+                }
+            });
     }
 
     private class NodeURLFunction implements Function<WS.Response, String> {

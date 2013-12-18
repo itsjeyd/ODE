@@ -181,7 +181,7 @@ public class Application extends Controller {
         public String password;
 
         public String validate() {
-            if (email == "" || password == "") {
+            if (email.isEmpty() || password.isEmpty()) {
                 return "You must provide input for all fields.";
             }
             return null;

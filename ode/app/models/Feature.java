@@ -85,8 +85,6 @@ public class Feature {
     }
 
     public Promise<Feature> connectTo(Value value, String relationshipType) {
-        System.out.println("Inside connectTo (value)");
-
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
         ObjectNode valueProps = Json.newObject();

@@ -2,7 +2,6 @@ package controllers;
 
 import play.data.*;
 import java.util.List;
-import java.util.ArrayList;
 
 import play.libs.F.Function;
 import play.libs.F.Function0;

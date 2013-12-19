@@ -8,14 +8,52 @@
         <h3>Features</h3>
         @for(feature <- features) {
           <p>
-            <a href="#" class="feature-item"
-               data-ftype="@feature.featureType">@feature.name</a>
-            <ul>
-              @for(value <- feature.values) {
-                <li>@value</li>
-              }
-            </ul>
+            <a href="#@feature.name" class="feature-item">@feature.name</a>
           </p>
+          <!-- Edit block for individual feature: -->
+          <div id="@feature.name" class="edit-feature">
+            <h3>@feature.name</h3>
+            <form method="POST" action="/feature/@feature.name">
+              @if(feature.featureType == "complex") {
+                <p>
+                  <input type="radio" name="type" value="complex"
+                         id="type-complex" checked="checked" />
+                  <label for="type-complex">complex</label>
+                </p>
+                <p>
+                  <input type="radio" name="type" value="atomic"
+                         id="type-atomic"/>
+                  <label for="type-atomic">atomic</label>
+                </p>
+
+                <h4>Features permitted in substructure:</h4>
+                @for(value <- feature.values) {
+                  <p>@value</p>
+                }
+                <input type="text" name="feature" value="" />
+              } else {
+                <p>
+                  <input type="radio" name="type" value="complex"
+                         id="type-complex" />
+                  <label for="type-complex">complex</label>
+                </p>
+                <p>
+                  <input type="radio" name="type" value="atomic"
+                         id="type-atomic" checked="checked" />
+                  <label for="type-atomic">atomic</label>
+                </p>
+
+                <h4>Permitted values:</h4>
+                @for(value <- feature.values) {
+                  <p>@value</p>
+                }
+                <input type="text" name="value" value="" />
+              }
+              <p>
+                <button type="submit">Update</button>
+              </p>
+            </form>
+          </div>
         }
         <p>
           <button id="new-feature-button" class="btn btn-info">
@@ -24,71 +62,56 @@
         </p>
       </div>
 
-      <div id="feature-form" class="col-md-6">
+      <!-- Block to hold functionality for adding or updating feature: -->
+      <div id="interaction-block" class="col-md-6"></div>
+
+      <!-- Block for creating new feature: -->
+      <div id="new-feature">
         <h3>Create a new feature</h3>
         @helper.form(routes.Application.feature) {
           <p>
             <label for="feature-name">Name:</label>
-            <input type="text" name="name" value="@form("name").value" id="feature-name" />
+            <input type="text" name="name" value="@form("name").value"
+                   id="feature-name" />
           </p>
           <p>
-            <input type="radio" name="type" value="complex" id="type_complex" />
-            <label for="type_complex">complex</label>
+            <input type="radio" name="type" value="complex"
+                   id="type-complex" />
+            <label for="type-complex">complex</label>
           </p>
           <p>
-            <input type="radio" name="type" value="atomic" id="type_atomic "/>
-            <label for="type_atomic">atomic</label>
+            <input type="radio" name="type" value="atomic"
+                   id="type-atomic "/>
+            <label for="type-atomic">atomic</label>
           </p>
           <p>
             <button type="submit">Save</button>
           </p>
-          @if(flash.contains("success")) {
-            <div class="alert alert-success alert-dismissable">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                &times;
-              </button>
-              <strong>Success:</strong> @flash.get("success")
-            </div>
-          }
-          @if(flash.contains("error")) {
-            <div class="alert alert-danger alert-dismissable">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                &times;
-              </button>
-              <strong>Error:</strong> @flash.get("error")
-            </div>
-          }
         }
       </div>
-
-      <div id="feature-properties" class="col-md-6">
-        <h3 id="fname"></h3>
-        <form method="POST" action="">
-          <p>
-            <input type="radio" name="type" value="complex" id="type-complex" />
-            <label for="type-complex">complex</label>
-          </p>
-          <p>
-            <input type="radio" name="type" value="atomic" id="type-atomic"/>
-            <label for="type-atomic">atomic</label>
-          </p>
-
-          <div id="permitted-features">
-            <h4>Features permitted in substructure</h4>
-            <input type="text" name="feature" value="" />
-          </div>
-
-          <div id="permitted-values">
-            <h4>Permitted values</h4>
-            <input type="text" name="value" value="" />
-          </div>
-
-          <p>
-            <button type="submit">Update</button>
-          </p>
-        </form>
-      </div>
-
     </div>
+
+    <!-- Separate row for displaying error messages: -->
+    <div class="row">
+      @if(flash.contains("success")) {
+        <div class="alert alert-success alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert"
+                  aria-hidden="true">
+            &times;
+          </button>
+          <strong>Success:</strong> @flash.get("success")
+        </div>
+      }
+      @if(flash.contains("error")) {
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert"
+                  aria-hidden="true">
+            &times;
+          </button>
+          <strong>Error:</strong> @flash.get("error")
+        </div>
+      }
+    </div>
+
   </div>
 }

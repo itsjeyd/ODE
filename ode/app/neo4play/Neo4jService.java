@@ -101,9 +101,7 @@ public class Neo4jService {
 
     public Promise<WS.Response> updateNodeProperties(
         String label, JsonNode oldProps, final JsonNode newProps) {
-        Promise<WS.Response> response = this.getLabeledNodeWithProperties(
-            label, oldProps);
-        Promise<String> nodeURL = response.map(new NodeURLFunction());
+        Promise<String> nodeURL = this.getNodeURL(label, oldProps);
         return nodeURL.flatMap(new Function<String, Promise<WS.Response>>() {
             public Promise<WS.Response> apply(String nodeURL) {
                 String fullURL = nodeURL + "/properties";
@@ -115,14 +113,10 @@ public class Neo4jService {
         String startNodeLabel, JsonNode startNodeProps,
         String endNodeLabel, JsonNode endNodeProps,
         final String relationshipType) {
-        Promise<WS.Response> startNodeResponse = this
-            .getLabeledNodeWithProperties(startNodeLabel, startNodeProps);
-        Promise<String> startNodeURL = startNodeResponse.map(
-            new NodeURLFunction());
-        Promise<WS.Response> endNodeResponse = this
-            .getLabeledNodeWithProperties(endNodeLabel, endNodeProps);
-        Promise<String> endNodeURL = endNodeResponse.map(
-            new NodeURLFunction());
+        Promise<String> startNodeURL = this.getNodeURL(startNodeLabel,
+                                                       startNodeProps);
+        Promise<String> endNodeURL = this.getNodeURL(endNodeLabel,
+                                                     endNodeProps);
         Promise<Tuple<String, String>> urls = startNodeURL.zip(
             endNodeURL);
         return urls.flatMap(
@@ -141,10 +135,8 @@ public class Neo4jService {
     public Promise<WS.Response> getOutgoingRelationshipsByType(
         String startNodeLabel, JsonNode startNodeProps,
         final String relationshipType) {
-        Promise<WS.Response> startNodeResponse = this
-            .getLabeledNodeWithProperties(startNodeLabel, startNodeProps);
-        Promise<String> startNodeURL = startNodeResponse.map(
-            new NodeURLFunction());
+        Promise<String> startNodeURL = this.getNodeURL(startNodeLabel,
+                                                       startNodeProps);
         return startNodeURL.flatMap(
             new Function<String, Promise<WS.Response>>() {
                 public Promise<WS.Response> apply(String nodeURL) {

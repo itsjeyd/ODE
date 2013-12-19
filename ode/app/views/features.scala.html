@@ -1,4 +1,4 @@
-@(features: List[Feature])(form: Form[Application.NewFeatureForm])
+@(features: List[Feature])(form: Form[Application.NewFeatureForm])(values: List[Value])
 
 @main("Ode: Feature Editor") {
   <div class="container-full">
@@ -87,6 +87,14 @@
           <p>
             <button type="submit">Save</button>
           </p>
+        }
+      </div>
+
+      <!-- Block for displaying available values: ... -->
+      <div id="value-list" class="col-md-3">
+        <h3>Values</h3>
+        @for(value <- values) {
+          <p>@value.name</p>
         }
       </div>
     </div>

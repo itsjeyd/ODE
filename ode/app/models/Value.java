@@ -1,5 +1,8 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -38,6 +41,11 @@ public class Value {
         return response.map(new ExistsFunction());
     }
 
+    public static Promise<List<Value>> all() {
+        Promise<WS.Response> response = dbService.getNodesByLabel(label);
+        return response.map(new AllFunction());
+    }
+
     private class CreatedFunction implements Function<WS.Response, Value> {
         private Value value;
         public CreatedFunction(Value value) {
@@ -58,6 +66,20 @@ public class Value {
                 return true;
             }
             return false;
+        }
+    }
+
+    private static class AllFunction implements
+                                         Function<WS.Response, List<Value>> {
+        public List<Value> apply(WS.Response response) {
+            List<Value> values = new ArrayList<Value>();
+            JsonNode json = response.asJson();
+            List<JsonNode> dataNodes = json.findValues("data");
+            for (JsonNode dataNode: dataNodes) {
+                String name = dataNode.get("name").asText();
+                values.add(new Value(name));
+            }
+            return values;
         }
     }
 

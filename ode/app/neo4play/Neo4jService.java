@@ -138,10 +138,47 @@ public class Neo4jService {
             });
     }
 
+    public Promise<WS.Response> getOutgoingRelationshipsByType(
+        String startNodeLabel, JsonNode startNodeProps,
+        final String relationshipType) {
+        Promise<WS.Response> startNodeResponse = this
+            .getLabeledNodeWithProperties(startNodeLabel, startNodeProps);
+        Promise<String> startNodeURL = startNodeResponse.map(
+            new NodeURLFunction());
+        return startNodeURL.flatMap(
+            new Function<String, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(String nodeURL) {
+                    String fullURL = nodeURL + "/relationships/out/"
+                        + relationshipType;
+                    return WS.url(fullURL).get();
+        }});
+    }
+
+    public Promise<String> getNodeProperty(
+        String nodeURL, String propertyName) {
+        String fullURL = nodeURL + "/properties";
+        Promise<WS.Response> properties = WS.url(fullURL).get();
+        return properties.map(new PropertyFunction(propertyName));
+    }
+
     private class NodeURLFunction implements Function<WS.Response, String> {
         public String apply(WS.Response response) {
             JsonNode json = response.asJson();
             return json.findValue("self").asText();
+        }
+    }
+
+    private class PropertyFunction implements Function<WS.Response, String> {
+        private String propertyName;
+        public PropertyFunction(String propertyName) {
+            this.propertyName = propertyName;
+        }
+        public String apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            if (json.get(this.propertyName) != null) {
+                return json.get(this.propertyName).asText();
+            }
+            return "";
         }
     }
 

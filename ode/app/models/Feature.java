@@ -21,6 +21,8 @@ public class Feature {
 
     public String name;
     public String featureType;
+    public List<String> values; // "Values" can be other features or
+                                // atomic values
 
     public Feature(String name) {
         this.name = name;
@@ -93,6 +95,27 @@ public class Feature {
             .createRelationship(
                 label, props, Value.label, valueProps, relationshipType);
         return response.map(new RelationshipCreatedFunction(this));
+    }
+
+    public Promise<List<String>> getValues() {
+        ObjectNode props = Json.newObject();
+        props.put("name", this.name);
+        Promise<WS.Response> response = dbService
+            .getOutgoingRelationshipsByType(label, props, "ALLOWS");
+        final Promise<List<String>> valueURLs = response.map(
+            new ValueURLsFunction());
+        Promise<List<String>> values = valueURLs.map(
+            new Function<List<String>, List<String>>() {
+                public List<String> apply(List<String> urls) {
+                    List<String> values = new ArrayList<String>();
+                    for (String url: urls) {
+                        Promise<String> value = dbService
+                            .getNodeProperty(url, "name");
+                        values.add(value.get());
+                    }
+                    return values;
+        }});
+        return values;
     }
 
     private class CreatedFunction implements Function<WS.Response, Feature> {
@@ -172,6 +195,14 @@ public class Feature {
                 return this.feature;
             }
             return null;
+        }
+    }
+
+    private class ValueURLsFunction implements
+        Function<WS.Response, List<String>> {
+        public List<String> apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            return json.findValuesAsText("end");
         }
     }
 

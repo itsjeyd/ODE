@@ -119,6 +119,9 @@ public class Application extends Controller {
         Promise<List<Feature>> featureList = Feature.all();
         return featureList.map(new Function<List<Feature>, Result>() {
             public Result apply(List<Feature> featureList) {
+                for (Feature feat: featureList) {
+                    feat.values = feat.getValues().get();
+                }
                 return ok(features.render(featureList,
                                           form(NewFeatureForm.class)));
             }});

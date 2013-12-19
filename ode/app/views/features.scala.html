@@ -10,6 +10,11 @@
           <p>
             <a href="#" class="feature-item"
                data-ftype="@feature.featureType">@feature.name</a>
+            <ul>
+              @for(value <- feature.values) {
+                <li>@value</li>
+              }
+            </ul>
           </p>
         }
         <p>

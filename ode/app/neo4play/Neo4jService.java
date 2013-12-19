@@ -161,6 +161,12 @@ public class Neo4jService {
         return properties.map(new PropertyFunction(propertyName));
     }
 
+    public Promise<String> getNodeURL(String label, JsonNode props) {
+        Promise<WS.Response> nodeResponse = this
+            .getLabeledNodeWithProperties(label, props);
+        return nodeResponse.map(new NodeURLFunction());
+    }
+
     private class NodeURLFunction implements Function<WS.Response, String> {
         public String apply(WS.Response response) {
             JsonNode json = response.asJson();

@@ -13,6 +13,7 @@
           <!-- Edit block for individual feature: -->
           <div id="@feature.name" class="edit-feature">
             <h3>@feature.name</h3>
+            <p>@feature.description</p>
             <form method="POST" action="/feature/@feature.name">
               @if(feature.featureType == "complex") {
                 <p>
@@ -73,6 +74,12 @@
             <label for="feature-name">Name:</label>
             <input type="text" name="name" value="@form("name").value"
                    id="feature-name" />
+          </p>
+          <p>
+            <label for="feature-description">Description:</label>
+            <input type="text" name="description"
+                   value="@form("description").value"
+                   id="feature-description" />
           </p>
           <p>
             <input type="radio" name="type" value="complex"

@@ -141,7 +141,8 @@ public class Application extends Controller {
         final Form<NewFeatureForm> featureForm =
             form(NewFeatureForm.class).bindFromRequest();
         final Feature feature = new Feature(featureForm.get().name,
-                                            featureForm.get().type);
+                                            featureForm.get().type,
+                                            featureForm.get().description);
         if (feature.exists().get()) {
             return Promise.promise(new Function0<Result>() {
                 public Result apply() {
@@ -205,6 +206,7 @@ public class Application extends Controller {
     public static class NewFeatureForm {
         public String name;
         public String type;
+        public String description;
     }
 
     public static class UpdateFeatureForm {

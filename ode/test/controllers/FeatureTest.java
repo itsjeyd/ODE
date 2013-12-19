@@ -27,14 +27,16 @@ public class FeatureTest extends WithApplication {
 
     @Test
     public void featureSuccess() {
-        Feature feature = new Feature("NonExistingFeature", "complex");
+        Feature feature = new Feature(
+            "NonExistingFeature", "complex", "This is not a description.");
         Result result = callAction(
             controllers.routes.ref.Application.feature(),
             fakeRequest()
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
-                    "type", feature.featureType)));
+                    "type", feature.featureType,
+                    "description", feature.description)));
         assertEquals(status(result), 303);
         assertThat(flash(result).get("success")).isEqualTo(
             "Feature successfully created.");
@@ -44,15 +46,17 @@ public class FeatureTest extends WithApplication {
 
     @Test
     public void featureCreateExisting() {
-        Feature feature = new Feature("ExistingFeature", "atomic").create()
-            .get(ASYNC_TIMEOUT);
+        Feature feature = new Feature(
+            "ExistingFeature", "atomic", "This is not a description.")
+            .create().get(ASYNC_TIMEOUT);
         Result result = callAction(
             controllers.routes.ref.Application.feature(),
             fakeRequest()
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
-                    "type", feature.featureType)));
+                    "type", feature.featureType,
+                    "description", feature.description)));
         assertEquals(status(result), 303);
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");

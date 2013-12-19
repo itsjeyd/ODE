@@ -21,6 +21,7 @@ public class Feature {
 
     public String name;
     public String featureType;
+    public String description;
     public List<String> values; // "Values" can be other features or
                                 // atomic values
 
@@ -33,10 +34,17 @@ public class Feature {
         this.featureType = type;
     }
 
+    public Feature(String name, String type, String description) {
+        this.name = name;
+        this.featureType = type;
+        this.description = description;
+    }
+
     public Promise<Feature> create() {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
         props.put("type", this.featureType);
+        props.put("description", this.description);
         Promise<WS.Response> response = dbService
             .createLabeledNodeWithProperties(label, props);
         return response.map(new CreatedFunction(this));
@@ -64,13 +72,26 @@ public class Feature {
     }
 
     public Promise<Feature> update() {
-        ObjectNode oldProps = Json.newObject();
+        final ObjectNode oldProps = Json.newObject();
         oldProps.put("name", this.name);
-        ObjectNode newProps = Json.newObject();
-        newProps.put("name", this.name);
-        newProps.put("type", this.featureType);
-        Promise<WS.Response> response = dbService
-            .updateNodeProperties(label, oldProps, newProps);
+        Promise<String> nodeURL = dbService.getNodeURL(label, oldProps);
+        Promise<String> description = nodeURL.flatMap(
+            new Function<String, Promise<String>>() {
+                public Promise<String> apply(String nodeURL) {
+                    return dbService.getNodeProperty(nodeURL, "description");
+        }});
+        final String newType = this.featureType;
+        Promise<WS.Response> response = description.flatMap(
+            new Function<String, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(String description) {
+                    oldProps.put("description", description);
+                    ObjectNode newProps = Json.newObject();
+                    newProps.put("name", oldProps.get("name"));
+                    newProps.put("type", newType);
+                    newProps.put("description", description);
+                    return dbService
+                        .updateNodeProperties(label, oldProps, newProps);
+        }});
         return response.map(new UpdateFunction(this));
     }
 
@@ -165,7 +186,13 @@ public class Feature {
             for (JsonNode dataNode: dataNodes) {
                 String name = dataNode.get("name").asText();
                 String type = dataNode.get("type").asText();
-                features.add(new Feature(name, type));
+                JsonNode descriptionNode = dataNode.get("description");
+                if (descriptionNode != null) {
+                    String description = descriptionNode.asText();
+                    features.add(new Feature(name, type, description));
+                } else {
+                    features.add(new Feature(name, type));
+                }
             }
             return features;
         }

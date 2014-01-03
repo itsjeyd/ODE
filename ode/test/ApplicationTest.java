@@ -1,28 +1,25 @@
 import org.junit.*;
 
-import static org.fest.assertions.Assertions.*;
+import play.mvc.Result;
+import play.mvc.Http.Status;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static play.test.Helpers.callAction;
+import static play.test.Helpers.contentAsString;
+import static play.test.Helpers.contentType;
+import static play.test.Helpers.fakeRequest;
+import static play.test.Helpers.status;
 
 
-/**
-*
-* Simple (JUnit) tests that can call all parts of a play app.
-* If you are interested in mocking a whole application, see the wiki for more details.
-*
-*/
 public class ApplicationTest {
 
     @Test
-    public void simpleCheck() {
-        int a = 1 + 1;
-        assertThat(a).isEqualTo(2);
+    public void home() {
+        Result result = callAction(
+            controllers.routes.ref.Application.home(), fakeRequest());
+        assertThat(status(result)).isEqualTo(Status.OK);
+        assertThat(contentType(result)).isEqualTo("text/html");
+        assertThat(contentAsString(result)).contains("create an account");
     }
-
-    @Test
-    public void renderTemplate() {
-        Content html = views.html.index.render("Your new application is ready.");
-        assertThat(contentType(html)).isEqualTo("text/html");
-        assertThat(contentAsString(html)).contains("Your new application is ready.");
-    }
-
 
 }

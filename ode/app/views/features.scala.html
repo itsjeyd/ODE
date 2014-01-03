@@ -1,4 +1,4 @@
-@(features: List[Feature])(form: Form[Application.NewFeatureForm])(values: List[Value])
+@(features: List[Feature])(form: Form[Features.NewFeatureForm])(values: List[Value])
 
 @main("Ode: Feature Editor") {
   <div class="container-full">
@@ -14,7 +14,7 @@
           <div id="@feature.name" class="edit-feature">
             <h3>@feature.name</h3>
             <p>@feature.description</p>
-            <form method="POST" action="/feature/@feature.name">
+            <form method="POST" action="/features/@feature.name">
               @if(feature.featureType == "complex") {
                 <p>
                   <input type="radio" name="type" value="complex"
@@ -69,7 +69,7 @@
       <!-- Block for creating new feature: -->
       <div id="new-feature">
         <h3>Create a new feature</h3>
-        @helper.form(routes.Application.feature) {
+        @helper.form(routes.Features.createFeature) {
           <p>
             <label for="feature-name">Name:</label>
             <input type="text" name="name" value="@form("name").value"

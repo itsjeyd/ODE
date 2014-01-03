@@ -17,7 +17,7 @@ import static play.test.Helpers.status;
 import models.Feature;
 
 
-public class FeatureTest extends WithApplication {
+public class FeaturesTest extends WithApplication {
     private short ASYNC_TIMEOUT = 500;
 
     @Before
@@ -30,7 +30,7 @@ public class FeatureTest extends WithApplication {
         Feature feature = new Feature(
             "NonExistingFeature", "complex", "This is not a description.");
         Result result = callAction(
-            controllers.routes.ref.Application.feature(),
+            controllers.routes.ref.Features.createFeature(),
             fakeRequest()
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
@@ -50,7 +50,7 @@ public class FeatureTest extends WithApplication {
             "ExistingFeature", "atomic", "This is not a description.")
             .create().get(ASYNC_TIMEOUT);
         Result result = callAction(
-            controllers.routes.ref.Application.feature(),
+            controllers.routes.ref.Features.createFeature(),
             fakeRequest()
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(

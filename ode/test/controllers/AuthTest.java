@@ -90,7 +90,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withSession("email", "foo@bar.com"));
         assertEquals(status(searchResult), 200);
         Result featuresResult = callAction(
-            controllers.routes.ref.Application.features(),
+            controllers.routes.ref.Features.list(),
             fakeRequest().withSession("email", "foo@bar.com"));
         assertEquals(status(featuresResult), 200);
         Result logoutResult = callAction(
@@ -126,7 +126,7 @@ public class AuthTest extends WithApplication {
             header("Location", searchResult),
             routes.Application.login().url());
         Result featuresResult = callAction(
-            controllers.routes.ref.Application.features(),
+            controllers.routes.ref.Features.list(),
             fakeRequest());
         assertEquals(status(featuresResult), 303);
         assertEquals(

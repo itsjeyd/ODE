@@ -36,6 +36,20 @@ public class Neo4jService {
         }
     }
 
+    protected String buildMatchQuery(String nodeLabel, JsonNode props) {
+        return "MATCH (n:" + nodeLabel + ") WHERE "
+            + this.buildConjunctiveConstraints(props);
+    }
+
+    protected String buildConjunctiveConstraints(JsonNode props) {
+        List<String> constraints = new ArrayList<String>();
+        for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
+             fields.hasNext(); ) {
+            constraints.add("n." + fields.next().toString());
+        }
+        return StringUtils.join(constraints, " AND ");
+    }
+
     public Promise<WS.Response> get(String resourceURL) {
         String fullURL = this.extendRootURL(resourceURL);
         return WS.url(fullURL).get();
@@ -49,14 +63,7 @@ public class Neo4jService {
 
     public Promise<WS.Response> getLabeledNodeWithProperties(
         String label, JsonNode props) {
-        String query = "MATCH (n:" + label + ") WHERE ";
-        List<String> constraints = new ArrayList<String>();
-        for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
-             fields.hasNext(); ) {
-            constraints.add("n." + fields.next().toString());
-        }
-        query += StringUtils.join(constraints, " AND ");
-        query += " RETURN n";
+        String query = this.buildMatchQuery(label, props) + " RETURN n";
         ObjectNode content = Json.newObject();
         content.put("query", query);
         return this.post("/cypher", content);
@@ -75,14 +82,7 @@ public class Neo4jService {
 
     public Promise<WS.Response> deleteLabeledNodeWithProperties(
         String label, JsonNode props) {
-        String query = "MATCH (n:" + label + ") WHERE ";
-        List<String> constraints = new ArrayList<String>();
-        for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
-             fields.hasNext(); ) {
-            constraints.add("n." + fields.next().toString());
-        }
-        query += StringUtils.join(constraints, " AND ");
-        query += " DELETE n";
+        String query = this.buildMatchQuery(label, props) + " DELETE n";
         ObjectNode content = Json.newObject();
         content.put("query",  query);
         return this.post("/cypher", content);

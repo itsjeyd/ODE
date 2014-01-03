@@ -76,6 +76,23 @@ public class Neo4jServiceTest {
     }
 
     @Test
+    public void buildMatchQueryTest() {
+        ObjectNode props = Json.newObject();
+        assert(this.neo4jService.buildMatchQuery("TestNode", props)
+           .startsWith("MATCH (n:TestNode) WHERE "));
+    }
+
+    @Test
+    public void buildConjunctiveConstraintsTest() {
+        ObjectNode props = Json.newObject();
+        props.put("name", "node");
+        props.put("test", "buildConjunctiveConstraints");
+        assertEquals(
+            this.neo4jService.buildConjunctiveConstraints(props),
+            "n.name=\"node\" AND n.test=\"buildConjunctiveConstraints\"");
+    }
+
+    @Test
     public void getTest() {
         WS.Response getResponse = this.neo4jService.get(this.resourceURL)
             .get();

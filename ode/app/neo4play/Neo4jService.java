@@ -50,6 +50,22 @@ public class Neo4jService {
         return StringUtils.join(constraints, " AND ");
     }
 
+    protected Promise<WS.Response> postCypherQuery(String query) {
+        ObjectNode content = Json.newObject();
+        content.put("query", query);
+        return this.post("/cypher", content);
+    }
+
+    protected Promise<WS.Response> postCypherQueryWithParams(
+        String query, JsonNode props) {
+        ObjectNode params = Json.newObject();
+        params.put("props", props);
+        ObjectNode content = Json.newObject();
+        content.put("query", query);
+        content.put("params", params);
+        return this.post("/cypher", content);
+    }
+
     public Promise<WS.Response> get(String resourceURL) {
         String fullURL = this.extendRootURL(resourceURL);
         return WS.url(fullURL).get();
@@ -64,28 +80,19 @@ public class Neo4jService {
     public Promise<WS.Response> getLabeledNodeWithProperties(
         String label, JsonNode props) {
         String query = this.buildMatchQuery(label, props) + " RETURN n";
-        ObjectNode content = Json.newObject();
-        content.put("query", query);
-        return this.post("/cypher", content);
+        return this.postCypherQuery(query);
     }
 
     public Promise<WS.Response> createLabeledNodeWithProperties(
         String label, JsonNode props) {
         String query = "CREATE (n:" + label + " { props }) RETURN n";
-        ObjectNode content = Json.newObject();
-        ObjectNode params = Json.newObject();
-        params.put("props", props);
-        content.put("query", query);
-        content.put("params", params);
-        return this.post("/cypher", content);
+        return this.postCypherQueryWithParams(query, props);
     }
 
     public Promise<WS.Response> deleteLabeledNodeWithProperties(
         String label, JsonNode props) {
         String query = this.buildMatchQuery(label, props) + " DELETE n";
-        ObjectNode content = Json.newObject();
-        content.put("query",  query);
-        return this.post("/cypher", content);
+        return this.postCypherQuery(query);
     }
 
     public Promise<WS.Response> getNodesByLabel(String label) {

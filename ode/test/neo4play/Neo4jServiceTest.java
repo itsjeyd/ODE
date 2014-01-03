@@ -93,6 +93,25 @@ public class Neo4jServiceTest {
     }
 
     @Test
+    public void postCypherQueryTest() {
+        String query = "RETURN 0";
+        WS.Response cypherQueryResponse = this.neo4jService
+            .postCypherQuery(query).get();
+        assertEquals(cypherQueryResponse.getStatus(), Status.OK);
+    }
+
+    @Test
+    public void postCypherQueryWithParamsTest() {
+        ObjectNode props = Json.newObject();
+        props.put("name", "node");
+        props.put("test", "postCypherQueryWithParams");
+        String query = "CREATE (n:TestNode { props }) RETURN n";
+        WS.Response cypherQueryWithParamsResponse = this.neo4jService
+            .postCypherQueryWithParams(query, props).get();
+        assertEquals(cypherQueryWithParamsResponse.getStatus(), Status.OK);
+    }
+
+    @Test
     public void getTest() {
         WS.Response getResponse = this.neo4jService.get(this.resourceURL)
             .get();

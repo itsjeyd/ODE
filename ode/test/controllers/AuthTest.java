@@ -33,7 +33,7 @@ public class AuthTest extends WithApplication {
         User user = new User("foo@bar.com", "password").create()
             .get(ASYNC_TIMEOUT);
         Result result = callAction(
-            controllers.routes.ref.Application.authenticate(),
+            controllers.routes.ref.Auth.authenticate(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", user.username,
                 "password", user.password)));
@@ -45,7 +45,7 @@ public class AuthTest extends WithApplication {
     @Test
     public void authenticateFailure() {
         Result result = callAction(
-            controllers.routes.ref.Application.authenticate(),
+            controllers.routes.ref.Auth.authenticate(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", "",
                 "password", "")));
@@ -56,7 +56,7 @@ public class AuthTest extends WithApplication {
     @Test
     public void authenticateUnknownUser() {
         Result result = callAction(
-            controllers.routes.ref.Application.authenticate(),
+            controllers.routes.ref.Auth.authenticate(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", "foo@bar.com",
                 "password", "password")));
@@ -145,7 +145,7 @@ public class AuthTest extends WithApplication {
     public void registerSuccess() {
         User user = new User("foo@bar.com", "password");
         Result result = callAction(
-            controllers.routes.ref.Application.register(),
+            controllers.routes.ref.Auth.register(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", user.username,
                 "password", user.password)));
@@ -159,7 +159,7 @@ public class AuthTest extends WithApplication {
     @Test
     public void registerFailure() {
         Result result = callAction(
-            controllers.routes.ref.Application.register(),
+            controllers.routes.ref.Auth.register(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", "",
                 "password", "")));
@@ -171,7 +171,7 @@ public class AuthTest extends WithApplication {
         User user = new User("foo@bar.com", "password").create()
             .get(ASYNC_TIMEOUT);
         Result result = callAction(
-            controllers.routes.ref.Application.register(),
+            controllers.routes.ref.Auth.register(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", user.username,
                 "password", user.password)));

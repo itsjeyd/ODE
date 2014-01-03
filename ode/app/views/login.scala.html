@@ -16,7 +16,7 @@
         <h1>Hi!</h1>
         <p>Use the form below to log in and start using Ode.</p>
       </div>
-      @helper.form(routes.Application.authenticate) {
+      @helper.form(routes.Auth.authenticate) {
         <h1>Sign in</h2>
         <p>
           <input type="email" name="email" value="@form("email").value" placeholder="Email">

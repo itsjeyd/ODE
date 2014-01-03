@@ -1,4 +1,4 @@
-@(form: Form[Application.Registration])
+@(form: Form[Auth.RegistrationForm])
 
 @main("Welcome to Ode!") {
   <div class="container">
@@ -23,7 +23,7 @@
           already have one.
         </p>
       </div>
-      @helper.form(routes.Application.register) {
+      @helper.form(routes.Auth.register) {
         <h1>Register</h2>
         <p>
           <input type="email" name="email" value="@form("email").value" placeholder="Email">

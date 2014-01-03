@@ -49,7 +49,6 @@ public class Neo4jService {
 
     public Promise<WS.Response> getLabeledNodeWithProperties(
         String label, JsonNode props) {
-        String fullURL = this.extendRootURL("/cypher");
         String query = "MATCH (n:" + label + ") WHERE ";
         List<String> constraints = new ArrayList<String>();
         for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
@@ -60,26 +59,22 @@ public class Neo4jService {
         query += " RETURN n";
         ObjectNode content = Json.newObject();
         content.put("query", query);
-        return WS.url(fullURL).setContentType(this.contentType)
-            .post(content);
+        return this.post("/cypher", content);
     }
 
     public Promise<WS.Response> createLabeledNodeWithProperties(
         String label, JsonNode props) {
-        String fullURL = this.extendRootURL("/cypher");
         String query = "CREATE (n:" + label + " { props }) RETURN n";
         ObjectNode content = Json.newObject();
         ObjectNode params = Json.newObject();
         params.put("props", props);
         content.put("query", query);
         content.put("params", params);
-        return WS.url(fullURL).setContentType(this.contentType)
-            .post(content);
+        return this.post("/cypher", content);
     }
 
     public Promise<WS.Response> deleteLabeledNodeWithProperties(
         String label, JsonNode props) {
-        String fullURL = this.extendRootURL("/cypher");
         String query = "MATCH (n:" + label + ") WHERE ";
         List<String> constraints = new ArrayList<String>();
         for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
@@ -90,13 +85,11 @@ public class Neo4jService {
         query += " DELETE n";
         ObjectNode content = Json.newObject();
         content.put("query",  query);
-        return WS.url(fullURL).setContentType(this.contentType)
-            .post(content);
+        return this.post("/cypher", content);
     }
 
     public Promise<WS.Response> getNodesByLabel(String label) {
-        String fullURL = this.extendRootURL("/label/" + label + "/nodes");
-        return WS.url(fullURL).get();
+        return this.get("/label/" + label + "/nodes");
     }
 
     public Promise<WS.Response> updateNodeProperties(

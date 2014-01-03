@@ -1,8 +1,8 @@
 package controllers;
 
-import play.data.*;
 import java.util.List;
 
+import play.data.Form;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;

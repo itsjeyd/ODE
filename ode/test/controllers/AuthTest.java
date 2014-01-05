@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import play.mvc.Http.Status;
 import play.test.WithApplication;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static play.test.Helpers.callAction;
 import static play.test.Helpers.fakeApplication;
@@ -37,8 +37,8 @@ public class AuthTest extends WithApplication {
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", user.username,
                 "password", user.password)));
-        assertEquals(status(result), 303);
-        assertEquals(session(result).get("email"), user.username);
+        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
+        assertThat(session(result).get("email")).isEqualTo(user.username);
         user.delete().get(ASYNC_TIMEOUT);
     }
 
@@ -49,7 +49,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", "",
                 "password", "")));
-        assertEquals(status(result), 400);
+        assertThat(status(result)).isEqualTo(Status.BAD_REQUEST);
         assertNull(session(result).get("email"));
     }
 
@@ -60,7 +60,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", "foo@bar.com",
                 "password", "password")));
-        assertEquals(status(result), 400);
+        assertThat(status(result)).isEqualTo(Status.BAD_REQUEST);
         assertNull(session(result).get("email"));
     }
 
@@ -69,7 +69,7 @@ public class AuthTest extends WithApplication {
         Result result = callAction(
             controllers.routes.ref.Application.logout(),
             fakeRequest().withSession("email", "foo@bar.com"));
-        assertEquals(status(result), 303);
+        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertNull(session(result).get("email"));
         assertThat(flash(result).get("success")).isEqualTo(
             "Alright. See you around.");
@@ -80,25 +80,24 @@ public class AuthTest extends WithApplication {
         Result rulesResult = callAction(
             controllers.routes.ref.Application.rules(),
             fakeRequest().withSession("email", "foo@bar.com"));
-        assertEquals(status(rulesResult), 200);
+        assertThat(status(rulesResult)).isEqualTo(Status.OK);
         Result ruleResult = callAction(
             controllers.routes.ref.Application.rule(1),
             fakeRequest().withSession("email", "foo@bar.com"));
-        assertEquals(status(ruleResult), 200);
+        assertThat(status(ruleResult)).isEqualTo(Status.OK);
         Result searchResult = callAction(
             controllers.routes.ref.Application.search(),
             fakeRequest().withSession("email", "foo@bar.com"));
-        assertEquals(status(searchResult), 200);
+        assertThat(status(searchResult)).isEqualTo(Status.OK);
         Result featuresResult = callAction(
             controllers.routes.ref.Features.list(),
             fakeRequest().withSession("email", "foo@bar.com"));
-        assertEquals(status(featuresResult), 200);
+        assertThat(status(featuresResult)).isEqualTo(Status.OK);
         Result logoutResult = callAction(
             controllers.routes.ref.Application.logout(),
             fakeRequest().withSession("email", "foo@bar.com"));
-        assertEquals(status(logoutResult), 303);
-        assertEquals(
-            header("Location", logoutResult),
+        assertThat(status(logoutResult)).isEqualTo(Status.SEE_OTHER);
+        assertThat(header("Location", logoutResult)).isEqualTo(
             routes.Application.login().url());
     }
 
@@ -107,38 +106,33 @@ public class AuthTest extends WithApplication {
         Result rulesResult = callAction(
             controllers.routes.ref.Application.rules(),
             fakeRequest());
-        assertEquals(status(rulesResult), 303);
-        assertEquals(
-            header("Location", rulesResult),
+        assertThat(status(rulesResult)).isEqualTo(Status.SEE_OTHER);
+        assertThat(header("Location", rulesResult)).isEqualTo(
             routes.Application.login().url());
         Result ruleResult = callAction(
             controllers.routes.ref.Application.rule(1),
             fakeRequest());
-        assertEquals(status(ruleResult), 303);
-        assertEquals(
-            header("Location", ruleResult),
-            routes.Application.login().url());
+        assertThat(status(ruleResult)).isEqualTo(Status.SEE_OTHER);
+        assertThat(header("Location", ruleResult)).isEqualTo(
+                routes.Application.login().url());
         Result searchResult = callAction(
             controllers.routes.ref.Application.search(),
             fakeRequest());
-        assertEquals(status(searchResult), 303);
-        assertEquals(
-            header("Location", searchResult),
-            routes.Application.login().url());
+        assertThat(status(searchResult)).isEqualTo(Status.SEE_OTHER);
+        assertThat(header("Location", searchResult)).isEqualTo(
+                routes.Application.login().url());
         Result featuresResult = callAction(
             controllers.routes.ref.Features.list(),
             fakeRequest());
-        assertEquals(status(featuresResult), 303);
-        assertEquals(
-            header("Location", featuresResult),
+        assertThat(status(featuresResult)).isEqualTo(Status.SEE_OTHER);
+        assertThat(header("Location", featuresResult)).isEqualTo(
             routes.Application.login().url());
         Result logoutResult = callAction(
             controllers.routes.ref.Application.logout(),
             fakeRequest());
-        assertEquals(status(logoutResult), 303);
-        assertEquals(
-            header("Location", logoutResult),
-            routes.Application.login().url());
+        assertThat(status(logoutResult)).isEqualTo(Status.SEE_OTHER);
+        assertThat(header("Location", logoutResult)).isEqualTo(
+                routes.Application.login().url());
     }
 
     @Test
@@ -149,7 +143,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", user.username,
                 "password", user.password)));
-        assertEquals(status(result), 303);
+        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("success")).isEqualTo(
             "Registration successful.");
         assert(user.exists().get(ASYNC_TIMEOUT));
@@ -163,7 +157,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", "",
                 "password", "")));
-        assertEquals(status(result), 400);
+        assertThat(status(result)).isEqualTo(Status.BAD_REQUEST);
     }
 
     @Test
@@ -175,7 +169,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
                 "email", user.username,
                 "password", user.password)));
-        assertEquals(status(result), 303);
+        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("error")).isEqualTo(
             "User already exists.");
         user.delete().get(ASYNC_TIMEOUT);

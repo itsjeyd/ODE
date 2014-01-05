@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Result;
+import play.mvc.Http.Status;
 import play.test.WithApplication;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.callAction;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.fakeRequest;
@@ -37,7 +37,7 @@ public class FeaturesTest extends WithApplication {
                     "name", feature.name,
                     "type", feature.featureType,
                     "description", feature.description)));
-        assertEquals(status(result), 303);
+        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("success")).isEqualTo(
             "Feature successfully created.");
         assert(feature.exists().get(ASYNC_TIMEOUT));
@@ -57,7 +57,7 @@ public class FeaturesTest extends WithApplication {
                     "name", feature.name,
                     "type", feature.featureType,
                     "description", feature.description)));
-        assertEquals(status(result), 303);
+        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");
         feature.delete().get(ASYNC_TIMEOUT);

@@ -15,6 +15,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 
 public class Neo4jServiceTest {
+    private static short ASYNC_TIMEOUT = 500;
 
     public Neo4jService neo4jService;
     public String resourceURL;
@@ -66,7 +67,7 @@ public class Neo4jServiceTest {
         ObjectNode content = Json.newObject();
         content.put("query", query);
         return WS.url(cypherURL).setContentType(contentType).post(content)
-            .get();
+            .get(ASYNC_TIMEOUT);
     }
 
     @Before
@@ -96,7 +97,7 @@ public class Neo4jServiceTest {
     public void postCypherQueryTest() {
         String query = "RETURN 0";
         WS.Response cypherQueryResponse = this.neo4jService
-            .postCypherQuery(query).get();
+            .postCypherQuery(query).get(ASYNC_TIMEOUT);
         assertThat(cypherQueryResponse.getStatus()).isEqualTo(Status.OK);
     }
 
@@ -107,7 +108,7 @@ public class Neo4jServiceTest {
         props.put("test", "postCypherQueryWithParams");
         String query = "CREATE (n:TestNode { props }) RETURN n";
         WS.Response cypherQueryWithParamsResponse = this.neo4jService
-            .postCypherQueryWithParams(query, props).get();
+            .postCypherQueryWithParams(query, props).get(ASYNC_TIMEOUT);
         assertThat(cypherQueryWithParamsResponse.getStatus())
             .isEqualTo(Status.OK);
     }
@@ -115,7 +116,7 @@ public class Neo4jServiceTest {
     @Test
     public void getTest() {
         WS.Response getResponse = this.neo4jService.get(this.resourceURL)
-            .get();
+            .get(ASYNC_TIMEOUT);
         String requestURI = getResponse.getUri().toString();
         String targetURI = this.neo4jService.rootURL + this.resourceURL;
         assertThat(requestURI).isEqualTo(targetURI);
@@ -125,7 +126,7 @@ public class Neo4jServiceTest {
     public void postTest() {
         ObjectNode content = Json.newObject();
         WS.Response postResponse = this.neo4jService.post(
-            this.resourceURL, content).get();
+            this.resourceURL, content).get(ASYNC_TIMEOUT);
         String requestURI = postResponse.getUri().toString();
         String targetURI = this.neo4jService.rootURL + this.resourceURL;
         assertThat(requestURI).isEqualTo(targetURI);
@@ -140,7 +141,8 @@ public class Neo4jServiceTest {
         props.put("name", "node");
         props.put("test", "getLabeledNodeWithProperties");
         WS.Response labeledNodeResponse = this.neo4jService
-            .getLabeledNodeWithProperties("TestNode", props).get();
+            .getLabeledNodeWithProperties("TestNode", props)
+            .get(ASYNC_TIMEOUT);
         assertThat(labeledNodeResponse.getStatus()).isEqualTo(Status.OK);
         assertThat(labeledNodeResponse.asJson().get("data").size())
             .isEqualTo(1);
@@ -152,7 +154,8 @@ public class Neo4jServiceTest {
         props.put("name", "node");
         props.put("test", "createLabeledNodeWithProperties");
         WS.Response labeledNodeResponse = this.neo4jService
-            .createLabeledNodeWithProperties("TestNode", props).get();
+            .createLabeledNodeWithProperties("TestNode", props)
+            .get(ASYNC_TIMEOUT);
         assertThat(labeledNodeResponse.getStatus()).isEqualTo(Status.OK);
         assertThat(labeledNodeResponse.asJson().get("data").size())
             .isEqualTo(1);
@@ -164,7 +167,8 @@ public class Neo4jServiceTest {
         props.put("name", "node");
         props.put("test", "deleteLabeledNodeWithProperties");
         WS.Response labeledNodeResponse = this.neo4jService
-            .deleteLabeledNodeWithProperties("TestNode", props).get();
+            .deleteLabeledNodeWithProperties("TestNode", props)
+            .get(ASYNC_TIMEOUT);
         assertThat(labeledNodeResponse.getStatus()).isEqualTo(Status.OK);
         assertThat(labeledNodeResponse.asJson().get("data").size())
             .isEqualTo(0);
@@ -173,7 +177,7 @@ public class Neo4jServiceTest {
     @Test
     public void getNodesByLabelTest() {
         WS.Response nodesByLabelResponse = this.neo4jService
-            .getNodesByLabel("GenericTestNode").get();
+            .getNodesByLabel("GenericTestNode").get(ASYNC_TIMEOUT);
         assertThat(nodesByLabelResponse.getStatus()).isEqualTo(Status.OK);
         assertThat(nodesByLabelResponse.asJson().size()).isEqualTo(2);
     }
@@ -187,7 +191,8 @@ public class Neo4jServiceTest {
         newProps.put("name", "updated");
         newProps.put("test", "updated");
         WS.Response updatedNodeResponse = this.neo4jService
-            .updateNodeProperties("TestNode", oldProps, newProps).get();
+            .updateNodeProperties("TestNode", oldProps, newProps)
+            .get(ASYNC_TIMEOUT);
         assertThat(updatedNodeResponse.getStatus())
             .isEqualTo(Status.NO_CONTENT);
     }
@@ -203,7 +208,7 @@ public class Neo4jServiceTest {
         WS.Response relationshipResponse = this.neo4jService
             .createRelationship(
                 "TestNode", startNodeProps, "TestNode", endNodeProps,
-                "GENERIC").get();
+                "GENERIC").get(ASYNC_TIMEOUT);
         assertThat(relationshipResponse.getStatus())
             .isEqualTo(Status.CREATED);
     }
@@ -215,7 +220,7 @@ public class Neo4jServiceTest {
         startNodeProps.put("test", "getOutgoingRelationshipsByType");
         WS.Response outgoingRelationshipsResponse = this.neo4jService
             .getOutgoingRelationshipsByType(
-                "TestNode", startNodeProps, "GENERIC").get();
+                "TestNode", startNodeProps, "GENERIC").get(ASYNC_TIMEOUT);
         assertThat(outgoingRelationshipsResponse.getStatus())
             .isEqualTo(Status.OK);
         assertThat(outgoingRelationshipsResponse.asJson().size())
@@ -231,10 +236,10 @@ public class Neo4jServiceTest {
             .toString();
         String nodeURL = "http://localhost:7474/db/data/node/" + nodeID;
         String nodePropertyResponse = this.neo4jService
-            .getNodeProperty(nodeURL, "name").get();
+            .getNodeProperty(nodeURL, "name").get(ASYNC_TIMEOUT);
         assertThat(nodePropertyResponse).isEqualTo("node");
         nodePropertyResponse = this.neo4jService
-            .getNodeProperty(nodeURL, "test").get();
+            .getNodeProperty(nodeURL, "test").get(ASYNC_TIMEOUT);
         assertThat(nodePropertyResponse).isEqualTo("getNodeProperty");
     }
 
@@ -250,7 +255,7 @@ public class Neo4jServiceTest {
         props.put("name", "node");
         props.put("test", "getNodeURL");
         String nodeURLResponse = this.neo4jService
-            .getNodeURL("TestNode", props).get();
+            .getNodeURL("TestNode", props).get(ASYNC_TIMEOUT);
         assertThat(nodeURLResponse).isEqualTo(nodeURL);
     }
 

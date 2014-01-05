@@ -10,12 +10,11 @@ import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.mvc.Http.Status;
 
 import neo4play.Neo4jService;
 
 
-public class Value {
+public class Value extends Model {
     private static Neo4jService dbService = new Neo4jService();
     protected static String label = "Value";
 
@@ -30,7 +29,7 @@ public class Value {
         props.put("name", this.name);
         Promise<WS.Response> response = dbService
             .createLabeledNodeWithProperties(label, props);
-        return response.map(new CreatedFunction(this));
+        return response.map(new CreatedFunction<Value>(this));
     }
 
     public Promise<Boolean> exists() {
@@ -44,29 +43,6 @@ public class Value {
     public static Promise<List<Value>> all() {
         Promise<WS.Response> response = dbService.getNodesByLabel(label);
         return response.map(new AllFunction());
-    }
-
-    private class CreatedFunction implements Function<WS.Response, Value> {
-        private Value value;
-        public CreatedFunction(Value value) {
-            this.value = value;
-        }
-        public Value apply(WS.Response response) {
-            if (response.getStatus() == Status.OK) {
-                return this.value;
-            }
-            return null;
-        }
-    }
-
-    private class ExistsFunction implements Function<WS.Response, Boolean> {
-        public Boolean apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() > 0) {
-                return true;
-            }
-            return false;
-        }
     }
 
     private static class AllFunction implements

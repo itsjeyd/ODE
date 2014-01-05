@@ -15,7 +15,7 @@ import play.mvc.Http.Status;
 import neo4play.Neo4jService;
 
 
-public class Feature {
+public class Feature extends Model {
     private static Neo4jService dbService = new Neo4jService();
     private static String label = "Feature";
 
@@ -47,7 +47,7 @@ public class Feature {
         props.put("description", this.description);
         Promise<WS.Response> response = dbService
             .createLabeledNodeWithProperties(label, props);
-        return response.map(new CreatedFunction(this));
+        return response.map(new CreatedFunction<Feature>(this));
     }
 
     public Promise<Boolean> exists() {
@@ -63,7 +63,7 @@ public class Feature {
         props.put("name", this.name);
         Promise<WS.Response> response = dbService
             .deleteLabeledNodeWithProperties(label, props);
-        return response.map(new DeleteFunction(this));
+        return response.map(new DeletedFunction<Feature>(this));
     }
 
     public static Promise<List<Feature>> all() {
@@ -137,43 +137,6 @@ public class Feature {
                     return values;
         }});
         return values;
-    }
-
-    private class CreatedFunction implements Function<WS.Response, Feature> {
-        private Feature feature;
-        public CreatedFunction(Feature feature) {
-            this.feature = feature;
-        }
-        public Feature apply(WS.Response response) {
-            if (response.getStatus() == Status.OK) {
-                return this.feature;
-            }
-            return null;
-        }
-    }
-
-    private class ExistsFunction implements Function<WS.Response, Boolean> {
-        public Boolean apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() > 0) {
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private class DeleteFunction implements Function<WS.Response, Feature> {
-        private Feature feature;
-        public DeleteFunction(Feature feature) {
-            this.feature = feature;
-        }
-        public Feature apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() == 0) {
-                return null;
-            }
-            return this.feature;
-        }
     }
 
     private static class AllFunction implements

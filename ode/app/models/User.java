@@ -7,12 +7,11 @@ import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.mvc.Http.Status;
 
 import neo4play.Neo4jService;
 
 
-public class User {
+public class User extends Model {
     private Neo4jService dbService = new Neo4jService();
     private String label = "User";
 
@@ -30,7 +29,7 @@ public class User {
         props.put("password", this.password);
         Promise<WS.Response> response = dbService
             .createLabeledNodeWithProperties(this.label, props);
-        return response.map(new CreatedFunction(this));
+        return response.map(new CreatedFunction<User>(this));
     }
 
     public Promise<Boolean> exists() {
@@ -55,30 +54,7 @@ public class User {
         props.put("username", this.username);
         Promise<WS.Response> response = dbService
             .deleteLabeledNodeWithProperties(this.label, props);
-        return response.map(new DeleteFunction(this));
-    }
-
-    private class CreatedFunction implements Function<WS.Response, User> {
-        private User user;
-        public CreatedFunction(User user) {
-            this.user = user;
-        }
-        public User apply(WS.Response response) {
-            if (response.getStatus() == Status.OK) {
-                return this.user;
-            }
-            return null;
-        }
-    }
-
-    private class ExistsFunction implements Function<WS.Response, Boolean> {
-        public Boolean apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() > 0) {
-                return true;
-            }
-            return false;
-        }
+        return response.map(new DeletedFunction<User>(this));
     }
 
     private class GetFunction implements Function<WS.Response, User> {
@@ -95,17 +71,4 @@ public class User {
         }
     }
 
-    private class DeleteFunction implements Function<WS.Response, User> {
-        private User user;
-        public DeleteFunction(User user) {
-            this.user = user;
-        }
-        public User apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() == 0) {
-                return null;
-            }
-            return this.user;
-        }
-    }
 }

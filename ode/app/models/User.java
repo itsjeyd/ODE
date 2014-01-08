@@ -13,16 +13,22 @@ import neo4play.Neo4jService;
 
 public class User extends Model {
     private Neo4jService dbService = new Neo4jService();
-    private String label = "User";
 
     public String username;
     public String password;
 
+    private User() {
+        this.label = "User";
+        this.jsonProperties = Json.newObject();
+    }
+
     public User(String username, String password) {
+        this();
         this.username = username;
         this.password = password;
     }
 
+    @Override
     public Promise<User> create() {
         ObjectNode props = Json.newObject();
         props.put("username", this.username);
@@ -32,6 +38,7 @@ public class User extends Model {
         return response.map(new CreatedFunction<User>(this));
     }
 
+    @Override
     public Promise<Boolean> exists() {
         ObjectNode props = Json.newObject();
         props.put("username", this.username);

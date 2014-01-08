@@ -16,14 +16,21 @@ import neo4play.Neo4jService;
 
 public class Value extends Model {
     private static Neo4jService dbService = new Neo4jService();
-    protected static String label = "Value";
 
     public String name;
 
-    public Value(String name) {
-        this.name = name;
+    private Value() {
+        this.label = "Value";
+        this.jsonProperties = Json.newObject();
     }
 
+    public Value(String name) {
+        this();
+        this.name = name;
+        this.jsonProperties.put("name", name);
+    }
+
+    @Override
     public Promise<Value> create() {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
@@ -32,6 +39,7 @@ public class Value extends Model {
         return response.map(new CreatedFunction<Value>(this));
     }
 
+    @Override
     public Promise<Boolean> exists() {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
@@ -41,7 +49,7 @@ public class Value extends Model {
     }
 
     public static Promise<List<Value>> all() {
-        Promise<WS.Response> response = dbService.getNodesByLabel(label);
+        Promise<WS.Response> response = dbService.getNodesByLabel("Value");
         return response.map(new AllFunction());
     }
 

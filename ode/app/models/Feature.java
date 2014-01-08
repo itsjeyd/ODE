@@ -17,7 +17,6 @@ import neo4play.Neo4jService;
 
 public class Feature extends Model {
     private static Neo4jService dbService = new Neo4jService();
-    private static String label = "Feature";
 
     public String name;
     public String featureType;
@@ -25,21 +24,29 @@ public class Feature extends Model {
     public List<String> values; // "Values" can be other features or
                                 // atomic values
 
+    private Feature() {
+        this.label = "Feature";
+        this.jsonProperties = Json.newObject();
+    }
+
     public Feature(String name) {
+        this();
         this.name = name;
+        this.jsonProperties.put("name", name);
     }
 
     public Feature(String name, String type) {
-        this.name = name;
+        this(name);
         this.featureType = type;
     }
 
     public Feature(String name, String type, String description) {
-        this.name = name;
+        this(name);
         this.featureType = type;
         this.description = description;
     }
 
+    @Override
     public Promise<Feature> create() {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
@@ -50,6 +57,7 @@ public class Feature extends Model {
         return response.map(new CreatedFunction<Feature>(this));
     }
 
+    @Override
     public Promise<Boolean> exists() {
         ObjectNode props = Json.newObject();
         props.put("name", this.name);
@@ -67,7 +75,7 @@ public class Feature extends Model {
     }
 
     public static Promise<List<Feature>> all() {
-        Promise<WS.Response> response = dbService.getNodesByLabel(label);
+        Promise<WS.Response> response = dbService.getNodesByLabel("Feature");
         return response.map(new AllFunction());
     }
 
@@ -95,27 +103,11 @@ public class Feature extends Model {
         return response.map(new UpdateFunction(this));
     }
 
-    public Promise<Feature> connectTo(Feature otherFeature,
-                                      String relationshipType) {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        ObjectNode otherProps = Json.newObject();
-        otherProps.put("name", otherFeature.name);
-        Promise<WS.Response> response = dbService
-            .createRelationship(
-                label, props, label, otherProps, relationshipType);
-        return response.map(new RelationshipCreatedFunction(this));
-    }
-
-    public Promise<Feature> connectTo(Value value, String relationshipType) {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        ObjectNode valueProps = Json.newObject();
-        valueProps.put("name", value.name);
-        Promise<WS.Response> response = dbService
-            .createRelationship(
-                label, props, Value.label, valueProps, relationshipType);
-        return response.map(new RelationshipCreatedFunction(this));
+    public Promise<Relationship> connectTo(
+        Model target, String relationshipType) {
+        Relationship allowsRelationship = new Relationship(
+            "ALLOWS", this, target);
+        return allowsRelationship.create();
     }
 
     public Promise<List<String>> getValues() {
@@ -168,20 +160,6 @@ public class Feature extends Model {
         }
         public Feature apply(WS.Response response) {
             if (response.getStatus() == Status.NO_CONTENT) {
-                return this.feature;
-            }
-            return null;
-        }
-    }
-
-    private class RelationshipCreatedFunction
-        implements Function<WS.Response, Feature> {
-        private Feature feature;
-        public RelationshipCreatedFunction(Feature feature) {
-            this.feature = feature;
-        }
-        public Feature apply(WS.Response response) {
-            if (response.getStatus() == Status.CREATED) {
                 return this.feature;
             }
             return null;

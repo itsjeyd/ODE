@@ -14,6 +14,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
+import models.Relationship;
 import utils.StringUtils;
 
 
@@ -46,6 +47,17 @@ public class Neo4jService {
         for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
              fields.hasNext(); ) {
             constraints.add("n." + fields.next().toString());
+        }
+        return StringUtils.join(constraints, " AND ");
+    }
+
+    protected String buildConjunctiveConstraints(
+        String varName, JsonNode props) {
+        List<String> constraints = new ArrayList<String>();
+        for (Iterator<Map.Entry<String, JsonNode>> fields = props.fields();
+             fields.hasNext(); ) {
+            constraints.add(
+                String.format("%s.%s", varName, fields.next().toString()));
         }
         return StringUtils.join(constraints, " AND ");
     }
@@ -157,6 +169,21 @@ public class Neo4jService {
         Promise<WS.Response> nodeResponse = this
             .getLabeledNodeWithProperties(label, props);
         return nodeResponse.map(new NodeURLFunction());
+    }
+
+    public Promise<WS.Response> getRelationship(Relationship relationship) {
+        String startNodeProps = buildConjunctiveConstraints(
+            "s", relationship.startNode.jsonProperties);
+        String endNodeProps = buildConjunctiveConstraints(
+            "e", relationship.endNode.jsonProperties);
+        String query = String.format(
+            "MATCH (s:%s)-[r:%s]-(e:%s) WHERE %s AND %s RETURN r",
+            relationship.startNode.label,
+            relationship.type,
+            relationship.endNode.label,
+            startNodeProps,
+            endNodeProps);
+        return this.postCypherQuery(query);
     }
 
     private class NodeURLFunction implements Function<WS.Response, String> {

@@ -15,11 +15,13 @@ import play.libs.F.Tuple;
 import play.data.validation.Constraints.Required;
 
 import models.Feature;
+import models.Model;
+import models.Relationship;
 import models.Value;
+
 import views.html.features;
 
 import static play.data.Form.form;
-
 
 
 public class Features extends Controller {
@@ -78,22 +80,30 @@ public class Features extends Controller {
             form(UpdateFeatureForm.class).bindFromRequest();
         final Feature feature = new Feature(name, featureForm.get().type);
         Promise<Feature> updatedFeature = feature.update();
-        return updatedFeature.map(new Function<Feature, Result>() {
-            public Result apply(Feature feature) {
+        Promise<Relationship> allowsRelationship = updatedFeature.flatMap(
+            new Function<Feature, Promise<Relationship>>() {
+            public Promise<Relationship> apply(Feature feature) {
+                Model target = null;
+                Promise<Relationship> allowsRelationship = null;
                 if (feature.featureType.equals("complex")) {
-                    Feature permittedFeature = new Feature(
-                        featureForm.get().feature);
-                    feature.connectTo(permittedFeature, "ALLOWS");
+                    target = new Feature(featureForm.get().feature);
                 } else if (feature.featureType.equals("atomic")) {
-                    String valueName = featureForm.get().value;
-                    Value permittedValue = new Value(valueName);
-                    if (!permittedValue.exists().get()) {
-                        permittedValue.create();
+                    target = new Value(featureForm.get().value);
+                    if (!target.exists().get()) {
+                        target.create();
                     }
-                    feature.connectTo(permittedValue, "ALLOWS");
+                }
+                allowsRelationship = feature.connectTo(target, "ALLOWS");
+                return allowsRelationship;
+            }});
+        return allowsRelationship.map(new Function<Relationship, Result>() {
+            public Result apply(Relationship relationship) {
+                if (relationship == null) {
+                    flash("error", "Operation failed.");
                 }
                 return redirect(routes.Features.list());
-            }});
+            }
+        });
     }
 
     public static class NewFeatureForm {

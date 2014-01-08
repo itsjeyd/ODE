@@ -1,13 +1,25 @@
 package models;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.WS;
 import play.libs.F.Function;
+import play.libs.F.Promise;
 import play.mvc.Http.Status;
 
+import neo4play.Neo4jService;
 
-public class Model {
+
+public abstract class Model {
+    private Neo4jService dbService;
+
+    public String label;
+
+    public ObjectNode jsonProperties;
+
+    public abstract Promise<? extends Model> create();
+    public abstract Promise<Boolean> exists();
 
     protected class CreatedFunction<A> implements Function<WS.Response, A> {
         private A a;

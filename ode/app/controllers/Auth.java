@@ -15,7 +15,6 @@ import views.html.login;
 import static play.data.Form.form;
 
 
-
 public class Auth extends Controller {
 
     public static Promise<Result> register() {
@@ -32,25 +31,32 @@ public class Auth extends Controller {
         }
         final User user = new User(registrationForm.get().email,
                                    registrationForm.get().password);
-        if (user.exists().get()) {
-            return Promise.promise(new Function0<Result>() {
-                public Result apply() {
-                    flash("error", "User already exists.");
-                    return redirect(routes.Application.home());
-                }});
-        } else {
-            Promise<User> newUser = user.create();
-            return newUser.map(new Function<User, Result>() {
-                public Result apply(User user) {
-                    if (user == null) {
-                        flash("error", "Registration failed.");
+        return user.exists().flatMap(
+            new Function<Boolean, Promise<Result>>() {
+                public Promise<Result> apply(Boolean exists) {
+                    if (exists) {
+                        return Promise.promise(new Function0<Result>() {
+                            public Result apply() {
+                                flash("error", "User already exists.");
+                                return redirect(routes.Application.home());
+                            }
+                        });
                     } else {
-                        flash("success", "Registration successful.");
+                        Promise<User> newUser = user.create();
+                        return newUser.map(new Function<User, Result>() {
+                            public Result apply(User user) {
+                                if (user == null) {
+                                    flash("error", "Registration failed.");
+                                } else {
+                                    flash("success",
+                                          "Registration successful.");
+                                }
+                                return redirect(routes.Application.home());
+                            }
+                        });
                     }
-                    return redirect(routes.Application.home());
                 }
             });
-        }
     }
 
     public static Promise<Result> authenticate() {

@@ -6,6 +6,9 @@
 
       <div class="col-md-3">
         <h3>Features</h3>
+        <p>
+          <input id="feature-filter" type="text" placeholder="Filter ..." />
+        </p>
         @for(feature <- features) {
           <p>
             <a href="#@feature.name" class="feature-item">@feature.name</a>
@@ -100,6 +103,9 @@
       <!-- Block for displaying available values: ... -->
       <div id="value-list" class="col-md-3">
         <h3>Values</h3>
+        <p>
+          <input id="value-filter" type="text" placeholder="Filter ..." />
+        </p>
         @for(value <- values) {
           <p>@value.name</p>
         }

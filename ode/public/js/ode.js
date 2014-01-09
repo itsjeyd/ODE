@@ -15,4 +15,12 @@ $(document).ready(function() {
     $("#new-feature-button").show();
   });
 
+  $("#feature-filter").on("keyup", function(event) {
+    // ...
+  });
+
+  $("#value-filter").on("keyup", function(event) {
+    // ...
+  });
+
 });

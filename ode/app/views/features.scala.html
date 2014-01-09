@@ -5,19 +5,25 @@
     <div class="row">
 
       <div class="col-md-3">
+
         <h3>Features</h3>
         <p>
           <input id="feature-filter" type="text" placeholder="Filter ..." />
         </p>
+
         @for(feature <- features) {
+
           <p>
             <a href="#@feature.name" class="feature-item">@feature.name</a>
           </p>
+
           <!-- Edit block for individual feature: -->
           <div id="@feature.name" class="edit-feature">
+
             <h3>@feature.name</h3>
             <p>@feature.description</p>
-            <form method="POST" action="/features/@feature.name">
+
+            <form method="POST" action="/features/@feature.name/type">
               @if(feature.featureType == "complex") {
                 <p>
                   <input type="radio" name="type" value="complex"
@@ -29,12 +35,14 @@
                          id="type-atomic"/>
                   <label for="type-atomic">atomic</label>
                 </p>
+                <p>
+                  <button type="submit">Update</button>
+                </p>
 
                 <h4>Features permitted in substructure:</h4>
                 @for(value <- feature.values) {
                   <p>@value</p>
                 }
-                <input type="text" name="feature" value="" />
               } else {
                 <p>
                   <input type="radio" name="type" value="complex"
@@ -46,24 +54,34 @@
                          id="type-atomic" checked="checked" />
                   <label for="type-atomic">atomic</label>
                 </p>
+                <p>
+                  <button type="submit">Update</button>
+                </p>
 
                 <h4>Permitted values:</h4>
                 @for(value <- feature.values) {
                   <p>@value</p>
                 }
-                <input type="text" name="value" value="" />
               }
+            </form>
+
+            <form method="POST" action="/features/@feature.name/targets">
+                <input type="hidden" name="type" value="@feature.featureType" />
+                <input type="text" name="target" value="" />
               <p>
-                <button type="submit">Update</button>
+                <button type="submit">Add</button>
               </p>
             </form>
+
           </div>
         }
+
         <p>
           <button id="new-feature-button" class="btn btn-info">
             New Feature
           </button>
         </p>
+
       </div>
 
       <!-- Block to hold functionality for adding or updating feature: -->

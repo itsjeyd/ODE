@@ -75,31 +75,47 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> updateFeature(String name) {
-        final Form<UpdateFeatureForm> featureForm =
-            form(UpdateFeatureForm.class).bindFromRequest();
-        final Feature feature = new Feature(name, featureForm.get().type);
-        Promise<Feature> updatedFeature = feature.update();
-        Promise<Relationship> allowsRelationship = updatedFeature.flatMap(
-            new Function<Feature, Promise<Relationship>>() {
-            public Promise<Relationship> apply(Feature feature) {
-                Model target = null;
-                Promise<Relationship> allowsRelationship = null;
-                if (feature.featureType.equals("complex")) {
-                    target = new Feature(featureForm.get().feature);
-                } else if (feature.featureType.equals("atomic")) {
-                    target = new Value(featureForm.get().value);
-                    if (!target.exists().get()) {
-                        target.create();
-                    }
+    public static Promise<Result> updateFeatureType(String featureName) {
+        Form<UpdateFeatureTypeForm> typeForm =
+            form(UpdateFeatureTypeForm.class).bindFromRequest();
+        Feature featureToUpdate = new Feature(
+            featureName, typeForm.get().type);
+        Promise<Feature> updatedFeature = featureToUpdate.update();
+        return updatedFeature.map(new Function<Feature, Result>() {
+            public Result apply(Feature updatedFeature) {
+                if (updatedFeature == null) {
+                    flash("error", "Feature type not updated.");
+                } else {
+                    flash("success", "Feature type successfully updated.");
                 }
-                allowsRelationship = feature.connectTo(target, "ALLOWS");
-                return allowsRelationship;
-            }});
+                return redirect(routes.Features.list());
+            }
+        });
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Promise<Result> addTargets(String featureName) {
+        Form<AddTargetForm> targetForm = form(AddTargetForm.class)
+            .bindFromRequest();
+        Feature featureToAddTargetsTo = new Feature(
+            featureName, targetForm.get().type);
+        Model target = null;
+        if (featureToAddTargetsTo.featureType.equals("complex")) {
+            target = new Feature(targetForm.get().target);
+        } else {
+            target = new Value(targetForm.get().target);
+            if (!target.exists().get()) {
+                target.create();
+            }
+        }
+        Promise<Relationship> allowsRelationship = featureToAddTargetsTo
+            .connectTo(target, "ALLOWS");
         return allowsRelationship.map(new Function<Relationship, Result>() {
             public Result apply(Relationship relationship) {
                 if (relationship == null) {
                     flash("error", "Operation failed.");
+                } else {
+                    flash("success", "Operation successfully completed.");
                 }
                 return redirect(routes.Features.list());
             }
@@ -114,10 +130,12 @@ public class Features extends Controller {
         public String description;
     }
 
-    public static class UpdateFeatureForm {
+    public static class UpdateFeatureTypeForm {
         public String type;
-        public String feature;
-        public String value;
     }
 
+    public static class AddTargetForm {
+        public String type;
+        public String target;
+    }
 }

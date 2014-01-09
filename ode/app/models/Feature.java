@@ -131,6 +131,24 @@ public class Feature extends Model {
         return values;
     }
 
+    public Promise<Feature> setType(String newType) {
+        ObjectNode oldProps = this.jsonProperties;
+        ObjectNode newProps = Json.newObject();
+        newProps.put("name", this.name);
+        newProps.put("type", newType);
+        newProps.put("description", this.description);
+        Promise<WS.Response> response = dbService.updateNodeProperties(
+            label, oldProps, newProps);
+        this.jsonProperties = newProps;
+        return response.map(new UpdateFunction(this));
+    }
+
+    public Promise<Feature> get() {
+        Promise<WS.Response> response = dbService
+            .getLabeledNodeWithProperties(this.label, this.jsonProperties);
+        return response.map(new GetFunction(this));
+    }
+
     private static class AllFunction implements
                                          Function<WS.Response, List<Feature>>
     {
@@ -171,6 +189,25 @@ public class Feature extends Model {
         public List<String> apply(WS.Response response) {
             JsonNode json = response.asJson();
             return json.findValuesAsText("end");
+        }
+    }
+
+    private class GetFunction implements Function<WS.Response, Feature> {
+        private Feature feature;
+        public GetFunction(Feature feature) {
+            this.feature = feature;
+        }
+        public Feature apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            System.out.println("Response (JSON): " + json.toString());
+
+            if (json.get("data").size() == 1) {
+                this.feature.featureType = json.findValue("type").asText();
+                this.feature.description = json.findValue("description")
+                    .asText();
+                return this.feature;
+            }
+            return null;
         }
     }
 

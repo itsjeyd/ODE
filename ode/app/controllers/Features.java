@@ -78,19 +78,27 @@ public class Features extends Controller {
     public static Promise<Result> updateFeatureType(String featureName) {
         Form<UpdateFeatureTypeForm> typeForm =
             form(UpdateFeatureTypeForm.class).bindFromRequest();
-        Feature featureToUpdate = new Feature(
-            featureName, typeForm.get().type);
-        Promise<Feature> updatedFeature = featureToUpdate.update();
-        return updatedFeature.map(new Function<Feature, Result>() {
-            public Result apply(Feature updatedFeature) {
-                if (updatedFeature == null) {
-                    flash("error", "Feature type not updated.");
-                } else {
-                    flash("success", "Feature type successfully updated.");
+        Feature f = new Feature(featureName).get().get();
+        String newType = typeForm.get().type;
+        if (f.featureType.equals(newType)) {
+            return Promise.promise(new Function0<Result>() {
+                public Result apply() {
+                    return redirect(routes.Features.list());
+                }});
+        } else {
+            Promise<Feature> updatedFeature = f.setType(newType);
+            return updatedFeature.map(new Function<Feature, Result>() {
+                public Result apply(Feature updatedFeature) {
+                    if (updatedFeature == null) {
+                        flash("error", "Feature type not updated.");
+                    } else {
+                        flash(
+                            "success", "Feature type successfully updated.");
+                    }
+                    return redirect(routes.Features.list());
                 }
-                return redirect(routes.Features.list());
-            }
-        });
+            });
+        }
     }
 
     @Security.Authenticated(Secured.class)

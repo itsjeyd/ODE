@@ -131,22 +131,67 @@ public class Feature extends Model {
         return values;
     }
 
-    public Promise<Feature> setType(String newType) {
-        ObjectNode oldProps = this.jsonProperties;
-        ObjectNode newProps = Json.newObject();
-        newProps.put("name", this.name);
-        newProps.put("type", newType);
-        newProps.put("description", this.description);
-        Promise<WS.Response> response = dbService.updateNodeProperties(
-            label, oldProps, newProps);
-        this.jsonProperties = newProps;
-        return response.map(new UpdateFunction(this));
+    public Promise<Feature> setType(final String newType) {
+        Promise<Feature> featureWithoutTargets = this.deleteTargets();
+        return featureWithoutTargets.flatMap(
+            new Function<Feature, Promise<Feature>>() {
+                public Promise<Feature> apply(Feature featureWithoutTargets) {
+                    if (featureWithoutTargets == null) {
+                        return Promise.pure(null);
+                    }
+                    ObjectNode oldProps = featureWithoutTargets
+                        .jsonProperties;
+                    ObjectNode newProps = Json.newObject();
+                    newProps.put("name", featureWithoutTargets.name);
+                    newProps.put("type", newType);
+                    newProps.put(
+                        "description", featureWithoutTargets.description);
+                    Promise<WS.Response> response = dbService
+                        .updateNodeProperties(label, oldProps, newProps);
+                    featureWithoutTargets.jsonProperties = newProps;
+                    return response.map(
+                        new UpdateFunction(featureWithoutTargets));
+                }
+            });
     }
 
     public Promise<Feature> get() {
         Promise<WS.Response> response = dbService
             .getLabeledNodeWithProperties(this.label, this.jsonProperties);
         return response.map(new GetFunction(this));
+    }
+
+    public Promise<Feature> deleteTargets() {
+        Promise<WS.Response> response = dbService
+            .getOutgoingRelationshipsByType(
+                this.label, this.jsonProperties, "ALLOWS");
+        Promise<List<String>> relationshipURLs = response.map(
+            new TargetURLsFunction());
+        Promise<List<Boolean>> deletionsSuccessful = relationshipURLs
+            .flatMap(new Function<List<String>, Promise<List<Boolean>>>() {
+                public Promise<List<Boolean>> apply(
+                    List<String> relationshipURLs) {
+                    List<Promise<? extends Boolean>> deletionsSuccessful =
+                        new ArrayList<Promise<? extends Boolean>>();
+                    for (String url: relationshipURLs) {
+                        Promise<WS.Response> response = dbService
+                            .deleteRelationship(url);
+                        Promise<Boolean> deletionSuccessful = response.map(
+                            new Function<WS.Response, Boolean>() {
+                                public Boolean apply(WS.Response response) {
+                                    if (response.getStatus() == Status
+                                        .NO_CONTENT) {
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            });
+                        deletionsSuccessful.add(deletionSuccessful);
+                    }
+                    return Promise.sequence(deletionsSuccessful);
+                }
+            });
+        return deletionsSuccessful.map(new TargetsDeletedFunction(this));
     }
 
     private static class AllFunction implements
@@ -199,8 +244,6 @@ public class Feature extends Model {
         }
         public Feature apply(WS.Response response) {
             JsonNode json = response.asJson();
-            System.out.println("Response (JSON): " + json.toString());
-
             if (json.get("data").size() == 1) {
                 this.feature.featureType = json.findValue("type").asText();
                 this.feature.description = json.findValue("description")
@@ -208,6 +251,30 @@ public class Feature extends Model {
                 return this.feature;
             }
             return null;
+        }
+    }
+
+    private class TargetURLsFunction
+        implements Function<WS.Response, List<String>> {
+        public List<String> apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            return json.findValuesAsText("self");
+        }
+    }
+
+    private class TargetsDeletedFunction
+        implements Function<List<Boolean>, Feature> {
+        private Feature feature;
+        public TargetsDeletedFunction(Feature feature) {
+            this.feature = feature;
+        }
+        public Feature apply(List<Boolean> deletionsSuccessful) {
+            for (Boolean deletionSuccessful: deletionsSuccessful) {
+                if (!deletionSuccessful) {
+                    return null;
+                }
+            }
+            return this.feature;
         }
     }
 

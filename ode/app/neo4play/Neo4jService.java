@@ -89,6 +89,10 @@ public class Neo4jService {
             post(content);
     }
 
+    public Promise<WS.Response> delete(String url) {
+        return WS.url(url).delete();
+    }
+
     public Promise<WS.Response> getLabeledNodeWithProperties(
         String label, JsonNode props) {
         String query = this.buildMatchQuery(label, props) + " RETURN n";
@@ -184,6 +188,10 @@ public class Neo4jService {
             startNodeProps,
             endNodeProps);
         return this.postCypherQuery(query);
+    }
+
+    public Promise<WS.Response> deleteRelationship(String relationshipURL) {
+        return this.delete(relationshipURL);
     }
 
     private class NodeURLFunction implements Function<WS.Response, String> {

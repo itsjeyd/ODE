@@ -14,7 +14,11 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
+import constants.RelationshipType;
+import models.LabeledNodeWithProperties;
+import models.AllowsRelationship;
 import models.Relationship;
+import models.TypedRelationship;
 import utils.StringUtils;
 
 
@@ -125,14 +129,13 @@ public class Neo4jService {
             }});
     }
 
-    public Promise<WS.Response> createRelationship(
-        String startNodeLabel, JsonNode startNodeProps,
-        String endNodeLabel, JsonNode endNodeProps,
-        final String relationshipType) {
-        Promise<String> startNodeURL = this.getNodeURL(startNodeLabel,
-                                                       startNodeProps);
-        Promise<String> endNodeURL = this.getNodeURL(endNodeLabel,
-                                                     endNodeProps);
+    public Promise<WS.Response> createTypedRelationship(
+        LabeledNodeWithProperties startNode,
+        LabeledNodeWithProperties endNode, final RelationshipType type) {
+        Promise<String> startNodeURL = this.getNodeURL(
+            startNode.label.toString(), startNode.jsonProperties);
+        Promise<String> endNodeURL = this.getNodeURL(
+            endNode.label.toString(), endNode.jsonProperties);
         Promise<Tuple<String, String>> urls = startNodeURL.zip(
             endNodeURL);
         return urls.flatMap(
@@ -142,7 +145,7 @@ public class Neo4jService {
                     String fullURL = urls._1 + "/relationships";
                     ObjectNode content = Json.newObject();
                     content.put("to", urls._2);
-                    content.put("type", relationshipType);
+                    content.put("type", type.name());
                     return WS.url(fullURL).post(content);
                 }
             });
@@ -162,11 +165,17 @@ public class Neo4jService {
         }});
     }
 
-    public Promise<String> getNodeProperty(
-        String nodeURL, String propertyName) {
-        String fullURL = nodeURL + "/properties";
-        Promise<WS.Response> properties = WS.url(fullURL).get();
-        return properties.map(new PropertyFunction(propertyName));
+    public Promise<WS.Response> getOutgoingRelationshipsByType(
+        LabeledNodeWithProperties startNode, final RelationshipType type) {
+        Promise<String> startNodeURL = this.getNodeURL(
+            startNode.label.toString(), startNode.jsonProperties);
+        return startNodeURL.flatMap(
+            new Function<String, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(String nodeURL) {
+                    String fullURL = nodeURL + "/relationships/out/"
+                        + type.name();
+                    return WS.url(fullURL).get();
+        }});
     }
 
     public Promise<String> getNodeURL(String label, JsonNode props) {
@@ -175,7 +184,8 @@ public class Neo4jService {
         return nodeResponse.map(new NodeURLFunction());
     }
 
-    public Promise<WS.Response> getRelationship(Relationship relationship) {
+    public Promise<WS.Response> getTypedRelationship(
+        AllowsRelationship relationship) {
         String startNodeProps = buildConjunctiveConstraints(
             "s", relationship.startNode.jsonProperties);
         String endNodeProps = buildConjunctiveConstraints(
@@ -190,28 +200,53 @@ public class Neo4jService {
         return this.postCypherQuery(query);
     }
 
-    public Promise<WS.Response> deleteRelationship(String relationshipURL) {
-        return this.delete(relationshipURL);
+    public Promise<WS.Response> deleteRelationship(
+        Relationship relationship) {
+        String fullURL = this.extendRootURL(
+            "/relationship/" + relationship.ID);
+        return this.delete(fullURL);
+    }
+
+    public Promise<List<WS.Response>> getRelationshipTargets(
+        String nodeLabel, JsonNode nodeProps, String relationshipType) {
+        Promise<WS.Response> response = this
+            .getOutgoingRelationshipsByType(
+                nodeLabel, nodeProps, relationshipType);
+        Promise<List<String>> targetURLs = response.map(
+            new TargetURLsFunction());
+        return targetURLs.flatMap(new NodesByURLFunction());
+    }
+
+    private class TargetURLsFunction implements
+        Function<WS.Response, List<String>> {
+        public List<String> apply(WS.Response response) {
+            JsonNode json = response.asJson();
+            return json.findValuesAsText("end");
+        }
+    }
+
+    private class NodesByURLFunction
+        implements Function<List<String>, Promise<List<WS.Response>>> {
+        public Promise<List<WS.Response>> apply(List<String> nodeURLs) {
+            List<Promise<? extends WS.Response>> responses =
+                new ArrayList<Promise<? extends WS.Response>>();
+            for (String nodeURL: nodeURLs) {
+                Promise<WS.Response> response = Neo4jService.getNodeByURL(
+                    nodeURL);
+                responses.add(response);
+            }
+            return Promise.sequence(responses);
+        }
+    }
+
+    public static Promise<WS.Response> getNodeByURL(String nodeURL) {
+        return WS.url(nodeURL).get();
     }
 
     private class NodeURLFunction implements Function<WS.Response, String> {
         public String apply(WS.Response response) {
             JsonNode json = response.asJson();
             return json.findValue("self").asText();
-        }
-    }
-
-    private class PropertyFunction implements Function<WS.Response, String> {
-        private String propertyName;
-        public PropertyFunction(String propertyName) {
-            this.propertyName = propertyName;
-        }
-        public String apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get(this.propertyName) != null) {
-                return json.get(this.propertyName).asText();
-            }
-            return "";
         }
     }
 

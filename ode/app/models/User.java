@@ -1,24 +1,25 @@
 package models;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
+import play.libs.F.None;
+import play.libs.F.Option;
 import play.libs.F.Promise;
+import play.libs.F.Some;
+import play.libs.F.Tuple;
 
+import constants.NodeType;
 import neo4play.Neo4jService;
+import managers.functions.NodeCreatedFunction;
 
 
-public class User extends Model {
-    private Neo4jService dbService = new Neo4jService();
-
+public class User extends LabeledNodeWithProperties {
     public String username;
     public String password;
 
     private User() {
-        this.label = "User";
+        this.label = NodeType.USER;
         this.jsonProperties = Json.newObject();
     }
 
@@ -26,55 +27,73 @@ public class User extends Model {
         this();
         this.username = username;
         this.password = password;
+        this.jsonProperties.put("username", username);
     }
 
-    @Override
-    public Promise<User> create() {
-        ObjectNode props = Json.newObject();
-        props.put("username", this.username);
-        props.put("password", this.password);
-        Promise<WS.Response> response = dbService
-            .createLabeledNodeWithProperties(this.label, props);
-        return response.map(new CreatedFunction<User>(this));
+    public Promise<Tuple<Option<User>, Boolean>> getOrCreate() {
+        return this.exists().flatMap(new GetOrCreateFunction(this));
     }
 
-    @Override
-    public Promise<Boolean> exists() {
-        ObjectNode props = Json.newObject();
-        props.put("username", this.username);
-        Promise<WS.Response> response = dbService
-            .getLabeledNodeWithProperties(this.label, props);
-        return response.map(new ExistsFunction());
+    public Promise<Option<User>> get() {
+        return this.exists().map(new GetFunction(this));
     }
 
-    public Promise<User> get() {
-        ObjectNode props = Json.newObject();
-        props.put("username", this.username);
-        props.put("password", this.password);
-        Promise<WS.Response> response = dbService
-            .getLabeledNodeWithProperties(this.label, props);
-        return response.map(new GetFunction(this));
+
+    private class GetOrCreateFunction
+        implements Function<Boolean, Promise<Tuple<Option<User>, Boolean>>> {
+        private User user;
+        public GetOrCreateFunction(User user) {
+            this.user = user;
+        }
+        public Promise<Tuple<Option<User>, Boolean>> apply(Boolean exists) {
+            if (exists) {
+                return Promise.pure(
+                    new Tuple<Option<User>, Boolean>(
+                        new Some<User>(this.user), false));
+            }
+            Promise<Boolean> created = User.Manager.create(this.user);
+            return created.map(new CreatedFunction(this.user));
+        }
     }
 
-    public Promise<User> delete() {
-        ObjectNode props = Json.newObject();
-        props.put("username", this.username);
-        Promise<WS.Response> response = dbService
-            .deleteLabeledNodeWithProperties(this.label, props);
-        return response.map(new DeletedFunction<User>(this));
+    private class CreatedFunction
+        implements Function<Boolean, Tuple<Option<User>, Boolean>> {
+        private User user;
+        public CreatedFunction(User user) {
+            this.user = user;
+        }
+        public Tuple<Option<User>, Boolean> apply(Boolean created) {
+            if (created) {
+                return new Tuple<Option<User>, Boolean>(
+                    new Some<User>(this.user), true);
+            }
+            return new Tuple<Option<User>, Boolean>(
+                new None<User>(), false);
+        }
     }
 
-    private class GetFunction implements Function<WS.Response, User> {
+    private class GetFunction implements Function<Boolean, Option<User>> {
         private User user;
         public GetFunction(User user) {
             this.user = user;
         }
-        public User apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() > 0) {
-                return this.user;
+        public Option<User> apply(Boolean exists) {
+            if (exists) {
+                return new Some<User>(this.user);
             }
-            return null;
+            return new None<User>();
+        }
+    }
+
+
+    public static class Manager {
+        private static Neo4jService dbService = new Neo4jService();
+        public static Promise<Boolean> create(User user) {
+            user.jsonProperties.put("password", user.password);
+            Promise<WS.Response> response = dbService
+                .createLabeledNodeWithProperties(
+                    user.label.toString(), user.jsonProperties);
+            return response.map(new NodeCreatedFunction());
         }
     }
 

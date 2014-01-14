@@ -34,12 +34,6 @@ public class Neo4jServiceTest {
             "CREATE (n:TestNode {name: 'node', " +
             "test: 'updateNodeProperties'})");
         postCypherQuery(
-            "CREATE (n:TestNode {name: 'startNode', " +
-            "test: 'createRelationship'})");
-        postCypherQuery(
-            "CREATE (n:TestNode {name: 'endNode', " +
-            "test: 'createRelationship'})");
-        postCypherQuery(
             "CREATE (s:TestNode {name: 'startNode', " +
             "test: 'getOutgoingRelationshipsByType'}), " +
             "(e:TestNode {name: 'endNode', " +
@@ -48,9 +42,6 @@ public class Neo4jServiceTest {
         postCypherQuery(
             "CREATE (n:TestNode {name: 'node', " +
             "test: 'getNodeURL'})");
-        postCypherQuery(
-            "CREATE (n:TestNode {name: 'node', " +
-            "test: 'getNodeProperty'})");
     }
 
     @AfterClass
@@ -198,22 +189,6 @@ public class Neo4jServiceTest {
     }
 
     @Test
-    public void createRelationshipTest() {
-        ObjectNode startNodeProps = Json.newObject();
-        startNodeProps.put("name", "startNode");
-        startNodeProps.put("test", "createRelationship");
-        ObjectNode endNodeProps = Json.newObject();
-        endNodeProps.put("name", "endNode");
-        endNodeProps.put("test", "createRelationship");
-        WS.Response relationshipResponse = this.neo4jService
-            .createRelationship(
-                "TestNode", startNodeProps, "TestNode", endNodeProps,
-                "GENERIC").get(ASYNC_TIMEOUT);
-        assertThat(relationshipResponse.getStatus())
-            .isEqualTo(Status.CREATED);
-    }
-
-    @Test
     public void getOutgoingRelationshipsByTypeTest() {
         ObjectNode startNodeProps = Json.newObject();
         startNodeProps.put("name", "startNode");
@@ -225,22 +200,6 @@ public class Neo4jServiceTest {
             .isEqualTo(Status.OK);
         assertThat(outgoingRelationshipsResponse.asJson().size())
             .isEqualTo(1);
-    }
-
-    @Test
-    public void getNodePropertyTest() {
-        WS.Response response = postCypherQuery(
-            "MATCH (n:TestNode) WHERE n.name = 'node' AND " +
-            "n.test = 'getNodeProperty' RETURN id(n)");
-        String nodeID = response.asJson().get("data").get(0).get(0)
-            .toString();
-        String nodeURL = "http://localhost:7474/db/data/node/" + nodeID;
-        String nodePropertyResponse = this.neo4jService
-            .getNodeProperty(nodeURL, "name").get(ASYNC_TIMEOUT);
-        assertThat(nodePropertyResponse).isEqualTo("node");
-        nodePropertyResponse = this.neo4jService
-            .getNodeProperty(nodeURL, "test").get(ASYNC_TIMEOUT);
-        assertThat(nodePropertyResponse).isEqualTo("getNodeProperty");
     }
 
     @Test

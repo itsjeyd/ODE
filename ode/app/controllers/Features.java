@@ -8,14 +8,19 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import play.libs.F.Function;
-import play.libs.F.Function0;
+import play.libs.F.Option;
 import play.libs.F.Promise;
+import play.libs.F.None;
 import play.libs.F.Tuple;
 
 import play.data.validation.Constraints.Required;
 
+import constants.FeatureType;
+import models.AtomicFeature;
+import models.ComplexFeature;
 import models.Feature;
-import models.Model;
+import models.AllowsRelationship;
+import models.OntologyNode;
 import models.Relationship;
 import models.Value;
 
@@ -28,20 +33,20 @@ public class Features extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> list() {
-        Promise<List<Feature>> featureList = Feature.all();
+        Promise<List<Feature>> globalFeatureList = Feature.all();
         Promise<List<Value>> globalValueList = Value.all();
-        Promise<Tuple<List<Feature>, List<Value>>> lists = featureList
+        Promise<Tuple<List<Feature>, List<Value>>> lists = globalFeatureList
             .zip(globalValueList);
         return lists.map(
             new Function<Tuple<List<Feature>, List<Value>>, Result>() {
                 public Result apply(
                     Tuple<List<Feature>, List<Value>> lists) {
-                    List<Feature> featureList = lists._1;
-                    for (Feature feat: featureList) {
-                        feat.values = feat.getValues().get();
+                    List<Feature> globalFeatureList = lists._1;
+                    for (Feature feature: globalFeatureList) {
+                        feature.setTargets();
                     }
                     List<Value> globalValueList = lists._2;
-                    return ok(features.render(featureList,
+                    return ok(features.render(globalFeatureList,
                                               form(NewFeatureForm.class),
                                               globalValueList));
             }});
@@ -51,84 +56,126 @@ public class Features extends Controller {
     public static Promise<Result> createFeature() {
         final Form<NewFeatureForm> featureForm =
             form(NewFeatureForm.class).bindFromRequest();
-        final Feature feature = new Feature(featureForm.get().name,
-                                            featureForm.get().type,
-                                            featureForm.get().description);
-        if (feature.exists().get()) {
-            return Promise.promise(new Function0<Result>() {
-                public Result apply() {
-                    flash("error", "Feature already exists.");
-                    return redirect(routes.Features.list());
-                }});
-        } else {
-            Promise<Feature> newFeature = feature.create();
-            return newFeature.map(new Function<Feature, Result>() {
-                public Result apply(Feature feature) {
-                    if (feature == null) {
-                        flash("error", "Feature creation failed.");
-                    } else {
+        // ...
+        String name = featureForm.get().name;
+        String description = featureForm.get().description;
+        String type = featureForm.get().type;
+        Promise<Tuple<Option<OntologyNode>, Boolean>> result = null;
+        if (type.equals(FeatureType.COMPLEX.toString())) {
+            result = new ComplexFeature(name, description).getOrCreate();
+        } else if (type.equals(FeatureType.ATOMIC.toString())) {
+            result = new AtomicFeature(name, description).getOrCreate();
+        }
+        return result.map(
+            new Function<Tuple<Option<OntologyNode>, Boolean>, Result>() {
+                public Result apply(
+                    Tuple<Option<OntologyNode>, Boolean> result) {
+                    Boolean created = result._2;
+                    if (created) {
                         flash("success", "Feature successfully created.");
+                    } else {
+                        Option<OntologyNode> feature = result._1;
+                        if (feature.isDefined()) {
+                            flash("error", "Feature already exists.");
+                        } else {
+                            flash("error", "Feature creation failed.");
+                        }
                     }
                     return redirect(routes.Features.list());
-                }});
-        }
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> updateFeatureType(String featureName) {
         Form<UpdateFeatureTypeForm> typeForm =
             form(UpdateFeatureTypeForm.class).bindFromRequest();
-        Feature f = new Feature(featureName).get().get();
         String newType = typeForm.get().type;
-        if (f.featureType.equals(newType)) {
-            return Promise.promise(new Function0<Result>() {
-                public Result apply() {
-                    return redirect(routes.Features.list());
-                }});
-        } else {
-            Promise<Feature> updatedFeature = f.setType(newType);
-            return updatedFeature.map(new Function<Feature, Result>() {
-                public Result apply(Feature updatedFeature) {
-                    if (updatedFeature == null) {
-                        flash("error", "Feature type not updated.");
-                    } else {
+        Promise<Tuple<Option<Feature>, Boolean>> result =
+            new Feature(featureName).updateType(newType);
+        return result.map(
+            new Function<Tuple<Option<Feature>, Boolean>, Result>() {
+                public Result apply(Tuple<Option<Feature>, Boolean> result) {
+                    Boolean updated = result._2;
+                    if (updated) {
                         flash(
                             "success", "Feature type successfully updated.");
+                    } else {
+                        Option<Feature> feature = result._1;
+                        if (feature.isDefined()) {
+                            flash(
+                                "error", "Same type. No updates performed.");
+                        } else {
+                            flash("error", "Feature type not updated.");
+                        }
                     }
                     return redirect(routes.Features.list());
                 }
             });
-        }
     }
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> addTargets(String featureName) {
         Form<AddTargetForm> targetForm = form(AddTargetForm.class)
             .bindFromRequest();
-        Feature featureToAddTargetsTo = new Feature(
-            featureName, targetForm.get().type);
-        Model target = null;
-        if (featureToAddTargetsTo.featureType.equals("complex")) {
-            target = new Feature(targetForm.get().target);
-        } else {
-            target = new Value(targetForm.get().target);
-            if (!target.exists().get()) {
-                target.create();
-            }
+        String featureType = targetForm.get().type;
+        String targetName = targetForm.get().target;
+        Promise<Tuple<Option<Relationship>, Boolean>> relationshipResult =
+            null;
+        if (featureType.equals(FeatureType.COMPLEX.toString())) {
+            Feature feature = new ComplexFeature(featureName);
+            Feature target = new Feature(targetName);
+            relationshipResult = new AllowsRelationship(feature, target)
+                .getOrCreate();
+        } else if (featureType.equals(FeatureType.ATOMIC.toString())) {
+            final Feature feature = new AtomicFeature(featureName);
+            Promise<Tuple<Option<OntologyNode>, Boolean>> valueResult =
+                new Value(targetName).getOrCreate();
+            relationshipResult = valueResult.flatMap(
+                new MaybeConnectToValueFunction(feature));
         }
-        Promise<Relationship> allowsRelationship = featureToAddTargetsTo
-            .connectTo(target, "ALLOWS");
-        return allowsRelationship.map(new Function<Relationship, Result>() {
-            public Result apply(Relationship relationship) {
-                if (relationship == null) {
-                    flash("error", "Operation failed.");
-                } else {
-                    flash("success", "Operation successfully completed.");
+        return relationshipResult.map(
+            new Function<Tuple<Option<Relationship>, Boolean>, Result>() {
+                public Result apply(
+                    Tuple<Option<Relationship>, Boolean> relationshipResult) {
+                    Boolean created = relationshipResult._2;
+                    if (created) {
+                        flash("success", "Operation successfully completed.");
+                    } else {
+                        Option<Relationship> relationship =
+                            relationshipResult._1;
+                        if (relationship.isDefined()) {
+                            flash("error", "Can't add target twice.");
+                        } else {
+                            flash("error", "Operation failed.");
+                        }
+                    }
+                    return redirect(routes.Features.list());
                 }
-                return redirect(routes.Features.list());
-            }
-        });
+            });
     }
+
+
+    private static class MaybeConnectToValueFunction
+        implements Function<Tuple<Option<OntologyNode>, Boolean>,
+                            Promise<Tuple<Option<Relationship>, Boolean>>> {
+        private Feature feature;
+        public MaybeConnectToValueFunction(Feature feature) {
+            this.feature = feature;
+        }
+        public Promise<Tuple<Option<Relationship>, Boolean>> apply(
+            Tuple<Option<OntologyNode>, Boolean> valueResult) {
+            Option<OntologyNode> value = valueResult._1;
+            if (value.isDefined()) {
+                return new AllowsRelationship(
+                    feature, value.get()).getOrCreate();
+            }
+            return Promise.pure(
+                new Tuple<Option<Relationship>, Boolean>(
+                    new None<Relationship>(), false));
+        }
+    }
+
 
     public static class NewFeatureForm {
         @Required

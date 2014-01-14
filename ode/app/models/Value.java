@@ -4,23 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
+import constants.NodeType;
 import neo4play.Neo4jService;
+import managers.functions.NodeCreatedFunction;
+import managers.functions.NodeListFunction;
 
 
-public class Value extends Model {
-    private static Neo4jService dbService = new Neo4jService();
-
-    public String name;
-
+public class Value extends OntologyNode {
     private Value() {
-        this.label = "Value";
+        this.label = NodeType.VALUE;
         this.jsonProperties = Json.newObject();
     }
 
@@ -30,40 +28,37 @@ public class Value extends Model {
         this.jsonProperties.put("name", name);
     }
 
-    @Override
-    public Promise<Value> create() {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        Promise<WS.Response> response = dbService
-            .createLabeledNodeWithProperties(label, props);
-        return response.map(new CreatedFunction<Value>(this));
-    }
-
-    @Override
-    public Promise<Boolean> exists() {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        Promise<WS.Response> response = dbService
-            .getLabeledNodeWithProperties(label, props);
-        return response.map(new ExistsFunction());
-    }
-
     public static Promise<List<Value>> all() {
-        Promise<WS.Response> response = dbService.getNodesByLabel("Value");
-        return response.map(new AllFunction());
+        Promise<List<JsonNode>> json = Value.Manager.all();
+        return json.map(new AllFunction());
     }
 
-    private static class AllFunction implements
-                                         Function<WS.Response, List<Value>> {
-        public List<Value> apply(WS.Response response) {
+
+    private static class AllFunction
+        implements Function<List<JsonNode>, List<Value>> {
+        public List<Value> apply(List<JsonNode> dataNodes) {
             List<Value> values = new ArrayList<Value>();
-            JsonNode json = response.asJson();
-            List<JsonNode> dataNodes = json.findValues("data");
             for (JsonNode dataNode: dataNodes) {
                 String name = dataNode.get("name").asText();
                 values.add(new Value(name));
             }
             return values;
+        }
+    }
+
+
+    public static class Manager {
+        private static Neo4jService dbService = new Neo4jService();
+        public static Promise<List<JsonNode>> all() {
+            Promise<WS.Response> response = dbService.getNodesByLabel(
+                NodeType.VALUE.toString());
+            return response.map(new NodeListFunction());
+        }
+        public static Promise<Boolean> create(Value value) {
+            Promise<WS.Response> response = dbService
+                .createLabeledNodeWithProperties(
+                    value.label.toString(), value.jsonProperties);
+            return response.map(new NodeCreatedFunction());
         }
     }
 

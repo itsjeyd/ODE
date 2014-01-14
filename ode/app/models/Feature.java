@@ -9,23 +9,28 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
+import play.libs.F.None;
+import play.libs.F.Option;
 import play.libs.F.Promise;
-import play.mvc.Http.Status;
+import play.libs.F.Some;
+import play.libs.F.Tuple;
 
+import constants.FeatureType;
+import constants.NodeType;
+import constants.RelationshipType;
 import neo4play.Neo4jService;
+import managers.functions.JsonFunction;
+import managers.functions.NodeCreatedFunction;
+import managers.functions.NodeListFunction;
 
 
-public class Feature extends Model {
-    private static Neo4jService dbService = new Neo4jService();
-
-    public String name;
-    public String featureType;
-    public String description;
-    public List<String> values; // "Values" can be other features or
-                                // atomic values
+public class Feature extends OntologyNode {
+    protected FeatureType type;
+    protected String description;
+    public List<String> targets;
 
     private Feature() {
-        this.label = "Feature";
+        this.label = NodeType.FEATURE;
         this.jsonProperties = Json.newObject();
     }
 
@@ -35,246 +40,198 @@ public class Feature extends Model {
         this.jsonProperties.put("name", name);
     }
 
-    public Feature(String name, String type) {
+    public Feature(String name, String description) {
         this(name);
-        this.featureType = type;
-    }
-
-    public Feature(String name, String type, String description) {
-        this(name);
-        this.featureType = type;
         this.description = description;
     }
 
-    @Override
-    public Promise<Feature> create() {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        props.put("type", this.featureType);
-        props.put("description", this.description);
-        Promise<WS.Response> response = dbService
-            .createLabeledNodeWithProperties(label, props);
-        return response.map(new CreatedFunction<Feature>(this));
+    public String getType() {
+        return this.type.toString();
     }
 
-    @Override
-    public Promise<Boolean> exists() {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        Promise<WS.Response> response = dbService
-            .getLabeledNodeWithProperties(label, props);
-        return response.map(new ExistsFunction());
-    }
-
-    public Promise<Feature> delete() {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        Promise<WS.Response> response = dbService
-            .deleteLabeledNodeWithProperties(label, props);
-        return response.map(new DeletedFunction<Feature>(this));
+    public String getDescription() {
+        return this.description;
     }
 
     public static Promise<List<Feature>> all() {
-        Promise<WS.Response> response = dbService.getNodesByLabel("Feature");
-        return response.map(new AllFunction());
-    }
-
-    public Promise<Feature> update() {
-        final ObjectNode oldProps = Json.newObject();
-        oldProps.put("name", this.name);
-        Promise<String> nodeURL = dbService.getNodeURL(label, oldProps);
-        Promise<String> description = nodeURL.flatMap(
-            new Function<String, Promise<String>>() {
-                public Promise<String> apply(String nodeURL) {
-                    return dbService.getNodeProperty(nodeURL, "description");
-        }});
-        final String newType = this.featureType;
-        Promise<WS.Response> response = description.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String description) {
-                    oldProps.put("description", description);
-                    ObjectNode newProps = Json.newObject();
-                    newProps.put("name", oldProps.get("name"));
-                    newProps.put("type", newType);
-                    newProps.put("description", description);
-                    return dbService
-                        .updateNodeProperties(label, oldProps, newProps);
-        }});
-        return response.map(new UpdateFunction(this));
-    }
-
-    public Promise<Relationship> connectTo(
-        Model target, String relationshipType) {
-        Relationship allowsRelationship = new Relationship(
-            "ALLOWS", this, target);
-        return allowsRelationship.create();
-    }
-
-    public Promise<List<String>> getValues() {
-        ObjectNode props = Json.newObject();
-        props.put("name", this.name);
-        Promise<WS.Response> response = dbService
-            .getOutgoingRelationshipsByType(label, props, "ALLOWS");
-        final Promise<List<String>> valueURLs = response.map(
-            new ValueURLsFunction());
-        Promise<List<String>> values = valueURLs.map(
-            new Function<List<String>, List<String>>() {
-                public List<String> apply(List<String> urls) {
-                    List<String> values = new ArrayList<String>();
-                    for (String url: urls) {
-                        Promise<String> value = dbService
-                            .getNodeProperty(url, "name");
-                        values.add(value.get());
-                    }
-                    return values;
-        }});
-        return values;
-    }
-
-    public Promise<Feature> setType(final String newType) {
-        Promise<Feature> featureWithoutTargets = this.deleteTargets();
-        return featureWithoutTargets.flatMap(
-            new Function<Feature, Promise<Feature>>() {
-                public Promise<Feature> apply(Feature featureWithoutTargets) {
-                    if (featureWithoutTargets == null) {
-                        return Promise.pure(null);
-                    }
-                    ObjectNode oldProps = featureWithoutTargets
-                        .jsonProperties;
-                    ObjectNode newProps = Json.newObject();
-                    newProps.put("name", featureWithoutTargets.name);
-                    newProps.put("type", newType);
-                    newProps.put(
-                        "description", featureWithoutTargets.description);
-                    Promise<WS.Response> response = dbService
-                        .updateNodeProperties(label, oldProps, newProps);
-                    featureWithoutTargets.jsonProperties = newProps;
-                    return response.map(
-                        new UpdateFunction(featureWithoutTargets));
-                }
-            });
+        Promise<List<JsonNode>> json = Feature.Manager.all();
+        return json.map(new AllFunction());
     }
 
     public Promise<Feature> get() {
-        Promise<WS.Response> response = dbService
-            .getLabeledNodeWithProperties(this.label, this.jsonProperties);
-        return response.map(new GetFunction(this));
+        Promise<JsonNode> json = Feature.Manager.get(this);
+        return json.map(new GetFunction());
     }
 
-    public Promise<Feature> deleteTargets() {
-        Promise<WS.Response> response = dbService
-            .getOutgoingRelationshipsByType(
-                this.label, this.jsonProperties, "ALLOWS");
-        Promise<List<String>> relationshipURLs = response.map(
-            new TargetURLsFunction());
-        Promise<List<Boolean>> deletionsSuccessful = relationshipURLs
-            .flatMap(new Function<List<String>, Promise<List<Boolean>>>() {
-                public Promise<List<Boolean>> apply(
-                    List<String> relationshipURLs) {
-                    List<Promise<? extends Boolean>> deletionsSuccessful =
-                        new ArrayList<Promise<? extends Boolean>>();
-                    for (String url: relationshipURLs) {
-                        Promise<WS.Response> response = dbService
-                            .deleteRelationship(url);
-                        Promise<Boolean> deletionSuccessful = response.map(
-                            new Function<WS.Response, Boolean>() {
-                                public Boolean apply(WS.Response response) {
-                                    if (response.getStatus() == Status
-                                        .NO_CONTENT) {
-                                        return true;
-                                    }
-                                    return false;
-                                }
-                            });
-                        deletionsSuccessful.add(deletionSuccessful);
+    public Promise<List<Relationship>> getOutgoingRelationships(
+        RelationshipType type) {
+        return TypedRelationship.getAllFrom(this, type);
+    }
+
+    public void setTargets() {
+        Promise<List<JsonNode>> nodes = Feature.Manager.values(this);
+        Promise<List<String>> targets = nodes.map(new TargetsFunction());
+        this.targets = targets.get();
+    }
+
+    public Promise<Tuple<Option<Feature>, Boolean>> updateType(
+        final String newType) {
+        Promise<Feature> feature = this.get();
+        return feature.flatMap(
+            new Function<Feature, Promise<Tuple<Option<Feature>, Boolean>>>() {
+                public Promise<Tuple<Option<Feature>, Boolean>> apply(
+                    Feature feature) {
+                    if (feature.getType().equals(newType)) {
+                        return Promise.pure(
+                            new Tuple<Option<Feature>, Boolean>(
+                                new Some<Feature>(feature), false));
                     }
-                    return Promise.sequence(deletionsSuccessful);
-                }
-            });
-        return deletionsSuccessful.map(new TargetsDeletedFunction(this));
+                    Promise<Boolean> allDeleted =
+                        AllowsRelationship.deleteAllFrom(feature);
+                    return allDeleted.flatMap(
+                        new UpdateTypeFunction(feature, newType));
+                    }
+                });
     }
 
-    private static class AllFunction implements
-                                         Function<WS.Response, List<Feature>>
-    {
-        public List<Feature> apply(WS.Response response) {
+
+    private static class AllFunction
+        implements Function<List<JsonNode>, List<Feature>> {
+        public List<Feature> apply(List<JsonNode> dataNodes) {
             List<Feature> features = new ArrayList<Feature>();
-            JsonNode json = response.asJson();
-            List<JsonNode> dataNodes = json.findValues("data");
             for (JsonNode dataNode: dataNodes) {
                 String name = dataNode.get("name").asText();
+                String description = "";
+                if (dataNode.has("description")) {
+                    description = dataNode.get("description").asText();
+                }
                 String type = dataNode.get("type").asText();
-                JsonNode descriptionNode = dataNode.get("description");
-                if (descriptionNode != null) {
-                    String description = descriptionNode.asText();
-                    features.add(new Feature(name, type, description));
-                } else {
-                    features.add(new Feature(name, type));
+                if (type.equals(FeatureType.COMPLEX.toString())) {
+                    features.add(new ComplexFeature(name, description));
+                } else if (type.equals(FeatureType.ATOMIC.toString())) {
+                    features.add(new AtomicFeature(name, description));
                 }
             }
             return features;
         }
     }
 
-    private class UpdateFunction implements Function<WS.Response, Feature> {
+    private class GetFunction implements Function<JsonNode, Feature> {
+        public Feature apply(JsonNode json) {
+            String name = json.findValue("name").asText();
+            String description = "";
+            JsonNode descriptionNode = json.findValue("description");
+            if (descriptionNode != null) {
+                description = descriptionNode.asText();
+            }
+            String type = json.findValue("type").asText();
+            Feature feature = null;
+            if (type.equals(FeatureType.COMPLEX.toString())) {
+                feature = new ComplexFeature(name, description);
+            } else if (type.equals(FeatureType.ATOMIC.toString())) {
+                feature = new AtomicFeature(name, description);
+            }
+            return feature;
+        }
+    }
+
+    private class TargetsFunction
+        implements Function<List<JsonNode>, List<String>> {
+        public List<String> apply(List<JsonNode> nodes) {
+            List<String> targets = new ArrayList<String>();
+            for (JsonNode node: nodes) {
+                targets.add(node.get("name").asText());
+            }
+            return targets;
+        }
+    }
+
+    private class UpdateTypeFunction
+        implements Function<Boolean, Promise<Tuple<Option<Feature>, Boolean>>> {
         private Feature feature;
-        public UpdateFunction(Feature feature) {
+        private String newType;
+        public UpdateTypeFunction(Feature feature, String newType) {
+            this.feature = feature;
+            this.newType = newType;
+        }
+        public Promise<Tuple<Option<Feature>, Boolean>> apply(
+            Boolean allDeleted) {
+            if (allDeleted) {
+                Promise<Boolean> typeUpdated = Feature.Manager.updateType(
+                    this.feature, this.newType);
+                return typeUpdated.map(new UpdatedFunction(this.feature));
+            }
+            return Promise.pure(
+                new Tuple<Option<Feature>, Boolean>(
+                    new None<Feature>(), false));
+        }
+    }
+
+    private class UpdatedFunction
+        implements Function<Boolean, Tuple<Option<Feature>, Boolean>> {
+        private Feature feature;
+        public UpdatedFunction(Feature feature) {
             this.feature = feature;
         }
-        public Feature apply(WS.Response response) {
-            if (response.getStatus() == Status.NO_CONTENT) {
-                return this.feature;
+        public Tuple<Option<Feature>, Boolean> apply(Boolean updated) {
+            if (updated) {
+                return new Tuple<Option<Feature>, Boolean>(
+                    new Some<Feature>(this.feature), true);
             }
-            return null;
+            return new Tuple<Option<Feature>, Boolean>(
+                new None<Feature>(), false);
         }
     }
 
-    private class ValueURLsFunction implements
-        Function<WS.Response, List<String>> {
-        public List<String> apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            return json.findValuesAsText("end");
-        }
-    }
 
-    private class GetFunction implements Function<WS.Response, Feature> {
-        private Feature feature;
-        public GetFunction(Feature feature) {
-            this.feature = feature;
+    public static class Manager {
+        private static Neo4jService dbService = new Neo4jService();
+        public static Promise<List<JsonNode>> all() {
+            Promise<WS.Response> response = dbService.getNodesByLabel(
+                NodeType.FEATURE.toString());
+            return response.map(new NodeListFunction());
         }
-        public Feature apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            if (json.get("data").size() == 1) {
-                this.feature.featureType = json.findValue("type").asText();
-                this.feature.description = json.findValue("description")
-                    .asText();
-                return this.feature;
-            }
-            return null;
+        public static Promise<List<JsonNode>> values(Feature feature) {
+            Promise<List<WS.Response>> responses = dbService
+                .getRelationshipTargets(
+                    feature.label.toString(), feature.jsonProperties,
+                    RelationshipType.ALLOWS.toString());
+            return responses.map(
+                new Function<List<WS.Response>, List<JsonNode>>() {
+                    public List<JsonNode> apply(List<WS.Response> responses) {
+                        List<JsonNode> nodes = new ArrayList<JsonNode>();
+                        for (WS.Response response: responses) {
+                            JsonNode json = response.asJson();
+                            nodes.add(json.findValue("data"));
+                        }
+                        return nodes;
+                    }
+                });
         }
-    }
-
-    private class TargetURLsFunction
-        implements Function<WS.Response, List<String>> {
-        public List<String> apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            return json.findValuesAsText("self");
+        public static Promise<JsonNode> get(Feature feature) {
+            Promise<WS.Response> response = dbService
+                .getLabeledNodeWithProperties(
+                    feature.label.toString(), feature.jsonProperties);
+            return response.map(new JsonFunction());
         }
-    }
-
-    private class TargetsDeletedFunction
-        implements Function<List<Boolean>, Feature> {
-        private Feature feature;
-        public TargetsDeletedFunction(Feature feature) {
-            this.feature = feature;
+        public static Promise<Boolean> create(Feature feature) {
+            feature.jsonProperties.put("type", feature.getType());
+            feature.jsonProperties.put(
+                "description", feature.getDescription());
+            Promise<WS.Response> response = dbService
+                .createLabeledNodeWithProperties(
+                    feature.label.toString(), feature.jsonProperties);
+            return response.map(new NodeCreatedFunction());
         }
-        public Feature apply(List<Boolean> deletionsSuccessful) {
-            for (Boolean deletionSuccessful: deletionsSuccessful) {
-                if (!deletionSuccessful) {
-                    return null;
-                }
-            }
-            return this.feature;
+        public static Promise<Boolean> updateType(
+            Feature feature, String newType) {
+            feature.jsonProperties.put(
+                "description", feature.getDescription());
+            ObjectNode newProps = feature.jsonProperties.deepCopy();
+            newProps.put("type", newType);
+            Promise<WS.Response> response = dbService.updateNodeProperties(
+                feature.label.toString(), feature.jsonProperties, newProps);
+            return response.map(new managers.functions.UpdatedFunction());
         }
     }
 

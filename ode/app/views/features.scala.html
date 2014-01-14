@@ -21,10 +21,10 @@
           <div id="@feature.name" class="edit-feature">
 
             <h3>@feature.name</h3>
-            <p>@feature.description</p>
+            <p>@feature.getDescription</p>
 
             <form method="POST" action="/features/@feature.name/type">
-              @if(feature.featureType == "complex") {
+              @if(feature.getType == "complex") {
                 <p>
                   <input type="radio" name="type" value="complex"
                          id="type-complex" checked="checked" />
@@ -40,8 +40,8 @@
                 </p>
 
                 <h4>Features permitted in substructure:</h4>
-                @for(value <- feature.values) {
-                  <p>@value</p>
+                @for(target <- feature.targets) {
+                  <p>@target</p>
                 }
               } else {
                 <p>
@@ -59,14 +59,14 @@
                 </p>
 
                 <h4>Permitted values:</h4>
-                @for(value <- feature.values) {
-                  <p>@value</p>
+                @for(target <- feature.targets) {
+                  <p>@target</p>
                 }
               }
             </form>
 
             <form method="POST" action="/features/@feature.name/targets">
-                <input type="hidden" name="type" value="@feature.featureType" />
+                <input type="hidden" name="type" value="@feature.getType" />
                 <input type="text" name="target" value="" />
               <p>
                 <button type="submit">Add</button>

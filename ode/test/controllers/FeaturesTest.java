@@ -15,6 +15,7 @@ import play.test.WithApplication;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.callAction;
+import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.flash;
@@ -57,6 +58,15 @@ public class FeaturesTest extends WithApplication {
     @Before
     public void setUp() {
         start(fakeApplication());
+    }
+
+    @Test
+    public void listTest() {
+        Result result = callAction(
+            controllers.routes.ref.Features.list(),
+            fakeRequest().withSession("username", "user@example.com"));
+        assertThat(status(result)).isEqualTo(Status.OK);
+        assertThat(contentAsString(result).contains("ExistingFeature"));
     }
 
     @Test

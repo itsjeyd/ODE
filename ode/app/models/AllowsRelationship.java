@@ -14,11 +14,10 @@ import play.libs.F.Tuple;
 
 import constants.RelationshipType;
 import managers.AllowsRelationshipManager;
+import managers.RelationshipManager;
 
 
 public class AllowsRelationship extends TypedRelationship {
-    public Feature startNode;
-    public OntologyNode endNode;
 
     public AllowsRelationship(Feature startNode, OntologyNode endNode) {
         super(-1); // Set to "invalid" ID by default
@@ -34,6 +33,18 @@ public class AllowsRelationship extends TypedRelationship {
 
     public Promise<Tuple<Option<Relationship>, Boolean>> getOrCreate() {
         return this.exists().flatMap(new GetOrCreateFunction(this));
+    }
+
+    @Override
+    public Promise<Boolean> delete() {
+        Promise<JsonNode> json = AllowsRelationshipManager.get(this);
+        Promise<Relationship> relationship = json.map(new GetFunction(this));
+        return relationship.flatMap(
+            new Function<Relationship, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Relationship relationship) {
+                    return RelationshipManager.delete(relationship);
+                }
+            });
     }
 
     public static Promise<Boolean> deleteAllFrom(Feature startNode) {
@@ -107,6 +118,20 @@ public class AllowsRelationship extends TypedRelationship {
             }
             return new Tuple<Option<Relationship>, Boolean>(
                 new None<Relationship>(), false);
+        }
+    }
+
+    private class GetFunction implements Function<JsonNode, Relationship> {
+        private Relationship relationship;
+        public GetFunction(Relationship relationship) {
+            this.relationship = relationship;
+        }
+        public Relationship apply(JsonNode json) {
+            String url = json.findValue("self").asText();
+            int ID = Integer.parseInt(
+                url.substring(url.lastIndexOf("/") + 1));
+            this.relationship.ID = ID;
+            return this.relationship;
         }
     }
 

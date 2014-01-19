@@ -176,6 +176,34 @@ public class Features extends Controller {
         }
     }
 
+    public static Promise<Result> deleteTarget(String fname) {
+        Form<DeleteTargetForm> targetForm = form(DeleteTargetForm.class)
+            .bindFromRequest();
+        Feature feature;
+        OntologyNode target;
+        String featureType = targetForm.get().type;
+        String targetName = targetForm.get().target;
+        if (featureType.equals(FeatureType.COMPLEX.toString())) {
+            feature = new ComplexFeature(fname);
+            target = new Feature(targetName);
+        } else {
+            feature = new AtomicFeature(fname);
+            target = new Value(targetName);
+        }
+        Promise<Boolean> deleted = new AllowsRelationship(
+            feature, target).delete();
+        return deleted.map(new Function<Boolean, Result>() {
+                public Result apply(Boolean deleted) {
+                    if (deleted) {
+                        flash("success", "Target successfully deleted.");
+                    } else {
+                        flash("error", "Target could not be removed.");
+                    }
+                    return redirect(routes.Features.list());
+                }
+            });
+    }
+
 
     public static class NewFeatureForm {
         @Required
@@ -193,4 +221,7 @@ public class Features extends Controller {
         public String type;
         public String target;
     }
+
+    public static class DeleteTargetForm extends AddTargetForm {}
+
 }

@@ -23,8 +23,8 @@
             <h3>@feature.name</h3>
             <p>@feature.getDescription</p>
 
-            <form method="POST" action="/features/@feature.name/type">
-              @if(feature.getType == "complex") {
+            @if(feature.getType == "complex") {
+              <form role="form" method="POST" action="/features/@feature.name/type">
                 <p>
                   <input type="radio" name="type" value="complex"
                          id="type-complex" checked="checked" />
@@ -36,14 +36,16 @@
                   <label for="type-atomic">atomic</label>
                 </p>
                 <p>
-                  <button type="submit">Update</button>
+                  <button class="btn btn-sm btn-info" type="submit">
+                    Update
+                  </button>
                 </p>
+              </form>
 
-                <h4>Features permitted in substructure:</h4>
-                @for(target <- feature.targets) {
-                  <p>@target</p>
-                }
-              } else {
+              <h4>Features permitted in substructure:</h4>
+
+            } else {
+              <form role="form" method="POST" action="/features/@feature.name/type">
                 <p>
                   <input type="radio" name="type" value="complex"
                          id="type-complex" />
@@ -55,22 +57,39 @@
                   <label for="type-atomic">atomic</label>
                 </p>
                 <p>
-                  <button type="submit">Update</button>
+                  <button class="btn btn-sm btn-info" type="submit">
+                    Update
+                  </button>
                 </p>
+              </form>
 
-                <h4>Permitted values:</h4>
-                @for(target <- feature.targets) {
-                  <p>@target</p>
-                }
-              }
-            </form>
+              <h4>Permitted values:</h4>
 
-            <form method="POST" action="/features/@feature.name/targets">
-                <input type="hidden" name="type" value="@feature.getType" />
-                <input type="text" name="target" value="" />
-              <p>
-                <button type="submit">Add</button>
+            }
+
+            @for(target <- feature.targets) {
+              <p class="target">
+                <form role="form" method="POST"
+                      action="/features/@feature.name/targets/delete">
+                  @target
+                  <input type="hidden" name="type" value="@feature.getType">
+                  <input type="hidden" name="target" value="@target">
+                  <button class="btn btn-xs btn-warning" type="submit">
+                    Delete
+                  </button>
+                </form>
               </p>
+            }
+
+            <form role="form" method="POST"
+                  action="/features/@feature.name/targets">
+              <input type="hidden" name="type" value="@feature.getType" />
+              <div class="form-group">
+                <input class="form-control" type="text" name="target" value="" />
+              </div>
+              <button class="btn btn-sm btn-info" type="submit">
+                Add
+              </button>
             </form>
 
           </div>
@@ -113,7 +132,9 @@
             <label for="type-atomic">atomic</label>
           </p>
           <p>
-            <button type="submit">Save</button>
+            <button class="btn btn-success" type="submit">
+              Save
+            </button>
           </p>
         }
       </div>

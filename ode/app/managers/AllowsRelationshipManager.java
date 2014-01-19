@@ -15,7 +15,7 @@ public class AllowsRelationshipManager {
 
     public static Promise<JsonNode> get(AllowsRelationship relationship) {
         Promise<WS.Response> response = Neo4jService.getTypedRelationship(
-            relationship);
+            relationship.startNode, relationship.endNode, relationship.type);
         return response.map(new JsonFunction());
     }
 

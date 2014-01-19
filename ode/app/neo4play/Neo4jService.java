@@ -16,9 +16,7 @@ import play.libs.F.Tuple;
 
 import constants.RelationshipType;
 import models.LabeledNodeWithProperties;
-import models.AllowsRelationship;
 import models.Relationship;
-import models.TypedRelationship;
 import utils.StringUtils;
 
 
@@ -155,18 +153,16 @@ public class Neo4jService {
     }
 
     public static Promise<WS.Response> getTypedRelationship(
-        AllowsRelationship relationship) {
+        LabeledNodeWithProperties startNode,
+        LabeledNodeWithProperties endNode, RelationshipType type) {
         String startNodeProps = buildConjunctiveConstraints(
-            "s", relationship.startNode.jsonProperties);
+            "s", startNode.jsonProperties);
         String endNodeProps = buildConjunctiveConstraints(
-            "e", relationship.endNode.jsonProperties);
+            "e", endNode.jsonProperties);
         String query = String.format(
             "MATCH (s:%s)-[r:%s]-(e:%s) WHERE %s AND %s RETURN r",
-            relationship.startNode.label,
-            relationship.type,
-            relationship.endNode.label,
-            startNodeProps,
-            endNodeProps);
+            startNode.label.toString(), type.name(), endNode.label.toString(),
+            startNodeProps, endNodeProps);
         return postCypherQuery(query);
     }
 

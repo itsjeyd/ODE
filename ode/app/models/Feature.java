@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
-import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.None;
 import play.libs.F.Option;
@@ -18,10 +16,7 @@ import play.libs.F.Tuple;
 import constants.FeatureType;
 import constants.NodeType;
 import constants.RelationshipType;
-import neo4play.Neo4jService;
-import managers.functions.JsonFunction;
-import managers.functions.NodeCreatedFunction;
-import managers.functions.NodeListFunction;
+import managers.FeatureManager;
 
 
 public class Feature extends OntologyNode {
@@ -54,12 +49,12 @@ public class Feature extends OntologyNode {
     }
 
     public static Promise<List<Feature>> all() {
-        Promise<List<JsonNode>> json = Feature.Manager.all();
+        Promise<List<JsonNode>> json = FeatureManager.all();
         return json.map(new AllFunction());
     }
 
     public Promise<Feature> get() {
-        Promise<JsonNode> json = Feature.Manager.get(this);
+        Promise<JsonNode> json = FeatureManager.get(this);
         return json.map(new GetFunction());
     }
 
@@ -69,7 +64,7 @@ public class Feature extends OntologyNode {
     }
 
     public void setTargets() {
-        Promise<List<JsonNode>> nodes = Feature.Manager.values(this);
+        Promise<List<JsonNode>> nodes = FeatureManager.values(this);
         Promise<List<String>> targets = nodes.map(new TargetsFunction());
         this.targets = targets.get();
     }
@@ -157,7 +152,7 @@ public class Feature extends OntologyNode {
         public Promise<Tuple<Option<Feature>, Boolean>> apply(
             Boolean allDeleted) {
             if (allDeleted) {
-                Promise<Boolean> typeUpdated = Feature.Manager.updateType(
+                Promise<Boolean> typeUpdated = FeatureManager.updateType(
                     this.feature, this.newType);
                 return typeUpdated.map(new UpdatedFunction(this.feature));
             }
@@ -180,58 +175,6 @@ public class Feature extends OntologyNode {
             }
             return new Tuple<Option<Feature>, Boolean>(
                 new None<Feature>(), false);
-        }
-    }
-
-
-    public static class Manager {
-        private static Neo4jService dbService = new Neo4jService();
-        public static Promise<List<JsonNode>> all() {
-            Promise<WS.Response> response = dbService.getNodesByLabel(
-                NodeType.FEATURE.toString());
-            return response.map(new NodeListFunction());
-        }
-        public static Promise<List<JsonNode>> values(Feature feature) {
-            Promise<List<WS.Response>> responses = dbService
-                .getRelationshipTargets(
-                    feature.label.toString(), feature.jsonProperties,
-                    RelationshipType.ALLOWS.toString());
-            return responses.map(
-                new Function<List<WS.Response>, List<JsonNode>>() {
-                    public List<JsonNode> apply(List<WS.Response> responses) {
-                        List<JsonNode> nodes = new ArrayList<JsonNode>();
-                        for (WS.Response response: responses) {
-                            JsonNode json = response.asJson();
-                            nodes.add(json.findValue("data"));
-                        }
-                        return nodes;
-                    }
-                });
-        }
-        public static Promise<JsonNode> get(Feature feature) {
-            Promise<WS.Response> response = dbService
-                .getLabeledNodeWithProperties(
-                    feature.label.toString(), feature.jsonProperties);
-            return response.map(new JsonFunction());
-        }
-        public static Promise<Boolean> create(Feature feature) {
-            feature.jsonProperties.put("type", feature.getType());
-            feature.jsonProperties.put(
-                "description", feature.getDescription());
-            Promise<WS.Response> response = dbService
-                .createLabeledNodeWithProperties(
-                    feature.label.toString(), feature.jsonProperties);
-            return response.map(new NodeCreatedFunction());
-        }
-        public static Promise<Boolean> updateType(
-            Feature feature, String newType) {
-            feature.jsonProperties.put(
-                "description", feature.getDescription());
-            ObjectNode newProps = feature.jsonProperties.deepCopy();
-            newProps.put("type", newType);
-            Promise<WS.Response> response = dbService.updateNodeProperties(
-                feature.label.toString(), feature.jsonProperties, newProps);
-            return response.map(new managers.functions.UpdatedFunction());
         }
     }
 

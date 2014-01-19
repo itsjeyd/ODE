@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.None;
 import play.libs.F.Option;
@@ -14,9 +13,7 @@ import play.libs.F.Some;
 import play.libs.F.Tuple;
 
 import constants.RelationshipType;
-import neo4play.Neo4jService;
-import managers.functions.JsonFunction;
-import managers.functions.RelationshipCreatedFunction;
+import managers.AllowsRelationshipManager;
 
 
 public class AllowsRelationship extends TypedRelationship {
@@ -31,7 +28,7 @@ public class AllowsRelationship extends TypedRelationship {
     }
 
     public Promise<Boolean> exists() {
-        Promise<JsonNode> json = AllowsRelationship.Manager.get(this);
+        Promise<JsonNode> json = AllowsRelationshipManager.get(this);
         return json.map(new ExistsFunction());
     }
 
@@ -91,7 +88,7 @@ public class AllowsRelationship extends TypedRelationship {
                     new Tuple<Option<Relationship>, Boolean>(
                         new Some<Relationship>(this.relationship), false));
             }
-            Promise<Boolean> created = AllowsRelationship.Manager.create(
+            Promise<Boolean> created = AllowsRelationshipManager.create(
                 this.relationship);
             return created.map(new CreatedFunction(this.relationship));
         }
@@ -110,23 +107,6 @@ public class AllowsRelationship extends TypedRelationship {
             }
             return new Tuple<Option<Relationship>, Boolean>(
                 new None<Relationship>(), false);
-        }
-    }
-
-    public static class Manager {
-        private static Neo4jService dbService = new Neo4jService();
-        public static Promise<JsonNode> get(AllowsRelationship relationship) {
-            Promise<WS.Response> response = dbService.getTypedRelationship(
-                relationship);
-            return response.map(new JsonFunction());
-        }
-        public static Promise<Boolean> create(
-            AllowsRelationship relationship) {
-            Promise<WS.Response> response = dbService
-                .createTypedRelationship(
-                    relationship.startNode, relationship.endNode,
-                    relationship.type);
-            return response.map(new RelationshipCreatedFunction());
         }
     }
 

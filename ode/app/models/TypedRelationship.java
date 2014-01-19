@@ -6,14 +6,11 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import neo4play.Neo4jService;
-
 import constants.RelationshipType;
-import managers.functions.JsonFunction;
+import managers.TypedRelationshipManager;
 
 
 public class TypedRelationship extends Relationship {
@@ -25,7 +22,7 @@ public class TypedRelationship extends Relationship {
 
     public static Promise<List<Relationship>> getAllFrom(
         Feature startNode, RelationshipType type) {
-        Promise<JsonNode> json = TypedRelationship.Manager.getAllFrom(
+        Promise<JsonNode> json = TypedRelationshipManager.getAllFrom(
             startNode, type);
         return json.map(new AllFromFunction());
     }
@@ -46,14 +43,4 @@ public class TypedRelationship extends Relationship {
         }
     }
 
-
-    public static class Manager {
-        private static Neo4jService dbService = new Neo4jService();
-        public static Promise<JsonNode> getAllFrom(
-            Feature startNode, RelationshipType type) {
-            Promise<WS.Response> response = dbService
-                .getOutgoingRelationshipsByType(startNode, type);
-            return response.map(new JsonFunction());
-        }
-    }
 }

@@ -8,6 +8,8 @@ import play.libs.F.Some;
 import play.libs.F.Tuple;
 
 import constants.NodeType;
+import managers.FeatureManager;
+import managers.ValueManager;
 
 
 public abstract class OntologyNode extends LabeledNodeWithProperties {
@@ -42,9 +44,9 @@ public abstract class OntologyNode extends LabeledNodeWithProperties {
             }
             Promise<Boolean> created = null;
             if (this.node.isFeature()) {
-                created = Feature.Manager.create((Feature) this.node);
+                created = FeatureManager.create((Feature) this.node);
             } else {
-                created = Value.Manager.create((Value) this.node);
+                created = ValueManager.create((Value) this.node);
             }
             return created.map(new CreatedFunction(this.node));
         }

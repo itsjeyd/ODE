@@ -6,14 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.Json;
-import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import neo4play.Neo4jService;
-import managers.functions.NodeCreatedFunction;
-import managers.functions.NodeListFunction;
+import managers.ValueManager;
 
 
 public class Value extends OntologyNode {
@@ -29,7 +26,7 @@ public class Value extends OntologyNode {
     }
 
     public static Promise<List<Value>> all() {
-        Promise<List<JsonNode>> json = Value.Manager.all();
+        Promise<List<JsonNode>> json = ValueManager.all();
         return json.map(new AllFunction());
     }
 
@@ -43,22 +40,6 @@ public class Value extends OntologyNode {
                 values.add(new Value(name));
             }
             return values;
-        }
-    }
-
-
-    public static class Manager {
-        private static Neo4jService dbService = new Neo4jService();
-        public static Promise<List<JsonNode>> all() {
-            Promise<WS.Response> response = dbService.getNodesByLabel(
-                NodeType.VALUE.toString());
-            return response.map(new NodeListFunction());
-        }
-        public static Promise<Boolean> create(Value value) {
-            Promise<WS.Response> response = dbService
-                .createLabeledNodeWithProperties(
-                    value.label.toString(), value.jsonProperties);
-            return response.map(new NodeCreatedFunction());
         }
     }
 

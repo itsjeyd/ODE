@@ -1,7 +1,6 @@
 package models;
 
 import play.libs.Json;
-import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.None;
 import play.libs.F.Option;
@@ -10,8 +9,7 @@ import play.libs.F.Some;
 import play.libs.F.Tuple;
 
 import constants.NodeType;
-import neo4play.Neo4jService;
-import managers.functions.NodeCreatedFunction;
+import managers.UserManager;
 
 
 public class User extends LabeledNodeWithProperties {
@@ -51,7 +49,7 @@ public class User extends LabeledNodeWithProperties {
                     new Tuple<Option<User>, Boolean>(
                         new Some<User>(this.user), false));
             }
-            Promise<Boolean> created = User.Manager.create(this.user);
+            Promise<Boolean> created = UserManager.create(this.user);
             return created.map(new CreatedFunction(this.user));
         }
     }
@@ -82,18 +80,6 @@ public class User extends LabeledNodeWithProperties {
                 return new Some<User>(this.user);
             }
             return new None<User>();
-        }
-    }
-
-
-    public static class Manager {
-        private static Neo4jService dbService = new Neo4jService();
-        public static Promise<Boolean> create(User user) {
-            user.jsonProperties.put("password", user.password);
-            Promise<WS.Response> response = dbService
-                .createLabeledNodeWithProperties(
-                    user.label.toString(), user.jsonProperties);
-            return response.map(new NodeCreatedFunction());
         }
     }
 

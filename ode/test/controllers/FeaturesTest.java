@@ -14,6 +14,8 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.flash;
 import static play.test.Helpers.status;
 
+import models.AtomicFeature;
+import models.ComplexFeature;
 import models.Feature;
 
 
@@ -27,16 +29,16 @@ public class FeaturesTest extends WithApplication {
 
     @Test
     public void featureSuccess() {
-        Feature feature = new Feature(
-            "NonExistingFeature", "complex", "This is not a description.");
+        Feature feature = new ComplexFeature(
+            "NonExistingFeature", "This is not a description.");
         Result result = callAction(
             controllers.routes.ref.Features.createFeature(),
             fakeRequest()
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
-                    "type", feature.featureType,
-                    "description", feature.description)));
+                    "type", feature.getType(),
+                    "description", feature.getDescription())));
         assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("success")).isEqualTo(
             "Feature successfully created.");
@@ -46,8 +48,8 @@ public class FeaturesTest extends WithApplication {
 
     @Test
     public void featureCreateExisting() {
-        Feature feature = new Feature(
-            "ExistingFeature", "atomic", "This is not a description.")
+        Feature feature = new AtomicFeature(
+            "ExistingFeature", "This is not a description.")
             .create().get(ASYNC_TIMEOUT);
         Result result = callAction(
             controllers.routes.ref.Features.createFeature(),
@@ -55,8 +57,8 @@ public class FeaturesTest extends WithApplication {
                 .withSession("email", "foo@bar.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
-                    "type", feature.featureType,
-                    "description", feature.description)));
+                    "type", feature.getType(),
+                    "description", feature.getDescription())));
         assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");

@@ -16,16 +16,14 @@ import neo4play.Neo4jService;
 
 public class ValueManager {
 
-    private static Neo4jService dbService = new Neo4jService();
-
     public static Promise<List<JsonNode>> all() {
-        Promise<WS.Response> response = dbService.getNodesByLabel(
+        Promise<WS.Response> response = Neo4jService.getNodesByLabel(
             NodeType.VALUE.toString());
         return response.map(new NodeListFunction());
     }
 
     public static Promise<Boolean> create(Value value) {
-        Promise<WS.Response> response = dbService
+        Promise<WS.Response> response = Neo4jService
             .createLabeledNodeWithProperties(
                 value.label.toString(), value.jsonProperties);
         return response.map(new NodeCreatedFunction());

@@ -10,10 +10,8 @@ import neo4play.Neo4jService;
 
 public class RelationshipManager {
 
-    private static Neo4jService dbService = new Neo4jService();
-
     public static Promise<Boolean> delete(Relationship relationship) {
-        Promise<WS.Response> response = dbService.deleteRelationship(
+        Promise<WS.Response> response = Neo4jService.deleteRelationship(
             relationship);
         return response.map(new DeletedFunction());
     }

@@ -13,17 +13,15 @@ import neo4play.Neo4jService;
 
 public class AllowsRelationshipManager {
 
-    private static Neo4jService dbService = new Neo4jService();
-
     public static Promise<JsonNode> get(AllowsRelationship relationship) {
-        Promise<WS.Response> response = dbService.getTypedRelationship(
+        Promise<WS.Response> response = Neo4jService.getTypedRelationship(
             relationship);
         return response.map(new JsonFunction());
     }
 
     public static Promise<Boolean> create(
         AllowsRelationship relationship) {
-        Promise<WS.Response> response = dbService
+        Promise<WS.Response> response = Neo4jService
             .createTypedRelationship(
                 relationship.startNode, relationship.endNode,
                 relationship.type);

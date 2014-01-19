@@ -12,10 +12,8 @@ import neo4play.Neo4jService;
 
 public class LabeledNodeWithPropertiesManager {
 
-    private static Neo4jService dbService = new Neo4jService();
-
     public static Promise<JsonNode> get(LabeledNodeWithProperties node) {
-        Promise<WS.Response> response = dbService
+        Promise<WS.Response> response = Neo4jService
             .getLabeledNodeWithProperties(
                 node.label.toString(), node.jsonProperties);
         return response.map(new JsonFunction());

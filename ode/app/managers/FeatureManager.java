@@ -21,19 +21,17 @@ import neo4play.Neo4jService;
 
 public class FeatureManager {
 
-    private static Neo4jService dbService = new Neo4jService();
-
     public static Promise<List<JsonNode>> all() {
-        Promise<WS.Response> response = dbService.getNodesByLabel(
+        Promise<WS.Response> response = Neo4jService.getNodesByLabel(
             NodeType.FEATURE.toString());
         return response.map(new NodeListFunction());
     }
 
     public static Promise<List<JsonNode>> values(Feature feature) {
-        Promise<List<WS.Response>> responses = dbService
-            .getRelationshipTargets(
-                feature.label.toString(), feature.jsonProperties,
-                RelationshipType.ALLOWS.toString());
+        Promise<List<WS.Response>> responses = Neo4jService
+            .getRelationshipTargets(feature.label.toString(),
+                                    feature.jsonProperties,
+                                    RelationshipType.ALLOWS.toString());
         return responses.map(
             new Function<List<WS.Response>, List<JsonNode>>() {
                 public List<JsonNode> apply(List<WS.Response> responses) {
@@ -48,7 +46,7 @@ public class FeatureManager {
     }
 
     public static Promise<JsonNode> get(Feature feature) {
-        Promise<WS.Response> response = dbService
+        Promise<WS.Response> response = Neo4jService
             .getLabeledNodeWithProperties(
                 feature.label.toString(), feature.jsonProperties);
         return response.map(new JsonFunction());
@@ -58,7 +56,7 @@ public class FeatureManager {
         feature.jsonProperties.put("type", feature.getType());
         feature.jsonProperties.put(
             "description", feature.getDescription());
-        Promise<WS.Response> response = dbService
+        Promise<WS.Response> response = Neo4jService
             .createLabeledNodeWithProperties(
                 feature.label.toString(), feature.jsonProperties);
         return response.map(new NodeCreatedFunction());
@@ -70,7 +68,7 @@ public class FeatureManager {
             "description", feature.getDescription());
         ObjectNode newProps = feature.jsonProperties.deepCopy();
         newProps.put("type", newType);
-        Promise<WS.Response> response = dbService.updateNodeProperties(
+        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
             feature.label.toString(), feature.jsonProperties, newProps);
         return response.map(new managers.functions.UpdatedFunction());
     }

@@ -13,11 +13,9 @@ import neo4play.Neo4jService;
 
 public class TypedRelationshipManager {
 
-    private static Neo4jService dbService = new Neo4jService();
-
     public static Promise<JsonNode> getAllFrom(
         Feature startNode, RelationshipType type) {
-        Promise<WS.Response> response = dbService
+        Promise<WS.Response> response = Neo4jService
             .getOutgoingRelationshipsByType(startNode, type);
         return response.map(new JsonFunction());
     }

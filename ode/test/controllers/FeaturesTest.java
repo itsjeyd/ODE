@@ -101,4 +101,13 @@ public class FeaturesTest extends WithApplication {
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");
     }
+
+    @Test
+    public void updateFeatureTypeTest() {
+    }
+
+    @Test
+    public void addTargetsTest() {
+    }
+
 }

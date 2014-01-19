@@ -119,6 +119,10 @@ public class Neo4jServiceTest {
     }
 
     @Test
+    public void deleteTest() {
+    }
+
+    @Test
     public void getNodeURLTest() {
         WS.Response response = postCypherQuery(
             "MATCH (n:TestNode) WHERE n.name = 'node' AND " +
@@ -132,6 +136,10 @@ public class Neo4jServiceTest {
         String nodeURLResponse = Neo4jService
             .getNodeURL("TestNode", props).get(ASYNC_TIMEOUT);
         assertThat(nodeURLResponse).isEqualTo(nodeURL);
+    }
+
+    @Test
+    public void getNodeByURLTest() {
     }
 
     @Test
@@ -195,6 +203,22 @@ public class Neo4jServiceTest {
             .isEqualTo(Status.OK);
         assertThat(outgoingRelationshipsResponse.asJson().size())
             .isEqualTo(1);
+    }
+
+    @Test
+    public void getRelationshipTargetsTest() {
+    }
+
+    @Test
+    public void getTypedRelationshipTest() {
+    }
+
+    @Test
+    public void createTypedRelationshipTest() {
+    }
+
+    @Test
+    public void deleteRelationshipTest() {
     }
 
 }

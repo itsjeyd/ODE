@@ -27,6 +27,8 @@ public abstract class OntologyNode extends LabeledNodeWithProperties {
         return this.exists().flatMap(new GetOrCreateFunction(this));
     }
 
+    public abstract Promise<Boolean> delete();
+
 
     private class GetOrCreateFunction
         implements Function<Boolean,

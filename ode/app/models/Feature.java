@@ -91,6 +91,10 @@ public class Feature extends OntologyNode {
                 });
     }
 
+    public Promise<Boolean> delete() {
+        return null;
+    }
+
 
     private static class AllFunction
         implements Function<List<JsonNode>, List<Feature>> {

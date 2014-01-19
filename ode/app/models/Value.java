@@ -32,6 +32,41 @@ public class Value extends OntologyNode {
         return json.map(new AllFunction());
     }
 
+    public Promise<Boolean> delete() {
+        return ValueManager.delete(this);
+    }
+
+    public Promise<Boolean> isOrphan() {
+        Promise<JsonNode> json = ValueManager.getIncomingRelationships(this);
+        return json.map(new IsOrphanFunction());
+    }
+
+    public Promise<Boolean> deleteIfOrphaned() {
+        return this.isOrphan().flatMap(new DeleteIfOrphanedFunction(this));
+    }
+
+
+    private class IsOrphanFunction implements Function<JsonNode, Boolean> {
+        public Boolean apply(JsonNode json) {
+            return json.size() == 0;
+        }
+    }
+
+    private class DeleteIfOrphanedFunction
+        implements Function<Boolean, Promise<Boolean>> {
+        private Value value;
+        public DeleteIfOrphanedFunction(Value value) {
+            this.value = value;
+        }
+        public Promise<Boolean> apply(Boolean isOrphan) {
+            if (isOrphan) {
+                return value.delete();
+            }
+            else {
+                return Promise.pure(false);
+            }
+        }
+    }
 
     private static class AllFunction
         implements Function<List<JsonNode>, List<Value>> {

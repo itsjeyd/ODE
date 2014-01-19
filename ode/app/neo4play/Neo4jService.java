@@ -115,6 +115,12 @@ public class Neo4jService {
         return postCypherQueryWithParams(query, props);
     }
 
+    public static Promise<WS.Response> deleteLabeledNodeWithProperties(
+        String label, JsonNode props) {
+        String query = buildNodeQuery(label, props) + " DELETE n";
+        return postCypherQuery(query);
+    }
+
     public static Promise<WS.Response> getNodesByLabel(String label) {
         return get("/label/" + label + "/nodes");
     }
@@ -127,6 +133,19 @@ public class Neo4jService {
                 String fullURL = nodeURL + "/properties";
                 return WS.url(fullURL).put(newProps);
             }});
+    }
+
+    public static Promise<WS.Response> getIncomingRelationshipsByType(
+        String endNodeLabel, JsonNode endNodeProps,
+        final String relationshipType) {
+        Promise<String> endNodeURL = getNodeURL(endNodeLabel, endNodeProps);
+        return endNodeURL.flatMap(
+            new Function<String, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(String nodeURL) {
+                    String fullURL = nodeURL + "/relationships/in/"
+                        + relationshipType;
+                    return WS.url(fullURL).get();
+        }});
     }
 
     public static Promise<WS.Response> getOutgoingRelationshipsByType(

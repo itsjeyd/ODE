@@ -7,6 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Option;
 import play.libs.F.Promise;
@@ -160,7 +161,7 @@ public class Features extends Controller {
         Form<DeleteTargetForm> targetForm = form(DeleteTargetForm.class)
             .bindFromRequest();
         Feature feature;
-        OntologyNode target;
+        final OntologyNode target;
         String featureType = targetForm.get().type;
         String targetName = targetForm.get().target;
         if (featureType.equals(FeatureType.COMPLEX.toString())) {
@@ -172,6 +173,16 @@ public class Features extends Controller {
         }
         Promise<Boolean> deleted = new AllowsRelationship(
             feature, target).delete();
+        if (target.isValue()) {
+            deleted.onRedeem(
+                new Callback<Boolean>() {
+                    public void invoke(Boolean deleted) {
+                        if (deleted) {
+                            target.delete();
+                        }
+                    }
+                });
+        }
         return deleted.map(new Function<Boolean, Result>() {
                 public Result apply(Boolean deleted) {
                     if (deleted) {

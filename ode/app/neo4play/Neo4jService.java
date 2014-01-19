@@ -21,8 +21,8 @@ import utils.StringUtils;
 
 
 public class Neo4jService {
-    private static String rootURL = "http://localhost:7474/db/data";
-    private static String contentType = "application/json";
+    protected static String rootURL = "http://localhost:7474/db/data";
+    protected static String contentType = "application/json";
 
     private static String extendRootURL(String suffix) {
         if (suffix.startsWith("/")) {

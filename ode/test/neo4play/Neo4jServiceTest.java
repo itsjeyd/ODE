@@ -116,9 +116,6 @@ public class Neo4jServiceTest {
         String requestURI = postResponse.getUri().toString();
         String targetURI = Neo4jService.rootURL + this.resourceURL;
         assertThat(requestURI).isEqualTo(targetURI);
-        String requestContentType = postResponse.getHeader("Content-Type");
-        String targetContentType = Neo4jService.contentType;
-        assertThat(requestContentType).isEqualTo(targetContentType);
     }
 
     @Test

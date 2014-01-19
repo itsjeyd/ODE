@@ -1,8 +1,14 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.google.common.collect.ImmutableMap;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import play.libs.Json;
+import play.libs.WS;
 import play.mvc.Result;
 import play.mvc.Http.Status;
 import play.test.WithApplication;
@@ -20,7 +26,33 @@ import models.Feature;
 
 
 public class FeaturesTest extends WithApplication {
-    private short ASYNC_TIMEOUT = 500;
+    private static short ASYNC_TIMEOUT = 500;
+
+    @BeforeClass
+    public static void setUpClass() {
+        postCypherQuery(
+            "CREATE (n:Feature {name: 'ExistingFeature', " +
+            "type: 'atomic', description: '...'})");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        postCypherQuery(
+            "MATCH (n:Feature {name: 'NonExistingFeature', " +
+            "type: 'complex', description: '...'}) DELETE n");
+        postCypherQuery(
+            "MATCH (n:Feature {name: 'ExistingFeature', " +
+            "type: 'atomic', description: '...'}) DELETE n");
+    }
+
+    private static WS.Response postCypherQuery(String query) {
+        String cypherURL = "http://localhost:7474/db/data/cypher";
+        String contentType = "application/json";
+        ObjectNode content = Json.newObject();
+        content.put("query", query);
+        return WS.url(cypherURL).setContentType(contentType).post(content)
+            .get(ASYNC_TIMEOUT);
+    }
 
     @Before
     public void setUp() {
@@ -28,13 +60,12 @@ public class FeaturesTest extends WithApplication {
     }
 
     @Test
-    public void featureSuccess() {
-        Feature feature = new ComplexFeature(
-            "NonExistingFeature", "This is not a description.");
+    public void createFeatureSuccess() {
+        Feature feature = new ComplexFeature("NonExistingFeature", "...");
         Result result = callAction(
             controllers.routes.ref.Features.createFeature(),
             fakeRequest()
-                .withSession("email", "foo@bar.com")
+                .withSession("username", "user@example.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
                     "type", feature.getType(),
@@ -43,18 +74,15 @@ public class FeaturesTest extends WithApplication {
         assertThat(flash(result).get("success")).isEqualTo(
             "Feature successfully created.");
         assert(feature.exists().get(ASYNC_TIMEOUT));
-        feature.delete().get(ASYNC_TIMEOUT);
     }
 
     @Test
-    public void featureCreateExisting() {
-        Feature feature = new AtomicFeature(
-            "ExistingFeature", "This is not a description.")
-            .create().get(ASYNC_TIMEOUT);
+    public void createFeatureExisting() {
+        Feature feature = new AtomicFeature("ExistingFeature", "...");
         Result result = callAction(
             controllers.routes.ref.Features.createFeature(),
             fakeRequest()
-                .withSession("email", "foo@bar.com")
+                .withSession("username", "user@example.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
                     "name", feature.name,
                     "type", feature.getType(),
@@ -62,6 +90,5 @@ public class FeaturesTest extends WithApplication {
         assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("error")).isEqualTo(
             "Feature already exists.");
-        feature.delete().get(ASYNC_TIMEOUT);
     }
 }

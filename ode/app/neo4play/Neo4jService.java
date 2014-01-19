@@ -145,19 +145,6 @@ public class Neo4jService {
         }});
     }
 
-    public static Promise<WS.Response> getOutgoingRelationshipsByType(
-        LabeledNodeWithProperties startNode, final RelationshipType type) {
-        Promise<String> startNodeURL = getNodeURL(
-            startNode.label.toString(), startNode.jsonProperties);
-        return startNodeURL.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String nodeURL) {
-                    String fullURL = nodeURL + "/relationships/out/"
-                        + type.name();
-                    return WS.url(fullURL).get();
-        }});
-    }
-
     public static Promise<List<WS.Response>> getRelationshipTargets(
         String nodeLabel, JsonNode nodeProps, String relationshipType) {
         Promise<WS.Response> response = getOutgoingRelationshipsByType(

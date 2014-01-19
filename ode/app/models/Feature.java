@@ -1,6 +1,8 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -107,6 +109,12 @@ public class Feature extends OntologyNode {
                     features.add(new AtomicFeature(name, description));
                 }
             }
+            Collections.sort(
+                features, new Comparator<Feature>() {
+                    public int compare(Feature f1, Feature f2) {
+                        return f1.name.compareTo(f2.name);
+                    }
+                });
             return features;
         }
     }

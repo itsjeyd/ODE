@@ -155,27 +155,7 @@ public class Features extends Controller {
             });
     }
 
-
-    private static class MaybeConnectToValueFunction
-        implements Function<Tuple<Option<OntologyNode>, Boolean>,
-                            Promise<Tuple<Option<Relationship>, Boolean>>> {
-        private Feature feature;
-        public MaybeConnectToValueFunction(Feature feature) {
-            this.feature = feature;
-        }
-        public Promise<Tuple<Option<Relationship>, Boolean>> apply(
-            Tuple<Option<OntologyNode>, Boolean> valueResult) {
-            Option<OntologyNode> value = valueResult._1;
-            if (value.isDefined()) {
-                return new AllowsRelationship(
-                    feature, value.get()).getOrCreate();
-            }
-            return Promise.pure(
-                new Tuple<Option<Relationship>, Boolean>(
-                    new None<Relationship>(), false));
-        }
-    }
-
+    @Security.Authenticated(Secured.class)
     public static Promise<Result> deleteTarget(String fname) {
         Form<DeleteTargetForm> targetForm = form(DeleteTargetForm.class)
             .bindFromRequest();
@@ -202,6 +182,27 @@ public class Features extends Controller {
                     return redirect(routes.Features.list());
                 }
             });
+    }
+
+
+    private static class MaybeConnectToValueFunction
+        implements Function<Tuple<Option<OntologyNode>, Boolean>,
+                            Promise<Tuple<Option<Relationship>, Boolean>>> {
+        private Feature feature;
+        public MaybeConnectToValueFunction(Feature feature) {
+            this.feature = feature;
+        }
+        public Promise<Tuple<Option<Relationship>, Boolean>> apply(
+            Tuple<Option<OntologyNode>, Boolean> valueResult) {
+            Option<OntologyNode> value = valueResult._1;
+            if (value.isDefined()) {
+                return new AllowsRelationship(
+                    feature, value.get()).getOrCreate();
+            }
+            return Promise.pure(
+                new Tuple<Option<Relationship>, Boolean>(
+                    new None<Relationship>(), false));
+        }
     }
 
 

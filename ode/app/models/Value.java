@@ -1,6 +1,8 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,6 +41,12 @@ public class Value extends OntologyNode {
                 String name = dataNode.get("name").asText();
                 values.add(new Value(name));
             }
+            Collections.sort(
+                values, new Comparator<Value>() {
+                    public int compare(Value v1, Value v2) {
+                        return v1.name.compareTo(v2.name);
+                    }
+                });
             return values;
         }
     }

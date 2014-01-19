@@ -12,19 +12,20 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import constants.RelationshipType;
-import managers.functions.JsonFunction;
-import managers.functions.NodeCreatedFunction;
-import managers.functions.NodeListFunction;
 import models.Feature;
 import neo4play.Neo4jService;
 
 
-public class FeatureManager {
+public class FeatureManager extends LabeledNodeWithPropertiesManager {
 
     public static Promise<List<JsonNode>> all() {
-        Promise<WS.Response> response = Neo4jService.getNodesByLabel(
-            NodeType.FEATURE.toString());
-        return response.map(new NodeListFunction());
+        return LabeledNodeManager.all(NodeType.FEATURE);
+    }
+
+    public static Promise<Boolean> create(Feature feature) {
+        feature.jsonProperties.put("type", feature.getType());
+        feature.jsonProperties.put("description", feature.getDescription());
+        return LabeledNodeWithPropertiesManager.create(feature);
     }
 
     public static Promise<List<JsonNode>> values(Feature feature) {
@@ -43,23 +44,6 @@ public class FeatureManager {
                     return nodes;
                 }
             });
-    }
-
-    public static Promise<JsonNode> get(Feature feature) {
-        Promise<WS.Response> response = Neo4jService
-            .getLabeledNodeWithProperties(
-                feature.label.toString(), feature.jsonProperties);
-        return response.map(new JsonFunction());
-    }
-
-    public static Promise<Boolean> create(Feature feature) {
-        feature.jsonProperties.put("type", feature.getType());
-        feature.jsonProperties.put(
-            "description", feature.getDescription());
-        Promise<WS.Response> response = Neo4jService
-            .createLabeledNodeWithProperties(
-                feature.label.toString(), feature.jsonProperties);
-        return response.map(new NodeCreatedFunction());
     }
 
     public static Promise<Boolean> updateType(

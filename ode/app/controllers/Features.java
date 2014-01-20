@@ -91,7 +91,7 @@ public class Features extends Controller {
     public static Promise<Result> updateFeatureType(String featureName) {
         Form<UpdateFeatureTypeForm> typeForm =
             form(UpdateFeatureTypeForm.class).bindFromRequest();
-        String newType = typeForm.get().type;
+        final String newType = typeForm.get().type;
         Promise<Tuple<Option<Feature>, Boolean>> result =
             new Feature(featureName).updateType(newType);
         return result.map(
@@ -99,6 +99,9 @@ public class Features extends Controller {
                 public Result apply(Tuple<Option<Feature>, Boolean> result) {
                     Boolean updated = result._2;
                     if (updated) {
+                        if (newType.equals(FeatureType.COMPLEX.toString())) {
+                            Value.deleteOrphans();
+                        }
                         flash(
                             "success", "Feature type successfully updated.");
                     } else {

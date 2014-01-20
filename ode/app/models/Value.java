@@ -8,6 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.Json;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -43,6 +44,17 @@ public class Value extends OntologyNode {
 
     public Promise<Boolean> deleteIfOrphaned() {
         return this.isOrphan().flatMap(new DeleteIfOrphanedFunction(this));
+    }
+
+    public static void deleteOrphans() {
+        Promise<List<Value>> values = Value.all();
+        values.onRedeem(new Callback<List<Value>>() {
+                public void invoke(List<Value> values) {
+                    for (Value value: values) {
+                        value.deleteIfOrphaned();
+                    }
+                }
+            });
     }
 
 

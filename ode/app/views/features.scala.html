@@ -21,7 +21,9 @@
           <div id="@feature.name" class="edit-feature">
 
             <h3>@feature.name</h3>
-            <p>@feature.getDescription</p>
+            <div contenteditable="true">
+              <span class="description">@feature.getDescription</span>
+            </div>
 
             @if(feature.getType == "complex") {
               <form role="form" method="POST" action="/features/@feature.name/type">

@@ -2,6 +2,8 @@ package controllers;
 
 import java.util.List;
 
+import play.Routes;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -31,6 +33,15 @@ import static play.data.Form.form;
 
 
 public class Features extends Controller {
+
+    @Security.Authenticated(Secured.class)
+    public static Result javascriptRoutes() {
+        response().setContentType("text/javascript");
+        return ok(Routes.javascriptRouter(
+                      "jsRoutes",
+                      controllers.routes.javascript.Features
+                      .updateFeatureDescription()));
+    }
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> list() {
@@ -83,6 +94,23 @@ public class Features extends Controller {
                         }
                     }
                     return redirect(routes.Features.list());
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Promise<Result> updateFeatureDescription(
+        String featureName) {
+        DynamicForm descriptionForm = form().bindFromRequest();
+        String newDescription = descriptionForm.get("description");
+        Promise<Boolean> descriptionUpdated = new Feature(featureName)
+            .updateDescription(newDescription);
+        return descriptionUpdated.map(new Function<Boolean, Result>() {
+                public Result apply(Boolean updated) {
+                    if (updated) {
+                        return ok();
+                    }
+                    return badRequest();
                 }
             });
     }

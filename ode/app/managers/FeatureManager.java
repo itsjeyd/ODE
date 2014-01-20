@@ -14,6 +14,7 @@ import constants.NodeType;
 import constants.RelationshipType;
 import models.Feature;
 import neo4play.Neo4jService;
+import managers.functions.UpdatedFunction;
 
 
 public class FeatureManager extends LabeledNodeWithPropertiesManager {
@@ -46,6 +47,16 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    public static Promise<Boolean> updateDescription(
+        Feature feature, String newDescription) {
+        feature.jsonProperties.put("type", feature.getType());
+        ObjectNode newProps = feature.jsonProperties.deepCopy();
+        newProps.put("description", newDescription);
+        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
+            feature.label.toString(), feature.jsonProperties, newProps);
+        return response.map(new UpdatedFunction());
+    }
+
     public static Promise<Boolean> updateType(
         Feature feature, String newType) {
         feature.jsonProperties.put(
@@ -54,7 +65,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         newProps.put("type", newType);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
             feature.label.toString(), feature.jsonProperties, newProps);
-        return response.map(new managers.functions.UpdatedFunction());
+        return response.map(new UpdatedFunction());
     }
 
 }

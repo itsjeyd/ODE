@@ -169,6 +169,10 @@ public class Neo4jServiceTest {
     }
 
     @Test
+    public void deleteLabeledNodeWithPropertiesTest() {
+    }
+
+    @Test
     public void getNodesByLabelTest() {
         WS.Response nodesByLabelResponse = Neo4jService
             .getNodesByLabel("GenericTestNode").get(ASYNC_TIMEOUT);
@@ -189,6 +193,10 @@ public class Neo4jServiceTest {
             .get(ASYNC_TIMEOUT);
         assertThat(updatedNodeResponse.getStatus())
             .isEqualTo(Status.NO_CONTENT);
+    }
+
+    @Test
+    public void getIncomingRelationshipsByTypeTest() {
     }
 
     @Test

@@ -1,5 +1,54 @@
 $(document).ready(function() {
 
+  function showUpdateNameButton(clickEvent) {
+    clickEvent.preventDefault();
+    $(this).off("click");
+    button = $("<button>").addClass("btn btn-sm btn-info")
+      .html("Update name");
+    button.insertAfter($(this).parent());
+    button.on("click", updateFeatureName);
+  }
+
+  function updateFeatureName(clickEvent) {
+    clickEvent.preventDefault();
+    nameField = $(this).parent().find(".name");
+    oldName = nameField.data("name");
+    newName = nameField.text();
+    featureItem = $("a[href='#" + oldName + "']");
+    editBlock = $("#"+oldName);
+    updateButton = $(this);
+    route = jsRoutes.controllers.Features.updateFeatureName(oldName);
+    $.ajax({
+      url: route.url,
+      type: route.type,
+      data: { "name": newName },
+      statusCode: {
+        200: function() {
+          featureItem.attr("href", "#"+newName)
+            .text(newName);
+          editBlock.attr("id", newName)
+            .find(".name").data("name", newName).text(newName);
+          updateButton.hide();
+          alertBlock = $("<span>").addClass("text-success")
+            .css("padding-left", "10px")
+            .text("Name successfully updated!");
+          nameField.append(alertBlock);
+          alertBlock.fadeOut(5000);
+        },
+        400: function() {
+          nameField.text(oldName);
+          updateButton.hide();
+          alertBlock = $("<span>").addClass("text-danger")
+            .css("padding-left", "10px")
+            .text("A feature with that name already exists.");
+          nameField.append(alertBlock);
+          alertBlock.fadeOut(5000);
+        }
+      }
+    });
+    nameField.on("click", showUpdateNameButton);
+  }
+
   function showButton(clickEvent) {
     clickEvent.preventDefault();
     $(this).off("click");
@@ -47,6 +96,7 @@ $(document).ready(function() {
     event.preventDefault();
     $(".alert").hide();
     $("#interaction-block").html($("#"+$(this).text()).html());
+    $(".name").on("click", showUpdateNameButton);
     $(".description").on("click", showButton);
     $("#new-feature-button").show();
   });

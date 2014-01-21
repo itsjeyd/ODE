@@ -20,7 +20,9 @@
           <!-- Edit block for individual feature: -->
           <div id="@feature.name" class="edit-feature">
 
-            <h3>@feature.name</h3>
+            <div contenteditable="true">
+              <h3 class="name" data-name="@feature.name">@feature.name</h3>
+            </div>
             <div contenteditable="true">
               <span class="description">@feature.getDescription</span>
             </div>

@@ -47,6 +47,18 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    public static Promise<Boolean> updateName(
+        Feature feature, String newName) {
+        feature.jsonProperties.put("type", feature.getType());
+        feature.jsonProperties.put("description", feature.getDescription());
+        ObjectNode newProps = feature.jsonProperties.deepCopy().retain(
+            "type", "description");
+        newProps.put("name", newName);
+        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
+            feature.label.toString(), feature.jsonProperties, newProps);
+        return response.map(new UpdatedFunction());
+    }
+
     public static Promise<Boolean> updateDescription(
         Feature feature, String newDescription) {
         feature.jsonProperties.put("type", feature.getType());

@@ -21,6 +21,7 @@ GET     /search                     controllers.Application.search()
 # Features
 GET     /features                       controllers.Features.list()
 POST    /features                       controllers.Features.createFeature()
+PUT     /features/:name/name            controllers.Features.updateFeatureName(name: String)
 PUT     /features/:name/description     controllers.Features.updateFeatureDescription(name: String)
 POST    /features/:name/type            controllers.Features.updateFeatureType(name: String)
 POST    /features/:name/targets         controllers.Features.addTargets(name: String)

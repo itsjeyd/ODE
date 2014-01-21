@@ -11,6 +11,7 @@ import play.mvc.Security;
 
 import play.libs.F.Callback;
 import play.libs.F.Function;
+import play.libs.F.Function0;
 import play.libs.F.Option;
 import play.libs.F.Promise;
 import play.libs.F.None;
@@ -40,7 +41,9 @@ public class Features extends Controller {
         return ok(Routes.javascriptRouter(
                       "jsRoutes",
                       controllers.routes.javascript.Features
-                      .updateFeatureDescription()));
+                      .updateFeatureDescription(),
+                      controllers.routes.javascript.Features
+                      .updateFeatureName()));
     }
 
     @Security.Authenticated(Secured.class)
@@ -94,6 +97,52 @@ public class Features extends Controller {
                         }
                     }
                     return redirect(routes.Features.list());
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Promise<Result> updateFeatureName(
+        final String featureName) {
+        DynamicForm nameForm = form().bindFromRequest();
+        final String newName = nameForm.get("name");
+        Promise<List<Feature>> features = Feature.all();
+        Promise<Boolean> nameAlreadyTaken = features.map(
+            new Function<List<Feature>, Boolean>() {
+                public Boolean apply(List<Feature> features) {
+                    Boolean nameAlreadyTaken = false;
+                    for (Feature feature: features) {
+                        if (feature.name.equals(newName)) {
+                            nameAlreadyTaken = true;
+                            break;
+                        }
+                    }
+                    return nameAlreadyTaken;
+                }
+            });
+        return nameAlreadyTaken.flatMap(
+            new Function<Boolean, Promise<Result>>() {
+                public Promise<Result> apply(Boolean nameAlreadyTaken) {
+                    if (nameAlreadyTaken) {
+                        return Promise.promise(
+                            new Function0<Result>() {
+                                public Result apply() {
+                                    return badRequest();
+                                }
+                            });
+                    } else {
+                        Promise<Boolean> nameUpdated = new Feature(
+                            featureName).updateName(newName);
+                        return nameUpdated.map(
+                            new Function<Boolean, Result>() {
+                                public Result apply(Boolean updated) {
+                                    if (updated) {
+                                        return ok();
+                                    }
+                                    return badRequest();
+                                }
+                            });
+                    }
                 }
             });
     }

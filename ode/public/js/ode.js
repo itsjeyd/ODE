@@ -98,6 +98,13 @@ $(document).ready(function() {
     $("#interaction-block").html($("#"+$(this).text()).html());
     $(".name").on("click", showUpdateNameButton);
     $(".description").on("click", showButton);
+    $(".btn-warning").hide();
+    $(".target-name").on("mouseenter", function() {
+      $(this).parent().find(".btn-warning").show();
+    });
+    $(".target-name").on("mouseleave", function() {
+      $(this).parent().find(".btn-warning").hide();
+    });
     $("#new-feature-button").show();
   });
 

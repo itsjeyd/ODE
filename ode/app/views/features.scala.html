@@ -75,12 +75,14 @@
               <p class="target">
                 <form role="form" method="POST"
                       action="/features/@feature.name/targets/delete">
-                  @target
-                  <input type="hidden" name="type" value="@feature.getType">
-                  <input type="hidden" name="target" value="@target">
-                  <button class="btn btn-xs btn-warning" type="submit">
-                    Delete
-                  </button>
+                  <div class="target-name">
+                    @target
+                    <input type="hidden" name="type" value="@feature.getType">
+                    <input type="hidden" name="target" value="@target">
+                    <button class="btn btn-xs btn-warning" type="submit">
+                      Delete
+                    </button>
+                  </div>
                 </form>
               </p>
             }

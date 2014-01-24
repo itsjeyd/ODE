@@ -109,6 +109,7 @@ $(document).ready(function() {
   $("#new-feature").hide();
   $(".edit-feature").hide();
   $(".btn-warning").hide();
+  $(".update-type").hide();
 
   $("#new-feature-button").on("click", function(event) {
     event.preventDefault();
@@ -123,6 +124,11 @@ $(document).ready(function() {
     $("#interaction-block").html($("#"+$(this).text()).html());
     $(".name").on("click", showUpdateNameButton);
     $(".description").on("click", showButton);
+
+    $(":radio").on("change", function() {
+      $(this).parents("form").find("button").show();
+    });
+
     $(".btn-warning").hide();
     $(".target-name").on("mouseenter", function() {
       $(this).parent().find(".btn-warning").show();

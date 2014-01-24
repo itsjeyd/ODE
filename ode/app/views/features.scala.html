@@ -31,18 +31,22 @@
             @if(feature.getType == "complex") {
               <form role="form" method="POST" action="/features/@feature.name/type">
                 <p>
-                  <input type="radio" name="type" value="complex"
-                         id="type-complex" checked="checked" />
-                  <label for="type-complex">complex</label>
+                  <label>
+                    <input type="radio" name="type" value="complex"
+                           checked="checked" />
+                    complex
+                  </label>
                 </p>
                 <p>
-                  <input type="radio" name="type" value="atomic"
-                         id="type-atomic"/>
-                  <label for="type-atomic">atomic</label>
+                  <label>
+                    <input type="radio" name="type" value="atomic" />
+                    atomic
+                  </label>
                 </p>
                 <p>
-                  <button class="btn btn-sm btn-info" type="submit">
-                    Update
+                  <button class="btn btn-sm btn-info update-type"
+                          type="submit">
+                    Update type
                   </button>
                 </p>
               </form>
@@ -52,18 +56,22 @@
             } else {
               <form role="form" method="POST" action="/features/@feature.name/type">
                 <p>
-                  <input type="radio" name="type" value="complex"
-                         id="type-complex" />
-                  <label for="type-complex">complex</label>
+                  <label>
+                    <input type="radio" name="type" value="complex" />
+                    complex
+                  </label>
                 </p>
                 <p>
-                  <input type="radio" name="type" value="atomic"
-                         id="type-atomic" checked="checked" />
-                  <label for="type-atomic">atomic</label>
+                  <label>
+                    <input type="radio" name="type" value="atomic"
+                           checked="checked" />
+                    atomic
+                  </label>
                 </p>
                 <p>
-                  <button class="btn btn-sm btn-info" type="submit">
-                    Update
+                  <button class="btn btn-sm btn-info update-type"
+                          type="submit">
+                    Update type
                   </button>
                 </p>
               </form>

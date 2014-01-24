@@ -103,6 +103,14 @@ public class FeaturesTest extends WithApplication {
     }
 
     @Test
+    public void updateFeatureNameTest() {
+    }
+
+    @Test
+    public void updateFeatureDescriptionTest() {
+    }
+
+    @Test
     public void updateFeatureTypeTest() {
     }
 

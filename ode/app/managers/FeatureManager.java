@@ -14,6 +14,7 @@ import constants.NodeType;
 import constants.RelationshipType;
 import models.Feature;
 import neo4play.Neo4jService;
+import managers.functions.NodeDeletedFunction;
 import managers.functions.UpdatedFunction;
 
 
@@ -78,6 +79,13 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
             feature.label.toString(), feature.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
+    }
+
+    public static Promise<Boolean> delete(Feature feature) {
+        Promise<WS.Response> response = Neo4jService
+            .deleteLabeledNodeWithProperties(feature.label.toString(),
+                                             feature.jsonProperties);
+        return response.map(new NodeDeletedFunction());
     }
 
 }

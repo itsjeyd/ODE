@@ -135,6 +135,17 @@ public class Neo4jService {
             }});
     }
 
+    public static Promise<WS.Response> getIncomingRelationships(
+        String endNodeLabel, JsonNode endNodeProps) {
+        Promise<String> endNodeURL = getNodeURL(endNodeLabel, endNodeProps);
+        return endNodeURL.flatMap(
+            new Function<String, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(String nodeURL) {
+                    String fullURL = nodeURL + "/relationships/in";
+                    return WS.url(fullURL).get();
+        }});
+    }
+
     public static Promise<WS.Response> getIncomingRelationshipsByType(
         String endNodeLabel, JsonNode endNodeProps,
         final String relationshipType) {

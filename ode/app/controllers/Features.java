@@ -43,7 +43,9 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .updateFeatureDescription(),
                       controllers.routes.javascript.Features
-                      .updateFeatureName()));
+                      .updateFeatureName(),
+                      controllers.routes.javascript.Features
+                      .deleteFeature()));
     }
 
     @Security.Authenticated(Secured.class)
@@ -271,6 +273,30 @@ public class Features extends Controller {
                         flash("error", "Target could not be removed.");
                     }
                     return redirect(routes.Features.list());
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Promise<Result> deleteFeature(final String featureName) {
+        Promise<Boolean> isInUse = new Feature(featureName).isInUse();
+        Promise<Boolean> deleted = isInUse.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean isInUse) {
+                    if (isInUse) {
+                        return Promise.pure(false);
+                    }
+                    return new Feature(featureName).delete();
+                }
+            });
+        return deleted.map(
+            new Function<Boolean, Result>() {
+                public Result apply(Boolean deleted) {
+                    if (deleted) {
+                        Value.deleteOrphans();
+                        return ok();
+                    }
+                    return badRequest();
                 }
             });
     }

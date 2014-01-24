@@ -1,5 +1,29 @@
 $(document).ready(function() {
 
+  function deleteFeature(clickEvent) {
+    clickEvent.preventDefault();
+    featureItem = $(this).parent();
+    featureName = featureItem.find(".feature-name").text();
+    route = jsRoutes.controllers.Features.deleteFeature(featureName);
+    $.ajax({
+      url: route.url,
+      type: route.type,
+      statusCode: {
+        200: function() {
+          featureItem.fadeOut(2000);
+          alertBlock = $("<span>").addClass("text-success")
+            .text("Feature successfully deleted!");
+          $("#interaction-block").html(alertBlock);
+          },
+        400: function() {
+          alertBlock = $("<span>").addClass("text-danger")
+            .text("Can't delete feature.");
+          $("#interaction-block").html(alertBlock);
+          }
+      }
+    });
+  }
+
   function showUpdateNameButton(clickEvent) {
     clickEvent.preventDefault();
     $(this).off("click");
@@ -84,6 +108,7 @@ $(document).ready(function() {
 
   $("#new-feature").hide();
   $(".edit-feature").hide();
+  $(".btn-warning").hide();
 
   $("#new-feature-button").on("click", function(event) {
     event.preventDefault();
@@ -92,7 +117,7 @@ $(document).ready(function() {
     $("#interaction-block").html($("#new-feature").html());
   });
 
-  $(".feature-item").on("click", function(event) {
+  $(".feature-name").on("click", function(event) {
     event.preventDefault();
     $(".alert").hide();
     $("#interaction-block").html($("#"+$(this).text()).html());
@@ -106,6 +131,18 @@ $(document).ready(function() {
       $(this).parent().find(".btn-warning").hide();
     });
     $("#new-feature-button").show();
+  });
+
+  $(".feature-item").on("mouseenter click", function() {
+    deleteButton = $(this).find(".btn-warning");
+    deleteButton.on("click", deleteFeature);
+    deleteButton.show();
+  });
+
+  $(".feature-item").on("mouseleave", function() {
+    deleteButton = $(this).find(".btn-warning");
+    deleteButton.off("click");
+    deleteButton.hide();
   });
 
   $("#feature-filter").on("keyup", function(event) {

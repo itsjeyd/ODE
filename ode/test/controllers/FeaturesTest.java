@@ -122,4 +122,8 @@ public class FeaturesTest extends WithApplication {
     public void deleteTargetTest() {
     }
 
+    @Test
+    public void deleteFeatureTest() {
+    }
+
 }

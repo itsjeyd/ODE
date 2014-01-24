@@ -26,6 +26,7 @@ PUT     /features/:name/description     controllers.Features.updateFeatureDescri
 POST    /features/:name/type            controllers.Features.updateFeatureType(name: String)
 POST    /features/:name/targets         controllers.Features.addTargets(name: String)
 POST    /features/:fname/targets/delete controllers.Features.deleteTarget(fname: String)
+DELETE  /features/:fname                controllers.Features.deleteFeature(fname: String)
 
 # Client-side routers
 GET     /assets/js/featureRoutes    controllers.Features.javascriptRoutes()

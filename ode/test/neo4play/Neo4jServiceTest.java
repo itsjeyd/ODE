@@ -196,6 +196,10 @@ public class Neo4jServiceTest {
     }
 
     @Test
+    public void getIncomingRelationshipsTest() {
+    }
+
+    @Test
     public void getIncomingRelationshipsByTypeTest() {
     }
 

@@ -13,8 +13,9 @@
 
         @for(feature <- features) {
 
-          <p>
-            <a href="#@feature.name" class="feature-item">@feature.name</a>
+          <p class="feature-item">
+            <a href="#@feature.name" class="feature-name">@feature.name</a>
+            <button class="btn btn-xs btn-warning">Delete</button>
           </p>
 
           <!-- Edit block for individual feature: -->
@@ -117,15 +118,15 @@
         <h3>Create a new feature</h3>
         @helper.form(routes.Features.createFeature) {
           <p>
-            <label for="feature-name">Name:</label>
+            <label for="fname">Name:</label>
             <input type="text" name="name" value="@form("name").value"
-                   id="feature-name" />
+                   id="fname" />
           </p>
           <p>
-            <label for="feature-description">Description:</label>
+            <label for="fdescription">Description:</label>
             <input type="text" name="description"
                    value="@form("description").value"
-                   id="feature-description" />
+                   id="fdescription" />
           </p>
           <p>
             <input type="radio" name="type" value="complex"

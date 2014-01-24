@@ -50,6 +50,18 @@ public class Feature extends OntologyNode {
         return this.description;
     }
 
+    public Promise<Boolean> isInUse() {
+        Promise<List<Relationship>> incomingRelationships =
+            this.getIncomingRelationships();
+        return incomingRelationships.map(
+            new Function<List<Relationship>, Boolean>() {
+                public Boolean apply(
+                    List<Relationship> incomingRelationships) {
+                    return !incomingRelationships.isEmpty();
+                }
+            });
+    }
+
     public static Promise<List<Feature>> all() {
         Promise<List<JsonNode>> json = FeatureManager.all();
         return json.map(new AllFunction());
@@ -58,6 +70,10 @@ public class Feature extends OntologyNode {
     public Promise<Feature> get() {
         Promise<JsonNode> json = FeatureManager.get(this);
         return json.map(new GetFunction());
+    }
+
+    public Promise<List<Relationship>> getIncomingRelationships() {
+        return Relationship.getAllTo(this);
     }
 
     public Promise<List<Relationship>> getOutgoingRelationships(
@@ -111,7 +127,18 @@ public class Feature extends OntologyNode {
     }
 
     public Promise<Boolean> delete() {
-        return null;
+        final Feature feature = this;
+        Promise<Boolean> allDeleted =
+            AllowsRelationship.deleteAllFrom(this);
+        return allDeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean allDeleted) {
+                    if (allDeleted) {
+                        return FeatureManager.delete(feature);
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
 

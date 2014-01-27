@@ -128,13 +128,13 @@
           <p>
             <label for="fname">Name:</label>
             <input type="text" name="name" value="@form("name").value"
-                   id="fname" />
+                   id="fname" class="form-control" />
           </p>
           <p>
             <label for="fdescription">Description:</label>
             <input type="text" name="description"
                    value="@form("description").value"
-                   id="fdescription" />
+                   id="fdescription" class="form-control" />
           </p>
           <p>
             <input type="radio" name="type" value="complex"
@@ -147,7 +147,7 @@
             <label for="type-atomic">atomic</label>
           </p>
           <p>
-            <button class="btn btn-success" type="submit">
+            <button class="btn btn-lg btn-success" type="submit">
               Save
             </button>
           </p>

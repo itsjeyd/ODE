@@ -186,12 +186,48 @@ $(document).ready(function() {
     deleteButton.hide();
   });
 
+  // - Gather list of all features:
+  featureNames = $(".feature-name").map(function() {
+    return $(this);
+  });
+
   $("#feature-filter").on("keyup", function(event) {
-    // ...
+    // - Get current input:
+    currentInput = $(this).val().toLowerCase();
+    // - Match list items against current input:
+    featureNames.each(function() {
+      featureItem = $(this).parent();
+      featureName = $(this).text();
+      if (featureName.toLowerCase().indexOf(currentInput) === -1) {
+        featureItem.hide();
+      } else {
+        if (!featureItem.is(":visible")) {
+          featureItem.show();
+        }
+      }
+    });
+  });
+
+  // - Gather list of all values:
+  valueNames = $(".value").map(function() {
+    return $(this);
   });
 
   $("#value-filter").on("keyup", function(event) {
-    // ...
+    // - Get current input:
+    currentInput = $(this).val().toLowerCase();
+    // - Match list items against current input:
+    valueNames.each(function() {
+      value = $(this);
+      valueName = value.text();
+      if (valueName.toLowerCase().indexOf(currentInput) === -1) {
+        value.hide();
+      } else {
+        if (!value.is(":visible")) {
+          value.show();
+        }
+      }
+    });
   });
 
 });

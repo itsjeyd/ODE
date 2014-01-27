@@ -41,9 +41,11 @@ public class Features extends Controller {
         return ok(Routes.javascriptRouter(
                       "jsRoutes",
                       controllers.routes.javascript.Features
+                      .updateFeatureName(),
+                      controllers.routes.javascript.Features
                       .updateFeatureDescription(),
                       controllers.routes.javascript.Features
-                      .updateFeatureName(),
+                      .updateFeatureType(),
                       controllers.routes.javascript.Features
                       .deleteFeature()));
     }
@@ -181,18 +183,9 @@ public class Features extends Controller {
                         if (newType.equals(FeatureType.COMPLEX.toString())) {
                             Value.deleteOrphans();
                         }
-                        flash(
-                            "success", "Feature type successfully updated.");
-                    } else {
-                        Option<Feature> feature = result._1;
-                        if (feature.isDefined()) {
-                            flash(
-                                "error", "Same type. No updates performed.");
-                        } else {
-                            flash("error", "Feature type not updated.");
-                        }
+                        return ok();
                     }
-                    return redirect(routes.Features.list());
+                    return badRequest();
                 }
             });
     }

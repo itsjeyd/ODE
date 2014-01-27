@@ -106,10 +106,42 @@ $(document).ready(function() {
     descriptionField.on("click", showButton);
   }
 
+  function updateFeatureType(clickEvent) {
+    clickEvent.preventDefault();
+    updateButton = $(this);
+    featureName = updateButton.parents("form").data("feature");
+    newType = updateButton.parents("form").find("input:checked").val();
+    route = jsRoutes.controllers.Features.updateFeatureType(featureName);
+    editBlock = $("#"+featureName);
+    $.ajax({
+      url: route.url,
+      type: route.type,
+      data: { "type": newType },
+      statusCode: {
+        200: function() {
+          oldType = newType === "complex" ? "atomic" : "complex";
+          editBlock.find("input[value='" + oldType + "']")
+            .removeAttr('checked');
+          editBlock.find("input[value='" + newType + "']")
+            .attr('checked', true);
+          updateButton.hide();
+          alertBlock = $("<span>").addClass("text-success")
+            .text("Type successfully updated!");
+          updateButton.parent().append(alertBlock);
+          alertBlock.fadeOut(2000);
+        },
+        400: function() {
+          alertBlock = $("<span>").addClass("text-danger")
+            .text("Type not updated.");
+          updateButton.parent().append(alertBlock);
+        }
+      }
+    });
+  }
+
   $("#new-feature").hide();
   $(".edit-feature").hide();
   $(".btn-warning").hide();
-  $(".update-type").hide();
 
   $("#new-feature-button").on("click", function(event) {
     event.preventDefault();
@@ -125,8 +157,11 @@ $(document).ready(function() {
     $(".name").on("click", showUpdateNameButton);
     $(".description").on("click", showButton);
 
+    $(".update-type").hide();
     $(":radio").on("change", function() {
-      $(this).parents("form").find("button").show();
+      updateButton = $(this).parents("form").find("button");
+      updateButton.one("click", updateFeatureType);
+      updateButton.show();
     });
 
     $(".btn-warning").hide();

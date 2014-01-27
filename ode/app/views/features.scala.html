@@ -29,7 +29,7 @@
             </div>
 
             @if(feature.getType == "complex") {
-              <form role="form" method="POST" action="/features/@feature.name/type">
+              <form role="form" data-feature="@feature.name">
                 <p>
                   <label>
                     <input type="radio" name="type" value="complex"
@@ -54,7 +54,7 @@
               <h4>Features permitted in substructure:</h4>
 
             } else {
-              <form role="form" method="POST" action="/features/@feature.name/type">
+              <form role="form" data-feature="@feature.name">
                 <p>
                   <label>
                     <input type="radio" name="type" value="complex" />

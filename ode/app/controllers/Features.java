@@ -47,7 +47,9 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .updateFeatureType(),
                       controllers.routes.javascript.Features
-                      .deleteFeature()));
+                      .deleteFeature(),
+                      controllers.routes.javascript.Features
+                      .addTargets()));
     }
 
     @Security.Authenticated(Secured.class)
@@ -216,17 +218,9 @@ public class Features extends Controller {
                     Tuple<Option<Relationship>, Boolean> relationshipResult) {
                     Boolean created = relationshipResult._2;
                     if (created) {
-                        flash("success", "Operation successfully completed.");
-                    } else {
-                        Option<Relationship> relationship =
-                            relationshipResult._1;
-                        if (relationship.isDefined()) {
-                            flash("error", "Can't add target twice.");
-                        } else {
-                            flash("error", "Operation failed.");
-                        }
+                        return ok();
                     }
-                    return redirect(routes.Features.list());
+                    return badRequest();
                 }
             });
     }

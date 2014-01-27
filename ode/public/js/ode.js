@@ -139,6 +139,46 @@ $(document).ready(function() {
     });
   }
 
+  function addTargets(clickEvent) {
+    clickEvent.preventDefault();
+    addTargetsButton = $(this);
+    targetsForm = addTargetsButton.parent("form");
+    featureName = targetsForm.data("feature");
+    featureType = targetsForm.data("type");
+    inputField = targetsForm.find("input[name='target']");
+    target = inputField.val();
+    editBlock = $("#"+featureName);
+    route = jsRoutes.controllers.Features.addTargets(featureName);
+    $.ajax({
+      url: route.url,
+      type: route.type,
+      data: { "type": featureType, "target": target },
+      statusCode: {
+        200: function() {
+          newTarget = $("<p>").addClass("target").text(target);
+          targetsForm.before(newTarget);
+          inputField.val("");
+          alertBlock = $("<span>").addClass("text-success")
+            .css("padding-left", "10px")
+            .text("OK!");
+          alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
+          addTargetsButton.attr("disabled", true);
+          interactionBlock = targetsForm.parents("#interaction-block");
+          editBlock.html(interactionBlock.html());
+          editBlock.find(".text-success").remove();
+        },
+        400: function() {
+          inputField.val("");
+          alertBlock = $("<span>").addClass("text-danger")
+            .css("padding-left", "10px")
+            .text("Error. Could not add target.");
+          alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
+          addTargetsButton.attr("disabled", true);
+        }
+      }
+    });
+  }
+
   $("#new-feature").hide();
   $(".edit-feature").hide();
   $(".btn-warning").hide();
@@ -171,6 +211,22 @@ $(document).ready(function() {
     $(".target-name").on("mouseleave", function() {
       $(this).parent().find(".btn-warning").hide();
     });
+
+    $(".add-targets").attr("disabled", true);
+    $(".add-targets").on("click", addTargets);
+    $("input[name='target']").on("keyup", function() {
+      addTargetsButton = $(".add-targets");
+      if (addTargetsButton.is(":disabled")) {
+        if ($(this).val()) {
+          addTargetsButton.removeAttr("disabled");
+        }
+      } else {
+        if (!$(this).val()) {
+          addTargetsButton.attr("disabled", true);
+        }
+      }
+    });
+
     $("#new-feature-button").show();
   });
 

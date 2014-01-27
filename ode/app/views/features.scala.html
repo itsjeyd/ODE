@@ -97,13 +97,12 @@
               </p>
             }
 
-            <form role="form" method="POST"
-                  action="/features/@feature.name/targets">
-              <input type="hidden" name="type" value="@feature.getType" />
+            <form role="form"
+                  data-feature="@feature.name" data-type="@feature.getType">
               <div class="form-group">
                 <input class="form-control" type="text" name="target" value="" />
               </div>
-              <button class="btn btn-sm btn-info" type="submit">
+              <button class="btn btn-sm btn-info add-targets" type="submit">
                 Add
               </button>
             </form>

@@ -49,7 +49,9 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .deleteFeature(),
                       controllers.routes.javascript.Features
-                      .addTargets()));
+                      .addTargets(),
+                      controllers.routes.javascript.Features
+                      .deleteTarget()));
     }
 
     @Security.Authenticated(Secured.class)
@@ -226,19 +228,18 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> deleteTarget(String fname) {
+    public static Promise<Result> deleteTarget(String fname, String tname) {
         Form<DeleteTargetForm> targetForm = form(DeleteTargetForm.class)
             .bindFromRequest();
         Feature feature;
         final OntologyNode target;
         String featureType = targetForm.get().type;
-        String targetName = targetForm.get().target;
         if (featureType.equals(FeatureType.COMPLEX.toString())) {
             feature = new ComplexFeature(fname);
-            target = new Feature(targetName);
+            target = new Feature(tname);
         } else {
             feature = new AtomicFeature(fname);
-            target = new Value(targetName);
+            target = new Value(tname);
         }
         Promise<Boolean> deleted = new AllowsRelationship(
             feature, target).delete();
@@ -255,11 +256,9 @@ public class Features extends Controller {
         return deleted.map(new Function<Boolean, Result>() {
                 public Result apply(Boolean deleted) {
                     if (deleted) {
-                        flash("success", "Target successfully deleted.");
-                    } else {
-                        flash("error", "Target could not be removed.");
+                        return ok();
                     }
-                    return redirect(routes.Features.list());
+                    return badRequest();
                 }
             });
     }
@@ -327,6 +326,6 @@ public class Features extends Controller {
         public String target;
     }
 
-    public static class DeleteTargetForm extends AddTargetForm {}
+    public static class DeleteTargetForm extends UpdateFeatureTypeForm {}
 
 }

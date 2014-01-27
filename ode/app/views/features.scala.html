@@ -83,13 +83,14 @@
 
             @for(target <- feature.targets) {
               <p class="target">
-                <form role="form" method="POST"
-                      action="/features/@feature.name/targets/delete">
+                <form role="form"
+                      data-feature="@feature.name"
+                      data-type="@feature.getType"
+                      data-target="@target">
                   <div class="target-name">
                     @target
-                    <input type="hidden" name="type" value="@feature.getType">
-                    <input type="hidden" name="target" value="@target">
-                    <button class="btn btn-xs btn-warning" type="submit">
+                    <button class="btn btn-xs btn-warning delete-target"
+                            type="submit">
                       Delete
                     </button>
                   </div>

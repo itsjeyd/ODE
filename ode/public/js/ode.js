@@ -139,6 +139,40 @@ $(document).ready(function() {
     });
   }
 
+  function deleteTarget(clickEvent) {
+    clickEvent.preventDefault();
+    deleteTargetButton = $(this);
+    targetForm = deleteTargetButton.parents("form");
+    featureName = targetForm.data("feature");
+    featureType = targetForm.data("type");
+    targetName = targetForm.data("target");
+    editBlock = $("#"+featureName);
+    route = jsRoutes.controllers.Features.deleteTarget(
+      featureName, targetName);
+    $.ajax({
+      url: route.url,
+      type: route.type,
+      data: { "type": featureType },
+      statusCode: {
+        200: function() {
+          alertBlock = $("<span>").addClass("text-success")
+            .css("padding-left", "10px")
+            .text("OK!");
+          alertBlock.insertAfter(deleteTargetButton);
+          deleteTargetButton.remove();
+          targetForm.fadeOut(5000);
+          editBlock.find("form[data-target='" + targetName + "']").hide();
+        },
+        400: function() {
+          alertBlock = $("<span>").addClass("text-danger")
+            .css("padding-left", "10px")
+            .text("Error. Could not remove target from feature.");
+          alertBlock.insertAfter(deleteTargetButton);
+        }
+      }
+    });
+  }
+
   function addTargets(clickEvent) {
     clickEvent.preventDefault();
     addTargetsButton = $(this);
@@ -204,7 +238,8 @@ $(document).ready(function() {
       updateButton.show();
     });
 
-    $(".btn-warning").hide();
+    $(".delete-target").hide();
+    $(".delete-target").on("click", deleteTarget);
     $(".target-name").on("mouseenter", function() {
       $(this).parent().find(".btn-warning").show();
     });

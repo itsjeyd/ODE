@@ -325,10 +325,10 @@ $(document).ready(function() {
     $(".delete-target").hide();
     $(".delete-target").on("click", deleteTarget);
     $(".target-name").on("mouseenter", function() {
-      $(this).parent().find(".btn-warning").show();
+      $(this).find(".delete-target").show();
     });
     $(".target-name").on("mouseleave", function() {
-      $(this).parent().find(".btn-warning").hide();
+      $(this).find(".delete-target").hide();
     });
 
     $(".add-targets").attr("disabled", true);

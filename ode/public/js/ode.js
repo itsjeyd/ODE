@@ -160,8 +160,9 @@ $(document).ready(function() {
             .text("OK!");
           alertBlock.insertAfter(deleteTargetButton);
           deleteTargetButton.remove();
-          targetForm.fadeOut(5000);
-          editBlock.find("form[data-target='" + targetName + "']").hide();
+          targetForm.fadeOut(3000);
+          setTimeout(function() { targetForm.remove(); }, 3500);
+          editBlock.find("form[data-target='" + targetName + "']").remove();
         },
         400: function() {
           alertBlock = $("<span>").addClass("text-danger")
@@ -189,8 +190,27 @@ $(document).ready(function() {
       data: { "type": featureType, "target": target },
       statusCode: {
         200: function() {
-          newTarget = $("<p>").addClass("target").text(target);
-          targetsForm.before(newTarget);
+          newTargetForm = $("<form>").attr("role", "form")
+            .attr("data-feature", featureName)
+            .attr("data-type", featureType)
+            .attr("data-target", target);
+          newTargetName = $("<div>").addClass("target-name").text(target);
+          newDeleteButton = $("<button>")
+            .css("margin-left", "5px")
+            .addClass("btn btn-xs btn-warning delete-target")
+            .attr("type", "submit")
+            .text("Delete");
+          newDeleteButton.on("click", deleteTarget);
+          newDeleteButton.hide();
+          newTargetName.append(newDeleteButton);
+          newTargetName.on("mouseenter", function() {
+            $(this).parent().find(".delete-target").show();
+          });
+          newTargetName.on("mouseleave", function() {
+            $(this).parent().find(".delete-target").hide();
+          });
+          newTargetForm.html(newTargetName);
+          targetsForm.before(newTargetForm);
           inputField.val("");
           alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")

@@ -298,7 +298,7 @@ $(document).ready(function() {
 
   $("#new-feature").hide();
   $(".edit-feature").hide();
-  $(".btn-warning").hide();
+  $(".delete-feature").hide();
   $(".value").on("click", showRenameValueButton);
 
   $("#new-feature-button").on("click", function(event) {
@@ -350,13 +350,13 @@ $(document).ready(function() {
   });
 
   $(".feature-item").on("mouseenter click", function() {
-    deleteButton = $(this).find(".btn-warning");
+    deleteButton = $(this).find(".delete-feature");
     deleteButton.on("click", deleteFeature);
     deleteButton.show();
   });
 
   $(".feature-item").on("mouseleave", function() {
-    deleteButton = $(this).find(".btn-warning");
+    deleteButton = $(this).find(".delete-feature");
     deleteButton.off("click");
     deleteButton.hide();
   });

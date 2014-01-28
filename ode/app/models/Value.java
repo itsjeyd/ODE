@@ -33,6 +33,10 @@ public class Value extends OntologyNode {
         return json.map(new AllFunction());
     }
 
+    public Promise<Boolean> updateName(String newName) {
+        return ValueManager.updateName(this, newName);
+    }
+
     public Promise<Boolean> delete() {
         return ValueManager.delete(this);
     }

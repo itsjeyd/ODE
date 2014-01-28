@@ -39,7 +39,7 @@ public class Features extends Controller {
     public static Result javascriptRoutes() {
         response().setContentType("text/javascript");
         return ok(Routes.javascriptRouter(
-                      "jsRoutes",
+                      "jsFeatureRoutes",
                       controllers.routes.javascript.Features
                       .updateFeatureName(),
                       controllers.routes.javascript.Features

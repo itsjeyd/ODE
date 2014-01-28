@@ -1,10 +1,20 @@
 $(document).ready(function() {
 
+  // Source: http://viralpatel.net/blogs/jquery-get-text-element-without-child-element/
+  jQuery.fn.textOnly = function() {
+    return $(this)
+      .clone()
+      .children()
+      .remove()
+      .end() // Go back to cloned element
+      .text();
+  };
+
   function deleteFeature(clickEvent) {
     clickEvent.preventDefault();
     featureItem = $(this).parent();
     featureName = featureItem.find(".feature-name").text();
-    route = jsRoutes.controllers.Features.deleteFeature(featureName);
+    route = jsFeatureRoutes.controllers.Features.deleteFeature(featureName);
     $.ajax({
       url: route.url,
       type: route.type,
@@ -41,7 +51,7 @@ $(document).ready(function() {
     featureItem = $("a[href='#" + oldName + "']");
     editBlock = $("#"+oldName);
     updateButton = $(this);
-    route = jsRoutes.controllers.Features.updateFeatureName(oldName);
+    route = jsFeatureRoutes.controllers.Features.updateFeatureName(oldName);
     $.ajax({
       url: route.url,
       type: route.type,
@@ -89,7 +99,8 @@ $(document).ready(function() {
     descriptionField = $(this).parent().find(".description");
     newDescription = descriptionField.text();
     updateButton = $(this);
-    route = jsRoutes.controllers.Features.updateFeatureDescription(feature);
+    route = jsFeatureRoutes.controllers.Features
+      .updateFeatureDescription(feature);
     $.ajax({
       url: route.url,
       type: route.type,
@@ -111,7 +122,8 @@ $(document).ready(function() {
     updateButton = $(this);
     featureName = updateButton.parents("form").data("feature");
     newType = updateButton.parents("form").find("input:checked").val();
-    route = jsRoutes.controllers.Features.updateFeatureType(featureName);
+    route = jsFeatureRoutes.controllers.Features
+      .updateFeatureType(featureName);
     editBlock = $("#"+featureName);
     $.ajax({
       url: route.url,
@@ -147,7 +159,7 @@ $(document).ready(function() {
     featureType = targetForm.data("type");
     targetName = targetForm.data("target");
     editBlock = $("#"+featureName);
-    route = jsRoutes.controllers.Features.deleteTarget(
+    route = jsFeatureRoutes.controllers.Features.deleteTarget(
       featureName, targetName);
     $.ajax({
       url: route.url,
@@ -183,7 +195,7 @@ $(document).ready(function() {
     inputField = targetsForm.find("input[name='target']");
     target = inputField.val();
     editBlock = $("#"+featureName);
-    route = jsRoutes.controllers.Features.addTargets(featureName);
+    route = jsFeatureRoutes.controllers.Features.addTargets(featureName);
     $.ajax({
       url: route.url,
       type: route.type,
@@ -233,9 +245,61 @@ $(document).ready(function() {
     });
   }
 
+  function showRenameValueButton(clickEvent) {
+    clickEvent.preventDefault();
+    $(this).off("click");
+    button = $("<button>").addClass("btn btn-xs btn-info")
+      .css("margin-left", "5px").html("Rename");
+    $(this).append(button);
+    button.on("click", renameValue);
+  }
+
+  function renameValue(clickEvent) {
+    clickEvent.preventDefault();
+    renameButton = $(this);
+    value = $(this).parent();
+    oldName = value.data("value");
+    newName = $.trim(value.textOnly());
+    route = jsValueRoutes.controllers.Values.renameValue(oldName);
+    $.ajax({
+      url: route.url,
+      type: route.type,
+      data: { "name": newName },
+      statusCode: {
+        200: function() {
+          $("form[data-target='" + oldName + "'] > .target-name")
+            .each(function() {
+              deleteButton = $(this).children("button");
+              $(this).empty();
+              $(this).text(newName);
+              deleteButton.css("margin-left", "5px");
+              $(this).append(deleteButton);
+              $(this).parent().attr("data-target", newName);
+            });
+          value.data("value", newName);
+          alertBlock = $("<span>").addClass("text-success")
+            .css("padding-left", "10px")
+            .text("Rename successful!");
+          renameButton.replaceWith(alertBlock);
+          alertBlock.fadeOut(5000);
+          value.on("click", showRenameValueButton);
+        },
+        400: function() {
+          alertBlock = $("<span>").addClass("text-danger")
+            .css("padding-left", "10px")
+            .text("Value not renamed.");
+          renameButton.replaceWith(alertBlock);
+          alertBlock.fadeOut(5000);
+          value.on("click", showRenameValueButton);
+        }
+      }
+    });
+  }
+
   $("#new-feature").hide();
   $(".edit-feature").hide();
   $(".btn-warning").hide();
+  $(".value").on("click", showRenameValueButton);
 
   $("#new-feature-button").on("click", function(event) {
     event.preventDefault();

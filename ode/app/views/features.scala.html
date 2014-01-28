@@ -161,7 +161,9 @@
                  placeholder="Filter ..." />
         </p>
         @for(value <- values) {
-          <p class="value">@value.name</p>
+          <div class="value" contenteditable="true" data-value="@value.name">
+            @value.name
+          </div>
         }
       </div>
     </div>

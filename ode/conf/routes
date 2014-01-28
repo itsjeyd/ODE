@@ -27,8 +27,10 @@ PUT     /features/:name/type            controllers.Features.updateFeatureType(n
 POST    /features/:name/targets         controllers.Features.addTargets(name: String)
 DELETE  /features/:fname/targets/:tname controllers.Features.deleteTarget(fname: String, tname: String)
 DELETE  /features/:fname                controllers.Features.deleteFeature(fname: String)
+PUT     /values/:name                   controllers.Values.renameValue(name: String)
 
 # Client-side routers
 GET     /assets/js/featureRoutes    controllers.Features.javascriptRoutes()
+GET     /assets/js/valueRoutes      controllers.Values.javascriptRoutes()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

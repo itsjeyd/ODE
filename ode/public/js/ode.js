@@ -15,6 +15,7 @@ $(document).ready(function() {
   var newFeatureBlock = $("#new-feature-block");
   var newFeatureButton = $("#new-feature-button");
   var editFeatureBlocks = $(".edit-feature-block");
+  var featureItems = $(".feature-item");
   var deleteFeatureButtons = $(".delete-feature-button");
   var renameValueButtons = $(".rename-value-button");
 
@@ -321,12 +322,12 @@ $(document).ready(function() {
 
   deleteFeatureButtons.on("click", deleteFeature);
 
-  $(".feature-item").on("mouseenter click", function() {
+  featureItems.on("mouseenter click", function() {
     deleteButton = $(this).find(".delete-feature-button");
     deleteButton.show();
   });
 
-  $(".feature-item").on("mouseleave", function() {
+  featureItems.on("mouseleave", function() {
     deleteButton = $(this).find(".delete-feature-button");
     deleteButton.hide();
   });

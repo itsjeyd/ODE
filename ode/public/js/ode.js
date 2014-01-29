@@ -10,6 +10,27 @@ $(document).ready(function() {
       .text();
   };
 
+
+  // Functions showing action buttons for in-line editing
+
+  function showUpdateNameButton() {
+    $(this).off("click");
+    $(this).parent().next().show();
+  }
+
+  function showUpdateDescriptionButton() {
+    $(this).off("click");
+    $(this).parent().next().show();
+  }
+
+  function showRenameValueButton() {
+    $(this).off("click");
+    $(this).find(".rename-value").show();
+  }
+
+
+  // Functions invoking AJAX actions
+
   function deleteFeature(clickEvent) {
     clickEvent.preventDefault();
     featureItem = $(this).parent();
@@ -32,11 +53,6 @@ $(document).ready(function() {
           }
       }
     });
-  }
-
-  function showUpdateNameButton() {
-    $(this).off("click");
-    $(this).parent().next().show();
   }
 
   function updateFeatureName(clickEvent) {
@@ -81,11 +97,6 @@ $(document).ready(function() {
       }
     });
     nameField.on("click", showUpdateNameButton);
-  }
-
-  function showUpdateDescriptionButton() {
-    $(this).off("click");
-    $(this).parent().next().show();
   }
 
   function updateFeatureDescription(clickEvent) {
@@ -242,11 +253,6 @@ $(document).ready(function() {
     });
   }
 
-  function showRenameValueButton() {
-    $(this).off("click");
-    $(this).find(".rename-value").show();
-  }
-
   function renameValue(clickEvent) {
     clickEvent.preventDefault();
     renameButton = $(this);
@@ -291,23 +297,28 @@ $(document).ready(function() {
     });
   }
 
+
+  // Hide some elements by default
+
   $("#new-feature").hide();
   $(".edit-feature").hide();
   $(".delete-feature").hide();
-  $(".rename-value").on("click", renameValue);
   $(".rename-value").hide();
-  $(".value").on("click", showRenameValueButton);
+
+
+  // Set up event handlers
 
   $("#new-feature-button").on("click", function(event) {
     event.preventDefault();
-    $(this).hide();
     $(".alert").hide();
+    $(this).hide();
     $("#interaction-block").html($("#new-feature").html());
   });
 
   $(".feature-name").on("click", function(event) {
     event.preventDefault();
     $(".alert").hide();
+
     $("#interaction-block").html($("#"+$(this).text()).html());
 
     $(".update-feature-name").on("click", updateFeatureName);
@@ -363,6 +374,12 @@ $(document).ready(function() {
     deleteButton.off("click");
     deleteButton.hide();
   });
+
+  $(".rename-value").on("click", renameValue);
+  $(".value").on("click", showRenameValueButton);
+
+
+  // Functionality for filtering global feature and value lists
 
   // - Gather list of all features:
   featureNames = $(".feature-name").map(function() {

@@ -156,6 +156,16 @@ $(document).ready(function() {
             .text("Type successfully updated!");
           updateButton.parent().append(alertBlock);
           alertBlock.fadeOut(2000);
+          var updateTypeForm = updateButton.parents("form");
+          var targetsHeading = newType === "complex" ?
+            "Features permitted in substructure:" : "Permitted values:";
+          updateTypeForm.next("h4").text(targetsHeading).show();
+          var addTargetForm = updateTypeForm.nextAll("form").last();
+          addTargetForm.attr("data-type", newType);
+          addTargetForm.show();
+          editBlock.find("h4").text(targetsHeading);
+          editBlock.find(".target-name").parent("form").remove();
+          editBlock.find("form").last().attr("data-type", newType);
         },
         400: function() {
           var alertBlock = $("<span>").addClass("text-danger")
@@ -350,10 +360,20 @@ $(document).ready(function() {
     $(".description").on("click", showUpdateFeatureButton);
 
     $(".update-type").hide();
+    var storedType = interactionBlock.find(":radio:checked").val();
     $(":radio").on("change", function() {
-      var updateButton = $(this).parents("form").find("button");
-      updateButton.one("click", updateFeatureType);
-      updateButton.show();
+      var updateTypeForm = $(this).parents("form");
+      var updateButton = updateTypeForm.find("button");
+      if ($(this).val() !== storedType) {
+        updateTypeForm.next("h4").hide();
+        updateTypeForm.nextAll("form").hide();
+        updateButton.one("click", updateFeatureType);
+        updateButton.show();
+      } else {
+        updateTypeForm.next("h4").show();
+        updateTypeForm.nextAll("form").show();
+        updateButton.hide()
+      }
     });
 
     $(".delete-target").hide();

@@ -310,6 +310,18 @@ $(document).ready(function() {
     $("#interaction-block").html($("#new-feature").html());
   });
 
+  $(".delete-feature").on("click", deleteFeature);
+
+  $(".feature-item").on("mouseenter click", function() {
+    deleteButton = $(this).find(".delete-feature");
+    deleteButton.show();
+  });
+
+  $(".feature-item").on("mouseleave", function() {
+    deleteButton = $(this).find(".delete-feature");
+    deleteButton.hide();
+  });
+
   $(".feature-name").on("click", function(event) {
     event.preventDefault();
     $(".alert").hide();
@@ -356,18 +368,6 @@ $(document).ready(function() {
     });
 
     $("#new-feature-button").show();
-  });
-
-  $(".feature-item").on("mouseenter click", function() {
-    deleteButton = $(this).find(".delete-feature");
-    deleteButton.on("click", deleteFeature);
-    deleteButton.show();
-  });
-
-  $(".feature-item").on("mouseleave", function() {
-    deleteButton = $(this).find(".delete-feature");
-    deleteButton.off("click");
-    deleteButton.hide();
   });
 
   $(".rename-value").on("click", renameValue);

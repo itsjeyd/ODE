@@ -34,6 +34,9 @@
             <div contenteditable="true">
               <span class="description">@feature.getDescription</span>
             </div>
+            <button class="btn btn-xs btn-info update-feature-description">
+              Update description
+            </button>
 
             @if(feature.getType == "complex") {
               <form role="form" data-feature="@feature.name">

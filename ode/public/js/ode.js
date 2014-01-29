@@ -83,13 +83,9 @@ $(document).ready(function() {
     nameField.on("click", showUpdateNameButton);
   }
 
-  function showButton(clickEvent) {
-    clickEvent.preventDefault();
+  function showUpdateDescriptionButton() {
     $(this).off("click");
-    button = $("<button>").addClass("btn btn-sm btn-info")
-      .html("Update description");
-    button.insertAfter($(this).parent());
-    button.on("click", updateFeatureDescription);
+    $(this).parent().next().show();
   }
 
   function updateFeatureDescription(clickEvent) {
@@ -107,14 +103,15 @@ $(document).ready(function() {
       data: { "description": newDescription },
       success: function(result) {
         editBlock.find(".description").text(newDescription);
-        updateButton.hide();
         alertBlock = $("<span>").addClass("text-success")
           .css("padding-left", "10px")
           .text("Description successfully updated!");
-        alertBlock.insertAfter(descriptionField).fadeOut(5000);
+        alertBlock.insertAfter(updateButton);
+        updateButton.fadeOut(5000);
+        alertBlock.fadeOut(5000);
       }
     });
-    descriptionField.on("click", showButton);
+    descriptionField.on("click", showUpdateDescriptionButton);
   }
 
   function updateFeatureType(clickEvent) {
@@ -316,7 +313,10 @@ $(document).ready(function() {
     $(".update-feature-name").on("click", updateFeatureName);
     $(".update-feature-name").hide();
     $(".name").on("click", showUpdateNameButton);
-    $(".description").on("click", showButton);
+
+    $(".update-feature-description").on("click", updateFeatureDescription);
+    $(".update-feature-description").hide();
+    $(".description").on("click", showUpdateDescriptionButton);
 
     $(".update-type").hide();
     $(":radio").on("change", function() {

@@ -89,17 +89,17 @@
             }
 
             @for(target <- feature.targets) {
-                <form role="form"
-                      data-feature="@feature.name"
-                      data-type="@feature.getType"
-                      data-target="@target">
-                  <div class="target-name">
-                    @target
-                    <button class="btn btn-xs btn-warning delete-target">
-                      Delete
-                    </button>
-                  </div>
-                </form>
+              <form role="form"
+                    data-feature="@feature.name"
+                    data-type="@feature.getType"
+                    data-target="@target">
+                <div class="target-name">
+                  @target
+                  <button class="btn btn-xs btn-warning delete-target">
+                    Delete
+                  </button>
+                </div>
+              </form>
             }
 
             <form role="form"

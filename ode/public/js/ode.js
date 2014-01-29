@@ -34,13 +34,9 @@ $(document).ready(function() {
     });
   }
 
-  function showUpdateNameButton(clickEvent) {
-    clickEvent.preventDefault();
+  function showUpdateNameButton() {
     $(this).off("click");
-    button = $("<button>").addClass("btn btn-sm btn-info")
-      .html("Update name");
-    button.insertAfter($(this).parent());
-    button.on("click", updateFeatureName);
+    $(this).parent().next().show();
   }
 
   function updateFeatureName(clickEvent) {
@@ -58,15 +54,19 @@ $(document).ready(function() {
       data: { "name": newName },
       statusCode: {
         200: function() {
+          nameField.data("name", newName);
           featureItem.attr("href", "#"+newName)
             .text(newName);
-          editBlock.attr("id", newName)
-            .find(".name").data("name", newName).text(newName);
-          updateButton.hide();
+          editBlock.attr("id", newName);
+          editBlock
+            .find(".name").attr("data-name", newName);
+          editBlock
+            .find(".name").text(newName);
           alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("Name successfully updated!");
-          nameField.append(alertBlock);
+          alertBlock.insertAfter(updateButton);
+          updateButton.fadeOut(5000);
           alertBlock.fadeOut(5000);
         },
         400: function() {
@@ -312,6 +312,9 @@ $(document).ready(function() {
     event.preventDefault();
     $(".alert").hide();
     $("#interaction-block").html($("#"+$(this).text()).html());
+
+    $(".update-feature-name").on("click", updateFeatureName);
+    $(".update-feature-name").hide();
     $(".name").on("click", showUpdateNameButton);
     $(".description").on("click", showButton);
 

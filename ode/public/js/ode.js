@@ -337,7 +337,8 @@ $(document).ready(function() {
     event.preventDefault();
     $(".alert").hide();
 
-    interactionBlock.html($("#"+$(this).text()).html());
+    var editBlockID = $(this).attr("href");
+    interactionBlock.html($(editBlockID).html());
 
     $(".update-feature-name").on("click", updateFeatureName);
     $(".update-feature-name").hide();

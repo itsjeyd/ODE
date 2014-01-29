@@ -16,6 +16,7 @@ $(document).ready(function() {
   var newFeatureButton = $("#new-feature-button");
   var editFeatureBlocks = $(".edit-feature-block");
   var featureItems = $(".feature-item");
+  var values = $(".value");
   var deleteFeatureButtons = $(".delete-feature-button");
   var renameValueButtons = $(".rename-value-button");
 
@@ -381,7 +382,7 @@ $(document).ready(function() {
   });
 
   renameValueButtons.on("click", renameValue);
-  $(".value").on("click", showRenameValueButton);
+  values.on("click", showRenameValueButton);
 
 
   // Functionality for filtering global feature and value lists
@@ -409,7 +410,7 @@ $(document).ready(function() {
   });
 
   // - Gather list of all values:
-  var valueNames = $(".value").map(function() {
+  var valueNames = values.map(function() {
     return $(this);
   });
 

@@ -12,6 +12,7 @@ $(document).ready(function() {
 
 
   var interactionBlock = $("#interaction-block");
+  var newFeatureBlock = $("#new-feature-block");
 
 
   // Functions showing action buttons for in-line editing
@@ -299,7 +300,7 @@ $(document).ready(function() {
 
   // Hide some elements by default
 
-  $("#new-feature").hide();
+  newFeatureBlock.hide();
   $(".edit-feature").hide();
   $(".delete-feature").hide();
   $(".rename-value").hide();
@@ -311,7 +312,7 @@ $(document).ready(function() {
     event.preventDefault();
     $(".alert").hide();
     $(this).hide();
-    interactionBlock.html($("#new-feature").html());
+    interactionBlock.html(newFeatureBlock.html());
   });
 
   $(".delete-feature").on("click", deleteFeature);

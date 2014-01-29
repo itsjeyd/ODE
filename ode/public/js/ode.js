@@ -13,6 +13,7 @@ $(document).ready(function() {
 
   var interactionBlock = $("#interaction-block");
   var newFeatureBlock = $("#new-feature-block");
+  var newFeatureButton = $("#new-feature-button");
   var editFeatureBlocks = $(".edit-feature-block");
   var deleteFeatureButtons = $(".delete-feature-button");
   var renameValueButtons = $(".rename-value-button");
@@ -311,7 +312,7 @@ $(document).ready(function() {
 
   // Set up event handlers
 
-  $("#new-feature-button").on("click", function(event) {
+  newFeatureButton.on("click", function(event) {
     event.preventDefault();
     $(".alert").hide();
     $(this).hide();
@@ -375,7 +376,7 @@ $(document).ready(function() {
       }
     });
 
-    $("#new-feature-button").show();
+    newFeatureButton.show();
   });
 
   renameValueButtons.on("click", renameValue);

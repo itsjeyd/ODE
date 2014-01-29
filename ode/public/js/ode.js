@@ -350,7 +350,7 @@ $(document).ready(function() {
 
     $(".update-type").hide();
     $(":radio").on("change", function() {
-      updateButton = $(this).parents("form").find("button");
+      var updateButton = $(this).parents("form").find("button");
       updateButton.one("click", updateFeatureType);
       updateButton.show();
     });
@@ -367,7 +367,7 @@ $(document).ready(function() {
     $(".add-targets").attr("disabled", true);
     $(".add-targets").on("click", addTargets);
     $("input[name='target']").on("keyup", function() {
-      addTargetsButton = $(".add-targets");
+      var addTargetsButton = $(".add-targets");
       if (addTargetsButton.is(":disabled")) {
         if ($(this).val()) {
           addTargetsButton.removeAttr("disabled");

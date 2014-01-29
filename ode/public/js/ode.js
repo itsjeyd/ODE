@@ -28,21 +28,22 @@ $(document).ready(function() {
 
   function deleteFeature(clickEvent) {
     clickEvent.preventDefault();
-    featureItem = $(this).parent();
-    featureName = featureItem.find(".feature-name").text();
-    route = jsFeatureRoutes.controllers.Features.deleteFeature(featureName);
+    var featureItem = $(this).parent();
+    var featureName = featureItem.find(".feature-name").text();
+    var route = jsFeatureRoutes.controllers.Features
+      .deleteFeature(featureName);
     $.ajax({
       url: route.url,
       type: route.type,
       statusCode: {
         200: function() {
           featureItem.fadeOut(2000);
-          alertBlock = $("<span>").addClass("text-success")
+          var alertBlock = $("<span>").addClass("text-success")
             .text("Feature successfully deleted!");
           $("#interaction-block").html(alertBlock);
           },
         400: function() {
-          alertBlock = $("<span>").addClass("text-danger")
+          var alertBlock = $("<span>").addClass("text-danger")
             .text("Can't delete feature.");
           $("#interaction-block").html(alertBlock);
           }
@@ -52,13 +53,14 @@ $(document).ready(function() {
 
   function updateFeatureName(clickEvent) {
     clickEvent.preventDefault();
-    nameField = $(this).parent().find(".name");
-    oldName = nameField.data("name");
-    newName = nameField.text();
-    featureItem = $("a[href='#" + oldName + "']");
-    editBlock = $("#"+oldName);
-    updateButton = $(this);
-    route = jsFeatureRoutes.controllers.Features.updateFeatureName(oldName);
+    var nameField = $(this).parent().find(".name");
+    var oldName = nameField.data("name");
+    var newName = nameField.text();
+    var featureItem = $("a[href='#" + oldName + "']");
+    var editBlock = $("#"+oldName);
+    var updateButton = $(this);
+    var route = jsFeatureRoutes.controllers.Features
+      .updateFeatureName(oldName);
     $.ajax({
       url: route.url,
       type: route.type,
@@ -73,7 +75,7 @@ $(document).ready(function() {
             .find(".name").attr("data-name", newName);
           editBlock
             .find(".name").text(newName);
-          alertBlock = $("<span>").addClass("text-success")
+          var alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("Name successfully updated!");
           alertBlock.insertAfter(updateButton);
@@ -83,7 +85,7 @@ $(document).ready(function() {
         400: function() {
           nameField.text(oldName);
           updateButton.hide();
-          alertBlock = $("<span>").addClass("text-danger")
+          var alertBlock = $("<span>").addClass("text-danger")
             .css("padding-left", "10px")
             .text("A feature with that name already exists.");
           nameField.append(alertBlock);
@@ -96,12 +98,12 @@ $(document).ready(function() {
 
   function updateFeatureDescription(clickEvent) {
     clickEvent.preventDefault();
-    feature = $(this).parent().find("h3").text();
-    editBlock = $("#"+feature);
-    descriptionField = $(this).parent().find(".description");
-    newDescription = descriptionField.text();
-    updateButton = $(this);
-    route = jsFeatureRoutes.controllers.Features
+    var feature = $(this).parent().find("h3").text();
+    var editBlock = $("#"+feature);
+    var descriptionField = $(this).parent().find(".description");
+    var newDescription = descriptionField.text();
+    var updateButton = $(this);
+    var route = jsFeatureRoutes.controllers.Features
       .updateFeatureDescription(feature);
     $.ajax({
       url: route.url,
@@ -109,7 +111,7 @@ $(document).ready(function() {
       data: { "description": newDescription },
       success: function(result) {
         editBlock.find(".description").text(newDescription);
-        alertBlock = $("<span>").addClass("text-success")
+        var alertBlock = $("<span>").addClass("text-success")
           .css("padding-left", "10px")
           .text("Description successfully updated!");
         alertBlock.insertAfter(updateButton);
@@ -122,31 +124,31 @@ $(document).ready(function() {
 
   function updateFeatureType(clickEvent) {
     clickEvent.preventDefault();
-    updateButton = $(this);
-    featureName = updateButton.parents("form").data("feature");
-    newType = updateButton.parents("form").find("input:checked").val();
-    route = jsFeatureRoutes.controllers.Features
+    var updateButton = $(this);
+    var featureName = updateButton.parents("form").data("feature");
+    var newType = updateButton.parents("form").find("input:checked").val();
+    var route = jsFeatureRoutes.controllers.Features
       .updateFeatureType(featureName);
-    editBlock = $("#"+featureName);
+    var editBlock = $("#"+featureName);
     $.ajax({
       url: route.url,
       type: route.type,
       data: { "type": newType },
       statusCode: {
         200: function() {
-          oldType = newType === "complex" ? "atomic" : "complex";
+          var oldType = newType === "complex" ? "atomic" : "complex";
           editBlock.find("input[value='" + oldType + "']")
             .removeAttr('checked');
           editBlock.find("input[value='" + newType + "']")
             .attr('checked', true);
           updateButton.hide();
-          alertBlock = $("<span>").addClass("text-success")
+          var alertBlock = $("<span>").addClass("text-success")
             .text("Type successfully updated!");
           updateButton.parent().append(alertBlock);
           alertBlock.fadeOut(2000);
         },
         400: function() {
-          alertBlock = $("<span>").addClass("text-danger")
+          var alertBlock = $("<span>").addClass("text-danger")
             .text("Type not updated.");
           updateButton.parent().append(alertBlock);
         }
@@ -156,13 +158,13 @@ $(document).ready(function() {
 
   function deleteTarget(clickEvent) {
     clickEvent.preventDefault();
-    deleteTargetButton = $(this);
-    targetForm = deleteTargetButton.parents("form");
-    featureName = targetForm.data("feature");
-    featureType = targetForm.data("type");
-    targetName = targetForm.data("target");
-    editBlock = $("#"+featureName);
-    route = jsFeatureRoutes.controllers.Features.deleteTarget(
+    var deleteTargetButton = $(this);
+    var targetForm = deleteTargetButton.parents("form");
+    var featureName = targetForm.data("feature");
+    var featureType = targetForm.data("type");
+    var targetName = targetForm.data("target");
+    var editBlock = $("#"+featureName);
+    var route = jsFeatureRoutes.controllers.Features.deleteTarget(
       featureName, targetName);
     $.ajax({
       url: route.url,
@@ -170,7 +172,7 @@ $(document).ready(function() {
       data: { "type": featureType },
       statusCode: {
         200: function() {
-          alertBlock = $("<span>").addClass("text-success")
+          var alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("OK!");
           alertBlock.insertAfter(deleteTargetButton);
@@ -180,7 +182,7 @@ $(document).ready(function() {
           editBlock.find("form[data-target='" + targetName + "']").remove();
         },
         400: function() {
-          alertBlock = $("<span>").addClass("text-danger")
+          var alertBlock = $("<span>").addClass("text-danger")
             .css("padding-left", "10px")
             .text("Error. Could not remove target from feature.");
           alertBlock.insertAfter(deleteTargetButton);
@@ -191,26 +193,26 @@ $(document).ready(function() {
 
   function addTargets(clickEvent) {
     clickEvent.preventDefault();
-    addTargetsButton = $(this);
-    targetsForm = addTargetsButton.parent("form");
-    featureName = targetsForm.data("feature");
-    featureType = targetsForm.data("type");
-    inputField = targetsForm.find("input[name='target']");
-    target = inputField.val();
-    editBlock = $("#"+featureName);
-    route = jsFeatureRoutes.controllers.Features.addTargets(featureName);
+    var addTargetsButton = $(this);
+    var targetsForm = addTargetsButton.parent("form");
+    var featureName = targetsForm.data("feature");
+    var featureType = targetsForm.data("type");
+    var inputField = targetsForm.find("input[name='target']");
+    var target = inputField.val();
+    var editBlock = $("#"+featureName);
+    var route = jsFeatureRoutes.controllers.Features.addTargets(featureName);
     $.ajax({
       url: route.url,
       type: route.type,
       data: { "type": featureType, "target": target },
       statusCode: {
         200: function() {
-          newTargetForm = $("<form>").attr("role", "form")
+          var newTargetForm = $("<form>").attr("role", "form")
             .attr("data-feature", featureName)
             .attr("data-type", featureType)
             .attr("data-target", target);
-          newTargetName = $("<div>").addClass("target-name").text(target);
-          newDeleteButton = $("<button>")
+          var newTargetName = $("<div>").addClass("target-name").text(target);
+          var newDeleteButton = $("<button>")
             .css("margin-left", "5px")
             .addClass("btn btn-xs btn-warning delete-target")
             .attr("type", "submit")
@@ -227,7 +229,7 @@ $(document).ready(function() {
           newTargetForm.html(newTargetName);
           targetsForm.before(newTargetForm);
           inputField.val("");
-          alertBlock = $("<span>").addClass("text-success")
+          var alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("OK!");
           alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
@@ -238,7 +240,7 @@ $(document).ready(function() {
         },
         400: function() {
           inputField.val("");
-          alertBlock = $("<span>").addClass("text-danger")
+          var alertBlock = $("<span>").addClass("text-danger")
             .css("padding-left", "10px")
             .text("Error. Could not add target.");
           alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
@@ -250,11 +252,11 @@ $(document).ready(function() {
 
   function renameValue(clickEvent) {
     clickEvent.preventDefault();
-    renameButton = $(this);
-    value = $(this).parent();
-    oldName = value.data("value");
-    newName = $.trim(value.textOnly());
-    route = jsValueRoutes.controllers.Values.renameValue(oldName);
+    var renameButton = $(this);
+    var value = $(this).parent();
+    var oldName = value.data("value");
+    var newName = $.trim(value.textOnly());
+    var route = jsValueRoutes.controllers.Values.renameValue(oldName);
     $.ajax({
       url: route.url,
       type: route.type,
@@ -263,7 +265,7 @@ $(document).ready(function() {
         200: function() {
           $("form[data-target='" + oldName + "'] > .target-name")
             .each(function() {
-              deleteButton = $(this).children("button");
+              var deleteButton = $(this).children("button");
               $(this).empty();
               $(this).text(newName);
               deleteButton.css("margin-left", "5px");
@@ -271,7 +273,7 @@ $(document).ready(function() {
               $(this).parent().attr("data-target", newName);
             });
           value.data("value", newName);
-          alertBlock = $("<span>").addClass("text-success")
+          var alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("Rename successful!");
           alertBlock.insertAfter(renameButton);
@@ -280,7 +282,7 @@ $(document).ready(function() {
           value.on("click", showRenameValueButton);
         },
         400: function() {
-          alertBlock = $("<span>").addClass("text-danger")
+          var alertBlock = $("<span>").addClass("text-danger")
             .css("padding-left", "10px")
             .text("Value not renamed.");
           alertBlock.insertAfter(renameButton);

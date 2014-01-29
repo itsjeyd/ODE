@@ -280,6 +280,7 @@ $(document).ready(function() {
               deleteButton.css("margin-left", "5px");
               $(this).append(deleteButton);
               $(this).parent().attr("data-target", newName);
+              deleteButton.on("click", deleteTarget);
             });
           value.data("value", newName);
           var alertBlock = $("<span>").addClass("text-success")

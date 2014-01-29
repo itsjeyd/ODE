@@ -13,12 +13,7 @@ $(document).ready(function() {
 
   // Functions showing action buttons for in-line editing
 
-  function showUpdateNameButton() {
-    $(this).off("click");
-    $(this).parent().next().show();
-  }
-
-  function showUpdateDescriptionButton() {
+  function showUpdateFeatureButton() {
     $(this).off("click");
     $(this).parent().next().show();
   }
@@ -96,7 +91,7 @@ $(document).ready(function() {
         }
       }
     });
-    nameField.on("click", showUpdateNameButton);
+    nameField.on("click", showUpdateFeatureButton);
   }
 
   function updateFeatureDescription(clickEvent) {
@@ -122,7 +117,7 @@ $(document).ready(function() {
         alertBlock.fadeOut(5000);
       }
     });
-    descriptionField.on("click", showUpdateDescriptionButton);
+    descriptionField.on("click", showUpdateFeatureButton);
   }
 
   function updateFeatureType(clickEvent) {
@@ -323,11 +318,11 @@ $(document).ready(function() {
 
     $(".update-feature-name").on("click", updateFeatureName);
     $(".update-feature-name").hide();
-    $(".name").on("click", showUpdateNameButton);
+    $(".name").on("click", showUpdateFeatureButton);
 
     $(".update-feature-description").on("click", updateFeatureDescription);
     $(".update-feature-description").hide();
-    $(".description").on("click", showUpdateDescriptionButton);
+    $(".description").on("click", showUpdateFeatureButton);
 
     $(".update-type").hide();
     $(":radio").on("change", function() {

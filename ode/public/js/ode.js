@@ -13,6 +13,7 @@ $(document).ready(function() {
 
   var interactionBlock = $("#interaction-block");
   var newFeatureBlock = $("#new-feature-block");
+  var editFeatureBlocks = $(".edit-feature-block");
 
 
   // Functions showing action buttons for in-line editing
@@ -301,7 +302,7 @@ $(document).ready(function() {
   // Hide some elements by default
 
   newFeatureBlock.hide();
-  $(".edit-feature").hide();
+  editFeatureBlocks.hide();
   $(".delete-feature").hide();
   $(".rename-value").hide();
 

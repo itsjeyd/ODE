@@ -14,6 +14,7 @@ $(document).ready(function() {
   var interactionBlock = $("#interaction-block");
   var newFeatureBlock = $("#new-feature-block");
   var editFeatureBlocks = $(".edit-feature-block");
+  var deleteFeatureButtons = $(".delete-feature-button");
 
 
   // Functions showing action buttons for in-line editing
@@ -303,7 +304,7 @@ $(document).ready(function() {
 
   newFeatureBlock.hide();
   editFeatureBlocks.hide();
-  $(".delete-feature").hide();
+  deleteFeatureButtons.hide();
   $(".rename-value").hide();
 
 
@@ -316,15 +317,15 @@ $(document).ready(function() {
     interactionBlock.html(newFeatureBlock.html());
   });
 
-  $(".delete-feature").on("click", deleteFeature);
+  deleteFeatureButtons.on("click", deleteFeature);
 
   $(".feature-item").on("mouseenter click", function() {
-    deleteButton = $(this).find(".delete-feature");
+    deleteButton = $(this).find(".delete-feature-button");
     deleteButton.show();
   });
 
   $(".feature-item").on("mouseleave", function() {
-    deleteButton = $(this).find(".delete-feature");
+    deleteButton = $(this).find(".delete-feature-button");
     deleteButton.hide();
   });
 

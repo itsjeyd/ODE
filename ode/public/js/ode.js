@@ -15,6 +15,7 @@ $(document).ready(function() {
   var newFeatureBlock = $("#new-feature-block");
   var editFeatureBlocks = $(".edit-feature-block");
   var deleteFeatureButtons = $(".delete-feature-button");
+  var renameValueButtons = $(".rename-value-button");
 
 
   // Functions showing action buttons for in-line editing
@@ -26,7 +27,7 @@ $(document).ready(function() {
 
   function showRenameValueButton() {
     $(this).off("click");
-    $(this).find(".rename-value").show();
+    $(this).find(".rename-value-button").show();
   }
 
 
@@ -305,7 +306,7 @@ $(document).ready(function() {
   newFeatureBlock.hide();
   editFeatureBlocks.hide();
   deleteFeatureButtons.hide();
-  $(".rename-value").hide();
+  renameValueButtons.hide();
 
 
   // Set up event handlers
@@ -377,7 +378,7 @@ $(document).ready(function() {
     $("#new-feature-button").show();
   });
 
-  $(".rename-value").on("click", renameValue);
+  renameValueButtons.on("click", renameValue);
   $(".value").on("click", showRenameValueButton);
 
 

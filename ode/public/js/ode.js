@@ -242,13 +242,9 @@ $(document).ready(function() {
     });
   }
 
-  function showRenameValueButton(clickEvent) {
-    clickEvent.preventDefault();
+  function showRenameValueButton() {
     $(this).off("click");
-    button = $("<button>").addClass("btn btn-xs btn-info")
-      .css("margin-left", "5px").html("Rename");
-    $(this).append(button);
-    button.on("click", renameValue);
+    $(this).find(".rename-value").show();
   }
 
   function renameValue(clickEvent) {
@@ -277,7 +273,8 @@ $(document).ready(function() {
           alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("Rename successful!");
-          renameButton.replaceWith(alertBlock);
+          alertBlock.insertAfter(renameButton);
+          renameButton.fadeOut(5000);
           alertBlock.fadeOut(5000);
           value.on("click", showRenameValueButton);
         },
@@ -285,7 +282,8 @@ $(document).ready(function() {
           alertBlock = $("<span>").addClass("text-danger")
             .css("padding-left", "10px")
             .text("Value not renamed.");
-          renameButton.replaceWith(alertBlock);
+          alertBlock.insertAfter(renameButton);
+          renameButton.fadeOut(5000);
           alertBlock.fadeOut(5000);
           value.on("click", showRenameValueButton);
         }
@@ -296,6 +294,8 @@ $(document).ready(function() {
   $("#new-feature").hide();
   $(".edit-feature").hide();
   $(".delete-feature").hide();
+  $(".rename-value").on("click", renameValue);
+  $(".rename-value").hide();
   $(".value").on("click", showRenameValueButton);
 
   $("#new-feature-button").on("click", function(event) {
@@ -397,7 +397,7 @@ $(document).ready(function() {
     // - Match list items against current input:
     valueNames.each(function() {
       value = $(this);
-      valueName = value.text();
+      valueName = value.textOnly();
       if (valueName.toLowerCase().indexOf(currentInput) === -1) {
         value.hide();
       } else {

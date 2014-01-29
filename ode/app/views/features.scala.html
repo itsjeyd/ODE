@@ -169,6 +169,9 @@
         @for(value <- values) {
           <div class="value" contenteditable="true" data-value="@value.name">
             @value.name
+            <button class="btn btn-xs btn-info rename-value">
+              Rename
+            </button>
           </div>
         }
       </div>

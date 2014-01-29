@@ -11,6 +11,9 @@ $(document).ready(function() {
   };
 
 
+  var interactionBlock = $("#interaction-block");
+
+
   // Functions showing action buttons for in-line editing
 
   function showUpdateFeatureButton() {
@@ -40,12 +43,12 @@ $(document).ready(function() {
           featureItem.fadeOut(2000);
           var alertBlock = $("<span>").addClass("text-success")
             .text("Feature successfully deleted!");
-          $("#interaction-block").html(alertBlock);
+          interactionBlock.html(alertBlock);
           },
         400: function() {
           var alertBlock = $("<span>").addClass("text-danger")
             .text("Can't delete feature.");
-          $("#interaction-block").html(alertBlock);
+          interactionBlock.html(alertBlock);
           }
       }
     });
@@ -234,7 +237,6 @@ $(document).ready(function() {
             .text("OK!");
           alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
           addTargetsButton.attr("disabled", true);
-          interactionBlock = targetsForm.parents("#interaction-block");
           editBlock.html(interactionBlock.html());
           editBlock.find(".text-success").remove();
         },
@@ -309,7 +311,7 @@ $(document).ready(function() {
     event.preventDefault();
     $(".alert").hide();
     $(this).hide();
-    $("#interaction-block").html($("#new-feature").html());
+    interactionBlock.html($("#new-feature").html());
   });
 
   $(".delete-feature").on("click", deleteFeature);
@@ -328,7 +330,7 @@ $(document).ready(function() {
     event.preventDefault();
     $(".alert").hide();
 
-    $("#interaction-block").html($("#"+$(this).text()).html());
+    interactionBlock.html($("#"+$(this).text()).html());
 
     $(".update-feature-name").on("click", updateFeatureName);
     $(".update-feature-name").hide();

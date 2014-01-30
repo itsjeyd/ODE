@@ -11,6 +11,33 @@ $(document).ready(function() {
   };
 
 
+  $(".draggable").draggable({
+    cursor: "crosshair",
+    helper: "clone",
+    revert: "invalid",
+  });
+  $(".draggable.value").draggable({
+    helper: function(event, ui) {
+      var clonedValue = $(this).clone();
+      var targetName = clonedValue.textOnly();
+      clonedValue.empty();
+      clonedValue.text(targetName);
+      return clonedValue;
+    }
+  });
+  $(".draggable.value").on("dblclick", function() {
+    $(this).draggable({ disabled: true });
+  });
+  $(".droppable").css({
+    "width": "200px",
+    "height": "30px",
+    "border": "solid 3px #94D6EA",
+    "border-radius": "10px",
+    "margin-top": "5px",
+    "margin-bottom": "5px",
+  });
+
+
   var interactionBlock = $("#interaction-block");
   var newFeatureBlock = $("#new-feature-block");
   var newFeatureButton = $("#new-feature-button");
@@ -29,7 +56,8 @@ $(document).ready(function() {
   }
 
   function showRenameValueButton() {
-    $(this).off("click");
+    $(this).off("dblclick");
+    $(this).draggable({ disabled: true });
     $(this).find(".rename-value-button").show();
   }
 
@@ -39,7 +67,7 @@ $(document).ready(function() {
   function deleteFeature(clickEvent) {
     clickEvent.preventDefault();
     var featureItem = $(this).parent();
-    var featureName = featureItem.find(".feature-name").text();
+    var featureName = $.trim(featureItem.find(".feature-name").text());
     var route = jsFeatureRoutes.controllers.Features
       .deleteFeature(featureName);
     $.ajax({
@@ -217,8 +245,8 @@ $(document).ready(function() {
     var targetsForm = addTargetsButton.parent("form");
     var featureName = targetsForm.data("feature");
     var featureType = targetsForm.data("type");
-    var inputField = targetsForm.find("input[name='target']");
-    var target = inputField.val();
+    var inputField = targetsForm.find("div.droppable");
+    var target = $.trim(inputField.text());
     var editBlock = $("#"+featureName);
     var route = jsFeatureRoutes.controllers.Features.addTargets(featureName);
     $.ajax({
@@ -248,7 +276,7 @@ $(document).ready(function() {
           });
           newTargetForm.html(newTargetName);
           targetsForm.before(newTargetForm);
-          inputField.val("");
+          inputField.text("");
           var alertBlock = $("<span>").addClass("text-success")
             .css("padding-left", "10px")
             .text("OK!");
@@ -258,7 +286,7 @@ $(document).ready(function() {
           editBlock.find(".text-success").remove();
         },
         400: function() {
-          inputField.val("");
+          inputField.text("");
           var alertBlock = $("<span>").addClass("text-danger")
             .css("padding-left", "10px")
             .text("Error. Could not add target.");
@@ -299,7 +327,8 @@ $(document).ready(function() {
           alertBlock.insertAfter(renameButton);
           renameButton.fadeOut(5000);
           alertBlock.fadeOut(5000);
-          value.on("click", showRenameValueButton);
+          value.on("dblclick", showRenameValueButton);
+          value.draggable({ disabled: false });
         },
         400: function() {
           var alertBlock = $("<span>").addClass("text-danger")
@@ -308,7 +337,8 @@ $(document).ready(function() {
           alertBlock.insertAfter(renameButton);
           renameButton.fadeOut(5000);
           alertBlock.fadeOut(5000);
-          value.on("click", showRenameValueButton);
+          value.on("dblclick", showRenameValueButton);
+          value.draggable({ disabled: false });
         }
       }
     });
@@ -385,18 +415,59 @@ $(document).ready(function() {
       $(this).find(".delete-target").hide();
     });
 
+    $(".droppable").droppable({
+      drop: function(event, ui) {
+        var featureName = $(this).parent().data("feature");
+        var featureType = $(this).parent().data("type");
+        var target = ui.helper;
+        var targetName = $.trim(target.text());
+        var alertBlock;
+        if (featureType === "complex") {
+          if (target.hasClass("value")) {
+            alertBlock = $("<span>").addClass("text-danger")
+              .css("padding-left", "10px")
+              .text("Can't add value to complex feature!");
+          } else if (targetName === featureName) {
+            alertBlock = $("<span>").addClass("text-danger")
+              .css("padding-left", "10px")
+              .text("Can't add circular dependency!");
+          } else {
+            ui.draggable
+              .next(".delete-feature-button").attr("disabled", true);
+          }
+        } else {
+          if (target.hasClass("feature-name")) {
+            alertBlock = $("<span>").addClass("text-danger")
+              .css("padding-left", "10px")
+              .text("Can only add values to atomic features.");
+          }
+        }
+        if (alertBlock) {
+          alertBlock.insertAfter($(this).next("button"));
+          alertBlock.fadeOut(5000);
+        } else {
+          $(this).text(targetName);
+          $(".add-targets").removeAttr("disabled");
+        }
+      }
+    });
+
     $(".add-targets").attr("disabled", true);
     $(".add-targets").on("click", addTargets);
-    $("input[name='target']").on("keyup", function() {
-      var addTargetsButton = $(".add-targets");
-      if (addTargetsButton.is(":disabled")) {
-        if ($(this).val()) {
-          addTargetsButton.removeAttr("disabled");
-        }
-      } else {
-        if (!$(this).val()) {
-          addTargetsButton.attr("disabled", true);
-        }
+    $(".droppable").on("click", function() {
+      if ($(this).parent().data("type") === "atomic") {
+        $(this).on("keyup", function() {
+          var addTargetsButton = $(".add-targets");
+          if (addTargetsButton.is(":disabled")) {
+            if ($(this).text()) {
+              addTargetsButton.removeAttr("disabled");
+            }
+          } else {
+            if (!$(this).text()) {
+              addTargetsButton.attr("disabled", true);
+            }
+          }
+        });
       }
     });
 
@@ -404,7 +475,7 @@ $(document).ready(function() {
   });
 
   renameValueButtons.on("click", renameValue);
-  values.on("click", showRenameValueButton);
+  values.on("dblclick", showRenameValueButton);
 
 
   // Functionality for filtering global feature and value lists

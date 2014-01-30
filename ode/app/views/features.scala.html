@@ -15,7 +15,10 @@
         @for(feature <- features) {
 
           <p class="feature-item">
-            <a href="#@feature.name" class="feature-name">@feature.name</a>
+            <a href="#@feature.name"
+               class="feature-name draggable ui-widget-content">
+              @feature.name
+            </a>
             <button class="btn btn-xs btn-warning delete-feature-button">
               Delete
             </button>
@@ -104,9 +107,13 @@
 
             <form role="form"
                   data-feature="@feature.name" data-type="@feature.getType">
-              <div class="form-group">
-                <input class="form-control" type="text" name="target" value="" />
-              </div>
+              @if(feature.getType == "complex") {
+                <div class="droppable ui-widget-header"></div>
+              } else {
+                <div class="droppable ui-widget-header"
+                     contenteditable="true">
+                </div>
+              }
               <button class="btn btn-sm btn-info add-targets">
                 Add
               </button>
@@ -167,7 +174,8 @@
                  placeholder="Filter ..." />
         </p>
         @for(value <- values) {
-          <div class="value" contenteditable="true" data-value="@value.name">
+          <div class="value draggable" contenteditable="true"
+               data-value="@value.name">
             @value.name
             <button class="btn btn-xs btn-info rename-value-button">
               Rename

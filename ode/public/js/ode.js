@@ -290,6 +290,36 @@ $(document).ready(function() {
           addTargetsButton.attr("disabled", true);
           editBlock.html(interactionBlock.html());
           editBlock.find(".text-success").remove();
+          var valueNames = values.map(function() {
+            return $(this).data("value").toString();
+          }).get();
+          if (valueNames.indexOf(target) === -1) {
+            var targetItem = $("<div>").addClass("value draggable")
+              .attr("contenteditable", "true")
+              .attr("data-value", target);
+            targetItem.html(target + "&nbsp;");
+            targetItem.draggable({
+              cursor: "crosshair",
+              helper: function(event, ui) {
+                var clonedValue = $(this).clone();
+                var targetName = clonedValue.textOnly();
+                clonedValue.empty();
+                clonedValue.text(targetName);
+                return clonedValue;
+              },
+              revert: "invalid"
+            });
+            var renameButton = $("<button>")
+              .addClass("btn btn-xs btn-info rename-value-button")
+              .css("margin-left", "5px");
+            renameButton.text("Rename");
+            renameButton.on("click", renameValue);
+            targetItem.append(renameButton);
+            renameButton.hide();
+            targetItem.on("dblclick", showRenameValueButton);
+            $("#value-list").append(targetItem);
+            values = $(".value");
+          }
         },
         400: function() {
           inputField.text("");

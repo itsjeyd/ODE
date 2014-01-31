@@ -228,6 +228,12 @@ $(document).ready(function() {
           targetForm.fadeOut(3000);
           setTimeout(function() { targetForm.remove(); }, 3500);
           editBlock.find("form[data-target='" + targetName + "']").remove();
+          var featuresWithThisTarget = editFeatureBlocks
+            .find("form[data-target='" + targetName + "']");
+          if (featuresWithThisTarget.length === 0) {
+            $("#value-list").find("div[data-value='" + targetName + "']")
+              .remove();
+          }
         },
         400: function() {
           var alertBlock = $("<span>").addClass("text-danger")

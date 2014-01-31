@@ -480,18 +480,13 @@ $(document).ready(function() {
 
   // Functionality for filtering global feature and value lists
 
-  // - Gather list of all features:
-  var featureNames = $(".feature-name").map(function() {
-    return $(this);
-  });
-
   $("#feature-filter").on("keyup", function(event) {
     // - Get current input:
     var currentInput = $(this).val().toLowerCase();
     // - Match list items against current input:
-    featureNames.each(function() {
-      var featureItem = $(this).parent();
-      var featureName = $(this).text();
+    featureItems.each(function() {
+      var featureItem = $(this);
+      var featureName = featureItem.find(".feature-name").text();
       if (featureName.toLowerCase().indexOf(currentInput) === -1) {
         featureItem.hide();
       } else {
@@ -502,16 +497,11 @@ $(document).ready(function() {
     });
   });
 
-  // - Gather list of all values:
-  var valueNames = values.map(function() {
-    return $(this);
-  });
-
   $("#value-filter").on("keyup", function(event) {
     // - Get current input:
     var currentInput = $(this).val().toLowerCase();
     // - Match list items against current input:
-    valueNames.each(function() {
+    values.each(function() {
       var value = $(this);
       var valueName = value.textOnly();
       if (valueName.toLowerCase().indexOf(currentInput) === -1) {

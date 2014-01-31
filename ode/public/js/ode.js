@@ -497,10 +497,34 @@ $(document).ready(function() {
     });
   });
 
+  var complexFeatures = featureItems.filter(function() {
+    return $(this).data("type") === "complex";
+  });
+  var atomicFeatures = featureItems.filter(function() {
+    return $(this).data("type") === "atomic";
+  });
+
   $("#value-filter").on("keyup", function(event) {
     // - Get current input:
     var currentInput = $(this).val().toLowerCase();
-    // - Match list items against current input:
+
+    // - If input field is empty, show all values and features:
+    if (!currentInput) {
+      featureItems.each(function() {
+        if (!$(this).is(":visible")) {
+          $(this).show();
+        }
+      });
+      values.each(function() {
+        if (!$(this).is(":visible")) {
+          $(this).show();
+        }
+      });
+      return ;
+    }
+
+    // - Input field is non-empty, so hide values that don't match
+    //   current input:
     values.each(function() {
       var value = $(this);
       var valueName = value.textOnly();
@@ -512,6 +536,44 @@ $(document).ready(function() {
         }
       }
     });
+
+    // - Hide complex features:
+    complexFeatures.each(function () { $(this).hide(); });
+
+    // - Hide atomic features not allowing any of the values that are
+    //   currently visible as targets:
+    var visibleValues = values.filter(function() {
+      return $(this).is(":visible")
+    }).get();
+
+    atomicFeatures.each(function() {
+      // Check if intersection of value list and visibleValues is
+      // empty, and if so, hide feature; else if feature is not
+      // visible, show it:
+      var feature = $(this);
+      var featureName = $.trim(feature.find(".feature-name").text());
+      var editBlock = $("#" + featureName);
+      var valueList = editBlock.find(".target-name").map(function() {
+        return $.trim($(this).textOnly());
+      }).get();
+      var hasValues = false;
+      for (var i=0; i<visibleValues.length; i++) {
+        var currentValue = $(visibleValues[i]);
+        if (valueList.indexOf($.trim(currentValue.textOnly())) !== -1) {
+          hasValues = true;
+          break;
+        }
+      }
+      if (!hasValues) {
+        feature.hide();
+      } else {
+        if (!feature.is(":visible")) {
+          feature.show();
+        }
+      }
+
+    });
+
   });
 
 });

@@ -14,7 +14,7 @@
 
         @for(feature <- features) {
 
-          <p class="feature-item">
+          <p class="feature-item" data-type="@feature.getType">
             <a href="#@feature.name"
                class="feature-name draggable ui-widget-content">
               @feature.name

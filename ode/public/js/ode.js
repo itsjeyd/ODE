@@ -1,51 +1,12 @@
-$(document).ready(function() {
-
-  // Source: http://viralpatel.net/blogs/jquery-get-text-element-without-child-element/
-  jQuery.fn.textOnly = function() {
-    return $(this)
-      .clone()
-      .children()
-      .remove()
-      .end() // Go back to cloned element
-      .text();
-  };
-
-
-  $(".draggable").draggable({
-    cursor: "crosshair",
-    helper: "clone",
-    revert: "invalid",
-  });
-  $(".draggable.value").draggable({
-    helper: function(event, ui) {
-      var clonedValue = $(this).clone();
-      var targetName = clonedValue.textOnly();
-      clonedValue.empty();
-      clonedValue.text(targetName);
-      return clonedValue;
-    }
-  });
-  $(".draggable.value").on("dblclick", function() {
-    $(this).draggable({ disabled: true });
-  });
-  $(".droppable").css({
-    "width": "200px",
-    "height": "30px",
-    "border": "solid 3px #94D6EA",
-    "border-radius": "10px",
-    "margin-top": "5px",
-    "margin-bottom": "5px",
-  });
-
-
-  var interactionBlock = $("#interaction-block");
-  var newFeatureBlock = $("#new-feature-block");
-  var newFeatureButton = $("#new-feature-button");
-  var editFeatureBlocks = $(".edit-feature-block");
-  var featureItems = $(".feature-item");
-  var values = $(".value");
-  var deleteFeatureButtons = $(".delete-feature-button");
-  var renameValueButtons = $(".rename-value-button");
+// Source: http://viralpatel.net/blogs/jquery-get-text-element-without-child-element/
+jQuery.fn.textOnly = function() {
+  return $(this)
+    .clone()
+    .children()
+    .remove()
+    .end() // Go back to cloned element
+    .text();
+};
 
 
   // Functions showing action buttons for in-line editing
@@ -379,6 +340,46 @@ $(document).ready(function() {
       }
     });
   }
+
+
+$(document).ready(function() {
+
+  $(".draggable").draggable({
+    cursor: "crosshair",
+    helper: "clone",
+    revert: "invalid",
+  });
+  $(".draggable.value").draggable({
+    helper: function(event, ui) {
+      var clonedValue = $(this).clone();
+      var targetName = clonedValue.textOnly();
+      clonedValue.empty();
+      clonedValue.text(targetName);
+      return clonedValue;
+    }
+  });
+  $(".draggable.value").on("dblclick", function() {
+    $(this).draggable({ disabled: true });
+  });
+  $(".droppable").css({
+    "width": "200px",
+    "height": "30px",
+    "border": "solid 3px #94D6EA",
+    "border-radius": "10px",
+    "margin-top": "5px",
+    "margin-bottom": "5px",
+  });
+
+
+  var interactionBlock = $("#interaction-block");
+  var newFeatureBlock = $("#new-feature-block");
+  var newFeatureButton = $("#new-feature-button");
+  var editFeatureBlocks = $(".edit-feature-block");
+  var featureItems = $(".feature-item");
+  var values = $(".value");
+  var deleteFeatureButtons = $(".delete-feature-button");
+  var renameValueButtons = $(".rename-value-button");
+
 
 
   // Hide some elements by default

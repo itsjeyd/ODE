@@ -62,7 +62,15 @@ var ValueListView = Backbone.View.extend({
 
 $(document).ready(function() {
 
-  $('#new-feature-block').hide();
+  var interactionBlock = $('#interaction-block');
+  var newFeatureBlock = $('#new-feature-block');
+  var newFeatureButton = $('#new-feature-button');
+
+  newFeatureBlock.hide();
+
+  newFeatureButton.on('click', function() {
+    interactionBlock.html(newFeatureBlock.html());
+  });
 
   var featureItems = $('.feature-item');
   var valueItems = $('.value-item');

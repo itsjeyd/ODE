@@ -1,0 +1,12 @@
+.droppable {
+    width: 200px;
+    height: 30px;
+    border: solid 3px #94D6EA;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.alert-msg {
+    padding-left: 10px;
+}

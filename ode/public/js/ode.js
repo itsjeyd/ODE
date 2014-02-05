@@ -74,8 +74,7 @@ jQuery.fn.textOnly = function() {
             .find(".name").attr("data-name", newName);
           editBlock
             .find(".name").text(newName);
-          var alertBlock = $("<span>").addClass("text-success")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-success")
             .text("Name successfully updated!");
           alertBlock.insertAfter(updateButton);
           updateButton.fadeOut(5000);
@@ -84,8 +83,7 @@ jQuery.fn.textOnly = function() {
         400: function() {
           nameField.text(oldName);
           updateButton.hide();
-          var alertBlock = $("<span>").addClass("text-danger")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-danger")
             .text("A feature with that name already exists.");
           nameField.append(alertBlock);
           alertBlock.fadeOut(5000);
@@ -110,8 +108,7 @@ jQuery.fn.textOnly = function() {
       data: { "description": newDescription },
       success: function(result) {
         editBlock.find(".description").text(newDescription);
-        var alertBlock = $("<span>").addClass("text-success")
-          .css("padding-left", "10px")
+        var alertBlock = $("<span>").addClass("alert-msg text-success")
           .text("Description successfully updated!");
         alertBlock.insertAfter(updateButton);
         updateButton.fadeOut(5000);
@@ -181,8 +178,7 @@ jQuery.fn.textOnly = function() {
       data: { "type": featureType },
       statusCode: {
         200: function() {
-          var alertBlock = $("<span>").addClass("text-success")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-success")
             .text("OK!");
           alertBlock.insertAfter(deleteTargetButton);
           deleteTargetButton.remove();
@@ -197,8 +193,7 @@ jQuery.fn.textOnly = function() {
           }
         },
         400: function() {
-          var alertBlock = $("<span>").addClass("text-danger")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-danger")
             .text("Error. Could not remove target from feature.");
           alertBlock.insertAfter(deleteTargetButton);
         }
@@ -244,8 +239,7 @@ jQuery.fn.textOnly = function() {
           newTargetForm.html(newTargetName);
           targetsForm.before(newTargetForm);
           inputField.text("");
-          var alertBlock = $("<span>").addClass("text-success")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-success")
             .text("OK!");
           alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
           addTargetsButton.attr("disabled", true);
@@ -284,8 +278,7 @@ jQuery.fn.textOnly = function() {
         },
         400: function() {
           inputField.text("");
-          var alertBlock = $("<span>").addClass("text-danger")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-danger")
             .text("Error. Could not add target.");
           alertBlock.insertAfter(addTargetsButton).fadeOut(5000);
           addTargetsButton.attr("disabled", true);
@@ -318,8 +311,7 @@ jQuery.fn.textOnly = function() {
               deleteButton.on("click", deleteTarget);
             });
           value.data("value", newName);
-          var alertBlock = $("<span>").addClass("text-success")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-success")
             .text("Rename successful!");
           alertBlock.insertAfter(renameButton);
           renameButton.fadeOut(5000);
@@ -328,9 +320,9 @@ jQuery.fn.textOnly = function() {
           value.draggable({ disabled: false });
         },
         400: function() {
-          var alertBlock = $("<span>").addClass("text-danger")
-            .css("padding-left", "10px")
+          var alertBlock = $("<span>").addClass("alert-msg text-danger")
             .text("Value not renamed.");
+          // TODO: Set displayed name back to old name ...
           alertBlock.insertAfter(renameButton);
           renameButton.fadeOut(5000);
           alertBlock.fadeOut(5000);
@@ -360,14 +352,6 @@ $(document).ready(function() {
   });
   $(".draggable.value").on("dblclick", function() {
     $(this).draggable({ disabled: true });
-  });
-  $(".droppable").css({
-    "width": "200px",
-    "height": "30px",
-    "border": "solid 3px #94D6EA",
-    "border-radius": "10px",
-    "margin-top": "5px",
-    "margin-bottom": "5px",
   });
 
 
@@ -461,12 +445,10 @@ $(document).ready(function() {
         var alertBlock;
         if (featureType === "complex") {
           if (target.hasClass("value")) {
-            alertBlock = $("<span>").addClass("text-danger")
-              .css("padding-left", "10px")
+            alertBlock = $("<span>").addClass("alert-msg text-danger")
               .text("Can't add value to complex feature!");
           } else if (targetName === featureName) {
-            alertBlock = $("<span>").addClass("text-danger")
-              .css("padding-left", "10px")
+            alertBlock = $("<span>").addClass("alert-msg text-danger")
               .text("Can't add circular dependency!");
           } else {
             ui.draggable
@@ -474,8 +456,7 @@ $(document).ready(function() {
           }
         } else {
           if (target.hasClass("feature-name")) {
-            alertBlock = $("<span>").addClass("text-danger")
-              .css("padding-left", "10px")
+            alertBlock = $("<span>").addClass("alert-msg text-danger")
               .text("Can only add values to atomic features.");
           }
         }

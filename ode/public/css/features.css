@@ -3,8 +3,9 @@
     height: 30px;
     border: solid 3px #94D6EA;
     border-radius: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding-left: 3px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .alert-msg {

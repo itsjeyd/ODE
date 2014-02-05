@@ -4,7 +4,8 @@
   <div class="container-full">
     <div class="row">
 
-      <div class="col-md-3">
+      <!-- Left sidebar -->
+      <div id="left-sidebar" class="col-md-3">
 
         <h3>Features</h3>
         <p>
@@ -12,116 +13,16 @@
                  placeholder="Filter ..." />
         </p>
 
-        @for(feature <- features) {
-
-          <p class="feature-item" data-type="@feature.getType">
-            <a href="#@feature.name"
-               class="feature-name draggable ui-widget-content">
+        <div id="feature-list">
+          @for(feature <- features) {
+            <div id="@feature.name" class="feature-item"
+                 data-name="@feature.name" data-type="@feature.getType"
+                 data-description="@feature.getDescription"
+                 data-targets="@feature.targets">
               @feature.name
-            </a>
-            <button class="btn btn-xs btn-warning delete-feature-button">
-              Delete
-            </button>
-          </p>
-
-          <!-- Edit block for individual feature: -->
-          <div id="@feature.name" class="edit-feature-block">
-
-            <div contenteditable="true">
-              <h3 class="name" data-name="@feature.name">@feature.name</h3>
             </div>
-            <button class="btn btn-xs btn-info update-feature-name">
-              Update name
-            </button>
-
-            <div contenteditable="true">
-              <span class="description">@feature.getDescription</span>
-            </div>
-            <button class="btn btn-xs btn-info update-feature-description">
-              Update description
-            </button>
-
-            @if(feature.getType == "complex") {
-              <form role="form" data-feature="@feature.name">
-                <p>
-                  <label>
-                    <input type="radio" name="type" value="complex"
-                           checked="checked" />
-                    complex
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    <input type="radio" name="type" value="atomic" />
-                    atomic
-                  </label>
-                </p>
-                <p>
-                  <button class="btn btn-sm btn-info update-type">
-                    Update type
-                  </button>
-                </p>
-              </form>
-
-              <h4>Features permitted in substructure:</h4>
-
-            } else {
-              <form role="form" data-feature="@feature.name">
-                <p>
-                  <label>
-                    <input type="radio" name="type" value="complex" />
-                    complex
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    <input type="radio" name="type" value="atomic"
-                           checked="checked" />
-                    atomic
-                  </label>
-                </p>
-                <p>
-                  <button class="btn btn-sm btn-info update-type">
-                    Update type
-                  </button>
-                </p>
-              </form>
-
-              <h4>Permitted values:</h4>
-
-            }
-
-            @for(target <- feature.targets) {
-              <form role="form"
-                    data-feature="@feature.name"
-                    data-type="@feature.getType"
-                    data-target="@target">
-                <div class="target-name">
-                  @target
-                  <button class="btn btn-xs btn-warning delete-target">
-                    Delete
-                  </button>
-                </div>
-              </form>
-            }
-
-            <form role="form"
-                  data-feature="@feature.name" data-type="@feature.getType">
-              @if(feature.getType == "complex") {
-                <div class="droppable ui-widget-header"></div>
-              } else {
-                <div class="droppable ui-widget-header"
-                     contenteditable="true">
-                </div>
-              }
-              <button class="btn btn-sm btn-info add-targets"
-                      style="margin-top: 5px">
-                Add
-              </button>
-            </form>
-
-          </div>
-        }
+          }
+        </div>
 
         <p>
           <button id="new-feature-button" class="btn btn-info">
@@ -135,7 +36,7 @@
       <div id="interaction-block" class="col-md-6"></div>
 
       <!-- Block for creating new feature: -->
-      <div id="new-feature-block">
+      <div id="new-feature-block" class="col-md-6">
         <h3>Create a new feature</h3>
         @helper.form(routes.Features.createFeature) {
           <p>
@@ -167,24 +68,27 @@
         }
       </div>
 
-      <!-- Block for displaying available values: ... -->
-      <div id="value-list" class="col-md-3">
+      <!-- Right sidebar -->
+      <div id="right-sidebar" class="col-md-3">
         <h3>Values</h3>
         <p>
           <input id="value-filter" class="form-control" type="text"
                  placeholder="Filter ..." />
         </p>
-        @for(value <- values) {
-          <div class="value draggable" contenteditable="true"
-               data-value="@value.name">
-            @value.name
-            <button class="btn btn-xs btn-info rename-value-button">
-              Rename
-            </button>
-          </div>
-        }
+
+        <div id="value-list">
+          @for(value <- values) {
+            <div id="@value.name" class="value-item"
+                 data-name="@value.name">
+              @value.name
+            </div>
+          }
+        </div>
       </div>
+
     </div>
+
+
 
     <!-- Separate row for displaying error messages: -->
     <div class="row">

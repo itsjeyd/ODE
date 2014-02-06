@@ -11,10 +11,72 @@ var ValueList = Backbone.Collection.extend({ model: Value });
 
 var FeatureView = Backbone.View.extend({
   render: function() {
-    this.$el.text(
-      'I want to be an edit block for ' + this.model.get('name') +
-        ' when I grow up!');
+    this._renderName();
+    this._renderDescription();
+    this._renderTypeForm();
+    this._renderTargetListHeading();
+    this._renderTargets();
+    this._renderTargetForm();
     return this;
+  },
+  _renderName: function() {
+    var nameTemplate = _.template('<h3><%= name %></h3>');
+    var node = $(nameTemplate({ name: this.model.get('name') }));
+    this.$el.append(node);
+  },
+  _renderDescription: function() {
+    var descriptionTemplate = _.template('<p><%= description %></p>');
+    var node = $(descriptionTemplate({
+      description: this.model.get('description')
+    }));
+    this.$el.append(node);
+  },
+  _renderTypeForm: function() {
+    var typeFormTemplate = _.template(
+      '<form role="form">' +
+        '<div class="radio"><label>' +
+        '<input type="radio" name="type" value="complex" />complex' +
+        '</label></div>' +
+        '<div class="radio"><label>' +
+        '<input type="radio" name="type" value="atomic" />atomic' +
+        '</label></div>' +
+        '</form>');
+    var node = $(typeFormTemplate());
+    node.find('input[value="' + this.model.get('type') + '"]').check();
+    this.$el.append(node);
+  },
+  _renderTargetListHeading: function() {
+    var targetListHeadingTemplate = _.template('<h4><%= heading %></h4>');
+    var heading;
+    if (this.model.get('type') === 'complex') {
+      heading = 'Features permitted in substructure:';
+    } else {
+      heading = 'Permitted values:';
+    }
+    var node = $(targetListHeadingTemplate({ heading: heading }));
+    this.$el.append(node);
+  },
+  _renderTargets: function() {
+    var targetListTemplate = _.template(
+      '<% _.each(targets, function(target) { %>' +
+        '<div class="target"><%= target %></div>' +
+        '<% }); %>');
+    var node = $(targetListTemplate({ targets: this.model.get('targets') }));
+    this.$el.append(node);
+  },
+  _renderTargetForm: function() {
+    var targetFormTemplate = _.template(
+      '<form role="form">' +
+        '<div class="droppable">Drop <%= targetType %> here ...</div>' +
+        '</form>');
+    var targetType;
+    if (this.model.get('type') === 'complex') {
+      targetType = 'feature';
+    } else {
+      targetType = 'value';
+    }
+    var node = ($(targetFormTemplate({ targetType: targetType })));
+    this.$el.append(node);
   },
 });
 
@@ -118,7 +180,7 @@ $(document).ready(function() {
       name: name,
       type: item.data('type'),
       description: item.data('description'),
-      targets: item.data('targets'),
+      targets: item.dataToArray('targets'),
     });
     featureList.add(feature);
   });

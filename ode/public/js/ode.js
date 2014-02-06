@@ -7,3 +7,12 @@ jQuery.fn.textOnly = function() {
     .end() // Go back to cloned element
     .text();
 };
+
+jQuery.fn.check = function() {
+  return $(this).attr('checked', true);
+}
+
+jQuery.fn.dataToArray = function(dataAttribute) {
+  var dataToConvert = $(this).data(dataAttribute);
+  return dataToConvert.substring(1, dataToConvert.length-1).split(/, */);
+}

@@ -21,6 +21,12 @@ var FeatureView = Backbone.View.extend({
     var attributes = this.model.toJSON();
     return $(listEntryTemplate(attributes));
   },
+  render: function() {
+    this.$el.text(
+      'I want to be an edit block for ' + this.model.get('name') +
+        ' when I grow up!');
+    return this;
+  },
 });
 
 var ValueView = Backbone.View.extend({
@@ -39,6 +45,16 @@ var ValueView = Backbone.View.extend({
 // Collection views
 
 var FeatureListView = Backbone.View.extend({
+  events: {
+    'click .feature-item': 'showEditBlock',
+  },
+  showEditBlock: function(e) {
+    var featureID = e.currentTarget.id;
+    var feature = this.collection.get(featureID);
+    var featureView = new FeatureView({ model: feature });
+    featureView.render();
+    $('#interaction-block').html(featureView.$el.html());
+  },
   render: function() {
     this.collection.forEach(this.addFeature, this);
   },
@@ -81,8 +97,10 @@ $(document).ready(function() {
 
   featureItems.each(function() {
     var item = $(this);
+    var name = item.data('name');
     var feature = new Feature({
-      name: item.data('name'),
+      id: name,
+      name: name,
       type: item.data('type'),
       description: item.data('description'),
       targets: item.data('targets'),

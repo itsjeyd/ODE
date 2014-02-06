@@ -19,3 +19,19 @@
 .value-item {
     margin-bottom: 10px;
 }
+
+#feature-list {
+    cursor: pointer;
+}
+
+#value-list {
+    cursor: default;
+}
+
+.highlighted {
+    background-color: rgba(97, 204, 236, .2); /* #61CCEC */
+}
+
+.selected {
+    background-color: rgba(97, 204, 236, .45); /* #61CCEC */
+}

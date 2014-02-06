@@ -48,7 +48,18 @@ var ValueItemView = Backbone.View.extend({
 
 var FeatureListView = Backbone.View.extend({
   events: {
-    'click .feature-item': 'showEditBlock',
+    'click .feature-item': 'dispatcher',
+    'mouseenter .feature-item': 'highlight',
+    'mouseleave .feature-item': 'unhighlight',
+    'unselect-all': 'unselectAll',
+  },
+  dispatcher: function(e) { this.select(e); this.showEditBlock(e); },
+  select: function(e) {
+    this.$el.trigger('unselect-all');
+    $(e.currentTarget).addClass('selected');
+  },
+  unselectAll: function() {
+    this.$el.find('.selected').removeClass('selected');
   },
   showEditBlock: function(e) {
     var featureID = e.currentTarget.id;
@@ -57,6 +68,8 @@ var FeatureListView = Backbone.View.extend({
     featureView.render();
     $('#interaction-block').html(featureView.$el.html());
   },
+  highlight: function(e) { $(e.currentTarget).addClass('highlighted'); },
+  unhighlight: function(e) { $(e.currentTarget).removeClass('highlighted'); },
   render: function() {
     this.collection.forEach(this.addFeatureItem, this);
   },

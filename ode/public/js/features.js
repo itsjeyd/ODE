@@ -11,6 +11,7 @@ var ValueList = Backbone.Collection.extend({ model: Value });
 
 var FeatureView = Backbone.View.extend({
   render: function() {
+    this.$el.empty();
     this._renderName();
     this._renderDescription();
     this._renderTypeForm();
@@ -127,8 +128,8 @@ var FeatureListView = Backbone.View.extend({
     var featureID = e.currentTarget.id;
     var feature = this.collection.get(featureID);
     var featureView = new FeatureView({ model: feature });
+    featureView.setElement($('#interaction-block'));
     featureView.render();
-    $('#interaction-block').html(featureView.$el.html());
   },
   highlight: function(e) { $(e.currentTarget).addClass('highlighted'); },
   unhighlight: function(e) { $(e.currentTarget).removeClass('highlighted'); },

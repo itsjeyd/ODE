@@ -10,17 +10,6 @@ var ValueList = Backbone.Collection.extend({ model: Value });
 // Model views
 
 var FeatureView = Backbone.View.extend({
-  renderListEntry: function() {
-    var listEntryTemplate = _.template(
-      '<div id="<%= name %>" class="feature-item" ' +
-        'data-name="<%= name %>" data-type="<%= type %>" ' +
-        'data-description="<%= description %>" ' +
-        'data-targets="<%= targets %>">' +
-        '<%= name %>' +
-        '</div>');
-    var attributes = this.model.toJSON();
-    return $(listEntryTemplate(attributes));
-  },
   render: function() {
     this.$el.text(
       'I want to be an edit block for ' + this.model.get('name') +
@@ -29,16 +18,29 @@ var FeatureView = Backbone.View.extend({
   },
 });
 
-var ValueView = Backbone.View.extend({
-  renderListEntry: function() {
-    var listEntryTemplate = _.template(
-      '<div id="<%= name %>" class="value-item" ' +
-        'data-name="<%= name %>">' +
-        '<%= name %>' +
-        '</div>');
+var FeatureItemView = Backbone.View.extend({
+  className: 'feature-item',
+  render: function() {
     var attributes = this.model.toJSON();
-    return $(listEntryTemplate(attributes));
-  }
+    this.$el.attr('id', this.model.id);
+    this.$el.attr('data-name', attributes['name']);
+    this.$el.attr('data-type', attributes['type']);
+    this.$el.attr('data-description', attributes['description']);
+    this.$el.attr('data-targets', attributes['targets']);
+    this.$el.text(attributes['name']);
+    return this;
+  },
+});
+
+var ValueItemView = Backbone.View.extend({
+  className: 'value-item',
+  render: function() {
+    var name = this.model.get('name');
+    this.$el.attr('id', this.model.id);
+    this.$el.attr('data-name', name);
+    this.$el.text(name);
+    return this;
+  },
 });
 
 
@@ -56,11 +58,11 @@ var FeatureListView = Backbone.View.extend({
     $('#interaction-block').html(featureView.$el.html());
   },
   render: function() {
-    this.collection.forEach(this.addFeature, this);
+    this.collection.forEach(this.addFeatureItem, this);
   },
-  addFeature: function(featureItem) {
-    var featureView = new FeatureView({ model: featureItem });
-    this.$el.append(featureView.renderListEntry());
+  addFeatureItem: function(featureItem) {
+    var featureItemView = new FeatureItemView({ model: featureItem });
+    this.$el.append(featureItemView.render().$el);
   }
 });
 
@@ -69,8 +71,8 @@ var ValueListView = Backbone.View.extend({
     this.collection.forEach(this.addValue, this);
   },
   addValue: function(valueItem) {
-    var valueView = new ValueView({ model: valueItem });
-    this.$el.append(valueView.renderListEntry());
+    var valueView = new ValueItemView({ model: valueItem }); // Should be a ValueItemView!
+    this.$el.append(valueView.render().$el);
   }
 });
 
@@ -110,8 +112,10 @@ $(document).ready(function() {
 
   valueItems.each(function() {
     var item = $(this);
+    var name = item.data('name');
     var value = new Value({
-      name: item.data('name'),
+      id: name,
+      name: name,
     });
     valueList.add(value);
   });

@@ -99,13 +99,19 @@ $(document).ready(function() {
   });
 
   var featureListView = new FeatureListView({
+    id: 'feature-list',
     collection: featureList,
-    $el: $('#feature-list'),
   });
 
+  featureListView.render();
+  $('#feature-list').replaceWith(featureListView.$el);
+
   var valueListView = new ValueListView({
+    id: 'value-list',
     collection: valueList,
-    $el: $('#value-list'),
   });
+
+  valueListView.render();
+  $('#value-list').replaceWith(valueListView.$el);
 
 });

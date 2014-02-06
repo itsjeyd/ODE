@@ -83,25 +83,31 @@ var FeatureView = Backbone.View.extend({
 
 var FeatureItemView = Backbone.View.extend({
   className: 'feature-item',
+  attributes: function() {
+    return {
+      id: this.model.id,
+      'data-name': this.model.get('name'),
+      'data-type': this.model.get('type'),
+      'data-description': this.model.get('description'),
+      'data-targets': this.model.get('targets'),
+    }
+  },
   render: function() {
-    var attributes = this.model.toJSON();
-    this.$el.attr('id', this.model.id);
-    this.$el.attr('data-name', attributes['name']);
-    this.$el.attr('data-type', attributes['type']);
-    this.$el.attr('data-description', attributes['description']);
-    this.$el.attr('data-targets', attributes['targets']);
-    this.$el.text(attributes['name']);
+    this.$el.text(this.model.get('name'));
     return this;
   },
 });
 
 var ValueItemView = Backbone.View.extend({
   className: 'value-item',
+  attributes: function() {
+    return {
+      id: this.model.id,
+      'data-name': this.model.get('name'),
+    }
+  },
   render: function() {
-    var name = this.model.get('name');
-    this.$el.attr('id', this.model.id);
-    this.$el.attr('data-name', name);
-    this.$el.text(name);
+    this.$el.text(this.model.get('name'));
     return this;
   },
 });

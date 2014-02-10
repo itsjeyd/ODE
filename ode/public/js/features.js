@@ -19,6 +19,16 @@ var Feature = Backbone.Model.extend({
                 },
               });
   },
+  updateDescription: function(newDescription) {
+    this.save({ description: newDescription },
+              { url: this.url() + '/description',
+                wait: true,
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  model.trigger('update-error:description', response.message);
+                },
+              });
+  },
 });
 var Value = Backbone.Model.extend({});
 
@@ -32,6 +42,8 @@ var FeatureView = Backbone.View.extend({
   events: {
     'dblclick h3': 'editName',
     'click button.fname': 'saveName',
+    'dblclick p': 'editDescription',
+    'click button.fdescription': 'saveDescription',
   },
   editName: function(e) {
     var h3 = $(e.currentTarget);
@@ -54,6 +66,27 @@ var FeatureView = Backbone.View.extend({
       this.render();
     }
   },
+  editDescription: function(e) {
+    var p = $(e.currentTarget);
+    var inputField = $('<input>').addClass('form-control fdescription')
+      .attr('type', 'text').val(p.text());
+    var okButton = $('<button>').addClass('btn btn-info fdescription')
+      .text('OK');
+    p.hide();
+    inputField.insertAfter(p);
+    okButton.insertAfter(inputField);
+    inputField.focus();
+  },
+  saveDescription: function() {
+    var inputField = this.$el.find('input.fdescription');
+    var okButton = this.$el.find('button.fdescription');
+    if (!inputField.isEmpty() &&
+        inputField.val() !== this.model.get('description')) {
+      this.model.updateDescription(inputField.val());
+    } else {
+      this.render();
+    }
+  },
   initialize: function() {
     this.model.on('change', this.render, this);
     this.model.on('invalid', function(model, error) {
@@ -61,6 +94,9 @@ var FeatureView = Backbone.View.extend({
     }, this);
     this.model.on('update-error:name', function(msg) {
       this._renderAlert('button.fname', msg);
+    }, this);
+    this.model.on('update-error:description', function(msg) {
+      this._renderAlert('button.fdescription', msg);
     }, this);
   },
   _renderAlert: function(button, msg) {

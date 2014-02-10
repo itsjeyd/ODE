@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.Routes;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -48,7 +47,7 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .updateName(),
                       controllers.routes.javascript.Features
-                      .updateFeatureDescription(),
+                      .updateDescription(),
                       controllers.routes.javascript.Features
                       .updateFeatureType(),
                       controllers.routes.javascript.Features
@@ -169,18 +168,25 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> updateFeatureDescription(
-        String featureName) {
-        DynamicForm descriptionForm = form().bindFromRequest();
-        String newDescription = descriptionForm.get("description");
-        Promise<Boolean> descriptionUpdated = new Feature(featureName)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateDescription(String name) {
+        JsonNode json = request().body().asJson();
+        final String newDescription = json.findPath("description")
+            .textValue();
+        Promise<Boolean> descriptionUpdated = new Feature(name)
             .updateDescription(newDescription);
-        return descriptionUpdated.map(new Function<Boolean, Result>() {
+        return descriptionUpdated.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
                 public Result apply(Boolean updated) {
                     if (updated) {
-                        return ok();
+                        result.put("message",
+                                   "Description successfully updated.");
+                        return ok(result);
                     }
-                    return badRequest();
+                    result.put("message",
+                               "Description not updated.");
+                    return badRequest(result);
                 }
             });
     }

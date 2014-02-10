@@ -43,52 +43,45 @@ var ValueList = Backbone.Collection.extend({ model: Value });
 
 var FeatureView = Backbone.View.extend({
   events: {
-    'dblclick h3': 'editName',
-    'click button.fname': 'saveName',
-    'dblclick p': 'editDescription',
-    'click button.fdescription': 'saveDescription',
+    'dblclick h3': function(e) {
+      this._renderEditControls('name')(e)
+    },
+    'click button.fname': function() {
+      this._saveEdits('name')(this)
+    },
+    'dblclick p': function(e) {
+      this._renderEditControls('description')(e)
+    },
+    'click button.fdescription': function() {
+      this._saveEdits('description')(this)
+    },
   },
-  editName: function(e) {
-    var h3 = $(e.currentTarget);
-    var inputField = $('<input>').addClass('form-control fname')
-      .attr('type', 'text').val(h3.text());
-    var okButton = $('<button>').addClass('btn btn-info fname')
-      .text('OK');
-    h3.hide();
-    inputField.insertAfter(h3);
-    okButton.insertAfter(inputField);
-    inputField.focus();
+  _renderEditControls: function(modelField) {
+    return function(e) {
+      var fieldToEdit = $(e.currentTarget);
+      var inputField = $('<input>').addClass('form-control f' + modelField)
+        .attr('type', 'text').val(fieldToEdit.text());
+      var okButton = $('<button>').addClass('btn btn-info f' + modelField)
+        .text('OK');
+      fieldToEdit.hide();
+      inputField.insertAfter(fieldToEdit);
+      okButton.insertAfter(inputField);
+      inputField.focus();
+    };
   },
-  saveName: function() {
-    var inputField = this.$el.find('input.fname');
-    var okButton = this.$el.find('button.fname');
-    if (!inputField.isEmpty() &&
-        inputField.val() !== this.model.get('name')) {
-      this.model.updateName(inputField.val());
-    } else {
-      this.render();
-    }
-  },
-  editDescription: function(e) {
-    var p = $(e.currentTarget);
-    var inputField = $('<input>').addClass('form-control fdescription')
-      .attr('type', 'text').val(p.text());
-    var okButton = $('<button>').addClass('btn btn-info fdescription')
-      .text('OK');
-    p.hide();
-    inputField.insertAfter(p);
-    okButton.insertAfter(inputField);
-    inputField.focus();
-  },
-  saveDescription: function() {
-    var inputField = this.$el.find('input.fdescription');
-    var okButton = this.$el.find('button.fdescription');
-    if (!inputField.isEmpty() &&
-        inputField.val() !== this.model.get('description')) {
-      this.model.updateDescription(inputField.val());
-    } else {
-      this.render();
-    }
+  _saveEdits: function(modelField) {
+    return function(view) {
+      var inputField = view.$el.find('input.f' + modelField);
+      var okButton = view.$el.find('button.f' + modelField);
+      if (!inputField.isEmpty() &&
+          inputField.val() !== view.model.get(modelField)) {
+        var updateFunction = 'update' + modelField.charAt(0).toUpperCase() +
+          modelField.slice(1);
+        view.model[updateFunction](inputField.val());
+      } else {
+        view.render();
+      }
+    };
   },
   initialize: function() {
     this.model.on('change', this.render, this);

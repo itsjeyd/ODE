@@ -13,6 +13,9 @@ var Feature = Backbone.Model.extend({
     this.save({ name: newName },
               { url: this.url() + '/name',
                 wait: true,
+                success: function(model, response, options) {
+                  model.id = newName;
+                },
                 error: function(model, xhr, options) {
                   var response = $.parseJSON(xhr.responseText);
                   model.trigger('update-error:name', response.message);

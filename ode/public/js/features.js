@@ -1,6 +1,25 @@
 // Models
 
-var Feature = Backbone.Model.extend({});
+var Feature = Backbone.Model.extend({
+  initialize: function() {
+    this.urlRoot = '/features'
+  },
+  validate: function(attrs, options) {
+    if (attrs.name.split(/ +/).length > 1) {
+      return 'Feature names can not contain whitespace.';
+    }
+  },
+  updateName: function(newName) {
+    this.save({ name: newName },
+              { url: this.url() + '/name',
+                wait: true,
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  model.trigger('update-error:name', response.message);
+                },
+              });
+  },
+});
 var Value = Backbone.Model.extend({});
 
 var FeatureList = Backbone.Collection.extend({ model: Feature });
@@ -10,6 +29,47 @@ var ValueList = Backbone.Collection.extend({ model: Value });
 // Model views
 
 var FeatureView = Backbone.View.extend({
+  events: {
+    'dblclick h3': 'editName',
+    'click button.fname': 'saveName',
+  },
+  editName: function(e) {
+    var h3 = $(e.currentTarget);
+    var inputField = $('<input>').addClass('form-control fname')
+      .attr('type', 'text').val(h3.text());
+    var okButton = $('<button>').addClass('btn btn-info fname')
+      .text('OK');
+    h3.hide();
+    inputField.insertAfter(h3);
+    okButton.insertAfter(inputField);
+    inputField.focus();
+  },
+  saveName: function() {
+    var inputField = this.$el.find('input.fname');
+    var okButton = this.$el.find('button.fname');
+    if (!inputField.isEmpty() &&
+        inputField.val() !== this.model.get('name')) {
+      this.model.updateName(inputField.val());
+    } else {
+      this.render();
+    }
+  },
+  initialize: function() {
+    this.model.on('change', this.render, this);
+    this.model.on('invalid', function(model, error) {
+      this._renderAlert('button.fname', error);
+    }, this);
+    this.model.on('update-error:name', function(msg) {
+      this._renderAlert('button.fname', msg);
+    }, this);
+  },
+  _renderAlert: function(button, msg) {
+    var updateButton = this.$el.find(button);
+    updateButton.next('.alert-msg').remove();
+    var alertMsg = $('<span>').addClass('alert-msg text-danger')
+      .text(msg);
+    alertMsg.insertAfter(updateButton);
+  },
   render: function() {
     this.$el.empty();
     this._renderName();
@@ -92,6 +152,9 @@ var FeatureItemView = Backbone.View.extend({
       'data-targets': this.model.get('targets'),
     }
   },
+  initialize: function() {
+    this.model.on('change:name', this.render, this);
+  },
   render: function() {
     this.$el.text(this.model.get('name'));
     return this;
@@ -134,8 +197,8 @@ var FeatureListView = Backbone.View.extend({
     var featureID = e.currentTarget.id;
     var feature = this.collection.get(featureID);
     var featureView = new FeatureView({ model: feature });
-    featureView.setElement($('#interaction-block'));
     featureView.render();
+    $('#interaction-block').html(featureView.$el);
   },
   highlight: function(e) { $(e.currentTarget).addClass('highlighted'); },
   unhighlight: function(e) { $(e.currentTarget).removeClass('highlighted'); },

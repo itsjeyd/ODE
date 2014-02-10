@@ -2,13 +2,18 @@ package controllers;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import play.Routes;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import play.libs.Json;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Function0;
@@ -41,7 +46,7 @@ public class Features extends Controller {
         return ok(Routes.javascriptRouter(
                       "jsFeatureRoutes",
                       controllers.routes.javascript.Features
-                      .updateFeatureName(),
+                      .updateName(),
                       controllers.routes.javascript.Features
                       .updateFeatureDescription(),
                       controllers.routes.javascript.Features
@@ -110,10 +115,10 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> updateFeatureName(
-        final String featureName) {
-        DynamicForm nameForm = form().bindFromRequest();
-        final String newName = nameForm.get("name");
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateName(final String name) {
+        JsonNode json = request().body().asJson();
+        final String newName = json.findPath("name").textValue();
         Promise<List<Feature>> features = Feature.all();
         Promise<Boolean> nameAlreadyTaken = features.map(
             new Function<List<Feature>, Boolean>() {
@@ -130,24 +135,32 @@ public class Features extends Controller {
             });
         return nameAlreadyTaken.flatMap(
             new Function<Boolean, Promise<Result>>() {
+                ObjectNode result = Json.newObject();
                 public Promise<Result> apply(Boolean nameAlreadyTaken) {
                     if (nameAlreadyTaken) {
                         return Promise.promise(
                             new Function0<Result>() {
                                 public Result apply() {
-                                    return badRequest();
+                                    result.put(
+                                        "message", "Name already taken.");
+                                    return badRequest(result);
                                 }
                             });
                     } else {
                         Promise<Boolean> nameUpdated = new Feature(
-                            featureName).updateName(newName);
+                            name).updateName(newName);
                         return nameUpdated.map(
                             new Function<Boolean, Result>() {
                                 public Result apply(Boolean updated) {
                                     if (updated) {
-                                        return ok();
+                                        result.put(
+                                            "message",
+                                            "Name successfully updated.");
+                                        return ok(result);
                                     }
-                                    return badRequest();
+                                    result.put(
+                                        "message", "Name not updated.");
+                                    return badRequest(result);
                                 }
                             });
                     }

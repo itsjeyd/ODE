@@ -40,3 +40,8 @@
 .target {
     margin-bottom: 5px;
 }
+
+input.fname {
+    margin-top: 20px; /* Equal to margin-top of Bootstrap <h3> */
+    margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
+}

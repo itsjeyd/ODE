@@ -16,3 +16,7 @@ jQuery.fn.dataToArray = function(dataAttribute) {
   var dataToConvert = $(this).data(dataAttribute);
   return dataToConvert.substring(1, dataToConvert.length-1).split(/, */);
 }
+
+jQuery.fn.isEmpty = function() {
+  return !$(this).val();
+}

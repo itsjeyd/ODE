@@ -39,10 +39,16 @@
 
 .target {
     margin-bottom: 5px;
+    cursor: pointer;
 }
 
 input.fname,
 input.fdescription {
     margin-top: 20px; /* Equal to margin-top of Bootstrap <h3> */
     margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
+}
+
+.remove-button {
+    margin-left: 5px;
+    cursor: pointer;
 }

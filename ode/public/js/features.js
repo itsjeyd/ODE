@@ -45,6 +45,21 @@ var Feature = Backbone.Model.extend({
                 },
               });
   },
+  removeTarget: function(targetName) {
+    var targets = _.without(this.get('targets'), targetName);
+    this.save({},
+              { url: this.url() + '/targets/' + targetName,
+                wait: true,
+                success: function(model, response, options) {
+                  model.set({ targets: targets });
+                },
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  model.trigger('update-error:remove-target',
+                                response.message);
+                },
+              });
+  },
 });
 var Value = Backbone.Model.extend({});
 
@@ -86,6 +101,17 @@ var FeatureView = Backbone.View.extend({
     'click button.ftype': function(e) {
       e.preventDefault();
       this.model.updateType(this.$el.find('input:checked').val());
+    },
+    'mouseenter .target': function(e) {
+      var currentTarget = $(e.currentTarget);
+      currentTarget.append($.removeButton(currentTarget.text()));
+    },
+    'mouseleave .target': function(e) {
+      $(e.currentTarget).find('.remove-button').remove();
+    },
+    'click .remove-button': function(e) {
+      var targetName = $(e.currentTarget).data('target');
+      this.model.removeTarget(targetName);
     },
   },
   _renderEditControls: function(modelField) {

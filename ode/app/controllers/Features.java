@@ -55,7 +55,7 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .addTargets(),
                       controllers.routes.javascript.Features
-                      .deleteTarget()));
+                      .removeTarget()));
     }
 
     @Security.Authenticated(Secured.class)
@@ -251,12 +251,12 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> deleteTarget(String fname, String tname) {
-        Form<DeleteTargetForm> targetForm = form(DeleteTargetForm.class)
-            .bindFromRequest();
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removeTarget(String fname, String tname) {
+        JsonNode json = request().body().asJson();
+        String featureType = json.findPath("type").textValue();
         Feature feature;
         final OntologyNode target;
-        String featureType = targetForm.get().type;
         if (featureType.equals(FeatureType.COMPLEX.toString())) {
             feature = new ComplexFeature(fname);
             target = new Feature(tname);
@@ -276,12 +276,17 @@ public class Features extends Controller {
                     }
                 });
         }
-        return deleted.map(new Function<Boolean, Result>() {
+        return deleted.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
                 public Result apply(Boolean deleted) {
                     if (deleted) {
-                        return ok();
+                        result.put("message",
+                                   "Target successfully removed.");
+                        return ok(result);
                     }
-                    return badRequest();
+                    result.put("message", "Target not removed.");
+                    return badRequest(result);
                 }
             });
     }

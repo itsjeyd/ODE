@@ -28,3 +28,8 @@ jQuery.fn.isEmpty = function() {
 jQuery.okButton = function(controlClass) {
   return $('<button>').addClass('btn btn-info ' + controlClass).text('OK');
 }
+
+jQuery.removeButton = function(target) {
+  return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
+    .data('target', target);
+}

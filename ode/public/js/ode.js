@@ -45,3 +45,7 @@ jQuery.removeButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
     .data('target', target);
 }
+
+jQuery.matches = function(str, input) {
+  return str.indexOf(input) !== -1;
+}

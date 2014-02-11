@@ -312,6 +312,8 @@ var FeatureItemView = Backbone.View.extend({
   },
   initialize: function() {
     this.model.on('change:name', this.render, this);
+    this.model.on('hide', function() { this.$el.hide(); }, this);
+    this.model.on('show', function() { this.$el.show(); }, this);
   },
   render: function() {
     this.$el.text(this.model.get('name'));
@@ -331,6 +333,10 @@ var ValueItemView = Backbone.View.extend({
       id: this.model.id,
       'data-name': this.model.get('name'),
     }
+  },
+  initialize: function() {
+    this.model.on('hide', function() { this.$el.hide(); }, this);
+    this.model.on('show', function() { this.$el.show(); }, this);
   },
   render: function() {
     this.$el.text(this.model.get('name'));
@@ -448,5 +454,45 @@ $(document).ready(function() {
 
   valueListView.render();
   $('#value-list').replaceWith(valueListView.$el);
+
+  $('#feature-filter').on('keyup', function() {
+    var currentInput = $(this).val().toLowerCase();
+    featureListView.collection.each(function(f) {
+      if (!$.matches(f.get('name').toLowerCase(), currentInput)) {
+        f.trigger('hide');
+      } else {
+        f.trigger('show');
+      }
+    });
+  });
+
+  $('#value-filter').on('keyup', function() {
+    var currentInput = $(this).val().toLowerCase();
+    if (!currentInput) {
+      featureListView.collection.each(function(f) { f.trigger('show') });
+      valueListView.collection.each(function(v) { v.trigger('show') });
+      return;
+    }
+    valueListView.collection.each(function(v) {
+      var valueName = v.get('name');
+      if (!$.matches(valueName.toLowerCase(), currentInput)) {
+        v.trigger('hide');
+      } else {
+        v.trigger('show');
+      }
+    });
+    featureListView.collection.each(function(f) {
+      var targets = f.get('targets');
+      if (f.get('type') === 'complex') {
+        f.trigger('hide');
+      } else if (_.filter(targets, function(t) {
+        return t.indexOf(currentInput) !== -1;
+      }).length === 0) {
+        f.trigger('hide');
+      } else {
+        f.trigger('show');
+      }
+    });
+  });
 
 });

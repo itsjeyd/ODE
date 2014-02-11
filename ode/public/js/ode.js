@@ -14,7 +14,11 @@ jQuery.fn.check = function() {
 
 jQuery.fn.dataToArray = function(dataAttribute) {
   var dataToConvert = $(this).data(dataAttribute);
-  return dataToConvert.substring(1, dataToConvert.length-1).split(/, */);
+  if (typeof(dataToConvert) === 'string') {
+    return dataToConvert.substring(1, dataToConvert.length-1).split(/, */);
+  } else {
+    return dataToConvert;
+  }
 }
 
 jQuery.fn.isEmpty = function() {

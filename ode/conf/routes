@@ -25,7 +25,7 @@ PUT     /features/:name/name            controllers.Features.updateName(name: St
 PUT     /features/:name/description     controllers.Features.updateDescription(name: String)
 PUT     /features/:name/type            controllers.Features.updateType(name: String)
 PUT     /features/:fname/targets/:tname controllers.Features.removeTarget(fname: String, tname: String)
-POST    /features/:name/targets         controllers.Features.addTargets(name: String)
+PUT     /features/:name/targets         controllers.Features.addTarget(name: String)
 DELETE  /features/:name                 controllers.Features.deleteFeature(name: String)
 PUT     /values/:name                   controllers.Values.renameValue(name: String)
 

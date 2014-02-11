@@ -26,7 +26,7 @@
 }
 
 #value-list {
-    cursor: default;
+    cursor: pointer;
 }
 
 .highlighted {
@@ -51,4 +51,16 @@ input.fdescription {
 .remove-button {
     margin-left: 5px;
     cursor: pointer;
+}
+
+button.ftarget {
+    margin-top: 10px;
+}
+
+.droppable {
+    cursor: default;
+}
+
+.editable {
+    cursor: text;
 }

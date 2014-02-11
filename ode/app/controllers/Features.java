@@ -53,7 +53,7 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .deleteFeature(),
                       controllers.routes.javascript.Features
-                      .addTargets(),
+                      .addTarget(),
                       controllers.routes.javascript.Features
                       .removeTarget()));
     }
@@ -218,39 +218,6 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> addTargets(String featureName) {
-        Form<AddTargetForm> targetForm = form(AddTargetForm.class)
-            .bindFromRequest();
-        String featureType = targetForm.get().type;
-        String targetName = targetForm.get().target;
-        Promise<Tuple<Option<Relationship>, Boolean>> relationshipResult =
-            null;
-        if (featureType.equals(FeatureType.COMPLEX.toString())) {
-            Feature feature = new ComplexFeature(featureName);
-            Feature target = new Feature(targetName);
-            relationshipResult = new AllowsRelationship(feature, target)
-                .getOrCreate();
-        } else if (featureType.equals(FeatureType.ATOMIC.toString())) {
-            final Feature feature = new AtomicFeature(featureName);
-            Promise<Tuple<Option<OntologyNode>, Boolean>> valueResult =
-                new Value(targetName).getOrCreate();
-            relationshipResult = valueResult.flatMap(
-                new MaybeConnectToValueFunction(feature));
-        }
-        return relationshipResult.map(
-            new Function<Tuple<Option<Relationship>, Boolean>, Result>() {
-                public Result apply(
-                    Tuple<Option<Relationship>, Boolean> relationshipResult) {
-                    Boolean created = relationshipResult._2;
-                    if (created) {
-                        return ok();
-                    }
-                    return badRequest();
-                }
-            });
-    }
-
-    @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeTarget(String fname, String tname) {
         JsonNode json = request().body().asJson();
@@ -286,6 +253,42 @@ public class Features extends Controller {
                         return ok(result);
                     }
                     result.put("message", "Target not removed.");
+                    return badRequest(result);
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> addTarget(String name) {
+        JsonNode json = request().body().asJson();
+        String featureType = json.findPath("type").textValue();
+        String targetName = json.findPath("target").textValue();
+        Promise<Tuple<Option<Relationship>, Boolean>> relationshipResult =
+            null;
+        if (featureType.equals(FeatureType.COMPLEX.toString())) {
+            Feature feature = new ComplexFeature(name);
+            Feature target = new Feature(targetName);
+            relationshipResult = new AllowsRelationship(feature, target)
+                .getOrCreate();
+        } else if (featureType.equals(FeatureType.ATOMIC.toString())) {
+            final Feature feature = new AtomicFeature(name);
+            Promise<Tuple<Option<OntologyNode>, Boolean>> valueResult =
+                new Value(targetName).getOrCreate();
+            relationshipResult = valueResult.flatMap(
+                new MaybeConnectToValueFunction(feature));
+        }
+        return relationshipResult.map(
+            new Function<Tuple<Option<Relationship>, Boolean>, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(
+                    Tuple<Option<Relationship>, Boolean> relationshipResult) {
+                    Boolean created = relationshipResult._2;
+                    if (created) {
+                        result.put("message", "Target successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "Target not added.");
                     return badRequest(result);
                 }
             });

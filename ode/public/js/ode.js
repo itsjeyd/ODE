@@ -25,6 +25,18 @@ jQuery.fn.isEmpty = function() {
   return !$(this).val();
 }
 
+jQuery.fn.makeEditable = function() {
+  return $(this).addClass('editable').attr('contenteditable', true);
+}
+
+jQuery.fn.enable = function() {
+  return $(this).prop('disabled', false);
+}
+
+jQuery.fn.disable = function() {
+  return $(this).prop('disabled', true);
+}
+
 jQuery.okButton = function(controlClass) {
   return $('<button>').addClass('btn btn-info ' + controlClass).text('OK');
 }

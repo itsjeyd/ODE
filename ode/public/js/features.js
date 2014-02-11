@@ -32,6 +32,19 @@ var Feature = Backbone.Model.extend({
                 },
               });
   },
+  updateType: function(newType) {
+    this.save({ type: newType },
+              { url: this.url() + '/type',
+                wait: true,
+                success: function(model, response, options) {
+                  model.set({ targets: [] });
+                },
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  model.trigger('update-error:type', response.message);
+                },
+              });
+  },
 });
 var Value = Backbone.Model.extend({});
 
@@ -54,6 +67,25 @@ var FeatureView = Backbone.View.extend({
     },
     'click button.fdescription': function() {
       this._saveEdits('description')(this)
+    },
+    'change :radio': function(e) {
+      var selectedType = $(e.currentTarget).val();
+      if (selectedType === this.model.get('type')) {
+        this.$el.find('button.ftype').remove();
+        this.$el.find('h4').show();
+        this.$el.find('.target').show();
+        this.$el.find('.droppable').show();
+      } else {
+        var okButton = $.okButton('ftype');
+        okButton.insertAfter(this.$el.find('.radio').last());
+        this.$el.find('h4').hide();
+        this.$el.find('.target').hide();
+        this.$el.find('.droppable').hide();
+      }
+    },
+    'click button.ftype': function(e) {
+      e.preventDefault();
+      this.model.updateType(this.$el.find('input:checked').val());
     },
   },
   _renderEditControls: function(modelField) {

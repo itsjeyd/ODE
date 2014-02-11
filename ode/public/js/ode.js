@@ -24,3 +24,7 @@ jQuery.fn.dataToArray = function(dataAttribute) {
 jQuery.fn.isEmpty = function() {
   return !$(this).val();
 }
+
+jQuery.okButton = function(controlClass) {
+  return $('<button>').addClass('btn btn-info ' + controlClass).text('OK');
+}

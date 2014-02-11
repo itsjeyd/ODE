@@ -49,7 +49,7 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .updateDescription(),
                       controllers.routes.javascript.Features
-                      .updateFeatureType(),
+                      .updateType(),
                       controllers.routes.javascript.Features
                       .deleteFeature(),
                       controllers.routes.javascript.Features
@@ -192,23 +192,27 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> updateFeatureType(String featureName) {
-        Form<UpdateFeatureTypeForm> typeForm =
-            form(UpdateFeatureTypeForm.class).bindFromRequest();
-        final String newType = typeForm.get().type;
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateType(String name) {
+        JsonNode json = request().body().asJson();
+        final String newType = json.findPath("type").textValue();
         Promise<Tuple<Option<Feature>, Boolean>> result =
-            new Feature(featureName).updateType(newType);
+            new Feature(name).updateType(newType);
         return result.map(
             new Function<Tuple<Option<Feature>, Boolean>, Result>() {
+                ObjectNode jsonResult = Json.newObject();
                 public Result apply(Tuple<Option<Feature>, Boolean> result) {
                     Boolean updated = result._2;
                     if (updated) {
                         if (newType.equals(FeatureType.COMPLEX.toString())) {
                             Value.deleteOrphans();
                         }
-                        return ok();
+                        jsonResult.put("message",
+                                       "Type successfully updated.");
+                        return ok(jsonResult);
                     }
-                    return badRequest();
+                    jsonResult.put("message", "Type not updated.");
+                    return badRequest(jsonResult);
                 }
             });
     }

@@ -431,7 +431,7 @@ var FeatureListView = Backbone.View.extend({
     var selectedFeature = $(e.currentTarget);
     selectedFeature.find('.remove-button').remove();
     var removeButton = $.removeButton(selectedFeature.text())
-      .css('float', 'right');
+      .addClass('pull-right');
     $(e.currentTarget).append(removeButton);
   },
   showEditBlock: function(e) {

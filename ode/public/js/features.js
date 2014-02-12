@@ -90,7 +90,7 @@ var Feature = Backbone.Model.extend({
     this.destroy({
       wait: true,
       success: function(model, response, options) {
-        model.trigger('destroy');
+        model.trigger('destroy', model);
       },
       error: function(model, xhr, options) {
         var response = $.parseJSON(xhr.responseText);
@@ -602,6 +602,19 @@ $(document).ready(function() {
         var stillInUse = featureList.some(function(f) {
           return _.contains(f.get('targets'), t);
         });
+        if (!stillInUse) {
+          valueListView.removeItem(t);
+        }
+      });
+    });
+  valueListView.listenTo(
+    featureList, 'destroy', function(destroyed) {
+      _.each(destroyed.get('targets'), function(t) {
+        alert(t);
+        var stillInUse = featureList.some(function(f) {
+          return _.contains(f.get('targets'), t);
+        });
+        alert(stillInUse);
         if (!stillInUse) {
           valueListView.removeItem(t);
         }

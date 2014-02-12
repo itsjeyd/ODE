@@ -72,9 +72,10 @@ var Feature = Backbone.Model.extend({
                   success: function(model, response, options) {
                     model.set({ targets: targets });
                   },
-                error: function(model, xhr, options) {
-                  var response = $.parseJSON(xhr.responseText);
-                  model.trigger('update-error:add-target', response.message);
+                  error: function(model, xhr, options) {
+                    var response = $.parseJSON(xhr.responseText);
+                    model.trigger('update-error:add-target',
+                                  response.message);
                 },
                 });
     }

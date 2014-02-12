@@ -231,6 +231,9 @@ var FeatureView = Backbone.View.extend({
     this.model.on('update-error:description', function(msg) {
       this._renderAlert('button.fdescription', msg);
     }, this);
+    this.model.on('update-error:type', function(msg) {
+      this._renderAlert('button.ftype', msg);
+    }, this);
     this.model.on('update-error:add-target', function(msg) {
       this._renderAlert('button.ftarget', msg);
     }, this);

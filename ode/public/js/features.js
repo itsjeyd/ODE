@@ -52,6 +52,8 @@ var Feature = Backbone.Model.extend({
                 wait: true,
                 success: function(model, response, options) {
                   model.set({ targets: targets });
+                  model.trigger('update-success:remove-target',
+                                targetName);
                 },
                 error: function(model, xhr, options) {
                   var response = $.parseJSON(xhr.responseText);
@@ -483,6 +485,7 @@ var ValueListView = Backbone.View.extend({
   initialize: function() {
     this.collection.on('change', this.render, this);
     this.collection.on('add', this.render, this);
+    this.collection.on('remove', this.render, this);
   },
   addItem: function(name) {
     var exists = this.collection.contains(function(v) {
@@ -492,6 +495,10 @@ var ValueListView = Backbone.View.extend({
       var value = new Value({ id: name, name: name });
       this.collection.add(value);
     }
+  },
+  removeItem: function(name) {
+    var item = this.collection.findWhere({ name: name });
+    this.collection.remove(item);
   }
 });
 
@@ -556,6 +563,15 @@ $(document).ready(function() {
     featureList, 'update-success:add-target', function(target, featureType) {
       if (featureType === 'atomic') {
         valueListView.addItem(target);
+      }
+    });
+  valueListView.listenTo(
+    featureList, 'update-success:remove-target', function(target) {
+      var stillInUse = featureList.some(function(f) {
+        return _.contains(f.get('targets'), target);
+      });
+      if (!stillInUse) {
+        valueListView.removeItem(target);
       }
     });
 

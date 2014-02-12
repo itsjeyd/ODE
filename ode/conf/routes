@@ -26,7 +26,7 @@ PUT     /features/:name/description     controllers.Features.updateDescription(n
 PUT     /features/:name/type            controllers.Features.updateType(name: String)
 PUT     /features/:fname/targets/:tname controllers.Features.removeTarget(fname: String, tname: String)
 PUT     /features/:name/targets         controllers.Features.addTarget(name: String)
-DELETE  /features/:name                 controllers.Features.deleteFeature(name: String)
+DELETE  /features/:name                 controllers.Features.delete(name: String)
 PUT     /values/:name                   controllers.Values.renameValue(name: String)
 
 # Client-side routers

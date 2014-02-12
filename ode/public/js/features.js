@@ -79,6 +79,18 @@ var Feature = Backbone.Model.extend({
                 });
     }
   },
+  del: function() {
+    this.destroy({
+      wait: true,
+      success: function(model, response, options) {
+        model.trigger('destroy');
+      },
+      error: function(model, xhr, options) {
+        var response = $.parseJSON(xhr.responseText);
+        alert(response.message);
+      },
+    });
+  },
 });
 var Value = Backbone.Model.extend({
   initialize: function() {
@@ -216,6 +228,7 @@ var FeatureView = Backbone.View.extend({
     this.model.on('update-error:add-target', function(msg) {
       this._renderAlert('button.ftarget', msg);
     }, this);
+    this.model.on('destroy', function() { this.remove() }, this);
   },
   _renderAlert: function(button, msg) {
     var updateButton = this.$el.find(button);
@@ -384,14 +397,24 @@ var FeatureListView = Backbone.View.extend({
     'mouseenter .feature-item': 'highlight',
     'mouseleave .feature-item': 'unhighlight',
     'unselect-all': 'unselectAll',
+    'click .remove-button': 'removeFeature',
   },
-  dispatcher: function(e) { this.select(e); this.showEditBlock(e); },
+  dispatcher: function(e) {
+    this.select(e); this._renderDeleteButton(e); this.showEditBlock(e); },
   select: function(e) {
     this.$el.trigger('unselect-all');
     $(e.currentTarget).addClass('selected');
   },
   unselectAll: function() {
-    this.$el.find('.selected').removeClass('selected');
+    var selected = this.$el.find('.selected').removeClass('selected');
+    selected.find('.remove-button').remove();
+  },
+  _renderDeleteButton: function(e) {
+    var selectedFeature = $(e.currentTarget);
+    selectedFeature.find('.remove-button').remove();
+    var removeButton = $.removeButton(selectedFeature.text())
+      .css('float', 'right');
+    $(e.currentTarget).append(removeButton);
   },
   showEditBlock: function(e) {
     var featureID = e.currentTarget.id;
@@ -402,12 +425,20 @@ var FeatureListView = Backbone.View.extend({
   },
   highlight: function(e) { $(e.currentTarget).addClass('highlighted'); },
   unhighlight: function(e) { $(e.currentTarget).removeClass('highlighted'); },
+  removeFeature: function(e) {
+    var featureName = $(e.currentTarget).data('target');
+    this.collection.findWhere({ name: featureName }).del();
+  },
   render: function() {
+    this.$el.empty();
     this.collection.forEach(this.addFeatureItem, this);
   },
   addFeatureItem: function(featureItem) {
     var featureItemView = new FeatureItemView({ model: featureItem });
     this.$el.append(featureItemView.render().$el);
+  },
+  initialize: function() {
+    this.collection.on('destroy', this.render, this);
   }
 });
 

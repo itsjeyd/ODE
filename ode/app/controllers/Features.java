@@ -51,11 +51,11 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .updateType(),
                       controllers.routes.javascript.Features
-                      .deleteFeature(),
-                      controllers.routes.javascript.Features
                       .addTarget(),
                       controllers.routes.javascript.Features
-                      .removeTarget()));
+                      .removeTarget(),
+                      controllers.routes.javascript.Features
+                      .delete()));
     }
 
     @Security.Authenticated(Secured.class)
@@ -295,25 +295,30 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> deleteFeature(final String featureName) {
-        Promise<Boolean> isInUse = new Feature(featureName).isInUse();
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> delete(final String name) {
+        Promise<Boolean> isInUse = new Feature(name).isInUse();
         Promise<Boolean> deleted = isInUse.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean isInUse) {
                     if (isInUse) {
                         return Promise.pure(false);
                     }
-                    return new Feature(featureName).delete();
+                    return new Feature(name).delete();
                 }
             });
         return deleted.map(
             new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
                 public Result apply(Boolean deleted) {
                     if (deleted) {
                         Value.deleteOrphans();
-                        return ok();
+                        result.put("message",
+                                   "Feature successfully deleted.");
+                        return ok(result);
                     }
-                    return badRequest();
+                    result.put("message", "Feature not deleted.");
+                    return badRequest(result);
                 }
             });
     }

@@ -340,6 +340,7 @@ var FeatureItemView = Backbone.View.extend({
     }
   },
   initialize: function() {
+    this.model.on('change:name', this.render, this);
     this.model.on('hide', function() { this.$el.hide(); }, this);
     this.model.on('show', function() { this.$el.show(); }, this);
   },

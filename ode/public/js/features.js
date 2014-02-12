@@ -80,7 +80,23 @@ var Feature = Backbone.Model.extend({
     }
   },
 });
-var Value = Backbone.Model.extend({});
+var Value = Backbone.Model.extend({
+  initialize: function() {
+    this.urlRoot = '/values'
+  },
+  updateName: function(newName) {
+    this.save({ name: newName },
+              { wait: true,
+                success: function(model, response, options) {
+                  model.id = newName;
+                },
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  model.trigger('update-error:name', response.message);
+                },
+              });
+  },
+});
 
 var FeatureList = Backbone.Collection.extend({ model: Feature });
 var ValueList = Backbone.Collection.extend({ model: Value });
@@ -311,7 +327,6 @@ var FeatureItemView = Backbone.View.extend({
     }
   },
   initialize: function() {
-    this.model.on('change:name', this.render, this);
     this.model.on('hide', function() { this.$el.hide(); }, this);
     this.model.on('show', function() { this.$el.show(); }, this);
   },
@@ -335,8 +350,19 @@ var ValueItemView = Backbone.View.extend({
     }
   },
   initialize: function() {
+    this.model.on('change', this.render, this);
     this.model.on('hide', function() { this.$el.hide(); }, this);
     this.model.on('show', function() { this.$el.show(); }, this);
+    this.model.on('update-error:name', function(msg) {
+      this._renderAlert(msg);
+    }, this);
+  },
+  _renderAlert: function(msg) {
+    var updateButton = this.$el.next().next();
+    updateButton.next('.alert-msg').remove();
+    var alertMsg = $('<span>').addClass('alert-msg text-danger')
+      .text(msg);
+    alertMsg.insertAfter(updateButton);
   },
   render: function() {
     this.$el.text(this.model.get('name'));
@@ -386,12 +412,42 @@ var FeatureListView = Backbone.View.extend({
 });
 
 var ValueListView = Backbone.View.extend({
+  events: {
+    'dblclick .value-item': 'edit',
+    'click button.vname': 'save',
+  },
+  edit: function(e) {
+    var fieldToEdit = $(e.currentTarget);
+    var inputField = $('<input>').addClass('form-control vname')
+      .attr('type', 'text').val(fieldToEdit.text());
+    var okButton = $('<button>').addClass('btn btn-info vname')
+      .text('OK');
+    fieldToEdit.hide();
+    inputField.insertAfter(fieldToEdit);
+    okButton.insertAfter(inputField);
+    inputField.focus();
+  },
+  save: function(e) {
+    var inputField = $(e.currentTarget).prev('input.vname');
+    var newName = inputField.val();
+    var taken = this.collection.where({ name: newName }).length > 0;
+    if (newName && !taken) {
+      var oldName = inputField.prev('.value-item').data('name');
+      this.collection.findWhere({ name: oldName }).updateName(newName);
+    } else {
+      this.render();
+    }
+  },
   render: function() {
+    this.$el.empty();
     this.collection.forEach(this.addValue, this);
   },
   addValue: function(valueItem) {
     var valueView = new ValueItemView({ model: valueItem }); // Should be a ValueItemView!
     this.$el.append(valueView.render().$el);
+  },
+  initialize: function() {
+    this.collection.on('change', this.render, this);
   }
 });
 

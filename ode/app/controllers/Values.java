@@ -2,8 +2,12 @@ package controllers;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import play.Routes;
-import play.data.DynamicForm;
+import play.libs.Json;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -12,8 +16,6 @@ import play.libs.F.Function0;
 import play.libs.F.Promise;
 
 import models.Value;
-
-import static play.data.Form.form;
 
 
 public class Values extends Controller {
@@ -28,9 +30,10 @@ public class Values extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> renameValue(final String name) {
-        DynamicForm nameForm = form().bindFromRequest();
-        final String newName = nameForm.get("name");
+        JsonNode json = request().body().asJson();
+        final String newName = json.findPath("name").textValue();
         Promise<List<Value>> values = Value.all();
         Promise<Boolean> nameAlreadyTaken = values.map(
             new Function<List<Value>, Boolean>() {
@@ -47,12 +50,15 @@ public class Values extends Controller {
             });
         return nameAlreadyTaken.flatMap(
             new Function<Boolean, Promise<Result>>() {
+                ObjectNode result = Json.newObject();
                 public Promise<Result> apply(Boolean nameAlreadyTaken) {
                     if (nameAlreadyTaken) {
                         return Promise.promise(
                             new Function0<Result>() {
                                 public Result apply() {
-                                    return badRequest();
+                                    result.put(
+                                        "message", "Name already taken.");
+                                    return badRequest(result);
                                 }
                             });
                     } else {
@@ -62,9 +68,14 @@ public class Values extends Controller {
                             new Function<Boolean, Result>() {
                                 public Result apply(Boolean updated) {
                                     if (updated) {
-                                        return ok();
+                                        result.put(
+                                            "message",
+                                            "Name successfully updated.");
+                                        return ok(result);
                                     }
-                                    return badRequest();
+                                    result.put(
+                                        "message", "Name not updated.");
+                                    return badRequest(result);
                                 }
                             });
                     }

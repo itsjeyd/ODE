@@ -33,11 +33,13 @@ var Feature = Backbone.Model.extend({
               });
   },
   updateType: function(newType) {
+    var oldTargets = this.get('targets');
     this.save({ type: newType },
               { url: this.url() + '/type',
                 wait: true,
                 success: function(model, response, options) {
                   model.set({ targets: [] });
+                  model.trigger('update-success:type', oldTargets);
                 },
                 error: function(model, xhr, options) {
                   var response = $.parseJSON(xhr.responseText);
@@ -593,6 +595,17 @@ $(document).ready(function() {
       if (!stillInUse) {
         valueListView.removeItem(target);
       }
+    });
+  valueListView.listenTo(
+    featureList, 'update-success:type', function(oldTargets) {
+      _.each(oldTargets, function(t) {
+        var stillInUse = featureList.some(function(f) {
+          return _.contains(f.get('targets'), t);
+        });
+        if (!stillInUse) {
+          valueListView.removeItem(t);
+        }
+      });
     });
 
   $('#feature-filter').on('keyup', function() {

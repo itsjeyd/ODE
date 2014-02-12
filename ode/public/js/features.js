@@ -203,7 +203,6 @@ var FeatureView = Backbone.View.extend({
   _saveEdits: function(modelField) {
     return function(view) {
       var inputField = view.$el.find('input.f' + modelField);
-      var okButton = view.$el.find('button.f' + modelField);
       if (!inputField.isEmpty() &&
           inputField.val() !== view.model.get(modelField)) {
         var updateFunction = 'update' + modelField.charAt(0).toUpperCase() +

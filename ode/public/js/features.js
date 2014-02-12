@@ -102,10 +102,12 @@ var Value = Backbone.Model.extend({
     this.urlRoot = '/values'
   },
   updateName: function(newName) {
+    var oldName = this.get('name');
     this.save({ name: newName },
               { wait: true,
                 success: function(model, response, options) {
                   model.id = newName;
+                  model.trigger('update-success:name', oldName, newName);
                 },
                 error: function(model, xhr, options) {
                   var response = $.parseJSON(xhr.responseText);
@@ -443,6 +445,7 @@ var FeatureListView = Backbone.View.extend({
     this.$el.append(featureItemView.render().$el);
   },
   initialize: function() {
+    this.collection.on('change', this.render, this);
     this.collection.on('destroy', this.render, this);
   }
 });
@@ -551,7 +554,6 @@ $(document).ready(function() {
     id: 'feature-list',
     collection: featureList,
   });
-
   featureListView.render();
   $('#feature-list').replaceWith(featureListView.$el);
 
@@ -559,6 +561,21 @@ $(document).ready(function() {
     id: 'value-list',
     collection: valueList,
   });
+  valueListView.render();
+  $('#value-list').replaceWith(valueListView.$el);
+
+  featureListView.listenTo(
+    valueList, 'update-success:name', function(target, newName) {
+      var affectedFeatures = this.collection.filter(function(f) {
+        return _.contains(f.get('targets'), target);
+      });
+      _.each(affectedFeatures, function(f) {
+        var newTargets = _.without(f.get('targets'), target);
+        newTargets.push(newName);
+        f.set({ targets: newTargets });
+      });
+  });
+
   valueListView.listenTo(
     featureList, 'update-success:add-target', function(target, featureType) {
       if (featureType === 'atomic') {
@@ -574,9 +591,6 @@ $(document).ready(function() {
         valueListView.removeItem(target);
       }
     });
-
-  valueListView.render();
-  $('#value-list').replaceWith(valueListView.$el);
 
   $('#feature-filter').on('keyup', function() {
     var currentInput = $(this).val().toLowerCase();

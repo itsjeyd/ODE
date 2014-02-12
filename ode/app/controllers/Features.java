@@ -234,11 +234,12 @@ public class Features extends Controller {
         Promise<Boolean> deleted = new AllowsRelationship(
             feature, target).delete();
         if (target.isValue()) {
+            final Value value = (Value) target;
             deleted.onRedeem(
                 new Callback<Boolean>() {
                     public void invoke(Boolean deleted) {
                         if (deleted) {
-                            target.delete();
+                            value.deleteIfOrphaned();
                         }
                     }
                 });

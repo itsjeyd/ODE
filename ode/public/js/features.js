@@ -356,7 +356,13 @@ var FeatureItemView = Backbone.View.extend({
     this.model.on('show', function() { this.$el.show(); }, this);
   },
   render: function() {
-    this.$el.text(this.model.get('name'));
+    if (this.$el.hasClass('selected')) {
+      var removeButton = this.$el.find('.remove-button');
+      this.$el.text(this.model.get('name'));
+      this.$el.append(removeButton);
+    } else {
+      this.$el.text(this.model.get('name'));
+    }
     this.$el.draggable({
       cursor: 'crosshair',
       helper: 'clone',
@@ -450,7 +456,6 @@ var FeatureListView = Backbone.View.extend({
     this.$el.append(featureItemView.render().$el);
   },
   initialize: function() {
-    this.collection.on('change', this.render, this);
     this.collection.on('destroy', this.render, this);
   }
 });

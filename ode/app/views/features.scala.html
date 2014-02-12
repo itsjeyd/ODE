@@ -39,32 +39,34 @@
       <div id="new-feature-block" class="col-md-6">
         <h3>Create a new feature</h3>
         @helper.form(routes.Features.createFeature) {
-          <p>
+          <div class="form-group">
             <label for="fname">Name:</label>
             <input type="text" name="name" value="@form("name").value"
-                   id="fname" class="form-control" />
-          </p>
-          <p>
+                   id="fname" class="form-control"
+                   placeholder="Enter name ..." />
+          </div>
+          <div class="form-group">
             <label for="fdescription">Description:</label>
             <input type="text" name="description"
                    value="@form("description").value"
-                   id="fdescription" class="form-control" />
-          </p>
-          <p>
-            <input type="radio" name="type" value="complex"
-                   id="type-complex" />
-            <label for="type-complex">complex</label>
-          </p>
-          <p>
-            <input type="radio" name="type" value="atomic"
-                   id="type-atomic "/>
-            <label for="type-atomic">atomic</label>
-          </p>
-          <p>
-            <button class="btn btn-lg btn-success" type="submit">
+                   id="fdescription" class="form-control"
+                   placeholder="Enter description ..." />
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="type" value="complex" />
+              complex
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="type" value="atomic" />
+              atomic
+            </label>
+          </div>
+          <button class="btn btn-lg btn-success" type="submit">
               Save
-            </button>
-          </p>
+          </button>
         }
       </div>
 

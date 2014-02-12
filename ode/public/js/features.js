@@ -493,6 +493,7 @@ $(document).ready(function() {
   newFeatureBlock.hide();
 
   newFeatureButton.on('click', function() {
+    featureListView.render();
     interactionBlock.html(newFeatureBlock.html());
   });
 

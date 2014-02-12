@@ -71,6 +71,8 @@ var Feature = Backbone.Model.extend({
                   wait: true,
                   success: function(model, response, options) {
                     model.set({ targets: targets });
+                    model.trigger('update-success:add-target',
+                                  targetName, model.get('type'));
                   },
                   error: function(model, xhr, options) {
                     var response = $.parseJSON(xhr.responseText);
@@ -480,6 +482,16 @@ var ValueListView = Backbone.View.extend({
   },
   initialize: function() {
     this.collection.on('change', this.render, this);
+    this.collection.on('add', this.render, this);
+  },
+  addItem: function(name) {
+    var exists = this.collection.contains(function(v) {
+      return v.get('name') === name
+    });
+    if (!exists) {
+      var value = new Value({ id: name, name: name });
+      this.collection.add(value);
+    }
   }
 });
 
@@ -540,6 +552,12 @@ $(document).ready(function() {
     id: 'value-list',
     collection: valueList,
   });
+  valueListView.listenTo(
+    featureList, 'update-success:add-target', function(target, featureType) {
+      if (featureType === 'atomic') {
+        valueListView.addItem(target);
+      }
+    });
 
   valueListView.render();
   $('#value-list').replaceWith(valueListView.$el);

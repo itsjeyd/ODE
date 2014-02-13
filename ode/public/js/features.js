@@ -9,81 +9,57 @@ var Feature = Backbone.Model.extend({
       return 'Feature names can not contain whitespace.';
     }
   },
-  updateName: function(newName) {
-    this.save({ name: newName },
-              { url: this.url() + '/name',
+  _update: function(field, attrs, success) {
+    this.save(attrs,
+              { url: this.url() + '/' + field,
                 wait: true,
-                success: function(model, response, options) {
-                  model.id = newName;
-                },
+                success: success,
                 error: function(model, xhr, options) {
                   var response = $.parseJSON(xhr.responseText);
-                  model.trigger('update-error:name', response.message);
+                  model.trigger('update-error:' + field, response.message);
                 },
               });
+  },
+  updateName: function(newName) {
+    var success = function(model, response, options) {
+      model.id = newName;
+    };
+    this._update('name', { name: newName }, success);
   },
   updateDescription: function(newDescription) {
-    this.save({ description: newDescription },
-              { url: this.url() + '/description',
-                wait: true,
-                error: function(model, xhr, options) {
-                  var response = $.parseJSON(xhr.responseText);
-                  model.trigger('update-error:description', response.message);
-                },
-              });
+    var success = function(model, response, options) {};
+    this._update('description', { description: newDescription }, success);
   },
   updateType: function(newType) {
-    var oldTargets = this.get('targets');
-    this.save({ type: newType },
-              { url: this.url() + '/type',
-                wait: true,
-                success: function(model, response, options) {
-                  model.set({ targets: [] });
-                  model.trigger('update-success:type', oldTargets);
-                },
-                error: function(model, xhr, options) {
-                  var response = $.parseJSON(xhr.responseText);
-                  model.trigger('update-error:type', response.message);
-                },
-              });
+    var targets = this.get('targets');
+    var success = function(model, response, options) {
+      model.set({ targets: [] });
+      model.trigger('update-success:type', targets);
+    };
+    this._update('type', { type: newType }, success);
   },
   removeTarget: function(targetName) {
     var targets = _.without(this.get('targets'), targetName);
-    this.save({},
-              { url: this.url() + '/targets/' + targetName,
-                wait: true,
-                success: function(model, response, options) {
-                  model.set({ targets: targets });
-                  model.trigger('update-success:remove-target',
-                                targetName);
-                },
-                error: function(model, xhr, options) {
-                  var response = $.parseJSON(xhr.responseText);
-                  model.trigger('update-error:remove-target',
-                                response.message);
-                },
-              });
+    var success = function(model, response, options) {
+      model.set({ targets: targets });
+      model.trigger('update-success:remove-target', targetName);
+    };
+    this._update(
+      'targets', { target: targetName, action: 'REMOVE' }, success);
   },
   addTarget: function(targetName) {
-    if (this.get('targets').indexOf(targetName) !== -1) {
+    var targets = this.get('targets');
+    if (_.contains(targets, targetName)) {
       this.trigger('update-error:add-target', 'Target already in list.');
     } else {
-      var targets = this.get('targets');
       targets.push(targetName);
-      this.save({ target: targetName },
-                { url: this.url() + '/targets',
-                  wait: true,
-                  success: function(model, response, options) {
-                    model.set({ targets: targets });
-                    model.trigger('update-success:add-target',
-                                  targetName, model.get('type'));
-                  },
-                  error: function(model, xhr, options) {
-                    var response = $.parseJSON(xhr.responseText);
-                    model.trigger('update-error:add-target',
-                                  response.message);
-                },
-                });
+      var success = function(model, response, options) {
+        model.set({ targets: targets });
+        model.trigger(
+          'update-success:add-target', targetName, model.get('type'));
+      };
+      this._update(
+        'targets', { target: targetName, action: 'ADD' }, success);
     }
   },
   del: function() {

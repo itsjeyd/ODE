@@ -39,6 +39,10 @@ import static play.data.Form.form;
 
 public class Features extends Controller {
 
+    private enum TargetAction {
+        ADD, REMOVE;
+    }
+
     @Security.Authenticated(Secured.class)
     public static Result javascriptRoutes() {
         response().setContentType("text/javascript");
@@ -51,9 +55,7 @@ public class Features extends Controller {
                       controllers.routes.javascript.Features
                       .updateType(),
                       controllers.routes.javascript.Features
-                      .addTarget(),
-                      controllers.routes.javascript.Features
-                      .removeTarget(),
+                      .updateTargets(),
                       controllers.routes.javascript.Features
                       .delete()));
     }
@@ -219,17 +221,37 @@ public class Features extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> removeTarget(String fname, String tname) {
+    public static Promise<Result> updateTargets(String name) {
         JsonNode json = request().body().asJson();
-        String featureType = json.findPath("type").textValue();
+        TargetAction action = TargetAction.valueOf(
+            json.findPath("action").textValue());
+        switch (action) {
+            case ADD: return addTarget(name, json);
+            case REMOVE: return removeTarget(name, json);
+            default: return Promise.promise(
+                new Function0<Result>() {
+                    ObjectNode result = Json.newObject();
+                    public Result apply() {
+                        result.put(
+                            "message", "Name already taken.");
+                        return badRequest(result);
+                    }
+                });
+        }
+    }
+
+    @BodyParser.Of(BodyParser.Json.class)
+    private static Promise<Result> removeTarget(String name, JsonNode json) {
         Feature feature;
+        String featureType = json.findPath("type").textValue();
         final OntologyNode target;
+        String targetName = json.findPath("target").textValue();
         if (featureType.equals(FeatureType.COMPLEX.toString())) {
-            feature = new ComplexFeature(fname);
-            target = new Feature(tname);
+            feature = new ComplexFeature(name);
+            target = new Feature(targetName);
         } else {
-            feature = new AtomicFeature(fname);
-            target = new Value(tname);
+            feature = new AtomicFeature(name);
+            target = new Value(targetName);
         }
         Promise<Boolean> deleted = new AllowsRelationship(
             feature, target).delete();
@@ -259,10 +281,8 @@ public class Features extends Controller {
             });
     }
 
-    @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> addTarget(String name) {
-        JsonNode json = request().body().asJson();
+    private static Promise<Result> addTarget(String name, JsonNode json) {
         String featureType = json.findPath("type").textValue();
         String targetName = json.findPath("target").textValue();
         Promise<Tuple<Option<Relationship>, Boolean>> relationshipResult =

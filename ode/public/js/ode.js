@@ -8,8 +8,24 @@ jQuery.fn.textOnly = function() {
     .text();
 };
 
+jQuery.fn.isEmpty = function() {
+  return !$(this).val();
+}
+
 jQuery.fn.check = function() {
   return $(this).attr('checked', true);
+}
+
+jQuery.fn.enable = function() {
+  return $(this).prop('disabled', false);
+}
+
+jQuery.fn.disable = function() {
+  return $(this).prop('disabled', true);
+}
+
+jQuery.fn.makeEditable = function() {
+  return $(this).addClass('editable').attr('contenteditable', true);
 }
 
 jQuery.fn.dataToArray = function(dataAttribute) {
@@ -21,20 +37,8 @@ jQuery.fn.dataToArray = function(dataAttribute) {
   }
 }
 
-jQuery.fn.isEmpty = function() {
-  return !$(this).val();
-}
-
-jQuery.fn.makeEditable = function() {
-  return $(this).addClass('editable').attr('contenteditable', true);
-}
-
-jQuery.fn.enable = function() {
-  return $(this).prop('disabled', false);
-}
-
-jQuery.fn.disable = function() {
-  return $(this).prop('disabled', true);
+jQuery.matches = function(str, input) {
+  return str.indexOf(input) !== -1;
 }
 
 jQuery.okButton = function(controlClass) {
@@ -44,8 +48,4 @@ jQuery.okButton = function(controlClass) {
 jQuery.removeButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
     .data('target', target);
-}
-
-jQuery.matches = function(str, input) {
-  return str.indexOf(input) !== -1;
 }

@@ -508,12 +508,12 @@ var FeatureListView = Backbone.View.extend({
 
   filterByValue: function(input) {
     this.collection.each(function(f) {
-      var targets = f.get('targets');
       if (f.get('type') === 'complex') {
         f.trigger('hide');
-      } else if (_.filter(targets, function(t) {
-        return t.indexOf(input) !== -1;
-      }).length === 0) {
+        return;
+      }
+      var targets = f.get('targets');
+      if (_.every(targets, function(t) { return !$.matches(t, input) })) {
         f.trigger('hide');
       } else {
         f.trigger('show');

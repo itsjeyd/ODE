@@ -110,7 +110,15 @@ var Value = Backbone.Model.extend({
 
 // Collections
 
-var FeatureList = Backbone.Collection.extend({ model: Feature });
+var FeatureList = Backbone.Collection.extend({
+
+  model: Feature,
+
+  initialize: function() {
+    this.on('change:name', function() { this.sort() }, this);
+  },
+
+});
 var ValueList = Backbone.Collection.extend({ model: Value });
 
 
@@ -447,6 +455,7 @@ var FeatureListView = ListView.extend({
 
   initialize: function() {
     this.collection.on('destroy', this.render, this);
+    this.collection.on('sort', this.render, this);
   },
 
   render: function() {
@@ -621,7 +630,8 @@ $(document).ready(function() {
         description: item.data('description'),
         targets: item.dataToArray('targets'),
       });
-    })
+    }),
+    { comparator: 'name' }
   );
   var valueList = new ValueList(
     _.map(valueItems, function(i) {

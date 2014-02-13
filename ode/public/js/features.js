@@ -261,19 +261,11 @@ var FeatureView = Backbone.View.extend({
       var selectedType = $(e.currentTarget).val();
       if (selectedType === this.model.get('type')) {
         this.$('button.ftype').remove();
-        this.$('h4').show();
-        this.$('.target').show();
-        this.$('.droppable').show();
-        this.$('button.ftarget').show();
-        this.$('.alert-msg').show();
+        this._showTargets();
       } else {
         var okButton = $.okButton('ftype');
         okButton.insertAfter(this.$('.radio').last());
-        this.$('h4').hide();
-        this.$('.target').hide();
-        this.$('.droppable').hide();
-        this.$('button.ftarget').hide();
-        this.$('.alert-msg').hide();
+        this._hideTargets();
       }
     },
     'click button.ftype': function(e) {
@@ -341,6 +333,22 @@ var FeatureView = Backbone.View.extend({
         view.render();
       }
     };
+  },
+
+  _showTargets: function() {
+    this.$('h4').show();
+    this.$('.target').show();
+    this.$('.droppable').show();
+    this.$('button.ftarget').show();
+    this.$('.alert-msg').show();
+  },
+
+  _hideTargets: function() {
+    this.$('h4').hide();
+    this.$('.target').hide();
+    this.$('.droppable').hide();
+    this.$('button.ftarget').hide();
+    this.$('.alert-msg').hide();
   },
 
 });

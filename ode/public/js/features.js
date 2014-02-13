@@ -119,6 +119,131 @@ var ValueList = Backbone.Collection.extend({ model: Value });
 
 var FeatureView = Backbone.View.extend({
 
+  initialize: function() {
+    this.model.on('change', this.render, this);
+    this.model.on('invalid', function(model, error) {
+      this._renderAlert('button.fname', error);
+    }, this);
+    this.model.on('update-error:name', function(msg) {
+      this._renderAlert('button.fname', msg);
+    }, this);
+    this.model.on('update-error:description', function(msg) {
+      this._renderAlert('button.fdescription', msg);
+    }, this);
+    this.model.on('update-error:type', function(msg) {
+      this._renderAlert('button.ftype', msg);
+    }, this);
+    this.model.on('update-error:add-target', function(msg) {
+      this._renderAlert('button.ftarget', msg);
+    }, this);
+    this.model.on('destroy', function() { this.remove() }, this);
+  },
+
+  _renderAlert: function(button, msg) {
+    var updateButton = this.$(button);
+    updateButton.next('.alert-msg').remove();
+    var alertMsg = $('<span>').addClass('alert-msg text-danger')
+      .text(msg);
+    alertMsg.insertAfter(updateButton);
+  },
+
+  render: function() {
+    this.$el.empty();
+    this._renderName();
+    this._renderDescription();
+    this._renderTypeForm();
+    this._renderTargetListHeading();
+    this._renderTargets();
+    this._renderTargetField();
+    this._activateTargetField();
+    return this;
+  },
+
+  _renderName: function() {
+    var nameTemplate = _.template('<h3><%= name %></h3>');
+    var node = $(nameTemplate({ name: this.model.get('name') }));
+    this.$el.append(node);
+  },
+
+  _renderDescription: function() {
+    var descriptionTemplate = _.template('<p><%= description %></p>');
+    var node = $(descriptionTemplate({
+      description: this.model.get('description')
+    }));
+    this.$el.append(node);
+  },
+
+  _renderTypeForm: function() {
+    var typeFormTemplate = _.template(
+      '<form role="form">' +
+        '<div class="radio"><label>' +
+        '<input type="radio" name="type" value="complex" />complex' +
+        '</label></div>' +
+        '<div class="radio"><label>' +
+        '<input type="radio" name="type" value="atomic" />atomic' +
+        '</label></div>' +
+        '</form>');
+    var node = $(typeFormTemplate());
+    node.find('input[value="' + this.model.get('type') + '"]').check();
+    this.$el.append(node);
+  },
+
+  _renderTargetListHeading: function() {
+    var targetListHeadingTemplate = _.template('<h4><%= heading %></h4>');
+    var heading;
+    if (this.model.get('type') === 'complex') {
+      heading = 'Features permitted in substructure:';
+    } else {
+      heading = 'Permitted values:';
+    }
+    var node = $(targetListHeadingTemplate({ heading: heading }));
+    this.$el.append(node);
+  },
+
+  _renderTargets: function() {
+    var targetListTemplate = _.template(
+      '<% _.each(targets, function(target) { %>' +
+        '<div class="target"><%= target %></div>' +
+        '<% }); %>');
+    var node = $(targetListTemplate({ targets: this.model.get('targets') }));
+    this.$el.append(node);
+  },
+
+  _renderTargetField: function() {
+    var targetFormTemplate = _.template(
+      '<div class="droppable">Drop <%= targetType %> here ...</div>');
+    var node;
+    if (this.model.get('type') === 'complex') {
+      node = ($(targetFormTemplate({ targetType: 'feature' })));
+    } else {
+      node = ($(targetFormTemplate({ targetType: 'value' })));
+      node.makeEditable();
+    }
+    this.$el.append(node);
+  },
+
+  _activateTargetField: function() {
+    var targetType;
+    if (this.model.get('type') === 'complex') {
+      targetType = '.feature-item';
+    } else {
+      targetType = '.value-item';
+    }
+    var viewModel = this.model;
+    this.$('.droppable').droppable({
+      accept: targetType,
+      drop: function(e, ui) {
+        var targetName = $(ui.helper).text();
+        var targetField = $(this);
+        targetField.next('button.ftarget').remove();
+        targetField.text(targetName);
+        var addButton = $('<button>').addClass('btn btn-info ftarget')
+          .text('Add');
+        addButton.insertAfter(targetField);
+      },
+    });
+  },
+
   events: {
     'dblclick h3': function(e) {
       this._renderEditControls('name')(e)
@@ -216,131 +341,6 @@ var FeatureView = Backbone.View.extend({
         view.render();
       }
     };
-  },
-
-  initialize: function() {
-    this.model.on('change', this.render, this);
-    this.model.on('invalid', function(model, error) {
-      this._renderAlert('button.fname', error);
-    }, this);
-    this.model.on('update-error:name', function(msg) {
-      this._renderAlert('button.fname', msg);
-    }, this);
-    this.model.on('update-error:description', function(msg) {
-      this._renderAlert('button.fdescription', msg);
-    }, this);
-    this.model.on('update-error:type', function(msg) {
-      this._renderAlert('button.ftype', msg);
-    }, this);
-    this.model.on('update-error:add-target', function(msg) {
-      this._renderAlert('button.ftarget', msg);
-    }, this);
-    this.model.on('destroy', function() { this.remove() }, this);
-  },
-
-  _renderAlert: function(button, msg) {
-    var updateButton = this.$(button);
-    updateButton.next('.alert-msg').remove();
-    var alertMsg = $('<span>').addClass('alert-msg text-danger')
-      .text(msg);
-    alertMsg.insertAfter(updateButton);
-  },
-
-  render: function() {
-    this.$el.empty();
-    this._renderName();
-    this._renderDescription();
-    this._renderTypeForm();
-    this._renderTargetListHeading();
-    this._renderTargets();
-    this._renderTargetField();
-    this._activateTargetField();
-    return this;
-  },
-
-  _activateTargetField: function() {
-    var targetType;
-    if (this.model.get('type') === 'complex') {
-      targetType = '.feature-item';
-    } else {
-      targetType = '.value-item';
-    }
-    var viewModel = this.model;
-    this.$('.droppable').droppable({
-      accept: targetType,
-      drop: function(e, ui) {
-        var targetName = $(ui.helper).text();
-        var targetField = $(this);
-        targetField.next('button.ftarget').remove();
-        targetField.text(targetName);
-        var addButton = $('<button>').addClass('btn btn-info ftarget')
-          .text('Add');
-        addButton.insertAfter(targetField);
-      },
-    });
-  },
-
-  _renderName: function() {
-    var nameTemplate = _.template('<h3><%= name %></h3>');
-    var node = $(nameTemplate({ name: this.model.get('name') }));
-    this.$el.append(node);
-  },
-
-  _renderDescription: function() {
-    var descriptionTemplate = _.template('<p><%= description %></p>');
-    var node = $(descriptionTemplate({
-      description: this.model.get('description')
-    }));
-    this.$el.append(node);
-  },
-
-  _renderTypeForm: function() {
-    var typeFormTemplate = _.template(
-      '<form role="form">' +
-        '<div class="radio"><label>' +
-        '<input type="radio" name="type" value="complex" />complex' +
-        '</label></div>' +
-        '<div class="radio"><label>' +
-        '<input type="radio" name="type" value="atomic" />atomic' +
-        '</label></div>' +
-        '</form>');
-    var node = $(typeFormTemplate());
-    node.find('input[value="' + this.model.get('type') + '"]').check();
-    this.$el.append(node);
-  },
-
-  _renderTargetListHeading: function() {
-    var targetListHeadingTemplate = _.template('<h4><%= heading %></h4>');
-    var heading;
-    if (this.model.get('type') === 'complex') {
-      heading = 'Features permitted in substructure:';
-    } else {
-      heading = 'Permitted values:';
-    }
-    var node = $(targetListHeadingTemplate({ heading: heading }));
-    this.$el.append(node);
-  },
-
-  _renderTargets: function() {
-    var targetListTemplate = _.template(
-      '<% _.each(targets, function(target) { %>' +
-        '<div class="target"><%= target %></div>' +
-        '<% }); %>');
-    var node = $(targetListTemplate({ targets: this.model.get('targets') }));
-    this.$el.append(node);
-  },
-
-  _renderTargetField: function() {
-    var targetFormTemplate = _.template(
-      '<div class="droppable">Drop <%= targetType %> here ...</div>');
-    var node;
-    if (this.model.get('type') === 'complex') {
-      node = ($(targetFormTemplate({ targetType: 'feature' })));
-    } else {
-      node = ($(targetFormTemplate({ targetType: 'value' })));
-      node.makeEditable();
-    }
-    this.$el.append(node);
   },
 
 });

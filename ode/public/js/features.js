@@ -354,9 +354,6 @@ var FeatureItemView = Backbone.View.extend({
     return {
       id: this.model.id,
       'data-name': this.model.get('name'),
-      'data-type': this.model.get('type'),
-      'data-description': this.model.get('description'),
-      'data-targets': this.model.get('targets'),
     }
   },
 

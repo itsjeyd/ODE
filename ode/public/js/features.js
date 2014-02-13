@@ -610,32 +610,26 @@ $(document).ready(function() {
   var featureItems = $('.feature-item');
   var valueItems = $('.value-item');
 
-  var featureList = new FeatureList();
-  var valueList = new ValueList();
-
-
-  featureItems.each(function() {
-    var item = $(this);
-    var name = item.data('name');
-    var feature = new Feature({
-      id: name,
-      name: name,
-      type: item.data('type'),
-      description: item.data('description'),
-      targets: item.dataToArray('targets'),
-    });
-    featureList.add(feature);
-  });
-
-  valueItems.each(function() {
-    var item = $(this);
-    var name = item.data('name');
-    var value = new Value({
-      id: name,
-      name: name,
-    });
-    valueList.add(value);
-  });
+  var featureList = new FeatureList(
+    _.map(featureItems, function(i) {
+      var item = $(i);
+      var name = item.data('name');
+      return new Feature({
+        id: name,
+        name: name,
+        type: item.data('type'),
+        description: item.data('description'),
+        targets: item.dataToArray('targets'),
+      });
+    })
+  );
+  var valueList = new ValueList(
+    _.map(valueItems, function(i) {
+      var item = $(i);
+      var name = item.data('name');
+      return new Value({ id: name, name: name, });
+    })
+  );
 
   var featureListView = new FeatureListView({
     id: 'feature-list',

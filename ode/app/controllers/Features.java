@@ -374,15 +374,4 @@ public class Features extends Controller {
         public String description;
     }
 
-    public static class UpdateFeatureTypeForm {
-        public String type;
-    }
-
-    public static class AddTargetForm {
-        public String type;
-        public String target;
-    }
-
-    public static class DeleteTargetForm extends UpdateFeatureTypeForm {}
-
 }

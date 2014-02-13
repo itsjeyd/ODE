@@ -425,7 +425,25 @@ var ValueItemView = ItemView.extend({
 
 // Collection views
 
-var FeatureListView = Backbone.View.extend({
+var ListView = Backbone.View.extend({
+
+  filterItems: function(input) {
+    this.collection.each(function(i) {
+      if (!$.matches(i.get('name').toLowerCase(), input)) {
+        i.trigger('hide');
+      } else {
+        i.trigger('show');
+      }
+    });
+  },
+
+  showAll: function() {
+    this.collection.each(function(i) { i.trigger('show') });
+  },
+
+});
+
+var FeatureListView = ListView.extend({
 
   initialize: function() {
     this.collection.on('destroy', this.render, this);
@@ -492,20 +510,6 @@ var FeatureListView = Backbone.View.extend({
     this.collection.findWhere({ name: itemName }).del();
   },
 
-  filterItems: function(input) {
-    this.collection.each(function(f) {
-      if (!$.matches(f.get('name').toLowerCase(), input)) {
-        f.trigger('hide');
-      } else {
-        f.trigger('show');
-      }
-    });
-  },
-
-  showAll: function() {
-    this.collection.each(function(f) { f.trigger('show') });
-  },
-
   filterByValue: function(input) {
     this.collection.each(function(f) {
       if (f.get('type') === 'complex') {
@@ -524,7 +528,7 @@ var FeatureListView = Backbone.View.extend({
 });
 
 
-var ValueListView = Backbone.View.extend({
+var ValueListView = ListView.extend({
 
   initialize: function() {
     this.collection.on('change', this.render, this);
@@ -582,20 +586,6 @@ var ValueListView = Backbone.View.extend({
   removeItem: function(name) {
     var item = this.collection.findWhere({ name: name });
     this.collection.remove(item);
-  },
-
-  filterItems: function(input) {
-    this.collection.each(function(v) {
-      if (!$.matches(v.get('name').toLowerCase(), input)) {
-        v.trigger('hide');
-      } else {
-        v.trigger('show');
-      }
-    });
-  },
-
-  showAll: function() {
-    this.collection.each(function(v) { v.trigger('show') });
   },
 
 });

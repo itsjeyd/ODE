@@ -1,14 +1,17 @@
 // Models
 
 var Feature = Backbone.Model.extend({
+
   initialize: function() {
     this.urlRoot = '/features'
   },
+
   validate: function(attrs, options) {
     if (attrs.name.split(/ +/).length > 1) {
       return 'Feature names can not contain whitespace.';
     }
   },
+
   _update: function(field, attrs, success) {
     this.save(attrs,
               { url: this.url() + '/' + field,
@@ -20,16 +23,19 @@ var Feature = Backbone.Model.extend({
                 },
               });
   },
+
   updateName: function(newName) {
     var success = function(model, response, options) {
       model.id = newName;
     };
     this._update('name', { name: newName }, success);
   },
+
   updateDescription: function(newDescription) {
     var success = function(model, response, options) {};
     this._update('description', { description: newDescription }, success);
   },
+
   updateType: function(newType) {
     var targets = this.get('targets');
     var success = function(model, response, options) {
@@ -38,6 +44,7 @@ var Feature = Backbone.Model.extend({
     };
     this._update('type', { type: newType }, success);
   },
+
   removeTarget: function(targetName) {
     var targets = _.without(this.get('targets'), targetName);
     var success = function(model, response, options) {
@@ -47,6 +54,7 @@ var Feature = Backbone.Model.extend({
     this._update(
       'targets', { target: targetName, action: 'REMOVE' }, success);
   },
+
   addTarget: function(targetName) {
     var targets = this.get('targets');
     if (_.contains(targets, targetName)) {
@@ -62,6 +70,7 @@ var Feature = Backbone.Model.extend({
         'targets', { target: targetName, action: 'ADD' }, success);
     }
   },
+
   del: function() {
     this.destroy({
       wait: true,
@@ -75,6 +84,8 @@ var Feature = Backbone.Model.extend({
     });
   },
 });
+
+
 var Value = Backbone.Model.extend({
   initialize: function() {
     this.urlRoot = '/values'
@@ -95,13 +106,19 @@ var Value = Backbone.Model.extend({
   },
 });
 
+
+
+// Collections
+
 var FeatureList = Backbone.Collection.extend({ model: Feature });
 var ValueList = Backbone.Collection.extend({ model: Value });
+
 
 
 // Model views
 
 var FeatureView = Backbone.View.extend({
+
   events: {
     'dblclick h3': function(e) {
       this._renderEditControls('name')(e)
@@ -172,6 +189,7 @@ var FeatureView = Backbone.View.extend({
       }
     },
   },
+
   _renderEditControls: function(modelField) {
     return function(e) {
       var fieldToEdit = $(e.currentTarget);
@@ -185,6 +203,7 @@ var FeatureView = Backbone.View.extend({
       inputField.focus();
     };
   },
+
   _saveEdits: function(modelField) {
     return function(view) {
       var inputField = view.$el.find('input.f' + modelField);
@@ -198,6 +217,7 @@ var FeatureView = Backbone.View.extend({
       }
     };
   },
+
   initialize: function() {
     this.model.on('change', this.render, this);
     this.model.on('invalid', function(model, error) {
@@ -217,6 +237,7 @@ var FeatureView = Backbone.View.extend({
     }, this);
     this.model.on('destroy', function() { this.remove() }, this);
   },
+
   _renderAlert: function(button, msg) {
     var updateButton = this.$el.find(button);
     updateButton.next('.alert-msg').remove();
@@ -224,6 +245,7 @@ var FeatureView = Backbone.View.extend({
       .text(msg);
     alertMsg.insertAfter(updateButton);
   },
+
   render: function() {
     this.$el.empty();
     this._renderName();
@@ -235,6 +257,7 @@ var FeatureView = Backbone.View.extend({
     this._activateTargetField();
     return this;
   },
+
   _activateTargetField: function() {
     var targetType;
     if (this.model.get('type') === 'complex') {
@@ -256,11 +279,13 @@ var FeatureView = Backbone.View.extend({
       },
     });
   },
+
   _renderName: function() {
     var nameTemplate = _.template('<h3><%= name %></h3>');
     var node = $(nameTemplate({ name: this.model.get('name') }));
     this.$el.append(node);
   },
+
   _renderDescription: function() {
     var descriptionTemplate = _.template('<p><%= description %></p>');
     var node = $(descriptionTemplate({
@@ -268,6 +293,7 @@ var FeatureView = Backbone.View.extend({
     }));
     this.$el.append(node);
   },
+
   _renderTypeForm: function() {
     var typeFormTemplate = _.template(
       '<form role="form">' +
@@ -282,6 +308,7 @@ var FeatureView = Backbone.View.extend({
     node.find('input[value="' + this.model.get('type') + '"]').check();
     this.$el.append(node);
   },
+
   _renderTargetListHeading: function() {
     var targetListHeadingTemplate = _.template('<h4><%= heading %></h4>');
     var heading;
@@ -293,6 +320,7 @@ var FeatureView = Backbone.View.extend({
     var node = $(targetListHeadingTemplate({ heading: heading }));
     this.$el.append(node);
   },
+
   _renderTargets: function() {
     var targetListTemplate = _.template(
       '<% _.each(targets, function(target) { %>' +
@@ -301,6 +329,7 @@ var FeatureView = Backbone.View.extend({
     var node = $(targetListTemplate({ targets: this.model.get('targets') }));
     this.$el.append(node);
   },
+
   _renderTargetField: function() {
     var targetFormTemplate = _.template(
       '<div class="droppable">Drop <%= targetType %> here ...</div>');
@@ -313,10 +342,14 @@ var FeatureView = Backbone.View.extend({
     }
     this.$el.append(node);
   },
+
 });
 
+
 var FeatureItemView = Backbone.View.extend({
+
   className: 'feature-item draggable',
+
   attributes: function() {
     return {
       id: this.model.id,
@@ -326,11 +359,13 @@ var FeatureItemView = Backbone.View.extend({
       'data-targets': this.model.get('targets'),
     }
   },
+
   initialize: function() {
     this.model.on('change:name', this.render, this);
     this.model.on('hide', function() { this.$el.hide(); }, this);
     this.model.on('show', function() { this.$el.show(); }, this);
   },
+
   render: function() {
     if (this.$el.hasClass('selected')) {
       var removeButton = this.$el.find('.remove-button');
@@ -346,16 +381,21 @@ var FeatureItemView = Backbone.View.extend({
     });
     return this;
   },
+
 });
 
+
 var ValueItemView = Backbone.View.extend({
+
   className: 'value-item draggable',
+
   attributes: function() {
     return {
       id: this.model.id,
       'data-name': this.model.get('name'),
     }
   },
+
   initialize: function() {
     this.model.on('change', this.render, this);
     this.model.on('hide', function() { this.$el.hide(); }, this);
@@ -364,6 +404,7 @@ var ValueItemView = Backbone.View.extend({
       this._renderAlert(msg);
     }, this);
   },
+
   _renderAlert: function(msg) {
     var updateButton = this.$el.next().next();
     updateButton.next('.alert-msg').remove();
@@ -371,6 +412,7 @@ var ValueItemView = Backbone.View.extend({
       .text(msg);
     alertMsg.insertAfter(updateButton);
   },
+
   render: function() {
     this.$el.text(this.model.get('name'));
     this.$el.draggable({
@@ -380,12 +422,15 @@ var ValueItemView = Backbone.View.extend({
     });
     return this;
   },
+
 });
+
 
 
 // Collection views
 
 var FeatureListView = Backbone.View.extend({
+
   events: {
     'click .feature-item': 'dispatcher',
     'mouseenter .feature-item': 'highlight',
@@ -393,16 +438,20 @@ var FeatureListView = Backbone.View.extend({
     'unselect-all': 'unselectAll',
     'click .remove-button': 'removeFeature',
   },
+
   dispatcher: function(e) {
     this.select(e); this._renderDeleteButton(e); this.showEditBlock(e); },
+
   select: function(e) {
     this.$el.trigger('unselect-all');
     $(e.currentTarget).addClass('selected');
   },
+
   unselectAll: function() {
     var selected = this.$el.find('.selected').removeClass('selected');
     selected.find('.remove-button').remove();
   },
+
   _renderDeleteButton: function(e) {
     var selectedFeature = $(e.currentTarget);
     selectedFeature.find('.remove-button').remove();
@@ -410,6 +459,7 @@ var FeatureListView = Backbone.View.extend({
       .addClass('pull-right');
     $(e.currentTarget).append(removeButton);
   },
+
   showEditBlock: function(e) {
     var featureID = e.currentTarget.id;
     var feature = this.collection.get(featureID);
@@ -417,30 +467,40 @@ var FeatureListView = Backbone.View.extend({
     featureView.render();
     $('#interaction-block').html(featureView.$el);
   },
+
   highlight: function(e) { $(e.currentTarget).addClass('highlighted'); },
+
   unhighlight: function(e) { $(e.currentTarget).removeClass('highlighted'); },
+
   removeFeature: function(e) {
     var featureName = $(e.currentTarget).data('target');
     this.collection.findWhere({ name: featureName }).del();
   },
+
   render: function() {
     this.$el.empty();
     this.collection.forEach(this.addFeatureItem, this);
   },
+
   addFeatureItem: function(featureItem) {
     var featureItemView = new FeatureItemView({ model: featureItem });
     this.$el.append(featureItemView.render().$el);
   },
+
   initialize: function() {
     this.collection.on('destroy', this.render, this);
   }
+
 });
 
+
 var ValueListView = Backbone.View.extend({
+
   events: {
     'dblclick .value-item': 'edit',
     'click button.vname': 'save',
   },
+
   edit: function(e) {
     var fieldToEdit = $(e.currentTarget);
     var inputField = $('<input>').addClass('form-control vname')
@@ -452,6 +512,7 @@ var ValueListView = Backbone.View.extend({
     okButton.insertAfter(inputField);
     inputField.focus();
   },
+
   save: function(e) {
     var inputField = $(e.currentTarget).prev('input.vname');
     var newName = inputField.val();
@@ -463,19 +524,23 @@ var ValueListView = Backbone.View.extend({
       this.render();
     }
   },
+
   render: function() {
     this.$el.empty();
     this.collection.forEach(this.addValue, this);
   },
+
   addValue: function(valueItem) {
     var valueView = new ValueItemView({ model: valueItem }); // Should be a ValueItemView!
     this.$el.append(valueView.render().$el);
   },
+
   initialize: function() {
     this.collection.on('change', this.render, this);
     this.collection.on('add', this.render, this);
     this.collection.on('remove', this.render, this);
   },
+
   addItem: function(name) {
     var exists = this.collection.contains(function(v) {
       return v.get('name') === name
@@ -485,13 +550,17 @@ var ValueListView = Backbone.View.extend({
       this.collection.add(value);
     }
   },
+
   removeItem: function(name) {
     var item = this.collection.findWhere({ name: name });
     this.collection.remove(item);
   }
+
 });
 
 
+
+// Application
 
 $(document).ready(function() {
 

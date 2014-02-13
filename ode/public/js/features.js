@@ -135,25 +135,25 @@ var FeatureView = Backbone.View.extend({
     'change :radio': function(e) {
       var selectedType = $(e.currentTarget).val();
       if (selectedType === this.model.get('type')) {
-        this.$el.find('button.ftype').remove();
-        this.$el.find('h4').show();
-        this.$el.find('.target').show();
-        this.$el.find('.droppable').show();
-        this.$el.find('button.ftarget').show();
-        this.$el.find('.alert-msg').show();
+        this.$('button.ftype').remove();
+        this.$('h4').show();
+        this.$('.target').show();
+        this.$('.droppable').show();
+        this.$('button.ftarget').show();
+        this.$('.alert-msg').show();
       } else {
         var okButton = $.okButton('ftype');
-        okButton.insertAfter(this.$el.find('.radio').last());
-        this.$el.find('h4').hide();
-        this.$el.find('.target').hide();
-        this.$el.find('.droppable').hide();
-        this.$el.find('button.ftarget').hide();
-        this.$el.find('.alert-msg').hide();
+        okButton.insertAfter(this.$('.radio').last());
+        this.$('h4').hide();
+        this.$('.target').hide();
+        this.$('.droppable').hide();
+        this.$('button.ftarget').hide();
+        this.$('.alert-msg').hide();
       }
     },
     'click button.ftype': function(e) {
       e.preventDefault();
-      this.model.updateType(this.$el.find('input:checked').val());
+      this.model.updateType(this.$('input:checked').val());
     },
     'mouseenter .target': function(e) {
       var currentTarget = $(e.currentTarget);
@@ -167,7 +167,7 @@ var FeatureView = Backbone.View.extend({
       this.model.removeTarget(targetName);
     },
     'click button.ftarget': function(e) {
-      var targetName = this.$el.find('.droppable').text();
+      var targetName = this.$('.droppable').text();
       this.model.addTarget(targetName);
     },
     'click .editable': function(e) {
@@ -183,9 +183,9 @@ var FeatureView = Backbone.View.extend({
     'keyup .editable': function(e) {
       var inputField = $(e.currentTarget);
       if (inputField.text() !== '') {
-        this.$el.find('button.ftarget').enable();
+        this.$('button.ftarget').enable();
       } else {
-        this.$el.find('button.ftarget').disable();
+        this.$('button.ftarget').disable();
       }
     },
   },
@@ -206,7 +206,7 @@ var FeatureView = Backbone.View.extend({
 
   _saveEdits: function(modelField) {
     return function(view) {
-      var inputField = view.$el.find('input.f' + modelField);
+      var inputField = view.$('input.f' + modelField);
       if (!inputField.isEmpty() &&
           inputField.val() !== view.model.get(modelField)) {
         var updateFunction = 'update' + modelField.charAt(0).toUpperCase() +
@@ -239,7 +239,7 @@ var FeatureView = Backbone.View.extend({
   },
 
   _renderAlert: function(button, msg) {
-    var updateButton = this.$el.find(button);
+    var updateButton = this.$(button);
     updateButton.next('.alert-msg').remove();
     var alertMsg = $('<span>').addClass('alert-msg text-danger')
       .text(msg);
@@ -266,7 +266,7 @@ var FeatureView = Backbone.View.extend({
       targetType = '.value-item';
     }
     var viewModel = this.model;
-    this.$el.find('.droppable').droppable({
+    this.$('.droppable').droppable({
       accept: targetType,
       drop: function(e, ui) {
         var targetName = $(ui.helper).text();
@@ -374,7 +374,7 @@ var FeatureItemView = ItemView.extend({
 
   render: function() {
     if (this.$el.hasClass('selected')) {
-      var removeButton = this.$el.find('.remove-button');
+      var removeButton = this.$('.remove-button');
       this.$el.text(this.model.get('name'));
       this.$el.append(removeButton);
     } else {
@@ -483,7 +483,7 @@ var FeatureListView = Backbone.View.extend({
   },
 
   _unselect: function() {
-    var selected = this.$el.find('.selected').removeClass('selected');
+    var selected = this.$('.selected').removeClass('selected');
     selected.find('.remove-button').remove();
   },
 

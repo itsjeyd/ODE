@@ -142,9 +142,7 @@ var FeatureView = Backbone.View.extend({
   _renderAlert: function(button, msg) {
     var updateButton = this.$(button);
     updateButton.next('.alert-msg').remove();
-    var alertMsg = $('<span>').addClass('alert-msg text-danger')
-      .text(msg);
-    alertMsg.insertAfter(updateButton);
+    $.alertMsg(msg).insertAfter(updateButton);
   },
 
   render: function() {
@@ -237,8 +235,7 @@ var FeatureView = Backbone.View.extend({
         var targetField = $(this);
         targetField.next('button.ftarget').remove();
         targetField.text(targetName);
-        var addButton = $('<button>').addClass('btn btn-info ftarget')
-          .text('Add');
+        var addButton = $.button('ftarget', 'Add');
         addButton.insertAfter(targetField);
       },
     });
@@ -263,7 +260,7 @@ var FeatureView = Backbone.View.extend({
         this.$('button.ftype').remove();
         this._showTargets();
       } else {
-        var okButton = $.okButton('ftype');
+        var okButton = $.button('ftype', 'OK');
         okButton.insertAfter(this.$('.radio').last());
         this._hideTargets();
       }
@@ -293,8 +290,7 @@ var FeatureView = Backbone.View.extend({
         inputField.empty();
       }
       inputField.next('button.ftarget').remove();
-      var addButton = $('<button>').addClass('btn btn-info ftarget')
-        .text('Add').disable();
+      var addButton = $.button('ftarget', 'Add').disable();
       addButton.insertAfter(inputField);
     },
     'keyup .editable': function(e) {
@@ -310,10 +306,8 @@ var FeatureView = Backbone.View.extend({
   _renderEditControls: function(modelField) {
     return function(e) {
       var fieldToEdit = $(e.currentTarget);
-      var inputField = $('<input>').addClass('form-control f' + modelField)
-        .attr('type', 'text').val(fieldToEdit.text());
-      var okButton = $('<button>').addClass('btn btn-info f' + modelField)
-        .text('OK');
+      var inputField = $.input('f' + modelField).val(fieldToEdit.text());
+      var okButton = $.button('f' + modelField, 'OK');
       fieldToEdit.hide();
       inputField.insertAfter(fieldToEdit);
       okButton.insertAfter(inputField);
@@ -413,9 +407,7 @@ var ValueItemView = ItemView.extend({
   _renderAlert: function(msg) {
     var updateButton = this.$el.next().next();
     updateButton.next('.alert-msg').remove();
-    var alertMsg = $('<span>').addClass('alert-msg text-danger')
-      .text(msg);
-    alertMsg.insertAfter(updateButton);
+    $.alertMsg(msg).insertAfter(updateButton);
   },
 
   render: function() {
@@ -528,10 +520,8 @@ var ValueListView = Backbone.View.extend({
 
   _edit: function(e) {
     var fieldToEdit = $(e.currentTarget);
-    var inputField = $('<input>').addClass('form-control vname')
-      .attr('type', 'text').val(fieldToEdit.text());
-    var okButton = $('<button>').addClass('btn btn-info vname')
-      .text('OK');
+    var inputField = $.input('vname').val(fieldToEdit.text());
+    var okButton = $.button('vname', 'OK');
     fieldToEdit.hide();
     inputField.insertAfter(fieldToEdit);
     okButton.insertAfter(inputField);

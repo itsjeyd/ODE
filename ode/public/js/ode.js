@@ -41,8 +41,17 @@ jQuery.matches = function(str, input) {
   return str.indexOf(input) !== -1;
 }
 
-jQuery.okButton = function(controlClass) {
-  return $('<button>').addClass('btn btn-info ' + controlClass).text('OK');
+jQuery.alertMsg = function(text) {
+  return $('<span>').addClass('alert-msg text-danger').text(text);
+}
+
+jQuery.input = function(controlClass) {
+  return $('<input>').addClass('form-control ' + controlClass)
+    .attr('type', 'text');
+}
+
+jQuery.button = function(controlClass, text) {
+  return $('<button>').addClass('btn btn-info ' + controlClass).text(text);
 }
 
 jQuery.removeButton = function(target) {

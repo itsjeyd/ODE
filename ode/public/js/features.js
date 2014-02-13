@@ -427,25 +427,43 @@ var ValueItemView = ItemView.extend({
 
 var FeatureListView = Backbone.View.extend({
 
+  initialize: function() {
+    this.collection.on('destroy', this.render, this);
+  },
+
+  render: function() {
+    this.$el.empty();
+    this.collection.forEach(this._addFeatureItem, this);
+  },
+
+  _addFeatureItem: function(featureItem) {
+    var featureItemView = new FeatureItemView({ model: featureItem });
+    this.$el.append(featureItemView.render().$el);
+  },
+
   events: {
-    'click .feature-item': 'dispatcher',
-    'mouseenter .feature-item': 'highlight',
-    'mouseleave .feature-item': 'unhighlight',
-    'unselect-all': 'unselectAll',
-    'click .remove-button': 'removeFeature',
+    'mouseenter .feature-item': '_highlight',
+    'mouseleave .feature-item': '_unhighlight',
+    'click .feature-item': '_dispatcher',
+    'unselect': '_unselect',
+    'click .remove-button': '_removeItem',
   },
 
-  dispatcher: function(e) {
-    this.select(e); this._renderDeleteButton(e); this.showEditBlock(e); },
+  _highlight: function(e) {
+    $(e.currentTarget).addClass('highlighted');
+  },
 
-  select: function(e) {
-    this.$el.trigger('unselect-all');
+  _unhighlight: function(e) {
+    $(e.currentTarget).removeClass('highlighted');
+  },
+
+  _dispatcher: function(e) {
+    this._select(e); this._renderDeleteButton(e); this._showEditBlock(e);
+  },
+
+  _select: function(e) {
+    this.$el.trigger('unselect');
     $(e.currentTarget).addClass('selected');
-  },
-
-  unselectAll: function() {
-    var selected = this.$el.find('.selected').removeClass('selected');
-    selected.find('.remove-button').remove();
   },
 
   _renderDeleteButton: function(e) {
@@ -456,7 +474,7 @@ var FeatureListView = Backbone.View.extend({
     $(e.currentTarget).append(removeButton);
   },
 
-  showEditBlock: function(e) {
+  _showEditBlock: function(e) {
     var featureID = e.currentTarget.id;
     var feature = this.collection.get(featureID);
     var featureView = new FeatureView({ model: feature });
@@ -464,40 +482,43 @@ var FeatureListView = Backbone.View.extend({
     $('#interaction-block').html(featureView.$el);
   },
 
-  highlight: function(e) { $(e.currentTarget).addClass('highlighted'); },
-
-  unhighlight: function(e) { $(e.currentTarget).removeClass('highlighted'); },
-
-  removeFeature: function(e) {
-    var featureName = $(e.currentTarget).data('target');
-    this.collection.findWhere({ name: featureName }).del();
+  _unselect: function() {
+    var selected = this.$el.find('.selected').removeClass('selected');
+    selected.find('.remove-button').remove();
   },
 
-  render: function() {
-    this.$el.empty();
-    this.collection.forEach(this.addFeatureItem, this);
+  _removeItem: function(e) {
+    var itemName = $(e.currentTarget).data('target');
+    this.collection.findWhere({ name: itemName }).del();
   },
-
-  addFeatureItem: function(featureItem) {
-    var featureItemView = new FeatureItemView({ model: featureItem });
-    this.$el.append(featureItemView.render().$el);
-  },
-
-  initialize: function() {
-    this.collection.on('destroy', this.render, this);
-  }
 
 });
 
 
 var ValueListView = Backbone.View.extend({
 
-  events: {
-    'dblclick .value-item': 'edit',
-    'click button.vname': 'save',
+  initialize: function() {
+    this.collection.on('change', this.render, this);
+    this.collection.on('add', this.render, this);
+    this.collection.on('remove', this.render, this);
   },
 
-  edit: function(e) {
+  render: function() {
+    this.$el.empty();
+    this.collection.forEach(this._addValueItem, this);
+  },
+
+  _addValueItem: function(valueItem) {
+    var valueView = new ValueItemView({ model: valueItem });
+    this.$el.append(valueView.render().$el);
+  },
+
+  events: {
+    'dblclick .value-item': '_edit',
+    'click button.vname': '_save',
+  },
+
+  _edit: function(e) {
     var fieldToEdit = $(e.currentTarget);
     var inputField = $('<input>').addClass('form-control vname')
       .attr('type', 'text').val(fieldToEdit.text());
@@ -509,7 +530,7 @@ var ValueListView = Backbone.View.extend({
     inputField.focus();
   },
 
-  save: function(e) {
+  _save: function(e) {
     var inputField = $(e.currentTarget).prev('input.vname');
     var newName = inputField.val();
     var taken = this.collection.where({ name: newName }).length > 0;
@@ -519,22 +540,6 @@ var ValueListView = Backbone.View.extend({
     } else {
       this.render();
     }
-  },
-
-  render: function() {
-    this.$el.empty();
-    this.collection.forEach(this.addValue, this);
-  },
-
-  addValue: function(valueItem) {
-    var valueView = new ValueItemView({ model: valueItem });
-    this.$el.append(valueView.render().$el);
-  },
-
-  initialize: function() {
-    this.collection.on('change', this.render, this);
-    this.collection.on('add', this.render, this);
-    this.collection.on('remove', this.render, this);
   },
 
   addItem: function(name) {

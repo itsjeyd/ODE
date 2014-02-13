@@ -527,7 +527,7 @@ var ValueListView = Backbone.View.extend({
   },
 
   addValue: function(valueItem) {
-    var valueView = new ValueItemView({ model: valueItem }); // Should be a ValueItemView!
+    var valueView = new ValueItemView({ model: valueItem });
     this.$el.append(valueView.render().$el);
   },
 

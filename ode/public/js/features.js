@@ -372,7 +372,6 @@ var FeatureItemView = Backbone.View.extend({
       this.$el.text(this.model.get('name'));
     }
     this.$el.draggable({
-      cursor: 'crosshair',
       helper: 'clone',
       revert: 'invalid',
     });
@@ -413,7 +412,6 @@ var ValueItemView = Backbone.View.extend({
   render: function() {
     this.$el.text(this.model.get('name'));
     this.$el.draggable({
-      cursor: 'crosshair',
       helper: 'clone',
       revert: 'invalid',
     });

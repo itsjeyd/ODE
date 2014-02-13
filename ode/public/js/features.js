@@ -628,7 +628,8 @@ $(document).ready(function() {
       var item = $(i);
       var name = item.data('name');
       return new Value({ id: name, name: name, });
-    })
+    }),
+    { comparator: 'name' }
   );
 
   var featureListView = new FeatureListView({

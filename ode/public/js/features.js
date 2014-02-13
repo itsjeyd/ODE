@@ -346,9 +346,7 @@ var FeatureView = Backbone.View.extend({
 });
 
 
-var FeatureItemView = Backbone.View.extend({
-
-  className: 'feature-item draggable',
+var ItemView = Backbone.View.extend({
 
   attributes: function() {
     return {
@@ -358,9 +356,20 @@ var FeatureItemView = Backbone.View.extend({
   },
 
   initialize: function() {
-    this.model.on('change:name', this.render, this);
     this.model.on('hide', function() { this.$el.hide(); }, this);
     this.model.on('show', function() { this.$el.show(); }, this);
+  }
+
+});
+
+
+var FeatureItemView = ItemView.extend({
+
+  className: 'feature-item draggable',
+
+  initialize: function() {
+    ItemView.prototype.initialize.apply(this);
+    this.model.on('change:name', this.render, this);
   },
 
   render: function() {
@@ -381,21 +390,13 @@ var FeatureItemView = Backbone.View.extend({
 });
 
 
-var ValueItemView = Backbone.View.extend({
+var ValueItemView = ItemView.extend({
 
   className: 'value-item draggable',
 
-  attributes: function() {
-    return {
-      id: this.model.id,
-      'data-name': this.model.get('name'),
-    }
-  },
-
   initialize: function() {
+    ItemView.prototype.initialize.apply(this);
     this.model.on('change', this.render, this);
-    this.model.on('hide', function() { this.$el.hide(); }, this);
-    this.model.on('show', function() { this.$el.show(); }, this);
     this.model.on('update-error:name', function(msg) {
       this._renderAlert(msg);
     }, this);

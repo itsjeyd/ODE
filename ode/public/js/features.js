@@ -492,6 +492,35 @@ var FeatureListView = Backbone.View.extend({
     this.collection.findWhere({ name: itemName }).del();
   },
 
+  filterItems: function(input) {
+    this.collection.each(function(f) {
+      if (!$.matches(f.get('name').toLowerCase(), input)) {
+        f.trigger('hide');
+      } else {
+        f.trigger('show');
+      }
+    });
+  },
+
+  showAll: function() {
+    this.collection.each(function(f) { f.trigger('show') });
+  },
+
+  filterByValue: function(input) {
+    this.collection.each(function(f) {
+      var targets = f.get('targets');
+      if (f.get('type') === 'complex') {
+        f.trigger('hide');
+      } else if (_.filter(targets, function(t) {
+        return t.indexOf(input) !== -1;
+      }).length === 0) {
+        f.trigger('hide');
+      } else {
+        f.trigger('show');
+      }
+    });
+  },
+
 });
 
 
@@ -553,7 +582,21 @@ var ValueListView = Backbone.View.extend({
   removeItem: function(name) {
     var item = this.collection.findWhere({ name: name });
     this.collection.remove(item);
-  }
+  },
+
+  filterItems: function(input) {
+    this.collection.each(function(v) {
+      if (!$.matches(v.get('name').toLowerCase(), input)) {
+        v.trigger('hide');
+      } else {
+        v.trigger('show');
+      }
+    });
+  },
+
+  showAll: function() {
+    this.collection.each(function(v) { v.trigger('show') });
+  },
 
 });
 
@@ -672,42 +715,18 @@ $(document).ready(function() {
 
   $('#feature-filter').on('keyup', function() {
     var currentInput = $(this).val().toLowerCase();
-    featureListView.collection.each(function(f) {
-      if (!$.matches(f.get('name').toLowerCase(), currentInput)) {
-        f.trigger('hide');
-      } else {
-        f.trigger('show');
-      }
-    });
+    featureListView.filterItems(currentInput);
   });
 
   $('#value-filter').on('keyup', function() {
     var currentInput = $(this).val().toLowerCase();
     if (!currentInput) {
-      featureListView.collection.each(function(f) { f.trigger('show') });
-      valueListView.collection.each(function(v) { v.trigger('show') });
+      featureListView.showAll();
+      valueListView.showAll();
       return;
     }
-    valueListView.collection.each(function(v) {
-      var valueName = v.get('name');
-      if (!$.matches(valueName.toLowerCase(), currentInput)) {
-        v.trigger('hide');
-      } else {
-        v.trigger('show');
-      }
-    });
-    featureListView.collection.each(function(f) {
-      var targets = f.get('targets');
-      if (f.get('type') === 'complex') {
-        f.trigger('hide');
-      } else if (_.filter(targets, function(t) {
-        return t.indexOf(currentInput) !== -1;
-      }).length === 0) {
-        f.trigger('hide');
-      } else {
-        f.trigger('show');
-      }
-    });
+    valueListView.filterItems(currentInput);
+    featureListView.filterByValue(currentInput);
   });
 
 });

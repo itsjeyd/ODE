@@ -668,6 +668,9 @@ $(document).ready(function() {
     interactionBlock.html(newFeatureBlock.html());
   });
 
+
+  // Instantiate collections
+
   var featureItems = $('.feature-item');
   var valueItems = $('.value-item');
 
@@ -694,6 +697,9 @@ $(document).ready(function() {
     { comparator: 'name' }
   );
 
+
+  // Instantiate views
+
   var featureListView = new FeatureListView({
     id: 'feature-list',
     collection: featureList,
@@ -707,6 +713,9 @@ $(document).ready(function() {
   });
   valueListView.render();
   $('#value-list').replaceWith(valueListView.$el);
+
+
+  // Set up event handlers
 
   featureListView.listenTo(
     valueList, 'update-success:name', function(target, newName) {

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.Routes;
-import play.data.Form;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -49,6 +48,8 @@ public class Features extends Controller {
         return ok(Routes.javascriptRouter(
                       "jsFeatureRoutes",
                       controllers.routes.javascript.Features
+                      .createFeature(),
+                      controllers.routes.javascript.Features
                       .updateName(),
                       controllers.routes.javascript.Features
                       .updateDescription(),
@@ -82,13 +83,12 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> createFeature() {
-        final Form<NewFeatureForm> featureForm =
-            form(NewFeatureForm.class).bindFromRequest();
-        // ...
-        String name = featureForm.get().name;
-        String description = featureForm.get().description;
-        String type = featureForm.get().type;
+        JsonNode json = request().body().asJson();
+        final String name = json.findPath("name").textValue();
+        String description = json.findPath("description").textValue();
+        String type = json.findPath("type").textValue();
         Promise<Tuple<Option<OntologyNode>, Boolean>> result = null;
         if (type.equals(FeatureType.COMPLEX.toString())) {
             result = new ComplexFeature(name, description).getOrCreate();
@@ -97,20 +97,26 @@ public class Features extends Controller {
         }
         return result.map(
             new Function<Tuple<Option<OntologyNode>, Boolean>, Result>() {
+                ObjectNode jsonResult = Json.newObject();
                 public Result apply(
                     Tuple<Option<OntologyNode>, Boolean> result) {
                     Boolean created = result._2;
                     if (created) {
-                        flash("success", "Feature successfully created.");
+                        jsonResult.put("id", name);
+                        jsonResult.put("message",
+                                       "Feature successfully created.");
+                        return ok(jsonResult);
                     } else {
                         Option<OntologyNode> feature = result._1;
                         if (feature.isDefined()) {
-                            flash("error", "Feature already exists.");
+                            jsonResult.put("message",
+                                           "Feature already exists.");
                         } else {
-                            flash("error", "Feature creation failed.");
+                            jsonResult.put("error",
+                                           "Feature not created.");
                         }
+                        return badRequest(jsonResult);
                     }
-                    return redirect(routes.Features.list());
                 }
             });
     }

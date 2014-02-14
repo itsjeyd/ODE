@@ -38,7 +38,7 @@
       <!-- Block for creating new feature: -->
       <div id="new-feature-block" class="col-md-6">
         <h3>Create a new feature</h3>
-        @helper.form(routes.Features.createFeature) {
+        <form role="form">
           <div class="form-group">
             <label for="fname">Name:</label>
             <input type="text" name="name" value="@form("name").value"
@@ -54,20 +54,23 @@
           </div>
           <div class="radio">
             <label>
-              <input type="radio" name="type" value="complex" />
+              <input type="radio" name="type" value="complex"
+                     class="ftype" />
               complex
             </label>
           </div>
           <div class="radio">
             <label>
-              <input type="radio" name="type" value="atomic" />
+              <input type="radio" name="type" value="atomic"
+                     class="ftype" />
               atomic
             </label>
           </div>
-          <button class="btn btn-lg btn-success" type="submit">
-              Save
+          <button class="btn btn-lg btn-success" type="submit"
+                  id="create-feature-button">
+            Save
           </button>
-        }
+        </form>
       </div>
 
       <!-- Right sidebar -->
@@ -89,30 +92,5 @@
       </div>
 
     </div>
-
-
-
-    <!-- Separate row for displaying error messages: -->
-    <div class="row">
-      @if(flash.contains("success")) {
-        <div class="alert alert-success alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert"
-                  aria-hidden="true">
-            &times;
-          </button>
-          <strong>Success:</strong> @flash.get("success")
-        </div>
-      }
-      @if(flash.contains("error")) {
-        <div class="alert alert-danger alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert"
-                  aria-hidden="true">
-            &times;
-          </button>
-          <strong>Error:</strong> @flash.get("error")
-        </div>
-      }
-    </div>
-
   </div>
 }

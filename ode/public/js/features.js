@@ -24,6 +24,17 @@ var Feature = Backbone.Model.extend({
               });
   },
 
+  create: function(attrs) {
+    this.save(attrs,
+              { wait: true,
+                success: function(model, response, options) {
+                  model.id = model.get('id');
+                  model.trigger('create');
+                },
+              });
+    return this;
+  },
+
   updateName: function(newName) {
     var success = function(model, response, options) {
       model.id = newName;
@@ -117,7 +128,10 @@ var FeatureList = Backbone.Collection.extend({
   model: Feature,
 
   initialize: function() {
-    this.on('change:name', function() { this.sort() }, this);
+    this.on('change:name', function() {
+      this.sort();
+      this.trigger('update-success:name');
+    }, this);
   },
 
   removeItem: function(name) {
@@ -509,7 +523,8 @@ var FeatureListView = ListView.extend({
 
   initialize: function() {
     this.collection.on('destroy', this.render, this);
-    this.collection.on('sort', function() {
+    this.collection.on('create', this.render, this);
+    this.collection.on('update-success:name', function() {
       var currentItems = this.$('.feature-item')
         .map(function() { return $(this).data('name') });
       var itemToSelect = this.collection.find(function(i) {
@@ -679,11 +694,6 @@ $(document).ready(function() {
 
   newFeatureBlock.hide();
 
-  newFeatureButton.on('click', function() {
-    featureListView.render();
-    interactionBlock.html(newFeatureBlock.html());
-  });
-
 
   // Instantiate collections
 
@@ -772,6 +782,23 @@ $(document).ready(function() {
     }
     valueListView.filterItems(currentInput);
     featureListView.filterByValue(currentInput);
+  });
+
+  newFeatureButton.on('click', function() {
+    featureListView.render();
+    interactionBlock.html(newFeatureBlock.html());
+    $('#create-feature-button').on('click', function(e) {
+      e.preventDefault();
+      var form = $(this).parent('form');
+      var name = form.find('#fname').val();
+      var description = form.find('#fdescription').val();
+      var type = form.find('.ftype:checked').val();
+      var feature = new Feature().create({ name: name,
+                                           description: description,
+                                           type: type,
+                                           targets: [] });
+      featureList.add(feature);
+    });
   });
 
 });

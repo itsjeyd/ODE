@@ -592,7 +592,18 @@ var ValueListView = ListView.extend({
     }
   },
 
-  removeItem: function(name) {
+  removeIfOrphaned: function(valuesToCheck, featureList) {
+    _.each(valuesToCheck, function(v) {
+      var stillInUse = featureList.some(function(f) {
+        return _.contains(f.get('targets'), v);
+      });
+      if (!stillInUse) {
+        this._removeItem(v);
+      }
+    }, this);
+  },
+
+  _removeItem: function(name) {
     var item = this.collection.findWhere({ name: name });
     this.collection.remove(item);
   },
@@ -676,34 +687,15 @@ $(document).ready(function() {
     });
   valueListView.listenTo(
     featureList, 'update-success:remove-target', function(target) {
-      var stillInUse = featureList.some(function(f) {
-        return _.contains(f.get('targets'), target);
-      });
-      if (!stillInUse) {
-        valueListView.removeItem(target);
-      }
+      valueListView.removeIfOrphaned([target], featureList);
     });
   valueListView.listenTo(
     featureList, 'update-success:type', function(oldTargets) {
-      _.each(oldTargets, function(t) {
-        var stillInUse = featureList.some(function(f) {
-          return _.contains(f.get('targets'), t);
-        });
-        if (!stillInUse) {
-          valueListView.removeItem(t);
-        }
-      });
+      valueListView.removeIfOrphaned(oldTargets, featureList);
     });
   valueListView.listenTo(
     featureList, 'destroy', function(destroyed) {
-      _.each(destroyed.get('targets'), function(t) {
-        var stillInUse = featureList.some(function(f) {
-          return _.contains(f.get('targets'), t);
-        });
-        if (!stillInUse) {
-          valueListView.removeItem(t);
-        }
-      });
+      valueListView.removeIfOrphaned(destroyed.get('targets'), featureList);
     });
 
   $('#feature-filter').on('keyup', function() {

@@ -86,9 +86,11 @@ var Feature = Backbone.Model.extend({
 
 
 var Value = Backbone.Model.extend({
+
   initialize: function() {
     this.urlRoot = '/values'
   },
+
   updateName: function(newName) {
     var oldName = this.get('name');
     this.save({ name: newName },
@@ -103,6 +105,7 @@ var Value = Backbone.Model.extend({
                 },
               });
   },
+
 });
 
 

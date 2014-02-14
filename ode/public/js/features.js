@@ -435,16 +435,14 @@ var FeatureItemView = ItemView.extend({
 
   initialize: function() {
     ItemView.prototype.initialize.apply(this);
-    this.model.on('change:name', this.render, this);
   },
 
   render: function() {
+    this.$el.text(this.model.get('name'));
     if (this.$el.hasClass('selected')) {
-      var removeButton = this.$('.remove-button');
-      this.$el.text(this.model.get('name'));
+      var removeButton = $.removeButton(this.model.get('name'))
+        .addClass('pull-right');
       this.$el.append(removeButton);
-    } else {
-      this.$el.text(this.model.get('name'));
     }
     this.$el.draggable({
       helper: 'clone',
@@ -511,7 +509,25 @@ var FeatureListView = ListView.extend({
 
   initialize: function() {
     this.collection.on('destroy', this.render, this);
-    this.collection.on('sort', this.render, this);
+    this.collection.on('sort', function() {
+      var currentItems = this.$('.feature-item')
+        .map(function() { return $(this).data('name') });
+      var itemToSelect = this.collection.find(function(i) {
+        return !_.contains(currentItems, i.get('name'))
+      });
+      this._renderWithSelection(itemToSelect);
+    }, this);
+  },
+
+  _renderWithSelection: function(itemToSelect) {
+    this.$el.empty();
+    this.collection.each(function(f) {
+      var featureItemView = new FeatureItemView({ model: f });
+      if (f.get('name') === itemToSelect.get('name')) {
+        featureItemView.$el.addClass('selected');
+      }
+      this.$el.append(featureItemView.render().$el);
+    }, this);
   },
 
   render: function() {

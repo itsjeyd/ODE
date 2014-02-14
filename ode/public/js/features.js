@@ -120,6 +120,10 @@ var FeatureList = Backbone.Collection.extend({
     this.on('change:name', function() { this.sort() }, this);
   },
 
+  removeItem: function(name) {
+    this.findWhere({ name: name }).del();
+  },
+
 });
 var ValueList = Backbone.Collection.extend({ model: Value });
 
@@ -518,7 +522,7 @@ var FeatureListView = ListView.extend({
 
   _removeItem: function(e) {
     var itemName = $(e.currentTarget).data('target');
-    this.collection.findWhere({ name: itemName }).del();
+    this.collection.removeItem(itemName);
   },
 
   filterByValue: function(input) {

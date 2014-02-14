@@ -120,20 +120,7 @@ public class Features extends Controller {
     public static Promise<Result> updateName(final String name) {
         JsonNode json = request().body().asJson();
         final String newName = json.findPath("name").textValue();
-        Promise<List<Feature>> features = Feature.all();
-        Promise<Boolean> nameAlreadyTaken = features.map(
-            new Function<List<Feature>, Boolean>() {
-                public Boolean apply(List<Feature> features) {
-                    Boolean nameAlreadyTaken = false;
-                    for (Feature feature: features) {
-                        if (feature.name.equals(newName)) {
-                            nameAlreadyTaken = true;
-                            break;
-                        }
-                    }
-                    return nameAlreadyTaken;
-                }
-            });
+        Promise<Boolean> nameAlreadyTaken = new Feature(newName).exists();
         return nameAlreadyTaken.flatMap(
             new Function<Boolean, Promise<Result>>() {
                 ObjectNode result = Json.newObject();

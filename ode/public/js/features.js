@@ -707,14 +707,8 @@ $(document).ready(function() {
   });
 
   valueListView.listenTo(
-    featureList, 'update-success:add-target', function(target, featureType) {
-      if (featureType === 'atomic') {
-        valueListView.addItem(target);
-      }
-    });
-  valueListView.listenTo(
-    featureList, 'update-success:remove-target', function(target) {
-      valueListView.removeIfOrphaned([target], featureList);
+    featureList, 'destroy', function(destroyed) {
+      valueListView.removeIfOrphaned(destroyed.get('targets'), featureList);
     });
   valueListView.listenTo(
     featureList, 'update-success:type', function(updated) {
@@ -722,8 +716,14 @@ $(document).ready(function() {
         updated.get('targets'), featureList.without(updated));
     });
   valueListView.listenTo(
-    featureList, 'destroy', function(destroyed) {
-      valueListView.removeIfOrphaned(destroyed.get('targets'), featureList);
+    featureList, 'update-success:remove-target', function(target) {
+      valueListView.removeIfOrphaned([target], featureList);
+    });
+  valueListView.listenTo(
+    featureList, 'update-success:add-target', function(target, featureType) {
+      if (featureType === 'atomic') {
+        valueListView.addItem(target);
+      }
     });
 
   $('#feature-filter').on('keyup', function() {

@@ -125,7 +125,47 @@ var FeatureList = Backbone.Collection.extend({
   },
 
 });
-var ValueList = Backbone.Collection.extend({ model: Value });
+
+var ValueList = Backbone.Collection.extend({
+
+  model: Value,
+
+  renameItem: function(oldName, newName) {
+    alert(oldName + ' ---> ' + newName);
+    var nameTaken = this.findWhere({ name: newName });
+    if (!nameTaken) {
+      this.findWhere({ name: oldName }).updateName(newName);
+    } else {
+      nameTaken.trigger('update-error:name', 'Name already taken.');
+    }
+  },
+
+  addItem: function(name) {
+    var exists = this.contains(function(v) {
+      return v.get('name') === name;
+    });
+    if (!exists) {
+      this.add(new Value({ id: name, name: name }));
+    }
+  },
+
+  removeIfOrphaned: function(valuesToCheck, featureList) {
+    _.each(valuesToCheck, function(v) {
+      var stillInUse = featureList.some(function(f) {
+        return _.contains(f.get('targets'), v);
+      });
+      if (!stillInUse) {
+        this._removeItem(v);
+      }
+    }, this);
+  },
+
+  _removeItem: function(name) {
+    var item = this.findWhere({ name: name });
+    this.remove(item);
+  },
+
+});
 
 
 
@@ -579,39 +619,20 @@ var ValueListView = ListView.extend({
   _save: function(e) {
     var inputField = $(e.currentTarget).prev('input.vname');
     var newName = inputField.val();
-    var taken = this.collection.where({ name: newName }).length > 0;
-    if (newName && !taken) {
+    if (newName) {
       var oldName = inputField.prev('.value-item').data('name');
-      this.collection.findWhere({ name: oldName }).updateName(newName);
+      this.collection.renameItem(oldName, newName);
     } else {
       this.render();
     }
   },
 
   addItem: function(name) {
-    var exists = this.collection.contains(function(v) {
-      return v.get('name') === name
-    });
-    if (!exists) {
-      var value = new Value({ id: name, name: name });
-      this.collection.add(value);
-    }
+    this.collection.addItem(name);
   },
 
   removeIfOrphaned: function(valuesToCheck, featureList) {
-    _.each(valuesToCheck, function(v) {
-      var stillInUse = featureList.some(function(f) {
-        return _.contains(f.get('targets'), v);
-      });
-      if (!stillInUse) {
-        this._removeItem(v);
-      }
-    }, this);
-  },
-
-  _removeItem: function(name) {
-    var item = this.collection.findWhere({ name: name });
-    this.collection.remove(item);
+    this.collection.removeIfOrphaned(valuesToCheck, featureList);
   },
 
 });

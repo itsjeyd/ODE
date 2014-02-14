@@ -124,6 +124,17 @@ var FeatureList = Backbone.Collection.extend({
     this.findWhere({ name: name }).del();
   },
 
+  updateItems: function(target, newName) {
+    var affectedFeatures = this.filter(function(f) {
+      return _.contains(f.get('targets'), target);
+    });
+    _.each(affectedFeatures, function(f) {
+      var newTargets = _.without(f.get('targets'), target);
+      newTargets.push(newName);
+      f.set({ targets: newTargets });
+    });
+  },
+
 });
 
 var ValueList = Backbone.Collection.extend({
@@ -565,6 +576,10 @@ var FeatureListView = ListView.extend({
     this.collection.removeItem(itemName);
   },
 
+  updateItems: function(target, newName) {
+    this.collection.updateItems(target, newName);
+  },
+
   filterByValue: function(input) {
     this.collection.each(function(f) {
       if (f.get('type') === 'complex') {
@@ -696,14 +711,7 @@ $(document).ready(function() {
 
   featureListView.listenTo(
     valueList, 'update-success:name', function(target, newName) {
-      var affectedFeatures = this.collection.filter(function(f) {
-        return _.contains(f.get('targets'), target);
-      });
-      _.each(affectedFeatures, function(f) {
-        var newTargets = _.without(f.get('targets'), target);
-        newTargets.push(newName);
-        f.set({ targets: newTargets });
-      });
+      featureListView.updateItems(target, newName);
   });
 
   valueListView.listenTo(

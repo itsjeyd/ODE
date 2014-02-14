@@ -142,7 +142,6 @@ var ValueList = Backbone.Collection.extend({
   model: Value,
 
   renameItem: function(oldName, newName) {
-    alert(oldName + ' ---> ' + newName);
     var nameTaken = this.findWhere({ name: newName });
     if (!nameTaken) {
       this.findWhere({ name: oldName }).updateName(newName);

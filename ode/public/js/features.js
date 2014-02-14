@@ -37,10 +37,9 @@ var Feature = Backbone.Model.extend({
   },
 
   updateType: function(newType) {
-    var targets = this.get('targets');
     var success = function(model, response, options) {
+      model.trigger('update-success:type', model);
       model.set({ targets: [] });
-      model.trigger('update-success:type', targets);
     };
     this._update('type', { type: newType }, success);
   },
@@ -690,8 +689,9 @@ $(document).ready(function() {
       valueListView.removeIfOrphaned([target], featureList);
     });
   valueListView.listenTo(
-    featureList, 'update-success:type', function(oldTargets) {
-      valueListView.removeIfOrphaned(oldTargets, featureList);
+    featureList, 'update-success:type', function(updated) {
+      valueListView.removeIfOrphaned(
+        updated.get('targets'), featureList.without(updated));
     });
   valueListView.listenTo(
     featureList, 'destroy', function(destroyed) {

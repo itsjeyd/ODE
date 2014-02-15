@@ -535,24 +535,25 @@ var FeatureListView = ListView.extend({
   },
 
   _renderWithSelection: function(itemToSelect) {
-    this.$el.empty();
+    this.$('.feature-item').remove();
     this.collection.each(function(f) {
       var featureItemView = new FeatureItemView({ model: f });
       if (f.get('name') === itemToSelect.get('name')) {
         featureItemView.$el.addClass('selected');
       }
-      this.$el.append(featureItemView.render().$el);
+      featureItemView.render().$el
+        .insertBefore(this.$('#new-feature-button'));
     }, this);
   },
 
   render: function() {
-    this.$el.empty();
+    this.$('.feature-item').remove();
     this.collection.forEach(this._addFeatureItem, this);
   },
 
   _addFeatureItem: function(featureItem) {
     var featureItemView = new FeatureItemView({ model: featureItem });
-    this.$el.append(featureItemView.render().$el);
+    featureItemView.render().$el.insertBefore(this.$('#new-feature-button'));
   },
 
   events: {
@@ -727,11 +728,10 @@ $(document).ready(function() {
   // Instantiate views
 
   var featureListView = new FeatureListView({
-    id: 'feature-list',
+    el: '#feature-list',
     collection: featureList,
   });
   featureListView.render();
-  $('#feature-list').replaceWith(featureListView.$el);
 
   var valueListView = new ValueListView({
     id: 'value-list',

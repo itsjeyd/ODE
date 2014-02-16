@@ -20,8 +20,6 @@ import play.libs.F.Promise;
 import play.libs.F.None;
 import play.libs.F.Tuple;
 
-import play.data.validation.Constraints.Required;
-
 import constants.FeatureType;
 import models.AtomicFeature;
 import models.ComplexFeature;
@@ -32,8 +30,6 @@ import models.Relationship;
 import models.Value;
 
 import views.html.features;
-
-import static play.data.Form.form;
 
 
 public class Features extends Controller {
@@ -77,7 +73,6 @@ public class Features extends Controller {
                     }
                     List<Value> globalValueList = lists._2;
                     return ok(features.render(globalFeatureList,
-                                              form(NewFeatureForm.class),
                                               globalValueList));
             }});
     }
@@ -356,15 +351,6 @@ public class Features extends Controller {
                 new Tuple<Option<Relationship>, Boolean>(
                     new None<Relationship>(), false));
         }
-    }
-
-
-    public static class NewFeatureForm {
-        @Required
-        public String name;
-        @Required
-        public String type;
-        public String description;
     }
 
 }

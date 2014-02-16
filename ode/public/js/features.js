@@ -244,14 +244,10 @@ var FeatureFormView = Backbone.View.extend({
 
   _renderForm: function() {
     var form = $.form();
-    var nameField = $.formGroup('name', 'fname');
-    form.append(nameField);
-    var descriptionField = $.formGroup('description', 'fdescription');
-    form.append(descriptionField);
-    var complexRadio = $.radioButton('type', 'complex', 'ftype');
-    form.append(complexRadio);
-    var atomicRadio = $.radioButton('type', 'atomic', 'ftype');
-    form.append(atomicRadio);
+    form.append($.formGroup('name', 'fname'));
+    form.append($.formGroup('description', 'fdescription'));
+    form.append($.radioButton('type', 'complex', 'ftype'));
+    form.append($.radioButton('type', 'atomic', 'ftype'));
     var createButton = $.createButton();
     form.append(createButton);
     this.$el.append(form);

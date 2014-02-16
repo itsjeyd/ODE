@@ -57,9 +57,16 @@ jQuery.alertMsg = function(text) {
   return $('<span>').addClass('alert-msg text-danger').text(text);
 }
 
-jQuery.input = function(controlClass) {
-  return $('<input>').addClass('form-control ' + controlClass)
-    .attr('type', 'text');
+jQuery.input = function(type) {
+  return $('<input>').attr('type', type);
+}
+
+jQuery.textInput = function() {
+  return $.input('text').addClass('form-control');
+}
+
+jQuery.radioInput = function(group, value) {
+  return $.input('radio').attr('name', group).attr('value', value);
 }
 
 jQuery.button = function(controlClass, text) {
@@ -81,8 +88,7 @@ jQuery.form = function() {
 
 jQuery.formGroup = function(field, id) {
   var label = $.label(field, id);
-  var inputField = $('<input>').addClass('form-control')
-    .attr('type', 'text')
+  var inputField = $.textInput()
     .attr('id', id)
     .attr('placeholder', 'Enter ' + field + ' ...');
   return $('<div>').addClass('form-group').append(label).append(inputField);
@@ -92,12 +98,9 @@ jQuery.label = function(field, id) {
   return $('<label>').attr('for', id).text($.cap(field) + ':');
 }
 
-jQuery.radio = function(group, value, controlClass) {
+jQuery.radioButton = function(group, value, controlClass) {
   var label = $('<label>')
-  var input = $('<input>').addClass(controlClass)
-    .attr('type', 'radio')
-    .attr('name', group)
-    .attr('value', value);
+  var input = $.radioInput(group, value).addClass(controlClass);
   label.append(input);
   label.append(document.createTextNode(value));
   return $('<div>').addClass('radio').append(label);

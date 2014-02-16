@@ -248,9 +248,9 @@ var FeatureFormView = Backbone.View.extend({
     form.append(nameField);
     var descriptionField = $.formGroup('description', 'fdescription');
     form.append(descriptionField);
-    var complexRadio = $.radio('type', 'complex', 'ftype');
+    var complexRadio = $.radioButton('type', 'complex', 'ftype');
     form.append(complexRadio);
-    var atomicRadio = $.radio('type', 'atomic', 'ftype');
+    var atomicRadio = $.radioButton('type', 'atomic', 'ftype');
     form.append(atomicRadio);
     var createButton = $.createButton();
     form.append(createButton);
@@ -331,8 +331,8 @@ var FeatureView = Backbone.View.extend({
 
   _renderTypeForm: function() {
     var form = $.form();
-    form.append($.radio('type', 'complex', 'ftype'));
-    form.append($.radio('type', 'atomic', 'ftype'));
+    form.append($.radioButton('type', 'complex', 'ftype'));
+    form.append($.radioButton('type', 'atomic', 'ftype'));
     form.find('input[value="' + this.model.get('type') + '"]').check();
     this.$el.append(form);
   },
@@ -457,7 +457,8 @@ var FeatureView = Backbone.View.extend({
   _renderEditControls: function(modelField) {
     return function(e) {
       var fieldToEdit = $(e.currentTarget);
-      var inputField = $.input('f' + modelField).val(fieldToEdit.text());
+      var inputField = $.textInput().addClass('f' + modelField)
+        .val(fieldToEdit.text());
       var okButton = $.button('f' + modelField, 'OK');
       fieldToEdit.hide();
       inputField.insertAfter(fieldToEdit);
@@ -736,7 +737,8 @@ var ValueListView = ListView.extend({
 
   _edit: function(e) {
     var fieldToEdit = $(e.currentTarget);
-    var inputField = $.input('vname').val(fieldToEdit.text());
+    var inputField = $.textInput().addClass('vname')
+      .val(fieldToEdit.text());
     var okButton = $.button('vname', 'OK');
     fieldToEdit.hide();
     inputField.insertAfter(fieldToEdit);

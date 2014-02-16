@@ -142,6 +142,7 @@ public class Features extends Controller {
                             new Function<Boolean, Result>() {
                                 public Result apply(Boolean updated) {
                                     if (updated) {
+                                        result.put("id", newName);
                                         result.put(
                                             "message",
                                             "Name successfully updated.");

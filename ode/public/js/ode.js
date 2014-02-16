@@ -97,17 +97,31 @@ jQuery.radioInput = function(group, value) {
   return $.input('radio').attr('name', group).attr('value', value);
 }
 
-jQuery.button = function(controlClass, text) {
-  return $('<button>').addClass('btn btn-info ' + controlClass).text(text);
+jQuery.button = function(text) {
+  return $('<button>').addClass('btn').text(text);
+}
+
+jQuery.infoButton = function(text) {
+  return $.button(text).addClass('btn-info');
+}
+
+jQuery.successButton = function(text) {
+  return $.button(text).addClass('btn-success');
+}
+
+jQuery.addButton = function() {
+  return $.infoButton('Add');
+}
+
+jQuery.okButton = function() {
+  return $.infoButton('OK');
+}
+
+jQuery.createButton = function() {
+  return $.successButton('Create').addClass('btn-lg').attr('id', 'create');
 }
 
 jQuery.removeButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
     .data('target', target);
-}
-
-jQuery.createButton = function() {
-  return $('<button>').addClass('btn btn-lg btn-success')
-    .attr('id', 'create')
-    .text('Save');
 }

@@ -239,7 +239,7 @@ var FeatureFormView = Backbone.View.extend({
   },
 
   _renderHeading: function() {
-    this.$el.append($.h3('Create a new feature'));
+    this.$el.append($.h3('Add a new feature'));
   },
 
   _renderForm: function() {
@@ -382,7 +382,7 @@ var FeatureView = Backbone.View.extend({
         var targetField = $(this);
         targetField.next('button.ftarget').remove();
         targetField.text(targetName);
-        var addButton = $.button('ftarget', 'Add');
+        var addButton = $.addButton().addClass('ftarget');
         addButton.insertAfter(targetField);
       },
     });
@@ -407,7 +407,7 @@ var FeatureView = Backbone.View.extend({
         this.$('button.ftype').remove();
         this._showTargets();
       } else {
-        var okButton = $.button('ftype', 'OK');
+        var okButton = $.okButton().addClass('ftype');
         okButton.insertAfter(this.$('.radio').last());
         this._hideTargets();
       }
@@ -437,7 +437,7 @@ var FeatureView = Backbone.View.extend({
         inputField.empty();
       }
       inputField.next('button.ftarget').remove();
-      var addButton = $.button('ftarget', 'Add').disable();
+      var addButton = $.addButton().addClass('ftarget').disable();
       addButton.insertAfter(inputField);
     },
     'keyup .editable': function(e) {
@@ -455,7 +455,7 @@ var FeatureView = Backbone.View.extend({
       var fieldToEdit = $(e.currentTarget);
       var inputField = $.textInput().addClass('f' + modelField)
         .val(fieldToEdit.text());
-      var okButton = $.button('f' + modelField, 'OK');
+      var okButton = $.okButton().addClass('f' + modelField);
       fieldToEdit.hide();
       inputField.insertAfter(fieldToEdit);
       okButton.insertAfter(inputField);
@@ -735,7 +735,7 @@ var ValueListView = ListView.extend({
     var fieldToEdit = $(e.currentTarget);
     var inputField = $.textInput().addClass('vname')
       .val(fieldToEdit.text());
-    var okButton = $.button('vname', 'OK');
+    var okButton = $.okButton().addClass('vname');
     fieldToEdit.hide();
     inputField.insertAfter(fieldToEdit);
     okButton.insertAfter(inputField);

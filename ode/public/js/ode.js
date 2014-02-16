@@ -66,7 +66,7 @@ jQuery.form = function() {
 }
 
 jQuery.formGroup = function(field, id) {
-  var label = $.label(field, id);
+  var label = $.label().attr('for', id).text($.cap(field) + ':');
   var inputField = $.textInput()
     .attr('id', id)
     .attr('placeholder', 'Enter ' + field + ' ...');
@@ -74,15 +74,15 @@ jQuery.formGroup = function(field, id) {
 }
 
 jQuery.radioButton = function(group, value, controlClass) {
-  var label = $('<label>')
+  var label = $.label();
   var input = $.radioInput(group, value).addClass(controlClass);
   label.append(input);
   label.append(document.createTextNode(value));
   return $('<div>').addClass('radio').append(label);
 }
 
-jQuery.label = function(field, id) {
-  return $('<label>').attr('for', id).text($.cap(field) + ':');
+jQuery.label = function() {
+  return $('<label>');
 }
 
 jQuery.input = function(type) {

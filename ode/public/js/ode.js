@@ -57,6 +57,34 @@ jQuery.alertMsg = function(text) {
   return $('<span>').addClass('alert-msg text-danger').text(text);
 }
 
+jQuery.h3 = function(text) {
+  return $('<h3>').text(text);
+}
+
+jQuery.form = function() {
+  return $('<form>').attr('role', 'form');
+}
+
+jQuery.formGroup = function(field, id) {
+  var label = $.label(field, id);
+  var inputField = $.textInput()
+    .attr('id', id)
+    .attr('placeholder', 'Enter ' + field + ' ...');
+  return $('<div>').addClass('form-group').append(label).append(inputField);
+}
+
+jQuery.radioButton = function(group, value, controlClass) {
+  var label = $('<label>')
+  var input = $.radioInput(group, value).addClass(controlClass);
+  label.append(input);
+  label.append(document.createTextNode(value));
+  return $('<div>').addClass('radio').append(label);
+}
+
+jQuery.label = function(field, id) {
+  return $('<label>').attr('for', id).text($.cap(field) + ':');
+}
+
 jQuery.input = function(type) {
   return $('<input>').attr('type', type);
 }
@@ -76,34 +104,6 @@ jQuery.button = function(controlClass, text) {
 jQuery.removeButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
     .data('target', target);
-}
-
-jQuery.h3 = function(text) {
-  return $('<h3>').text(text);
-}
-
-jQuery.form = function() {
-  return $('<form>').attr('role', 'form');
-}
-
-jQuery.formGroup = function(field, id) {
-  var label = $.label(field, id);
-  var inputField = $.textInput()
-    .attr('id', id)
-    .attr('placeholder', 'Enter ' + field + ' ...');
-  return $('<div>').addClass('form-group').append(label).append(inputField);
-}
-
-jQuery.label = function(field, id) {
-  return $('<label>').attr('for', id).text($.cap(field) + ':');
-}
-
-jQuery.radioButton = function(group, value, controlClass) {
-  var label = $('<label>')
-  var input = $.radioInput(group, value).addClass(controlClass);
-  label.append(input);
-  label.append(document.createTextNode(value));
-  return $('<div>').addClass('radio').append(label);
 }
 
 jQuery.createButton = function() {

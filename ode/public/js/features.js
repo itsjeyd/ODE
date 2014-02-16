@@ -29,18 +29,22 @@ var Feature = Backbone.Model.extend({
   },
 
   create: function(view) {
-    this.save({},
-              { wait: true,
-                success: function(model, response, options) {
-                  model.id = model.get('id');
-                  view.trigger('create-success', model);
-                },
-                error: function(model, xhr, options) {
-                  var response = $.parseJSON(xhr.responseText);
-                  view.trigger('create-error', response.message);
-                },
-              });
-    return this;
+    if (this.isValid()) {
+      this.save({},
+                { wait: true,
+                  success: function(model, response, options) {
+                    model.id = model.get('id');
+                    view.trigger('create-success', model);
+                  },
+                  error: function(model, xhr, options) {
+                    var response = $.parseJSON(xhr.responseText);
+                    view.trigger('create-error', response.message);
+                  },
+                });
+      return this;
+    } else {
+      view.trigger('create-error', this.validationError);
+    }
   },
 
   updateName: function(newName) {

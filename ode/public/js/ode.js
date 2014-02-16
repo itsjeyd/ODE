@@ -84,10 +84,11 @@ jQuery.label = function(field, id) {
   return $('<label>').attr('for', id).text($.cap(field) + ':');
 }
 
-jQuery.radio = function(value, controlClass) {
+jQuery.radio = function(group, value, controlClass) {
   var label = $('<label>')
   var input = $('<input>').addClass(controlClass)
     .attr('type', 'radio')
+    .attr('name', group)
     .attr('value', value);
   label.append(input);
   label.append(document.createTextNode(value));

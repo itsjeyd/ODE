@@ -28,12 +28,16 @@ var Feature = Backbone.Model.extend({
               });
   },
 
-  create: function() {
+  create: function(view) {
     this.save({},
               { wait: true,
                 success: function(model, response, options) {
                   model.id = model.get('id');
-                  model.trigger('create');
+                  view.trigger('create-success', model);
+                },
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  view.trigger('create-error', response.message);
                 },
               });
     return this;
@@ -201,6 +205,23 @@ var ValueList = Backbone.Collection.extend({
 
 var FeatureFormView = Backbone.View.extend({
 
+  initialize: function() {
+    this.on('create-success', function(model) {
+      this.$el.empty();
+      this.render();
+      this.collection.add(model);
+    }, this);
+    this.on('create-error', function(msg) {
+      this._renderAlert(msg);
+    }, this);
+  },
+
+  _renderAlert: function(msg) {
+    var createButton = this.$('button#create');
+    createButton.next('.alert-msg').remove();
+    $.alertMsg(msg).insertAfter(createButton);
+  },
+
   render: function() {
     this._renderHeading();
     this._renderForm();
@@ -217,13 +238,29 @@ var FeatureFormView = Backbone.View.extend({
     form.append(nameField);
     var descriptionField = $.formGroup('description', 'fdescription');
     form.append(descriptionField);
-    var complexRadio = $.radio('complex', 'ftype');
+    var complexRadio = $.radio('type', 'complex', 'ftype');
     form.append(complexRadio);
-    var atomicRadio = $.radio('atomic', 'ftype');
+    var atomicRadio = $.radio('type', 'atomic', 'ftype');
     form.append(atomicRadio);
     var createButton = $.createButton();
     form.append(createButton);
     this.$el.append(form);
+  },
+
+  events: {
+    'click button#create': '_createFeature',
+  },
+
+  _createFeature: function(e) {
+    e.preventDefault();
+    var name = this.$('#fname').val();
+    var description = this.$('#fdescription').val();
+    var type = this.$('.ftype:checked').val();
+    var feature = new Feature({ name: name,
+                                description: description,
+                                type: type,
+                              });
+    feature.create(this);
   },
 
 });
@@ -556,7 +593,7 @@ var FeatureListView = ListView.extend({
 
   initialize: function() {
     this.collection.on('destroy', this.render, this);
-    this.collection.on('create', this.render, this);
+    this.collection.on('add', this.render, this);
     this.collection.on('update-success:name', function() {
       var currentItems = this.$('.feature-item')
         .map(function() { return $(this).data('name') });
@@ -643,7 +680,7 @@ var FeatureListView = ListView.extend({
 
   _showForm: function() {
     this.$el.trigger('unselect');
-    var formView = new FeatureFormView();
+    var formView = new FeatureFormView({ collection: this.collection });
     formView.render();
     $('#interaction-block').html(formView.$el);
   },

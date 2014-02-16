@@ -1,3 +1,5 @@
+// Utility functions for operating on existing DOM elements
+
 // Source: http://viralpatel.net/blogs/jquery-get-text-element-without-child-element/
 jQuery.fn.textOnly = function() {
   return $(this)
@@ -37,6 +39,9 @@ jQuery.fn.dataToArray = function(dataAttribute) {
   }
 }
 
+
+// Utility functions for operating on strings
+
 jQuery.matches = function(str, input) {
   return str.indexOf(input) !== -1;
 }
@@ -44,6 +49,9 @@ jQuery.matches = function(str, input) {
 jQuery.cap = function(str) {
   return str.charAt(0).toUpperCase() + str.substring(1);
 }
+
+
+// Utility functions for creating new DOM elements
 
 jQuery.alertMsg = function(text) {
   return $('<span>').addClass('alert-msg text-danger').text(text);

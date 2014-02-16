@@ -1,31 +1,12 @@
-.droppable {
-    width: 200px;
-    height: 30px;
-    border: solid 3px #94D6EA;
-    border-radius: 10px;
-    padding-left: 3px;
-    display: table-cell;
-    vertical-align: middle;
-    color: rgba(51, 51, 51, .45); /* #333333 */
-}
-
 .alert-msg {
     padding-left: 10px;
 }
 
-.feature-item {
+.feature-item, .value-item {
     margin-bottom: 10px;
 }
 
-.value-item {
-    margin-bottom: 10px;
-}
-
-#feature-list {
-    cursor: pointer;
-}
-
-#value-list {
+#feature-list, #value-list {
     cursor: pointer;
 }
 
@@ -37,15 +18,15 @@
     background-color: rgba(97, 204, 236, .45); /* #61CCEC */
 }
 
-.target {
-    margin-bottom: 5px;
-    cursor: pointer;
-}
-
 input.fname,
 input.fdescription {
     margin-top: 20px; /* Equal to margin-top of Bootstrap <h3> */
     margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
+}
+
+.target {
+    margin-bottom: 5px;
+    cursor: pointer;
 }
 
 .remove-button {
@@ -53,16 +34,24 @@ input.fdescription {
     cursor: pointer;
 }
 
-button.ftarget {
-    margin-top: 10px;
-}
-
 .droppable {
+    width: 200px;
+    height: 30px;
+    border: solid 3px #94D6EA;
+    border-radius: 10px;
+    padding-left: 3px;
+    display: table-cell;
+    vertical-align: middle;
+    color: rgba(51, 51, 51, .45); /* #333333 */
     cursor: default;
 }
 
 .editable {
     cursor: text;
+}
+
+button.ftarget {
+    margin-top: 10px;
 }
 
 button.vname {

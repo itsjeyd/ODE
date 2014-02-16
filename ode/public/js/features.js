@@ -24,8 +24,8 @@ var Feature = Backbone.Model.extend({
               });
   },
 
-  create: function(attrs) {
-    this.save(attrs,
+  create: function() {
+    this.save({},
               { wait: true,
                 success: function(model, response, options) {
                   model.id = model.get('id');
@@ -793,10 +793,12 @@ $(document).ready(function() {
       var name = form.find('#fname').val();
       var description = form.find('#fdescription').val();
       var type = form.find('.ftype:checked').val();
-      var feature = new Feature().create({ name: name,
-                                           description: description,
-                                           type: type,
-                                           targets: [] });
+      var feature = new Feature({ name: name,
+                                  description: description,
+                                  type: type,
+                                  targets: [],
+                                });
+      feature.create();
       featureList.add(feature);
     });
   });

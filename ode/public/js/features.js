@@ -2,6 +2,10 @@
 
 var Feature = Backbone.Model.extend({
 
+  defaults: {
+    targets: [],
+  },
+
   initialize: function() {
     this.urlRoot = '/features'
   },
@@ -796,7 +800,6 @@ $(document).ready(function() {
       var feature = new Feature({ name: name,
                                   description: description,
                                   type: type,
-                                  targets: [],
                                 });
       feature.create();
       featureList.add(feature);

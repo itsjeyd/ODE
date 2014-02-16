@@ -546,7 +546,7 @@ var FeatureListView = ListView.extend({
         featureItemView.$el.addClass('selected');
       }
       featureItemView.render().$el
-        .insertBefore(this.$('#new-feature-button'));
+        .insertBefore(this.$('button#new-feature'));
     }, this);
   },
 
@@ -557,7 +557,7 @@ var FeatureListView = ListView.extend({
 
   _addFeatureItem: function(featureItem) {
     var featureItemView = new FeatureItemView({ model: featureItem });
-    featureItemView.render().$el.insertBefore(this.$('#new-feature-button'));
+    featureItemView.render().$el.insertBefore(this.$('button#new-feature'));
   },
 
   events: {
@@ -695,7 +695,7 @@ $(document).ready(function() {
 
   var interactionBlock = $('#interaction-block');
   var newFeatureBlock = $('#new-feature-block');
-  var newFeatureButton = $('#new-feature-button');
+  var newFeatureButton = $('#new-feature');
 
   newFeatureBlock.hide();
 

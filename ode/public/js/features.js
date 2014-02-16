@@ -330,18 +330,11 @@ var FeatureView = Backbone.View.extend({
   },
 
   _renderTypeForm: function() {
-    var typeFormTemplate = _.template(
-      '<form role="form">' +
-        '<div class="radio"><label>' +
-        '<input type="radio" name="type" value="complex" />complex' +
-        '</label></div>' +
-        '<div class="radio"><label>' +
-        '<input type="radio" name="type" value="atomic" />atomic' +
-        '</label></div>' +
-        '</form>');
-    var node = $(typeFormTemplate());
-    node.find('input[value="' + this.model.get('type') + '"]').check();
-    this.$el.append(node);
+    var form = $.form();
+    form.append($.radio('type', 'complex', 'ftype'));
+    form.append($.radio('type', 'atomic', 'ftype'));
+    form.find('input[value="' + this.model.get('type') + '"]').check();
+    this.$el.append(form);
   },
 
   _renderTargetListHeading: function() {

@@ -14,6 +14,12 @@ var Feature = Backbone.Model.extend({
     if (attrs.name.split(/ +/).length > 1) {
       return 'Feature names can not contain whitespace.';
     }
+    if (!attrs.name.length) {
+      return 'Features must be assigned a name.';
+    }
+    if (!attrs.type) {
+      return 'Features must be assigned a type.';
+    }
   },
 
   _update: function(field, attrs, success) {

@@ -199,6 +199,35 @@ var ValueList = Backbone.Collection.extend({
 
 // Model views
 
+var FeatureFormView = Backbone.View.extend({
+
+  render: function() {
+    this._renderHeading();
+    this._renderForm();
+    return this;
+  },
+
+  _renderHeading: function() {
+    this.$el.append($.h3('Create a new feature'));
+  },
+
+  _renderForm: function() {
+    var form = $.form();
+    var nameField = $.formGroup('name', 'fname');
+    form.append(nameField);
+    var descriptionField = $.formGroup('description', 'fdescription');
+    form.append(descriptionField);
+    var complexRadio = $.radio('complex', 'ftype');
+    form.append(complexRadio);
+    var atomicRadio = $.radio('atomic', 'ftype');
+    form.append(atomicRadio);
+    var createButton = $.createButton();
+    form.append(createButton);
+    this.$el.append(form);
+  },
+
+});
+
 var FeatureView = Backbone.View.extend({
 
   initialize: function() {
@@ -566,6 +595,7 @@ var FeatureListView = ListView.extend({
     'click .feature-item': '_dispatcher',
     'unselect': '_unselect',
     'click .remove-button': '_removeItem',
+    'click button#new-feature': '_showForm',
   },
 
   _highlight: function(e) {
@@ -609,6 +639,13 @@ var FeatureListView = ListView.extend({
   _removeItem: function(e) {
     var itemName = $(e.currentTarget).data('target');
     this.collection.removeItem(itemName);
+  },
+
+  _showForm: function() {
+    this.$el.trigger('unselect');
+    var formView = new FeatureFormView();
+    formView.render();
+    $('#interaction-block').html(formView.$el);
   },
 
   updateItems: function(target, newName) {
@@ -694,10 +731,6 @@ var ValueListView = ListView.extend({
 $(document).ready(function() {
 
   var interactionBlock = $('#interaction-block');
-  var newFeatureBlock = $('#new-feature-block');
-  var newFeatureButton = $('#new-feature');
-
-  newFeatureBlock.hide();
 
 
   // Instantiate collections
@@ -788,22 +821,5 @@ $(document).ready(function() {
     featureListView.filterByValue(currentInput);
   });
 
-  newFeatureButton.on('click', function() {
-    featureListView.render();
-    interactionBlock.html(newFeatureBlock.html());
-    $('#create-feature-button').on('click', function(e) {
-      e.preventDefault();
-      var form = $(this).parent('form');
-      var name = form.find('#fname').val();
-      var description = form.find('#fdescription').val();
-      var type = form.find('.ftype:checked').val();
-      var feature = new Feature({ name: name,
-                                  description: description,
-                                  type: type,
-                                });
-      feature.create();
-      featureList.add(feature);
-    });
-  });
 
 });

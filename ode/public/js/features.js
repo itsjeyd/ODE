@@ -601,7 +601,8 @@ var ListView = Backbone.View.extend({
 
 var FeatureListView = ListView.extend({
 
-  initialize: function() {
+  initialize: function(options) {
+    this.interactionBlock = options.interactionBlock;
     this.collection.on('destroy', this.render, this);
     this.collection.on('add', this.render, this);
     this.collection.on('update-success:name', function() {
@@ -675,7 +676,7 @@ var FeatureListView = ListView.extend({
     var feature = this.collection.get(featureID);
     var featureView = new FeatureView({ model: feature });
     featureView.render();
-    $('#interaction-block').html(featureView.$el);
+    this.interactionBlock.html(featureView.$el);
   },
 
   _unselect: function() {
@@ -692,7 +693,7 @@ var FeatureListView = ListView.extend({
     this.$el.trigger('unselect');
     var formView = new FeatureFormView({ collection: this.collection });
     formView.render();
-    $('#interaction-block').html(formView.$el);
+    this.interactionBlock.html(formView.$el);
   },
 
   updateItems: function(target, newName) {
@@ -814,6 +815,7 @@ $(document).ready(function() {
   var featureListView = new FeatureListView({
     el: '#feature-list',
     collection: featureList,
+    interactionBlock: interactionBlock,
   });
   featureListView.render();
 

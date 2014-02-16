@@ -818,11 +818,10 @@ $(document).ready(function() {
   featureListView.render();
 
   var valueListView = new ValueListView({
-    id: 'value-list',
+    el: '#value-list',
     collection: valueList,
   });
   valueListView.render();
-  $('#value-list').replaceWith(valueListView.$el);
 
 
   // Set up event handlers

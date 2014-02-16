@@ -6,13 +6,11 @@
 
       <!-- Left sidebar -->
       <div id="left-sidebar" class="col-md-3">
-
         <h3>Features</h3>
         <p>
           <input id="feature-filter" class="form-control" type="text"
                  placeholder="Filter ..." />
         </p>
-
         <div id="feature-list">
           @for(feature <- features) {
             <div id="@feature.name" class="feature-item"
@@ -25,9 +23,7 @@
           <button id="new-feature-button" class="btn btn-info">
             New Feature
           </button>
-
         </div>
-
       </div>
 
       <!-- Block to hold functionality for adding or updating feature: -->

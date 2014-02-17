@@ -14,7 +14,9 @@ import play.mvc.Security;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
+import models.Feature;
 import models.Rule;
+import views.html.input;
 import views.html.rules;
 import views.html.rule;
 
@@ -38,8 +40,14 @@ public class Rules extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result input(String name) {
-        return ok(rule.render("Hi! Here you can edit rule " + name + "."));
+    public static Promise<Result> input(final String name) {
+        Promise<List<Feature>> globalFeatureList = Feature.all();
+        return globalFeatureList.map(
+            new Function<List<Feature>, Result>() {
+                public Result apply(List<Feature> features) {
+                    return ok(input.render(features, name));
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

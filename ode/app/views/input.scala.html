@@ -1,0 +1,29 @@
+@(features: List[Feature])(name: String)
+
+@main("Ode: Input Builder") {
+  <div class="container-full">
+    <div class="row">
+      <div id="left-sidebar" class="col-md-3">
+        <h3>Features</h3>
+          <p>
+            <input id="feature-filter" class="form-control" type="text"
+                   placeholder="Filter ..." />
+          </p>
+          <div id="feature-list">
+            @for(feature <- features) {
+              <div id="@feature.name" class="feature-item"
+                   data-name="@feature.name" data-type="@feature.getType"
+                   data-description="@feature.getDescription"
+                   data-targets="@feature.targets">
+                @feature.name
+              </div>
+            }
+          </div>
+      </div>
+
+      <div id="interaction-block" class="col-md-9">
+        <h3>@name</h3>
+      </div>
+    </div>
+  </div>
+}

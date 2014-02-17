@@ -13,7 +13,7 @@ GET     /logout                     controllers.Application.logout()
 
 # Browsing
 GET     /rules                      controllers.Application.rules()
-GET     /rules/:id                  controllers.Application.rule(id: Int)
+GET     /rules/:name                controllers.Application.rule(name: String)
 
 # Editing
 POST    /rules                      controllers.Rules.create()

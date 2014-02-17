@@ -20,7 +20,7 @@ $(document).ready(function() {
     newRule.save(
       {},
       { success: function(model, response, options) {
-        alert(JSON.stringify(response));
+        window.location.replace(model.url());
       },
       });
   });

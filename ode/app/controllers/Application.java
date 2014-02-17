@@ -33,8 +33,8 @@ public class Application extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result rule(int id) {
-        return ok(rule.render("Hi! You are looking at rule " + id + "."));
+    public static Result rule(String name) {
+        return ok(rule.render("Hi! You are looking at rule " + name + "."));
     }
 
     @Security.Authenticated(Secured.class)

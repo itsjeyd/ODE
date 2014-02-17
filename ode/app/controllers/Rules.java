@@ -28,6 +28,7 @@ public class Rules extends Controller {
                 ObjectNode result = Json.newObject();
                 public Result apply(Boolean created) {
                     if (created) {
+                        result.put("id", name);
                         result.put("name", name);
                         result.put("description", description);
                         return ok(result);

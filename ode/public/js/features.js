@@ -175,6 +175,12 @@ var ValueList = Backbone.Collection.extend({
 
   model: Value,
 
+  initialize: function() {
+    this.on({
+      'change:name': function() { this.sort(); },
+    }, this);
+  },
+
   renameItem: function(oldName, newName) {
     var nameTaken = this.findWhere({ name: newName });
     if (!nameTaken) {

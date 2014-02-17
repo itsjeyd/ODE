@@ -15,6 +15,9 @@ GET     /logout                     controllers.Application.logout()
 GET     /rules                      controllers.Application.rules()
 GET     /rules/:id                  controllers.Application.rule(id: Int)
 
+# Editing
+POST    /rules                      controllers.Rules.create()
+
 # Search
 GET     /search                     controllers.Application.search()
 

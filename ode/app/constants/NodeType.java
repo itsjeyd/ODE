@@ -1,7 +1,7 @@
 package constants;
 
 public enum NodeType {
-    USER, FEATURE, VALUE;
+    USER, FEATURE, VALUE, RULE;
 
     @Override
     public String toString() {

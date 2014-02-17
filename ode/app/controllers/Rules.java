@@ -64,4 +64,20 @@ public class Rules extends Controller {
             });
     }
 
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> delete(String name) {
+        Promise<Boolean> deleted = new Rule(name).delete();
+        return deleted.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean deleted) {
+                    if (deleted) {
+                        return ok(result);
+                    }
+                    return badRequest(result);
+                }
+            });
+    }
+
 }

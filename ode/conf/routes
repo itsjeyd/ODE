@@ -18,6 +18,7 @@ GET     /rules/:name/input          controllers.Rules.input(name: String)
 
 # Editing
 POST    /rules                      controllers.Rules.create()
+DELETE  /rules/:name                controllers.Rules.delete(name: String)
 
 # Search
 GET     /search                     controllers.Application.search()

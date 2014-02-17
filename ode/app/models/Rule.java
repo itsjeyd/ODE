@@ -22,7 +22,7 @@ public class Rule extends LabeledNodeWithProperties {
         this.jsonProperties = Json.newObject();
     }
 
-    private Rule(String name) {
+    public Rule(String name) {
         this();
         this.name = name;
         this.jsonProperties.put("name", name);
@@ -40,6 +40,10 @@ public class Rule extends LabeledNodeWithProperties {
 
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction(this));
+    }
+
+    public Promise<Boolean> delete() {
+        return RuleManager.delete(this);
     }
 
     private static class AllFunction implements

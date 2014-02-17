@@ -1,4 +1,4 @@
-@(features: List[Feature])(name: String)
+@(features: List[Feature])(rule: Rule)
 
 @main("Ode: Input Builder") {
   <div class="container-full">
@@ -22,7 +22,8 @@
       </div>
 
       <div id="interaction-block" class="col-md-9">
-        <h3>@name</h3>
+        <h3>@rule.name</h3>
+        <p>@rule.description</p>
       </div>
     </div>
   </div>

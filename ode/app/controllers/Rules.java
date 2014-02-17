@@ -13,6 +13,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 
 import models.Feature;
 import models.Rule;
@@ -42,10 +43,13 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     public static Promise<Result> input(final String name) {
         Promise<List<Feature>> globalFeatureList = Feature.all();
-        return globalFeatureList.map(
-            new Function<List<Feature>, Result>() {
-                public Result apply(List<Feature> features) {
-                    return ok(input.render(features, name));
+        Promise<Rule> rule = new Rule(name).get();
+        Promise<Tuple<List<Feature>, Rule>> results = globalFeatureList
+            .zip(rule);
+        return results.map(
+            new Function<Tuple<List<Feature>, Rule>, Result>() {
+                public Result apply(Tuple<List<Feature>, Rule> results) {
+                    return ok(input.render(results._1, results._2));
                 }
             });
     }

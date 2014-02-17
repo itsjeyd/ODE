@@ -38,12 +38,26 @@ public class Rule extends LabeledNodeWithProperties {
         return json.map(new AllFunction());
     }
 
+    public Promise<Rule> get() {
+        Promise<JsonNode> json = RuleManager.get(this);
+        return json.map(new GetFunction());
+    }
+
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction(this));
     }
 
     public Promise<Boolean> delete() {
         return RuleManager.delete(this);
+    }
+
+    private static class GetFunction implements
+                                         Function<JsonNode, Rule> {
+        public Rule apply(JsonNode json) {
+            String name = "@" + json.findValue("name").asText();
+            String description = json.findValue("description").asText();
+            return new Rule(name, description);
+        }
     }
 
     private static class AllFunction implements

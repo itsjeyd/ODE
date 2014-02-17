@@ -1,5 +1,8 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -19,8 +22,14 @@ import views.html.rule;
 public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
-    public static Result rules() {
-        return ok(rules.render("Hi! This is Ode's Rule Browser."));
+    public static Promise<Result> rules() {
+        Promise<List<Rule>> ruleList = Rule.all();
+        return ruleList.map(
+            new Function<List<Rule>, Result>() {
+                public Result apply(List<Rule> ruleList) {
+                    return ok(rules.render(ruleList));
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

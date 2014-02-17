@@ -1,5 +1,10 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
 import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -28,8 +33,26 @@ public class Rule extends LabeledNodeWithProperties {
         this.description = description;
     }
 
+    public static Promise<List<Rule>> all() {
+        Promise<List<JsonNode>> json = RuleManager.all();
+        return json.map(new AllFunction());
+    }
+
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction(this));
+    }
+
+    private static class AllFunction implements
+                                  Function<List<JsonNode>, List<Rule>> {
+        public List<Rule> apply(List<JsonNode> dataNodes) {
+            List<Rule> rules = new ArrayList<Rule>();
+            for (JsonNode dataNode: dataNodes) {
+                String name = "@" + dataNode.get("name").asText();
+                String description = dataNode.get("description").asText();
+                rules.add(new Rule(name, description));
+            }
+            return rules;
+        }
     }
 
     private class CreateFunction implements

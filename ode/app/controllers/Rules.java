@@ -12,9 +12,21 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import models.Rule;
+import views.html.rules;
+import views.html.rule;
 
 
 public class Rules extends Controller {
+
+    @Security.Authenticated(Secured.class)
+    public static Result rules() {
+        return ok(rules.render("Hi! This is Ode's Rule Browser."));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result rule(String name) {
+        return ok(rule.render("Hi! You are looking at rule " + name + "."));
+    }
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)

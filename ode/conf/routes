@@ -12,8 +12,8 @@ POST    /login                      controllers.Auth.authenticate()
 GET     /logout                     controllers.Application.logout()
 
 # Browsing
-GET     /rules                      controllers.Application.rules()
-GET     /rules/:name                controllers.Application.rule(name: String)
+GET     /rules                      controllers.Rules.rules()
+GET     /rules/:name                controllers.Rules.rule(name: String)
 
 # Editing
 POST    /rules                      controllers.Rules.create()

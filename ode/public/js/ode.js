@@ -121,6 +121,10 @@ jQuery.createButton = function() {
   return $.successButton('Create').addClass('btn-lg').attr('id', 'create');
 }
 
+jQuery.editButton = function(target) {
+  return $('<span>').addClass('glyphicon glyphicon-pencil edit-button')
+    .data('target', target);
+}
 jQuery.removeButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
     .data('target', target);

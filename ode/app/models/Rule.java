@@ -65,7 +65,7 @@ public class Rule extends LabeledNodeWithProperties {
         public List<Rule> apply(List<JsonNode> dataNodes) {
             List<Rule> rules = new ArrayList<Rule>();
             for (JsonNode dataNode: dataNodes) {
-                String name = "@" + dataNode.get("name").asText();
+                String name = dataNode.get("name").asText();
                 String description = dataNode.get("description").asText();
                 rules.add(new Rule(name, description));
             }

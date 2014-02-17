@@ -6,31 +6,109 @@ var Rule = Backbone.Model.extend({
 
 });
 
+var RuleList = Backbone.Collection.extend({
+
+  model: Rule,
+
+});
+
+var RuleItemView = Backbone.View.extend({
+
+  className: 'rule-item',
+
+  render: function() {
+    this.$el.attr('id', this.model.get('id'));
+    var template = _.template(
+      '<h2>@<%= name %> <small><%= description %></h2>');
+    var node = $(template(this.model.toJSON()));
+    this.$el.append(node);
+    return this;
+  },
+
+});
+
+var RuleListView = Backbone.View.extend({
+
+  initialize: function() {
+    this.collection.on({
+      'remove': this.render,
+    }, this);
+  },
+
+  render: function() {
+    this.$el.empty();
+    this.collection.forEach(this._addRuleItem, this);
+    return this;
+  },
+
+  _addRuleItem: function(ruleItem) {
+    var ruleItemView = new RuleItemView({ model: ruleItem });
+    this.$el.append(ruleItemView.render().$el);
+  },
+
+  events: {
+    'mouseenter .rule-item': '_active',
+    'mouseleave .rule-item': '_inactive',
+    'click .edit-button': '_goEdit',
+    'click .remove-button': '_delete',
+  },
+
+  _active: function(e) { this._highlight(e); this._showControls(e); },
+
+  _inactive: function(e) { this._unhighlight(e); this._hideControls(e); },
+
+  _highlight: function(e) {
+    $(e.currentTarget).addClass('highlighted')
+  },
+
+  _unhighlight: function(e) {
+    $(e.currentTarget).removeClass('highlighted')
+  },
+
+  _showControls: function(e) {
+    var item = $(e.currentTarget);
+    var controls = $('<span>').addClass('pull-right controls');
+    controls.append($.editButton(item.attr('id')));
+    controls.append($.removeButton(item.attr('id')));
+    item.find('h2').append(controls);
+  },
+
+  _hideControls: function(e) {
+    $(e.currentTarget).find('.controls').remove() },
+
+  _goEdit: function(e) {
+    var ruleID = $(e.currentTarget).parents('.rule-item').attr('id')
+    window.location.href = this.collection.get(ruleID).url() + '/input';
+  },
+
+  _delete: function(e) {
+    var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
+    var rule = this.collection.get(ruleID);
+    rule.destroy();
+  },
+
+});
+
+
 $(document).ready(function() {
 
-  $('.rule-item').on('mouseenter', function() {
-    $(this).addClass('highlighted');
-    var controls = $('<span>').addClass('pull-right controls');
-    controls.append($.editButton($(this).attr('id')));
-    controls.append($.removeButton($(this).attr('id')));
-    $(this).find('h2').append(controls);
-    $('.edit-button').on('click', function(e) {
-      var ruleID = $(e.currentTarget).parents('.rule-item').attr('id')
-        .substring(1);
-      window.location.href =
-        document.URL + '/' + ruleID + '/input';
-    });
-    $('.remove-button').on('click', function(e) {
-      var ruleID = $(e.currentTarget).parents('.rule-item').attr('id')
-        .substring(1);
-      var rule = new Rule({ id: ruleID });
-      rule.destroy();
-    });
-  });
+  var ruleItems = $('.rule-item');
 
-  $('.rule-item').on('mouseleave', function() {
-    $(this).removeClass('highlighted');
-    $(this).find('.controls').remove();
+  var ruleList = new RuleList(
+    _.map(ruleItems, function(i) {
+      var item = $(i);
+      var id = item.attr('id');
+      var name = item.data('name');
+      var description = item.data('description');
+      return new Rule({ id: name, name: name, description: description });
+    }),
+    { comparator: 'name' }
+  );
+
+  var ruleListView = new RuleListView({
+    el: '#rule-list',
+    collection: ruleList,
   });
+  ruleListView.render();
 
 });

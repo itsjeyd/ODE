@@ -6,8 +6,8 @@
       <div class="col-md-10 col-md-offset-1">
         <div id="rule-list">
           @for(rule <- rules) {
-            <div id="@rule.name" class="rule-item">
-              <h2>@rule.name <small>@rule.description</small></h2>
+            <div id="@rule.name" class="rule-item"
+                 data-name="@rule.name" data-description="@rule.description">
             </div>
           }
         </div>

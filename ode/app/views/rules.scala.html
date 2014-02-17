@@ -4,11 +4,13 @@
   <div class="container-full">
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
-        @for(rule <- rules) {
-          <div id="@rule.name" class="rule-item">
-            <h2>@rule.name <small>@rule.description</small></h2>
-          </div>
-        }
+        <div id="rule-list">
+          @for(rule <- rules) {
+            <div id="@rule.name" class="rule-item">
+              <h2>@rule.name <small>@rule.description</small></h2>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>

@@ -146,9 +146,11 @@ var FeatureList = Backbone.Collection.extend({
   model: Feature,
 
   initialize: function() {
-    this.on('change:name', function() {
-      this.sort();
-      this.trigger('update-success:name');
+    this.on({
+      'change:name': function() {
+        this.sort();
+        this.trigger('update-success:name');
+      },
     }, this);
   },
 
@@ -216,13 +218,15 @@ var ValueList = Backbone.Collection.extend({
 var FeatureFormView = Backbone.View.extend({
 
   initialize: function() {
-    this.on('create-success', function(model) {
-      this.$el.empty();
-      this.render();
-      this.collection.add(model);
-    }, this);
-    this.on('create-error', function(msg) {
-      this._renderAlert(msg);
+    this.on({
+      'create-success': function(model) {
+        this.$el.empty();
+        this.render();
+        this.collection.add(model);
+      },
+      'create-error': function(msg) {
+        this._renderAlert(msg);
+      },
     }, this);
   },
 
@@ -274,23 +278,25 @@ var FeatureFormView = Backbone.View.extend({
 var FeatureView = Backbone.View.extend({
 
   initialize: function() {
-    this.model.on('change', this.render, this);
-    this.model.on('invalid', function(model, error) {
-      this._renderAlert('button.fname', error);
+    this.model.on({
+      'change': this.render,
+      'invalid': function(model, error) {
+        this._renderAlert('button.fname', error);
+      },
+      'update-error:name': function(msg) {
+        this._renderAlert('button.fname', msg);
+      },
+      'update-error:description': function(msg) {
+        this._renderAlert('button.fdescription', msg);
+      },
+      'update-error:type': function(msg) {
+        this._renderAlert('button.ftype', msg);
+      },
+      'update-error:add-target': function(msg) {
+        this._renderAlert('button.ftarget', msg);
+      },
+      'destroy': function() { this.remove() },
     }, this);
-    this.model.on('update-error:name', function(msg) {
-      this._renderAlert('button.fname', msg);
-    }, this);
-    this.model.on('update-error:description', function(msg) {
-      this._renderAlert('button.fdescription', msg);
-    }, this);
-    this.model.on('update-error:type', function(msg) {
-      this._renderAlert('button.ftype', msg);
-    }, this);
-    this.model.on('update-error:add-target', function(msg) {
-      this._renderAlert('button.ftarget', msg);
-    }, this);
-    this.model.on('destroy', function() { this.remove() }, this);
   },
 
   _renderAlert: function(button, msg) {
@@ -506,8 +512,10 @@ var ItemView = Backbone.View.extend({
   },
 
   initialize: function() {
-    this.model.on('hide', function() { this.$el.hide(); }, this);
-    this.model.on('show', function() { this.$el.show(); }, this);
+    this.model.on({
+      'hide': function() { this.$el.hide(); },
+      'show': function() { this.$el.show(); },
+    }, this);
   }
 
 });
@@ -544,9 +552,9 @@ var ValueItemView = ItemView.extend({
 
   initialize: function() {
     ItemView.prototype.initialize.apply(this);
-    this.model.on('change', this.render, this);
-    this.model.on('update-error:name', function(msg) {
-      this._renderAlert(msg);
+    this.model.on({
+      'change': this.render,
+      'update-error:name': function(msg) { this._renderAlert(msg); },
     }, this);
   },
 
@@ -593,15 +601,17 @@ var FeatureListView = ListView.extend({
 
   initialize: function(options) {
     this.interactionBlock = options.interactionBlock;
-    this.collection.on('destroy', this.render, this);
-    this.collection.on('add', this.render, this);
-    this.collection.on('update-success:name', function() {
-      var currentItems = this.$('.feature-item')
-        .map(function() { return $(this).data('name') });
-      var itemToSelect = this.collection.find(function(i) {
-        return !_.contains(currentItems, i.get('name'))
-      });
-      this._renderWithSelection(itemToSelect);
+    this.collection.on({
+      'destroy': this.render,
+      'add': this.render,
+      'update-success:name': function() {
+        var currentItems = this.$('.feature-item')
+          .map(function() { return $(this).data('name') });
+        var itemToSelect = this.collection.find(function(i) {
+          return !_.contains(currentItems, i.get('name'))
+        });
+        this._renderWithSelection(itemToSelect);
+      },
     }, this);
   },
 
@@ -711,9 +721,11 @@ var FeatureListView = ListView.extend({
 var ValueListView = ListView.extend({
 
   initialize: function() {
-    this.collection.on('change', this.render, this);
-    this.collection.on('add', this.render, this);
-    this.collection.on('remove', this.render, this);
+    this.collection.on({
+      'change': this.render,
+      'add': this.render,
+      'remove': this.render,
+    }, this);
   },
 
   render: function() {

@@ -20,7 +20,7 @@ $(document).ready(function() {
     newRule.save(
       {},
       { success: function(model, response, options) {
-        window.location.replace(model.url());
+        window.location.replace(model.url() + '/input');
       },
       });
   });

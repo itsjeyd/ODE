@@ -38,6 +38,11 @@ public class Rules extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
+    public static Result input(String name) {
+        return ok(rule.render("Hi! Here you can edit rule " + name + "."));
+    }
+
+    @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> create() {
         JsonNode json = request().body().asJson();

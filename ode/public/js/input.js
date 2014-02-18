@@ -1,3 +1,5 @@
+// Features
+
 var Feature = Backbone.Model.extend({});
 
 var FeatureList = Backbone.Collection.extend({});
@@ -73,7 +75,19 @@ var FeatureListView = Backbone.View.extend({
 });
 
 
+// Rules
+
+var Rule = Backbone.Model.extend({});
+
+var RuleView = Backbone.View.extend({});
+
+
+// Application
+
+
 $(document).ready(function() {
+
+  // "Features" sidebar
 
   var featureItems = $('.feature-item');
 
@@ -102,5 +116,13 @@ $(document).ready(function() {
     var currentInput = $(this).val().toLowerCase();
     featureListView.filterItems(currentInput);
   });
+
+  // Input Builder
+
+  var name = $('#rule-name').text();
+  var description = $('#rule-description').text();
+  var rule = new Rule({ id: name, name: name, description: description });
+
+  var ruleView = new RuleView({ model: rule });
 
 });

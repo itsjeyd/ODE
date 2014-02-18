@@ -47,6 +47,25 @@ public class Rule extends LabeledNodeWithProperties {
         return this.exists().flatMap(new CreateFunction(this));
     }
 
+    public Promise<Boolean> updateName(final String newName) {
+        Promise<Rule> rule = this.get();
+        return rule.flatMap(new Function<Rule, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Rule rule) {
+                    return RuleManager.updateName(rule, newName);
+                }
+            });
+    }
+
+    public Promise<Boolean> updateDescription(final String newDescription) {
+        Promise<Rule> rule = this.get();
+        return rule.flatMap(new Function<Rule, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Rule rule) {
+                    return RuleManager.updateDescription(
+                        rule, newDescription);
+                }
+            });
+    }
+
     public Promise<Boolean> delete() {
         return RuleManager.delete(this);
     }
@@ -54,7 +73,7 @@ public class Rule extends LabeledNodeWithProperties {
     private static class GetFunction implements
                                          Function<JsonNode, Rule> {
         public Rule apply(JsonNode json) {
-            String name = "@" + json.findValue("name").asText();
+            String name = json.findValue("name").asText();
             String description = json.findValue("description").asText();
             return new Rule(name, description);
         }

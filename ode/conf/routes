@@ -18,6 +18,8 @@ GET     /rules/:name/input          controllers.Rules.input(name: String)
 
 # Editing
 POST    /rules                      controllers.Rules.create()
+PUT     /rules/:name/name           controllers.Rules.updateName(name: String)
+PUT     /rules/:name/description    controllers.Rules.updateDescription(name: String)
 DELETE  /rules/:name                controllers.Rules.delete(name: String)
 
 # Search

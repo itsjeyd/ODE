@@ -12,6 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.libs.F.Function;
+import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
@@ -71,6 +72,72 @@ public class Rules extends Controller {
                         result.put("description", description);
                         return ok(result);
                     }
+                    return badRequest(result);
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateName(final String name) {
+        JsonNode json = request().body().asJson();
+        final String newName = json.findPath("name").textValue();
+        Promise<Boolean> nameAlreadyTaken = new Rule(newName).exists();
+        return nameAlreadyTaken.flatMap(
+            new Function<Boolean, Promise<Result>>() {
+                ObjectNode result = Json.newObject();
+                public Promise<Result> apply(Boolean nameAlreadyTaken) {
+                    if (nameAlreadyTaken) {
+                        return Promise.promise(
+                            new Function0<Result>() {
+                                public Result apply() {
+                                    result.put(
+                                        "message", "Name already taken.");
+                                    return badRequest(result);
+                                }
+                            });
+                    } else {
+                        Promise<Boolean> nameUpdated = new Rule(name)
+                            .updateName(newName);
+                        return nameUpdated.map(
+                            new Function<Boolean, Result>() {
+                                public Result apply(Boolean updated) {
+                                    if (updated) {
+                                        result.put("id", newName);
+                                        result.put(
+                                            "message",
+                                            "Name successfully updated.");
+                                        return ok(result);
+                                    }
+                                    result.put(
+                                        "message", "Name not updated.");
+                                    return badRequest(result);
+                                }
+                            });
+                    }
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateDescription(String name) {
+        JsonNode json = request().body().asJson();
+        final String newDescription = json.findPath("description")
+            .textValue();
+        Promise<Boolean> descriptionUpdated = new Rule(name)
+            .updateDescription(newDescription);
+        return descriptionUpdated.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean updated) {
+                    if (updated) {
+                        result.put("message",
+                                   "Description successfully updated.");
+                        return ok(result);
+                    }
+                    result.put("message",
+                               "Description not updated.");
                     return badRequest(result);
                 }
             });

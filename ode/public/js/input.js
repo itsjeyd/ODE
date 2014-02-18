@@ -77,9 +77,132 @@ var FeatureListView = Backbone.View.extend({
 
 // Rules
 
-var Rule = Backbone.Model.extend({});
+var Rule = Backbone.Model.extend({
 
-var RuleView = Backbone.View.extend({});
+  initialize: function() {
+    this.urlRoot = '/rules';
+  },
+
+  _update: function(field, attrs, success) {
+    this.save(attrs,
+              { url: this.url() + '/' + field,
+                wait: true,
+                success: success,
+                error: function(model, xhr, options) {
+                  var response = $.parseJSON(xhr.responseText);
+                  model.trigger('update-error:' + field, response.message);
+                },
+              });
+  },
+
+  updateName: function(newName) {
+    var success = function(model, response, options) {
+      model.id = newName;
+    };
+    this._update('name', { name: newName }, success);
+  },
+
+  updateDescription: function(newDescription) {
+    var success = function(model, response, options) {};
+    this._update('description', { description: newDescription }, success);
+  },
+
+});
+
+var RuleView = Backbone.View.extend({
+
+  initialize: function() {
+    this.model.on({
+      'change': this.render,
+      'change:name': this._updateURL,
+      'update-error:name': function(msg) {
+        this._renderAlert('button.name', msg);
+      },
+      'update-error:description': function(msg) {
+        this._renderAlert('button.description', msg);
+      },
+    }, this);
+  },
+
+  render: function() {
+    this.$el.empty();
+    this._renderName();
+    this._renderDescription();
+    return this;
+  },
+
+  _renderName: function() {
+    var nameTemplate = _.template('<h3 id="rule-name">@<%= name %></h3>');
+    var node = $(nameTemplate({ name: this.model.get('name') }));
+    this.$el.append(node);
+  },
+
+  _renderDescription: function() {
+    var descriptionTemplate = _.template(
+      '<p id="rule-description"><%= description %></p>');
+    var node = $(descriptionTemplate({
+      description: this.model.get('description')
+    }));
+    this.$el.append(node);
+  },
+
+  _updateURL: function() {
+    window.location.replace(this.model.url() + '/input');
+  },
+
+  _renderAlert: function(button, msg) {
+    var updateButton = this.$(button);
+    updateButton.next('.alert-msg').remove();
+    $.alertMsg(msg).insertAfter(updateButton);
+  },
+
+  events: {
+    'dblclick #rule-name': function(e) {
+      this._renderEditControls('name')(e)
+    },
+    'click button.name': function() {
+      this._saveEdits('name')(this)
+    },
+    'dblclick #rule-description': function(e) {
+      this._renderEditControls('description')(e)
+    },
+    'click button.description': function() {
+      this._saveEdits('description')(this)
+    },
+  },
+
+  _renderEditControls: function(modelField) {
+    return function(e) {
+      var fieldToEdit = $(e.currentTarget);
+      var currentValue = fieldToEdit.text();
+      if (modelField === 'name') {
+        currentValue = currentValue.substring(1);
+      }
+      var inputField = $.textInput().addClass(modelField)
+        .val(currentValue);
+      var okButton = $.okButton().addClass(modelField);
+      fieldToEdit.hide();
+      inputField.insertAfter(fieldToEdit);
+      okButton.insertAfter(inputField);
+      inputField.focus();
+    };
+  },
+
+  _saveEdits: function(modelField) {
+    return function(view) {
+      var inputField = view.$('input.' + modelField);
+      if (!inputField.isEmpty() &&
+          inputField.val() !== view.model.get(modelField)) {
+        var updateFunction = 'update' + modelField.charAt(0).toUpperCase() +
+          modelField.slice(1);
+        view.model[updateFunction](inputField.val());
+      } else {
+        view.render();
+      }
+    };
+  },
+
+});
 
 
 // Application
@@ -123,6 +246,10 @@ $(document).ready(function() {
   var description = $('#rule-description').text();
   var rule = new Rule({ id: name, name: name, description: description });
 
-  var ruleView = new RuleView({ model: rule });
+  var ruleView = new RuleView({
+    model: rule,
+    el: '#interaction-block',
+  });
+  ruleView.render();
 
 });

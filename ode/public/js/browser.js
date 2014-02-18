@@ -16,6 +16,13 @@ var RuleItemView = Backbone.View.extend({
 
   className: 'rule-item',
 
+  initialize: function() {
+    this.model.on({
+      'hide': function() { this.$el.hide(); },
+      'show': function() { this.$el.show(); },
+    }, this);
+  },
+
   render: function() {
     this.$el.attr('id', this.model.get('id'));
     var template = _.template(
@@ -87,6 +94,17 @@ var RuleListView = Backbone.View.extend({
     rule.destroy();
   },
 
+  filterItems: function(input) {
+    this.collection.each(function(i) {
+      if (!$.matches(i.get('name').toLowerCase(), input) &&
+          !$.matches(i.get('description').toLowerCase(), input)) {
+        i.trigger('hide');
+      } else {
+        i.trigger('show');
+      }
+    });
+  },
+
 });
 
 
@@ -110,5 +128,10 @@ $(document).ready(function() {
     collection: ruleList,
   });
   ruleListView.render();
+
+  $('#rule-filter').on('keyup', function() {
+    var currentInput = $(this).val().toLowerCase();
+    ruleListView.filterItems(currentInput);
+  });
 
 });

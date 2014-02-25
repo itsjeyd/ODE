@@ -221,7 +221,37 @@ var AVM = Backbone.Collection.extend({}); // An AVM is a list of
                                           // with a single AVM
                                           // representing its LHS
 
-var AVMView = Backbone.View.extend({}); // This type of view minimally
+var AVMView = Backbone.View.extend({
+
+  className: 'avm',
+
+  initialize: function() {
+    this.height = 0;
+  },
+
+  render: function() {
+    this.$el.empty();
+    this._renderBracket('left');
+    this._renderContent();
+    this._renderBracket('right');
+    this.$('.bracket').height(this.height);
+    return this;
+  },
+
+  _renderBracket: function(type) {
+    this.$el.append($.div('bracket bracket-' + type));
+  },
+
+  _renderContent: function() {
+    var content = $.div('content');
+    // Render pairs ...
+    var placeholder = $.placeholder('Drop feature here ...');
+    content.append(placeholder);
+    this.height += placeholder.height();
+    this.$el.append(content);
+  },
+
+});                                     // This type of view minimally
                                         // consists of an opening
                                         // bracket, a (content block
                                         // with a) single placeholder
@@ -294,5 +324,9 @@ $(document).ready(function() {
     el: '#interaction-block',
   });
   ruleView.render();
+
+  var avm = new AVM([]);
+  var avmView = new AVMView({ collection: avm });
+  ruleView.$el.append(avmView.render().$el);
 
 });

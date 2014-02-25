@@ -53,6 +53,14 @@ jQuery.cap = function(str) {
 
 // Utility functions for creating new DOM elements
 
+jQuery.div = function(klass) {
+  return $('<div>').addClass(klass);
+}
+
+jQuery.placeholder = function(text) {
+  return $.div('droppable').text(text);
+}
+
 jQuery.alertMsg = function(text) {
   return $('<span>').addClass('alert-msg text-danger').text(text);
 }

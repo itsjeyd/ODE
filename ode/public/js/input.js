@@ -226,7 +226,6 @@ var AVMView = Backbone.View.extend({
   className: 'avm',
 
   initialize: function() {
-    this.height = 0;
     this.collection.on({
       'add': this.render,
     }, this);
@@ -234,11 +233,14 @@ var AVMView = Backbone.View.extend({
 
   render: function() {
     this.$el.empty();
-    this.height = 0;
     this._renderBracket('left');
     this._renderContent();
     this._renderBracket('right');
-    this.$('.bracket').height(this.height);
+    if (this.collection.isEmpty()) {
+      this.$('.bracket').height(this.$('.placeholder').height());
+    } else {
+      this.$('.bracket').height(this.$('.content').height());
+    }
     return this;
   },
 
@@ -269,11 +271,6 @@ var AVMView = Backbone.View.extend({
       });
     content.append(placeholder);
     this.$el.append(content);
-    if (this.collection.isEmpty()) {
-      this.height = placeholder.height();
-    } else {
-      this.height = content.height();
-    }
   },
 
 });                                     // This type of view minimally

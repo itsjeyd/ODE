@@ -58,7 +58,7 @@ jQuery.div = function(klass) {
 }
 
 jQuery.placeholder = function(text) {
-  return $.div('droppable').text(text);
+  return $.div('droppable placeholder').text(text);
 }
 
 jQuery.alertMsg = function(text) {

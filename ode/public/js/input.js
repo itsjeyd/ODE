@@ -205,7 +205,17 @@ var RuleView = Backbone.View.extend({
 });
 
 
-var Pair = Backbone.Model.extend({}); // A pair consists of an
+var Pair = Backbone.Model.extend({
+
+  initialize: function(options) {
+    if (options.feature.get('type') === 'complex') {
+      this.set('value', new AVM([])); // Pass allowed features as option ...
+    } else {
+      this.set('value', 'underspecified');
+    }
+  },
+
+}); // A pair consists of an
                                       // attribute/feature (string)
                                       // and a value (string or AVM);
                                       // it can optionally be
@@ -226,8 +236,28 @@ var PairView = Backbone.View.extend({
   className: 'pair',
 
   render: function() {
-    this.$el.text(this.model.get('feature').get('name'));
+    var attribute = this.model.get('feature');
+    this.$el.append(
+      $.span('attribute').text(attribute.get('name')));
+    if (attribute.get('type') === 'complex') {
+      // ...
+    } else {
+      this._renderValue();
+    }
     return this;
+  },
+
+  _renderValue: function() {
+    var selectMenu = $.selectMenu();
+    var options = ['underspecified']
+      .concat(this.model.get('feature').get('targets'));
+    _.each(options, function(o) {
+      selectMenu.append($.option(o));
+    });
+    selectMenu.val(this.model.get('value'));
+    var value = $.span('value');
+    value.append(selectMenu);
+    this.$el.append(value);
   },
 
 });

@@ -23,3 +23,13 @@ input.description {
     display: inline-block;
     vertical-align: top;
 }
+
+.pair {
+    margin-bottom: 20px;
+}
+
+.value {
+    display: inline-block;
+    margin-left: 10px;
+    float: right;
+}

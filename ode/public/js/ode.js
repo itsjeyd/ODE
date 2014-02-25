@@ -18,6 +18,10 @@ jQuery.fn.check = function() {
   return $(this).attr('checked', true);
 }
 
+jQuery.fn.select = function() {
+  return $(this).attr('selected', true);
+}
+
 jQuery.fn.enable = function() {
   return $(this).prop('disabled', false);
 }
@@ -55,6 +59,10 @@ jQuery.cap = function(str) {
 
 jQuery.div = function(klass) {
   return $('<div>').addClass(klass);
+}
+
+jQuery.span = function(klass) {
+  return $('<span>').addClass(klass);
 }
 
 jQuery.placeholder = function(text) {
@@ -99,6 +107,14 @@ jQuery.input = function(type) {
 
 jQuery.textInput = function() {
   return $.input('text').addClass('form-control');
+}
+
+jQuery.selectMenu = function() {
+  return $('<select>').addClass('form-control');
+}
+
+jQuery.option = function(text) {
+  return $('<option>').text(text);
 }
 
 jQuery.radioInput = function(group, value) {

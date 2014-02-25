@@ -14,7 +14,7 @@ var FeatureItemView = Backbone.View.extend({
       'data-name': this.model.get('name'),
       'data-description': this.model.get('description'),
       'data-type': this.model.get('type'),
-      'data-targets': this.model.get('targets'),
+      'data-targets': '[' + this.model.get('targets') + ']',
     }
   },
 
@@ -227,10 +227,14 @@ var AVMView = Backbone.View.extend({
 
   initialize: function() {
     this.height = 0;
+    this.collection.on({
+      'add': this.render,
+    }, this);
   },
 
   render: function() {
     this.$el.empty();
+    this.height = 0;
     this._renderBracket('left');
     this._renderContent();
     this._renderBracket('right');
@@ -245,10 +249,31 @@ var AVMView = Backbone.View.extend({
   _renderContent: function() {
     var content = $.div('content');
     // Render pairs ...
-    var placeholder = $.placeholder('Drop feature here ...');
+    this.collection.forEach(function(p) {
+      content.append($.div('pair').text(p.get('feature').get('name')));
+    });
+    // Render placeholder:
+    var view = this;
+    var placeholder = $.placeholder('Drop feature here ...')
+      .droppable({
+        accept: '.feature-item',
+        drop: function(e, ui) {
+          var item = $(ui.helper);
+          var feature = new Feature({
+            name: item.data('name'),
+            type: item.data('type'),
+            targets: item.dataToArray('targets'),
+          });
+          view.collection.add(new Pair({ feature: feature }));
+        },
+      });
     content.append(placeholder);
-    this.height += placeholder.height();
     this.$el.append(content);
+    if (this.collection.isEmpty()) {
+      this.height = placeholder.height();
+    } else {
+      this.height = content.height();
+    }
   },
 
 });                                     // This type of view minimally

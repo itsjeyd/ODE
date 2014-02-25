@@ -221,6 +221,17 @@ var AVM = Backbone.Collection.extend({}); // An AVM is a list of
                                           // with a single AVM
                                           // representing its LHS
 
+var PairView = Backbone.View.extend({
+
+  className: 'pair',
+
+  render: function() {
+    this.$el.text(this.model.get('feature').get('name'));
+    return this;
+  },
+
+});
+
 var AVMView = Backbone.View.extend({
 
   className: 'avm',
@@ -250,9 +261,10 @@ var AVMView = Backbone.View.extend({
 
   _renderContent: function() {
     var content = $.div('content');
-    // Render pairs ...
-    this.collection.forEach(function(p) {
-      content.append($.div('pair').text(p.get('feature').get('name')));
+    // Render pairs:
+    this.collection.forEach(function(pair) {
+      var pairView = new PairView({ model: pair });
+      content.append(pairView.render().$el);
     });
     // Render placeholder:
     var view = this;

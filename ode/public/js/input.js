@@ -209,7 +209,8 @@ var Pair = Backbone.Model.extend({
 
   initialize: function(options) {
     if (options.feature.get('type') === 'complex') {
-      this.set('value', new AVM([])); // Pass allowed features as option ...
+      var accept = '#' + options.feature.get('targets').join(', #');
+      this.set('value', new AVM([], { accept: accept }));
     } else {
       this.set('value', 'underspecified');
     }
@@ -222,7 +223,13 @@ var Pair = Backbone.Model.extend({
                                       // restricted in the types of
                                       // values it allows
 
-var AVM = Backbone.Collection.extend({}); // An AVM is a list of
+var AVM = Backbone.Collection.extend({
+
+  initialize: function(models, options) {
+    this.accept = options.accept;
+  },
+
+}); // An AVM is a list of
                                           // attribute-value pairs;
                                           // it can optionally by
                                           // restricted in the types
@@ -240,11 +247,18 @@ var PairView = Backbone.View.extend({
     this.$el.append(
       $.span('attribute').text(attribute.get('name')));
     if (attribute.get('type') === 'complex') {
-      // ...
+      this._renderSubstructure();
     } else {
       this._renderValue();
     }
     return this;
+  },
+
+  _renderSubstructure: function() {
+    var avmView = new AVMView({ collection: this.model.get('value') });
+    var value = $.div('value');
+    value.append(avmView.render().$el);
+    this.$el.append(value);
   },
 
   _renderValue: function() {
@@ -278,9 +292,9 @@ var AVMView = Backbone.View.extend({
     this._renderContent();
     this._renderBracket('right');
     if (this.collection.isEmpty()) {
-      this.$('.bracket').height(this.$('.placeholder').height());
+      this.$el.children('.bracket').height(this.$('.placeholder').height());
     } else {
-      this.$('.bracket').height(this.$('.content').height());
+      this.$el.children('.bracket').height(this.$('.content').height());
     }
     return this;
   },
@@ -300,7 +314,7 @@ var AVMView = Backbone.View.extend({
     var view = this;
     var placeholder = $.placeholder('Drop feature here ...')
       .droppable({
-        accept: '.feature-item',
+        accept: view.collection.accept,
         drop: function(e, ui) {
           var item = $(ui.helper);
           var feature = new Feature({
@@ -389,7 +403,7 @@ $(document).ready(function() {
   });
   ruleView.render();
 
-  var avm = new AVM([]);
+  var avm = new AVM([], { accept: '.feature-item' });
   var avmView = new AVMView({ collection: avm });
   ruleView.$el.append(avmView.render().$el);
 

@@ -242,6 +242,10 @@ var PairView = Backbone.View.extend({
 
   className: 'pair',
 
+  initialize: function(options) {
+    this.parentView = options.parentView;
+  },
+
   render: function() {
     var attribute = this.model.get('feature');
     this.$el.append(
@@ -259,6 +263,9 @@ var PairView = Backbone.View.extend({
     var value = $.div('value');
     value.append(avmView.render().$el);
     this.$el.append(value);
+    this.listenTo(
+      avmView, 're-rendered',
+      function() { this.parentView.trigger('update') });
   },
 
   _renderValue: function() {
@@ -282,8 +289,24 @@ var AVMView = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on({
-      'add': this.render,
+      'add': function(newPair) {
+        this._renderPair(newPair);
+        this.trigger('update');
+      },
     }, this);
+    this.on({
+      'update': function() {
+        this._adjustBracketHeight();
+        this.trigger('re-rendered');
+      },
+    }, this);
+  },
+
+  _renderPair: function(pair) {
+    var pairView = new PairView({ model: pair, parentView: this });
+    pairView.render();
+    pairView.$el
+      .insertBefore(this.$el.children('.content').children('.placeholder'));
   },
 
   render: function() {
@@ -291,11 +314,7 @@ var AVMView = Backbone.View.extend({
     this._renderBracket('left');
     this._renderContent();
     this._renderBracket('right');
-    if (this.collection.isEmpty()) {
-      this.$el.children('.bracket').height(this.$('.placeholder').height());
-    } else {
-      this.$el.children('.bracket').height(this.$('.content').height());
-    }
+    this._adjustBracketHeight();
     return this;
   },
 
@@ -305,12 +324,6 @@ var AVMView = Backbone.View.extend({
 
   _renderContent: function() {
     var content = $.div('content');
-    // Render pairs:
-    this.collection.forEach(function(pair) {
-      var pairView = new PairView({ model: pair });
-      content.append(pairView.render().$el);
-    });
-    // Render placeholder:
     var view = this;
     var placeholder = $.placeholder('Drop feature here ...')
       .droppable({
@@ -327,6 +340,17 @@ var AVMView = Backbone.View.extend({
       });
     content.append(placeholder);
     this.$el.append(content);
+  },
+
+  _adjustBracketHeight: function() {
+    var content = this.$el.children('.content');
+    var height = content.children('.placeholder').height();
+    if (!this.collection.isEmpty()) {
+      _.each(content.children('.pair'), function(p) {
+        height += $(p).outerHeight(true);
+      });
+    }
+    this.$el.children('.bracket').height(height);
   },
 
 });                                     // This type of view minimally

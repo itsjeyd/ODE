@@ -237,12 +237,12 @@ var PairView = Backbone.View.extend({
   },
 
   render: function() {
-    var attribute = this.model.get('feature');
-    this.$el.append(
-      $.span('attribute').text(attribute.get('name')));
-    this.$('.attribute').append(
-      $.removeButton(attribute.get('name')).css('visibility', 'hidden'));
-    if (attribute.get('type') === 'complex') {
+    var feature = this.model.get('feature');
+    var name = feature.get('name');
+    this.$el.append($.span('attribute').text(name));
+    this.$('.attribute')
+      .append($.removeButton(name).css('visibility', 'hidden'));
+    if (feature.get('type') === 'complex') {
       this._renderSubstructure();
     } else {
       this._renderValue();

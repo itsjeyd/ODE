@@ -216,12 +216,7 @@ var Pair = Backbone.Model.extend({
     }
   },
 
-}); // A pair consists of an
-                                      // attribute/feature (string)
-                                      // and a value (string or AVM);
-                                      // it can optionally be
-                                      // restricted in the types of
-                                      // values it allows
+});
 
 var AVM = Backbone.Collection.extend({
 
@@ -229,14 +224,9 @@ var AVM = Backbone.Collection.extend({
     this.accept = options.accept;
   },
 
-}); // An AVM is a list of
-                                          // attribute-value pairs;
-                                          // it can optionally by
-                                          // restricted in the types
-                                          // of features it allows;
-                                          // each rule is associated
-                                          // with a single AVM
-                                          // representing its LHS
+}); // Each rule is associated
+    // with a single AVM
+    // representing its LHS
 
 var PairView = Backbone.View.extend({
 
@@ -351,30 +341,9 @@ var AVMView = Backbone.View.extend({
     this.$el.children('.bracket').height(height);
   },
 
-});                                     // This type of view minimally
-                                        // consists of an opening
-                                        // bracket, a (content block
-                                        // with a) single placeholder
-                                        // for new *attributes*, and a
-                                        // closing bracket;
-                                        // it should eventually be
-                                        // incorporated into RuleView
-                                        // as a subview;
-                                        // dropping a feature on the
-                                        // placeholder will trigger
-                                        // generation of a new pair;
-                                        // in case of atomic features,
-                                        // the list of possible
-                                        // *values* for this pair will
-                                        // be set according to the
-                                        // list of targets for the
-                                        // newly added feature; in
-                                        // case of complex features,
-                                        // the target list of the
-                                        // newly added feature
-                                        // determines the list of
-                                        // features permitted in the
-                                        // value AVM
+}); // This view should eventually
+    // be incorporated into
+    // RuleView as a subview
 
 
 

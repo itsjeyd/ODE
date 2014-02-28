@@ -240,7 +240,7 @@ var PairView = Backbone.View.extend({
     var attribute = this.model.get('feature');
     this.$el.append(
       $.span('attribute').text(attribute.get('name')));
-    this.$el.append(
+    this.$('.attribute').append(
       $.removeButton(attribute.get('name')).css('visibility', 'hidden'));
     if (attribute.get('type') === 'complex') {
       this._renderSubstructure();
@@ -274,8 +274,8 @@ var PairView = Backbone.View.extend({
   },
 
   events: {
-    'mouseenter': '_showRemoveButton',
-    'mouseleave': '_hideRemoveButton',
+    'mouseenter .attribute': '_showRemoveButton',
+    'mouseleave .attribute': '_hideRemoveButton',
     'click .remove-button': function() {
       this.remove();
       this.parentView.trigger('remove:pair', this.model);

@@ -240,6 +240,8 @@ var PairView = Backbone.View.extend({
     var attribute = this.model.get('feature');
     this.$el.append(
       $.span('attribute').text(attribute.get('name')));
+    this.$el.append(
+      $.removeButton(attribute.get('name')).css('visibility', 'hidden'));
     if (attribute.get('type') === 'complex') {
       this._renderSubstructure();
     } else {
@@ -271,6 +273,23 @@ var PairView = Backbone.View.extend({
     this.$el.append(value);
   },
 
+  events: {
+    'mouseenter': '_showRemoveButton',
+    'mouseleave': '_hideRemoveButton',
+    'click .remove-button': function() {
+      this.remove();
+      this.parentView.trigger('remove:pair', this.model);
+    },
+  },
+
+  _showRemoveButton: function() {
+    this.$('.remove-button').css('visibility', 'visible');
+  },
+
+  _hideRemoveButton: function() {
+    this.$('.remove-button').css('visibility', 'hidden');
+  },
+
 });
 
 var AVMView = Backbone.View.extend({
@@ -288,6 +307,10 @@ var AVMView = Backbone.View.extend({
       'update': function() {
         this._adjustBracketHeight();
         this.trigger('re-rendered');
+      },
+      'remove:pair': function(pair) {
+        this.collection.remove(pair);
+        this.trigger('update');
       },
     }, this);
   },

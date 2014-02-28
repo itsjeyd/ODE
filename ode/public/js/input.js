@@ -346,9 +346,7 @@ var AVMView = Backbone.View.extend({
     var content = this.$el.children('.content');
     var height = content.children('.placeholder').height();
     if (!this.collection.isEmpty()) {
-      _.each(content.children('.pair'), function(p) {
-        height += $(p).outerHeight(true);
-      });
+      height = content.height();
     }
     this.$el.children('.bracket').height(height);
   },

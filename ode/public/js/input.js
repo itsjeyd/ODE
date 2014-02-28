@@ -328,6 +328,7 @@ var AVMView = Backbone.View.extend({
     this._renderContent();
     this._renderBracket('right');
     this._adjustBracketHeight();
+    this.$el.append($.emptyButton().css('visibility', 'hidden'));
     return this;
   },
 
@@ -362,6 +363,24 @@ var AVMView = Backbone.View.extend({
       height = content.height();
     }
     this.$el.children('.bracket').height(height);
+  },
+
+  events: {
+    'mouseenter': '_showEmptyButton',
+    'mouseleave': '_hideEmptyButton',
+    'click .empty-button': function() {
+      this.collection.reset();
+      this.render();
+      this.trigger('re-rendered');
+    },
+  },
+
+  _showEmptyButton: function() {
+    this.$('.empty-button').css('visibility', 'visible');
+  },
+
+  _hideEmptyButton: function() {
+    this.$('.empty-button').css('visibility', 'hidden');
   },
 
 }); // This view should eventually

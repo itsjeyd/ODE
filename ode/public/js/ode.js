@@ -149,7 +149,12 @@ jQuery.editButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-pencil edit-button')
     .data('target', target);
 }
+
 jQuery.removeButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-remove remove-button')
     .data('target', target);
+}
+
+jQuery.emptyButton = function() {
+  return $('<span>').addClass('glyphicon glyphicon-unchecked empty-button');
 }

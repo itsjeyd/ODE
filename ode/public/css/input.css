@@ -41,3 +41,8 @@ input.description {
     margin-left: 10px;
     float: right;
 }
+
+.empty-button {
+    margin-left: 5px;
+    cursor: pointer;
+}

@@ -44,7 +44,9 @@ public class Rule extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> create() {
-        return this.exists().flatMap(new CreateFunction(this));
+        Promise<Boolean> created = this.exists()
+            .flatMap(new CreateFunction(this));
+        return created.flatMap(new CreateLHSFunction(this));
     }
 
     public Promise<Boolean> updateName(final String newName) {
@@ -103,6 +105,21 @@ public class Rule extends LabeledNodeWithProperties {
                 return Promise.pure(false);
             }
             return RuleManager.create(rule);
+        }
+    }
+
+    private class CreateLHSFunction implements
+                                        Function<Boolean, Promise<Boolean>> {
+
+        private Rule rule;
+        public CreateLHSFunction(Rule rule) {
+            this.rule = rule;
+        }
+        public Promise<Boolean> apply(Boolean created) {
+            if (!created) {
+                return Promise.pure(false);
+            }
+            return new LHS(this.rule).create();
         }
     }
 }

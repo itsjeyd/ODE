@@ -128,6 +128,7 @@ var RuleView = Backbone.View.extend({
     this.$el.empty();
     this._renderName();
     this._renderDescription();
+    this._renderLHS();
     return this;
   },
 
@@ -144,6 +145,11 @@ var RuleView = Backbone.View.extend({
       description: this.model.get('description')
     }));
     this.$el.append(node);
+  },
+
+  _renderLHS: function() {
+    var lhsView = new AVMView({ collection: this.model.get('lhs') });
+    this.$el.append(lhsView.render().$el);
   },
 
   _updateURL: function() {
@@ -428,16 +434,20 @@ $(document).ready(function() {
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();
-  var rule = new Rule({ id: name, name: name, description: description });
+
+  var avm = new AVM([], { accept: '.feature-item' });
+
+  var rule = new Rule({
+    id: name,
+    name: name,
+    description: description,
+    lhs: avm,
+  });
 
   var ruleView = new RuleView({
     model: rule,
     el: '#interaction-block',
   });
   ruleView.render();
-
-  var avm = new AVM([], { accept: '.feature-item' });
-  var avmView = new AVMView({ collection: avm });
-  ruleView.$el.append(avmView.render().$el);
 
 });

@@ -225,6 +225,8 @@ var RuleView = Backbone.View.extend({
 });
 
 
+// AVMs: models
+
 var AVM = Backbone.Collection.extend({
 
   initialize: function(models, options) {
@@ -246,6 +248,9 @@ var Pair = Backbone.Model.extend({
   },
 
 });
+
+
+// AVMs: views
 
 var AVMView = Backbone.View.extend({
 

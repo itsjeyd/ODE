@@ -77,6 +77,10 @@ jQuery.h3 = function(text) {
   return $('<h3>').text(text);
 }
 
+jQuery.p = function(text) {
+  return $('<p>').text(text);
+}
+
 jQuery.form = function() {
   return $('<form>').attr('role', 'form');
 }

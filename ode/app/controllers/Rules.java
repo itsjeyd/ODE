@@ -149,6 +149,16 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
+    public static Result updateInput(String name) {
+        JsonNode json = request().body().asJson();
+        // ...
+        ObjectNode result = Json.newObject();
+        result.put("message", "I'm not fully functional yet.");
+        return ok(result);
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> delete(String name) {
         Promise<Boolean> deleted = new Rule(name).delete();
         return deleted.map(

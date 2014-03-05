@@ -81,6 +81,16 @@ var Rule = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules';
+    this.get('lhs').on({
+      'add': this._addFeature,
+    }, this);
+  },
+
+  _addFeature: function(pair) {
+    var featureName = pair.get('feature').get('name');
+    var success = function(model, response, options) {};
+    this._update('input', { lhs: this.get('lhs'),
+                            feature: featureName, action: 'ADD' }, success);
   },
 
   _update: function(field, attrs, success) {
@@ -113,8 +123,11 @@ var RuleView = Backbone.View.extend({
 
   initialize: function() {
     this.model.on({
-      'change': this.render,
-      'change:name': this._updateURL,
+      'change:name': function() {
+        this._updateURL();
+        this._renderName();
+      },
+      'change:description': this._renderDescription,
       'update-error:name': function(msg) {
         this._renderAlert('button.name', msg);
       },
@@ -125,7 +138,8 @@ var RuleView = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.empty();
+    this.$el.append($.h3('').attr('id', 'rule-name'));
+    this.$el.append($.p('').attr('id', 'rule-description'));
     this._renderName();
     this._renderDescription();
     this._renderLHS();
@@ -133,18 +147,11 @@ var RuleView = Backbone.View.extend({
   },
 
   _renderName: function() {
-    var nameTemplate = _.template('<h3 id="rule-name">@<%= name %></h3>');
-    var node = $(nameTemplate({ name: this.model.get('name') }));
-    this.$el.append(node);
+    this.$('#rule-name').text('@' + this.model.get('name'));
   },
 
   _renderDescription: function() {
-    var descriptionTemplate = _.template(
-      '<p id="rule-description"><%= description %></p>');
-    var node = $(descriptionTemplate({
-      description: this.model.get('description')
-    }));
-    this.$el.append(node);
+    this.$('#rule-description').text(this.model.get('description'));
   },
 
   _renderLHS: function() {
@@ -203,9 +210,18 @@ var RuleView = Backbone.View.extend({
           modelField.slice(1);
         view.model[updateFunction](inputField.val());
       } else {
-        view.render();
+        var renderFunction = '_render' + modelField.charAt(0).toUpperCase() +
+          modelField.slice(1);
+        view._removeEditControls(modelField);
+        view[renderFunction]();
       }
     };
+  },
+
+  _removeEditControls: function(modelField) {
+    this.$('.' + modelField).remove();
+    this.$('.alert-msg').remove();
+    this.$('#rule-' + modelField).show();
   },
 
 });

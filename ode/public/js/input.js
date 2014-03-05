@@ -206,13 +206,11 @@ var RuleView = Backbone.View.extend({
       var inputField = view.$('input.' + modelField);
       if (!inputField.isEmpty() &&
           inputField.val() !== view.model.get(modelField)) {
-        var updateFunction = 'update' + modelField.charAt(0).toUpperCase() +
-          modelField.slice(1);
+        var updateFunction = 'update' + $.cap(modelField);
         view.model[updateFunction](inputField.val());
       } else {
-        var renderFunction = '_render' + modelField.charAt(0).toUpperCase() +
-          modelField.slice(1);
         view._removeEditControls(modelField);
+        var renderFunction = '_render' + $.cap(modelField);
         view[renderFunction]();
       }
     };

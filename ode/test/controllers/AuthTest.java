@@ -113,11 +113,11 @@ public class AuthTest extends WithApplication {
     @Test
     public void authenticated() {
         Result rulesResult = callAction(
-            controllers.routes.ref.Application.rules(),
+            controllers.routes.ref.Rules.rules(),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(rulesResult)).isEqualTo(Status.OK);
         Result ruleResult = callAction(
-            controllers.routes.ref.Application.rule(1),
+            controllers.routes.ref.Rules.rule("test"),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(ruleResult)).isEqualTo(Status.OK);
         Result searchResult = callAction(
@@ -139,13 +139,13 @@ public class AuthTest extends WithApplication {
     @Test
     public void notAuthenticated() {
         Result rulesResult = callAction(
-            controllers.routes.ref.Application.rules(),
+            controllers.routes.ref.Rules.rules(),
             fakeRequest());
         assertThat(status(rulesResult)).isEqualTo(Status.SEE_OTHER);
         assertThat(header("Location", rulesResult)).isEqualTo(
             routes.Application.login().url());
         Result ruleResult = callAction(
-            controllers.routes.ref.Application.rule(1),
+            controllers.routes.ref.Rules.rule("test"),
             fakeRequest());
         assertThat(status(ruleResult)).isEqualTo(Status.SEE_OTHER);
         assertThat(header("Location", ruleResult)).isEqualTo(

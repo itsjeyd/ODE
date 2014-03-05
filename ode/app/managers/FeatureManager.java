@@ -15,6 +15,7 @@ import constants.RelationshipType;
 import models.Feature;
 import neo4play.Neo4jService;
 import managers.functions.NodeDeletedFunction;
+import managers.functions.JsonFunction;
 import managers.functions.UpdatedFunction;
 
 
@@ -28,6 +29,11 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         feature.jsonProperties.put("type", feature.getType());
         feature.jsonProperties.put("description", feature.getDescription());
         return LabeledNodeWithPropertiesManager.create(feature);
+    }
+
+    public static Promise<JsonNode> getByURL(String url) {
+        Promise<WS.Response> response = Neo4jService.getNodeProperties(url);
+        return response.map(new JsonFunction());
     }
 
     public static Promise<List<JsonNode>> values(Feature feature) {

@@ -16,6 +16,7 @@ import managers.RuleManager;
 public class Rule extends LabeledNodeWithProperties {
     public String name;
     public String description;
+    public LHS lhs;
 
     private Rule() {
         this.label = NodeType.RULE;
@@ -40,7 +41,7 @@ public class Rule extends LabeledNodeWithProperties {
 
     public Promise<Rule> get() {
         Promise<JsonNode> json = RuleManager.get(this);
-        return json.map(new GetFunction());
+        return json.flatMap(new GetFunction());
     }
 
     public Promise<Boolean> create() {
@@ -78,11 +79,24 @@ public class Rule extends LabeledNodeWithProperties {
     }
 
     private static class GetFunction implements
-                                         Function<JsonNode, Rule> {
-        public Rule apply(JsonNode json) {
+                                         Function<JsonNode, Promise<Rule>> {
+        public Promise<Rule> apply(JsonNode json) {
             String name = json.findValue("name").asText();
             String description = json.findValue("description").asText();
-            return new Rule(name, description);
+            Rule rule = new Rule(name, description);
+            Promise<LHS> lhs = new LHS(rule).get();
+            return lhs.map(new SetLHSFunction(rule));
+        }
+    }
+
+    private static class SetLHSFunction implements Function<LHS, Rule> {
+        private Rule rule;
+        public SetLHSFunction(Rule rule) {
+            this.rule = rule;
+        }
+        public Rule apply(LHS lhs) {
+            this.rule.lhs = lhs;
+            return this.rule;
         }
     }
 

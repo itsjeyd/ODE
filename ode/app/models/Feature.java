@@ -70,6 +70,11 @@ public class Feature extends OntologyNode {
         return json.map(new GetFunction());
     }
 
+    public static Promise<Feature> getByURL(String url) {
+        Promise<JsonNode> json = FeatureManager.getByURL(url);
+        return json.map(new GetFunction());
+    }
+
     public Promise<List<Relationship>> getIncomingRelationships() {
         return Relationship.getAllTo(this);
     }
@@ -161,7 +166,7 @@ public class Feature extends OntologyNode {
         }
     }
 
-    private class GetFunction implements Function<JsonNode, Feature> {
+    private static class GetFunction implements Function<JsonNode, Feature> {
         public Feature apply(JsonNode json) {
             String name = json.findValue("name").asText();
             String description = "";

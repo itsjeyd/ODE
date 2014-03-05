@@ -1,7 +1,12 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.nio.charset.Charset;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
 import play.libs.F.Function;
@@ -13,6 +18,7 @@ import managers.LHSManager;
 
 public class LHS extends LabeledNodeWithProperties {
     public Rule rule;
+    public JsonNode json;
 
     private LHS() {
         this.label = NodeType.AVM;
@@ -31,6 +37,11 @@ public class LHS extends LabeledNodeWithProperties {
         Promise<Boolean> created = this.exists()
             .flatMap(new CreateFunction(this));
         return created.flatMap(new ConnectToRuleFunction(this));
+    }
+
+    public Promise<LHS> get() {
+        Promise<JsonNode> json = LHSManager.get(this);
+        return json.flatMap(new GetFunction(this));
     }
 
     public Promise<Boolean> add(Feature feature) {
@@ -59,6 +70,70 @@ public class LHS extends LabeledNodeWithProperties {
         }
         public Promise<Boolean> apply(Boolean created) {
             return new LHSRelationship(this.lhs).create();
+        }
+    }
+
+    private class GetFunction implements Function<JsonNode, Promise<LHS>> {
+        private LHS lhs;
+        public GetFunction(LHS lhs) {
+            this.lhs = lhs;
+        }
+        public Promise<LHS> apply(JsonNode json) {
+            JsonNode data = json.get("data");
+            if (data.size() > 0) {
+                // Process node-relationship-node triples appropriately;
+                // for now just get names of end nodes (i.e.,
+                // features) and add them to pairs with arbitrary
+                // default value
+                List<JsonNode> endNodes = data.findValues("end");
+                List<Promise<? extends Feature>> featureList =
+                    new ArrayList<Promise<? extends Feature>>();
+                for (JsonNode endNode: endNodes) {
+                    Promise<Feature> feature = Feature
+                        .getByURL(endNode.asText());
+                    featureList.add(feature);
+                }
+                Promise<List<Feature>> features = Promise
+                    .sequence(featureList);
+                Promise<List<String>> featureNames = features.map(
+                    new Function<List<Feature>, List<String>>() {
+                        public List<String> apply(List<Feature> features) {
+                            List<String> featureNames =
+                                new ArrayList<String>();
+                            for (Feature feature: features) {
+                                featureNames.add(feature.name);
+                            }
+                            return featureNames;
+                        }
+                    });
+                Promise<ObjectNode> pairs = featureNames.map(
+                    new Function<List<String>, ObjectNode>() {
+                        public ObjectNode apply(List<String> featureNames) {
+                            ObjectNode pairs = Json.newObject();
+                            for (String featureName: featureNames) {
+                                pairs.put(featureName, "");
+                            }
+                            return pairs;
+                        }
+                    });
+                return pairs.map(new SetPairsFunction(this.lhs));
+            } else {
+                ObjectNode pairs = Json.newObject();
+                this.lhs.json = pairs;
+                return Promise.pure(this.lhs);
+            }
+        }
+    }
+
+    private static class SetPairsFunction implements
+                                            Function<ObjectNode, LHS> {
+        private LHS lhs;
+        public SetPairsFunction(LHS lhs) {
+            this.lhs = lhs;
+        }
+        public LHS apply(ObjectNode pairs) {
+            this.lhs.json = pairs;
+            return this.lhs;
         }
     }
 

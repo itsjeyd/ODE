@@ -125,6 +125,11 @@ public class Neo4jService {
         return get("/label/" + label + "/nodes");
     }
 
+    public static Promise<WS.Response> getNodeProperties(String nodeURL) {
+        String fullURL = nodeURL + "/properties";
+        return WS.url(fullURL).get();
+    }
+
     public static Promise<WS.Response> updateNodeProperties(
         String label, JsonNode oldProps, final JsonNode newProps) {
         Promise<String> nodeURL = getNodeURL(label, oldProps);
@@ -246,6 +251,13 @@ public class Neo4jService {
         Relationship relationship) {
         String fullURL = extendRootURL("/relationship/" + relationship.ID);
         return delete(fullURL);
+    }
+
+    public static Promise<WS.Response> getPath(
+        RelationshipType type, JsonNode relProps) {
+        String query = "MATCH p=()-[r:" + type.name() + "]->() WHERE " +
+            buildConjunctiveConstraints("r", relProps) + " RETURN p";
+        return postCypherQuery(query);
     }
 
     // play.libs.F.Function implementations

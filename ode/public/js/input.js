@@ -244,9 +244,8 @@ var AVM = Backbone.Collection.extend({
     this.accept = options.accept;
   },
 
-}); // Each rule is associated
-    // with a single AVM
-    // representing its LHS
+});
+
 
 var PairView = Backbone.View.extend({
 
@@ -403,9 +402,7 @@ var AVMView = Backbone.View.extend({
     this.$('.empty-button').css('visibility', 'hidden');
   },
 
-}); // This view should eventually
-    // be incorporated into
-    // RuleView as a subview
+});
 
 
 

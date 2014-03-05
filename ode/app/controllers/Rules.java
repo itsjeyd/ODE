@@ -149,12 +149,26 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Result updateInput(String name) {
+    public static Promise<Result> updateInput(String name) {
         JsonNode json = request().body().asJson();
+        System.out.println("Request JSON: " + json.toString());
+
         // ...
-        ObjectNode result = Json.newObject();
-        result.put("message", "I'm not fully functional yet.");
-        return ok(result);
+        Feature feature = new Feature(
+            json.findPath("featureName").textValue());
+        Promise<Boolean> added = new Rule(name).updateLHS(feature);
+        return added.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean added) {
+                    if (added) {
+                        result.put("message", "Feature successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "Feature not added.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

@@ -1,6 +1,7 @@
 package models;
 
 import java.util.UUID;
+import java.nio.charset.Charset;
 
 import play.libs.Json;
 import play.libs.F.Function;
@@ -21,7 +22,8 @@ public class LHS extends LabeledNodeWithProperties {
     public LHS(Rule rule) {
         this();
         this.rule = rule;
-        UUID uuid = UUID.randomUUID();
+        UUID uuid = UUID.nameUUIDFromBytes(
+            rule.name.getBytes(Charset.forName("UTF-8")));
         this.jsonProperties.put("uuid", uuid.toString());
     }
 
@@ -29,6 +31,10 @@ public class LHS extends LabeledNodeWithProperties {
         Promise<Boolean> created = this.exists()
             .flatMap(new CreateFunction(this));
         return created.flatMap(new ConnectToRuleFunction(this));
+    }
+
+    public Promise<Boolean> add(Feature feature) {
+        return new HasRelationship(this, feature).create();
     }
 
     private class CreateFunction implements

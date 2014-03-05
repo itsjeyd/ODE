@@ -68,6 +68,11 @@ public class Rule extends LabeledNodeWithProperties {
             });
     }
 
+    public Promise<Boolean> updateLHS(Feature feature) {
+        LHS lhs = new LHS(this);
+        return lhs.add(feature);
+    }
+
     public Promise<Boolean> delete() {
         return RuleManager.delete(this);
     }

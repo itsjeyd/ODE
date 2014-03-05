@@ -10,6 +10,8 @@ import managers.HasRelationshipManager;
 
 
 public class HasRelationship extends TypedRelationship {
+    public LHS startNode;
+    public Feature endNode;
 
     public HasRelationship(LHS startNode, Feature endNode) {
         super(-1);

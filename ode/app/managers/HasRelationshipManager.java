@@ -1,7 +1,9 @@
 package managers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Promise;
 
@@ -20,10 +22,12 @@ public class HasRelationshipManager {
     }
 
     public static Promise<Boolean> create(HasRelationship relationship) {
+        ObjectNode data = Json.newObject();
+        data.put("rule", relationship.startNode.rule.name);
         Promise<WS.Response> response = Neo4jService
-            .createTypedRelationship(
+            .createTypedRelationshipWithProperties(
                 relationship.startNode, relationship.endNode,
-                relationship.type);
+                relationship.type, data);
         return response.map(new RelationshipCreatedFunction());
     }
 

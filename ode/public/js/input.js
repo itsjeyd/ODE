@@ -225,19 +225,6 @@ var RuleView = Backbone.View.extend({
 });
 
 
-var Pair = Backbone.Model.extend({
-
-  initialize: function(options) {
-    if (options.feature.get('type') === 'complex') {
-      var accept = '#' + options.feature.get('targets').join(', #');
-      this.set('value', new AVM([], { accept: accept }));
-    } else {
-      this.set('value', 'underspecified');
-    }
-  },
-
-});
-
 var AVM = Backbone.Collection.extend({
 
   initialize: function(models, options) {
@@ -247,66 +234,15 @@ var AVM = Backbone.Collection.extend({
 });
 
 
-var PairView = Backbone.View.extend({
-
-  className: 'pair',
+var Pair = Backbone.Model.extend({
 
   initialize: function(options) {
-    this.parentView = options.parentView;
-  },
-
-  render: function() {
-    var feature = this.model.get('feature');
-    var name = feature.get('name');
-    this.$el.append($.span('attribute').text(name));
-    this.$('.attribute')
-      .append($.removeButton(name).css('visibility', 'hidden'));
-    if (feature.get('type') === 'complex') {
-      this._renderSubstructure();
+    if (options.feature.get('type') === 'complex') {
+      var accept = '#' + options.feature.get('targets').join(', #');
+      this.set('value', new AVM([], { accept: accept }));
     } else {
-      this._renderValue();
+      this.set('value', 'underspecified');
     }
-    return this;
-  },
-
-  _renderSubstructure: function() {
-    var avmView = new AVMView({ collection: this.model.get('value') });
-    var value = $.div('value');
-    value.append(avmView.render().$el);
-    this.$el.append(value);
-    this.listenTo(
-      avmView, 're-rendered',
-      function() { this.parentView.trigger('update') });
-  },
-
-  _renderValue: function() {
-    var selectMenu = $.selectMenu();
-    var options = ['underspecified']
-      .concat(this.model.get('feature').get('targets'));
-    _.each(options, function(o) {
-      selectMenu.append($.option(o));
-    });
-    selectMenu.val(this.model.get('value'));
-    var value = $.span('value');
-    value.append(selectMenu);
-    this.$el.append(value);
-  },
-
-  events: {
-    'mouseenter .attribute': '_showRemoveButton',
-    'mouseleave .attribute': '_hideRemoveButton',
-    'click .remove-button': function() {
-      this.remove();
-      this.parentView.trigger('remove:pair', this.model);
-    },
-  },
-
-  _showRemoveButton: function() {
-    this.$('.remove-button').css('visibility', 'visible');
-  },
-
-  _hideRemoveButton: function() {
-    this.$('.remove-button').css('visibility', 'hidden');
   },
 
 });
@@ -400,6 +336,70 @@ var AVMView = Backbone.View.extend({
 
   _hideEmptyButton: function() {
     this.$('.empty-button').css('visibility', 'hidden');
+  },
+
+});
+
+var PairView = Backbone.View.extend({
+
+  className: 'pair',
+
+  initialize: function(options) {
+    this.parentView = options.parentView;
+  },
+
+  render: function() {
+    var feature = this.model.get('feature');
+    var name = feature.get('name');
+    this.$el.append($.span('attribute').text(name));
+    this.$('.attribute')
+      .append($.removeButton(name).css('visibility', 'hidden'));
+    if (feature.get('type') === 'complex') {
+      this._renderSubstructure();
+    } else {
+      this._renderValue();
+    }
+    return this;
+  },
+
+  _renderSubstructure: function() {
+    var avmView = new AVMView({ collection: this.model.get('value') });
+    var value = $.div('value');
+    value.append(avmView.render().$el);
+    this.$el.append(value);
+    this.listenTo(
+      avmView, 're-rendered',
+      function() { this.parentView.trigger('update') });
+  },
+
+  _renderValue: function() {
+    var selectMenu = $.selectMenu();
+    var options = ['underspecified']
+      .concat(this.model.get('feature').get('targets'));
+    _.each(options, function(o) {
+      selectMenu.append($.option(o));
+    });
+    selectMenu.val(this.model.get('value'));
+    var value = $.span('value');
+    value.append(selectMenu);
+    this.$el.append(value);
+  },
+
+  events: {
+    'mouseenter .attribute': '_showRemoveButton',
+    'mouseleave .attribute': '_hideRemoveButton',
+    'click .remove-button': function() {
+      this.remove();
+      this.parentView.trigger('remove:pair', this.model);
+    },
+  },
+
+  _showRemoveButton: function() {
+    this.$('.remove-button').css('visibility', 'visible');
+  },
+
+  _hideRemoveButton: function() {
+    this.$('.remove-button').css('visibility', 'hidden');
   },
 
 });

@@ -100,9 +100,8 @@ public class LHS extends LabeledNodeWithProperties {
                         public ObjectNode apply(List<Feature> features) {
                             ObjectNode pairs = Json.newObject();
                             for (Feature feature: features) {
-                                ObjectNode info = Json.newObject();
-                                info.put("type", feature.getType());
-                                pairs.put(feature.name, info);
+                                ObjectNode value = Json.newObject();
+                                pairs.put(feature.name, value);
                             }
                             return pairs;
                         }

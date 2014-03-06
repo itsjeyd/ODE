@@ -1,10 +1,13 @@
 package managers;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
 import play.libs.WS;
+import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import models.HasRelationship;
@@ -21,13 +24,20 @@ public class HasRelationshipManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<Boolean> create(HasRelationship relationship) {
-        ObjectNode data = Json.newObject();
-        data.put("rule", relationship.startNode.rule.name);
-        Promise<WS.Response> response = Neo4jService
-            .createTypedRelationshipWithProperties(
-                relationship.startNode, relationship.endNode,
-                relationship.type, data);
+    public static Promise<Boolean> create(
+        final HasRelationship relationship) {
+        Promise<UUID> ruleUUID = relationship.startNode.rule.getUUID();
+        Promise<WS.Response> response = ruleUUID.flatMap(
+            new Function<UUID, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(UUID ruleUUID) {
+                    ObjectNode data = Json.newObject();
+                    data.put("rule", ruleUUID.toString());
+                    return Neo4jService
+                        .createTypedRelationshipWithProperties(
+                            relationship.startNode, relationship.endNode,
+                            relationship.type, data);
+                }
+            });
         return response.map(new RelationshipCreatedFunction());
     }
 

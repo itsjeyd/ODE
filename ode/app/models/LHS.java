@@ -28,13 +28,23 @@ public class LHS extends LabeledNodeWithProperties {
     public LHS(Rule rule) {
         this();
         this.rule = rule;
-        UUID uuid = UUID.nameUUIDFromBytes(
-            rule.name.getBytes(Charset.forName("UTF-8")));
-        this.jsonProperties.put("uuid", uuid.toString());
+    }
+
+    public Promise<UUID> getUUID() {
+        Promise<UUID> ruleUUID = this.rule.getUUID();
+        return ruleUUID.map(
+            new Function<UUID, UUID>() {
+                public UUID apply(UUID ruleUUID) {
+                    byte[] bytes = ruleUUID.toString()
+                        .getBytes(Charset.forName("UTF-8"));
+                    return UUID.nameUUIDFromBytes(bytes);
+                }
+            });
     }
 
     public Promise<Boolean> create() {
-        Promise<Boolean> created = this.exists()
+        Promise<UUID> ruleUUID = this.rule.getUUID();
+        Promise<Boolean> created = ruleUUID
             .flatMap(new CreateFunction(this));
         return created.flatMap(new ConnectToRuleFunction(this));
     }
@@ -44,20 +54,29 @@ public class LHS extends LabeledNodeWithProperties {
         return json.flatMap(new GetFunction(this));
     }
 
-    public Promise<Boolean> add(Feature feature) {
-        return new HasRelationship(this, feature).create();
+    public Promise<Boolean> add(final Feature feature) {
+        final LHS lhs = this;
+        Promise<UUID> uuid = this.getUUID();
+        return uuid.flatMap(
+            new Function<UUID, Promise<Boolean>>() {
+                public Promise<Boolean> apply(UUID uuid) {
+                    lhs.jsonProperties.put("uuid", uuid.toString());
+                    return new HasRelationship(lhs, feature).create();
+                }
+            });
     }
 
     private class CreateFunction implements
-                                     Function<Boolean, Promise<Boolean>> {
+                                     Function<UUID, Promise<Boolean>> {
         private LHS lhs;
         public CreateFunction(LHS lhs) {
             this.lhs = lhs;
         }
-        public Promise<Boolean> apply(Boolean exists) {
-            if (exists) {
-                return Promise.pure(false);
-            }
+        public Promise<Boolean> apply(UUID ruleUUID) {
+            byte[] bytes = ruleUUID.toString()
+                .getBytes(Charset.forName("UTF-8"));
+            UUID uuid = UUID.nameUUIDFromBytes(bytes);
+            this.lhs.jsonProperties.put("uuid", uuid.toString());
             return LHSManager.create(this.lhs);
         }
     }

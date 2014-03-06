@@ -90,18 +90,18 @@ public class Neo4jService {
 
     // Node utils
 
-    protected static Promise<String> getNodeURL(
-        String label, JsonNode props) {
-        Promise<WS.Response> nodeResponse = getLabeledNodeWithProperties(
-            label, props);
-        return nodeResponse.map(new NodeURLFunction());
-    }
-
     protected static Promise<WS.Response> getNodeByURL(String nodeURL) {
         return WS.url(nodeURL).get();
     }
 
     // API for external clients (managers)
+
+    public static Promise<String> getNodeURL(
+        String label, JsonNode props) {
+        Promise<WS.Response> nodeResponse = getLabeledNodeWithProperties(
+            label, props);
+        return nodeResponse.map(new NodeURLFunction());
+    }
 
     public static Promise<WS.Response> getLabeledNodeWithProperties(
         String label, JsonNode props) {

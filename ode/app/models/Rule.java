@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -32,6 +33,10 @@ public class Rule extends LabeledNodeWithProperties {
     public Rule(String name, String description) {
         this(name);
         this.description = description;
+    }
+
+    public Promise<UUID> getUUID() {
+        return RuleManager.getUUID(this);
     }
 
     public static Promise<List<Rule>> all() {
@@ -84,6 +89,8 @@ public class Rule extends LabeledNodeWithProperties {
             String name = json.findValue("name").asText();
             String description = json.findValue("description").asText();
             Rule rule = new Rule(name, description);
+            String uuid = json.findValue("uuid").asText();
+            rule.jsonProperties.put("uuid", uuid);
             Promise<LHS> lhs = new LHS(rule).get();
             return lhs.map(new SetLHSFunction(rule));
         }
@@ -123,6 +130,7 @@ public class Rule extends LabeledNodeWithProperties {
             if (exists) {
                 return Promise.pure(false);
             }
+            rule.jsonProperties.put("uuid", UUID.randomUUID().toString());
             return RuleManager.create(rule);
         }
     }

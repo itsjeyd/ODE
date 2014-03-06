@@ -158,6 +158,7 @@ var RuleView = Backbone.View.extend({
   _renderLHS: function() {
     var lhsView = new AVMView({ collection: this.model.get('lhs') });
     this.$el.append(lhsView.render().$el);
+    lhsView.trigger('inserted');
   },
 
   _updateURL: function() {
@@ -265,6 +266,7 @@ var AVMView = Backbone.View.extend({
       },
     }, this);
     this.on({
+      'inserted': this._adjustBracketHeight,
       'update': function() {
         this._adjustBracketHeight();
         this.trigger('re-rendered');
@@ -287,8 +289,8 @@ var AVMView = Backbone.View.extend({
     this.$el.empty();
     this._renderBracket('left');
     this._renderContent();
+    this._renderPairs();
     this._renderBracket('right');
-    this._adjustBracketHeight();
     this.$el.append($.emptyButton().css('visibility', 'hidden'));
     return this;
   },
@@ -315,6 +317,10 @@ var AVMView = Backbone.View.extend({
       });
     content.append(placeholder);
     this.$el.append(content);
+  },
+
+  _renderPairs: function() {
+    this.collection.each(function(pair) { this._renderPair(pair) }, this);
   },
 
   _adjustBracketHeight: function() {
@@ -372,6 +378,7 @@ var PairView = Backbone.View.extend({
     var avmView = new AVMView({ collection: this.model.get('value') });
     var value = $.div('value');
     value.append(avmView.render().$el);
+    avmView.trigger('inserted');
     this.$el.append(value);
     this.listenTo(
       avmView, 're-rendered',
@@ -451,8 +458,14 @@ $(document).ready(function() {
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();
+  var lhs = $('#rule-lhs').data('json');
 
-  var avm = new AVM([], { accept: '.feature-item' });
+  var pairs = [];
+  _.each(_.keys(lhs), function(fname) {
+    pairs.push(new Pair({ feature: featureList.get(fname) }));
+  });
+
+  var avm = new AVM(pairs, { accept: '.feature-item' });
 
   var rule = new Rule({
     id: name,

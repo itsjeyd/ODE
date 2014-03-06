@@ -95,23 +95,14 @@ public class LHS extends LabeledNodeWithProperties {
                 }
                 Promise<List<Feature>> features = Promise
                     .sequence(featureList);
-                Promise<List<String>> featureNames = features.map(
-                    new Function<List<Feature>, List<String>>() {
-                        public List<String> apply(List<Feature> features) {
-                            List<String> featureNames =
-                                new ArrayList<String>();
-                            for (Feature feature: features) {
-                                featureNames.add(feature.name);
-                            }
-                            return featureNames;
-                        }
-                    });
-                Promise<ObjectNode> pairs = featureNames.map(
-                    new Function<List<String>, ObjectNode>() {
-                        public ObjectNode apply(List<String> featureNames) {
+                Promise<ObjectNode> pairs = features.map(
+                    new Function<List<Feature>, ObjectNode>() {
+                        public ObjectNode apply(List<Feature> features) {
                             ObjectNode pairs = Json.newObject();
-                            for (String featureName: featureNames) {
-                                pairs.put(featureName, "");
+                            for (Feature feature: features) {
+                                ObjectNode info = Json.newObject();
+                                info.put("type", feature.getType());
+                                pairs.put(feature.name, info);
                             }
                             return pairs;
                         }

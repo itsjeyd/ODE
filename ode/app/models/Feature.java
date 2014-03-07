@@ -140,7 +140,7 @@ public class Feature extends OntologyNode {
 
     public Promise<Boolean> addDefaultValue(Rule rule) {
         if (this.type.equals(FeatureType.COMPLEX)) {
-            return Promise.pure(true);
+            return new AVM(rule, rule.lhs, this).create();
         } else {
             Value defaultValue = new Value("underspecified");
             return new HasValueRelationship(this, defaultValue, rule)

@@ -68,6 +68,7 @@ public class LHS extends LabeledNodeWithProperties {
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean connected) {
                     if (connected) {
+                        lhs.rule.lhs = lhs;
                         return feature.addDefaultValue(lhs.rule);
                     }
                     return Promise.pure(false);

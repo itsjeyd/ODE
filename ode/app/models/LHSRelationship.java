@@ -12,7 +12,6 @@ import managers.LHSRelationshipManager;
 public class LHSRelationship extends TypedRelationship {
 
     public LHSRelationship(LHS lhs) {
-        super(-1);
         this.type = RelationshipType.LHS;
         this.startNode = lhs.rule;
         this.endNode = lhs;

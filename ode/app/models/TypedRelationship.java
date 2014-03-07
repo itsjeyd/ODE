@@ -16,6 +16,10 @@ import managers.TypedRelationshipManager;
 public class TypedRelationship extends Relationship {
     public RelationshipType type;
 
+    public TypedRelationship() {
+        super();
+    }
+
     public TypedRelationship(int ID) {
         this.ID = ID;
     }

@@ -20,7 +20,6 @@ import managers.RelationshipManager;
 public class AllowsRelationship extends TypedRelationship {
 
     public AllowsRelationship(Feature startNode, OntologyNode endNode) {
-        super(-1); // Set to "invalid" ID by default
         this.type = RelationshipType.ALLOWS;
         this.startNode = startNode;
         this.endNode = endNode;

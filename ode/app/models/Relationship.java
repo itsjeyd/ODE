@@ -17,6 +17,10 @@ public abstract class Relationship extends Model {
     public LabeledNodeWithProperties startNode;
     public LabeledNodeWithProperties endNode;
 
+    public Relationship() {
+        this.ID = -1;
+    }
+
     public static Promise<List<Relationship>> getAllTo(
         LabeledNodeWithProperties endNode) {
         Promise<JsonNode> json = RelationshipManager.getAllTo(endNode);

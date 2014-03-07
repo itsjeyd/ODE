@@ -12,7 +12,6 @@ public class HasSubstructureRelationship extends TypedRelationship {
     public AVM endNode;
 
     public HasSubstructureRelationship(AVM avm) {
-        super(-1);
         this.type = RelationshipType.HAS;
         this.startNode = avm.embeddingFeature;
         this.endNode = avm;

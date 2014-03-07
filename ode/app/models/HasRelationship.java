@@ -14,7 +14,6 @@ public class HasRelationship extends TypedRelationship {
     public Feature endNode;
 
     public HasRelationship(LHS startNode, Feature endNode) {
-        super(-1);
         this.type = RelationshipType.HAS;
         this.startNode = startNode;
         this.endNode = endNode;

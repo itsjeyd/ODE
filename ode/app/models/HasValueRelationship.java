@@ -15,7 +15,6 @@ public class HasValueRelationship extends TypedRelationship {
     public Rule rule;
 
     public HasValueRelationship(Feature startNode, Value endNode, Rule rule) {
-        super(-1);
         this.type = RelationshipType.HAS;
         this.startNode = startNode;
         this.endNode = endNode;

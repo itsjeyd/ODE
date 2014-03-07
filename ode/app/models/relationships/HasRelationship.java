@@ -1,4 +1,4 @@
-package models;
+package models.relationships;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -6,19 +6,23 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
-import managers.LHSRelationshipManager;
+import managers.HasRelationshipManager;
+import models.nodes.Feature;
+import models.nodes.LHS;
 
 
-public class LHSRelationship extends TypedRelationship {
+public class HasRelationship extends TypedRelationship {
+    public LHS startNode;
+    public Feature endNode;
 
-    public LHSRelationship(LHS lhs) {
-        this.type = RelationshipType.LHS;
-        this.startNode = lhs.rule;
-        this.endNode = lhs;
+    public HasRelationship(LHS startNode, Feature endNode) {
+        this.type = RelationshipType.HAS;
+        this.startNode = startNode;
+        this.endNode = endNode;
     }
 
     public Promise<Boolean> exists() {
-        Promise<JsonNode> json = LHSRelationshipManager.get(this);
+        Promise<JsonNode> json = HasRelationshipManager.get(this);
         return json.map(new ExistsFunction());
     }
 
@@ -34,15 +38,15 @@ public class LHSRelationship extends TypedRelationship {
 
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
-        private LHSRelationship relationship;
-        public CreateFunction(LHSRelationship relationship) {
+        private HasRelationship relationship;
+        public CreateFunction(HasRelationship relationship) {
             this.relationship = relationship;
         }
         public Promise<Boolean> apply(Boolean exists) {
             if (exists) {
                 return Promise.pure(false);
             }
-            return LHSRelationshipManager.create(this.relationship);
+            return HasRelationshipManager.create(this.relationship);
         }
     }
 

@@ -10,10 +10,10 @@ import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import models.HasValueRelationship;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.RelationshipCreatedFunction;
+import models.relationships.HasValueRelationship;
 
 
 public class HasValueRelationshipManager {

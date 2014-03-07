@@ -15,8 +15,8 @@ import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
-import models.Feature;
-import models.Rule;
+import models.nodes.Feature;
+import models.nodes.Rule;
 import views.html.input;
 import views.html.rules;
 import views.html.rule;

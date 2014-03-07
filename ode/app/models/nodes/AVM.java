@@ -1,4 +1,4 @@
-package models;
+package models.nodes;
 
 import java.util.UUID;
 import java.nio.charset.Charset;
@@ -8,8 +8,8 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import models.HasSubstructureRelationship;
 import managers.AVMManager;
+import models.relationships.HasSubstructureRelationship;
 
 
 public class AVM extends LabeledNodeWithProperties {

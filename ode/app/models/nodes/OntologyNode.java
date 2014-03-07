@@ -1,4 +1,4 @@
-package models;
+package models.nodes;
 
 import play.libs.F.Function;
 import play.libs.F.None;

@@ -12,11 +12,11 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import constants.RelationshipType;
-import models.Feature;
 import neo4play.Neo4jService;
 import managers.functions.NodeDeletedFunction;
 import managers.functions.JsonFunction;
 import managers.functions.UpdatedFunction;
+import models.nodes.Feature;
 
 
 public class FeatureManager extends LabeledNodeWithPropertiesManager {

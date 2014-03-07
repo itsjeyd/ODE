@@ -1,4 +1,4 @@
-package models;
+package models.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,11 @@ import constants.FeatureType;
 import constants.NodeType;
 import constants.RelationshipType;
 import managers.FeatureManager;
+import models.relationships.AllowsRelationship;
+import models.relationships.Relationship;
+import models.relationships.HasRelationship;
+import models.relationships.HasValueRelationship;
+import models.relationships.TypedRelationship;
 
 
 public class Feature extends OntologyNode {

@@ -1,4 +1,4 @@
-package models;
+package models.relationships;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,8 @@ import play.libs.F.Tuple;
 import constants.RelationshipType;
 import managers.AllowsRelationshipManager;
 import managers.RelationshipManager;
+import models.nodes.Feature;
+import models.nodes.OntologyNode;
 
 
 public class AllowsRelationship extends TypedRelationship {

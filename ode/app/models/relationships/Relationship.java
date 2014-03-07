@@ -1,4 +1,4 @@
-package models;
+package models.relationships;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +10,8 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import managers.RelationshipManager;
+import models.Model;
+import models.nodes.LabeledNodeWithProperties;
 
 
 public abstract class Relationship extends Model {

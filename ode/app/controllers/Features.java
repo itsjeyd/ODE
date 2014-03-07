@@ -21,13 +21,13 @@ import play.libs.F.None;
 import play.libs.F.Tuple;
 
 import constants.FeatureType;
-import models.AtomicFeature;
-import models.ComplexFeature;
-import models.Feature;
-import models.AllowsRelationship;
-import models.OntologyNode;
-import models.Relationship;
-import models.Value;
+import models.nodes.AtomicFeature;
+import models.nodes.ComplexFeature;
+import models.nodes.Feature;
+import models.nodes.OntologyNode;
+import models.nodes.Value;
+import models.relationships.AllowsRelationship;
+import models.relationships.Relationship;
 
 import views.html.features;
 

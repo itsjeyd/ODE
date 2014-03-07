@@ -2,7 +2,7 @@ package managers;
 
 import play.libs.F.Promise;
 
-import models.User;
+import models.nodes.User;
 
 
 public class UserManager extends LabeledNodeWithPropertiesManager {

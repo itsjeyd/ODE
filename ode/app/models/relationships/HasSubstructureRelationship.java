@@ -1,10 +1,12 @@
-package models;
+package models.relationships;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.HasSubstructureRelationshipManager;
+import models.nodes.AVM;
+import models.nodes.Feature;
 
 
 public class HasSubstructureRelationship extends TypedRelationship {

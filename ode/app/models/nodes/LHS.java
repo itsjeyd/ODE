@@ -1,4 +1,4 @@
-package models;
+package models.nodes;
 
 import java.util.UUID;
 import java.nio.charset.Charset;
@@ -12,6 +12,8 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.LHSManager;
+import models.relationships.HasRelationship;
+import models.relationships.LHSRelationship;
 
 
 public class LHS extends LabeledNodeWithProperties {

@@ -11,9 +11,9 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
-import models.LHS;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
+import models.nodes.LHS;
 
 
 public class LHSManager extends LabeledNodeWithPropertiesManager {

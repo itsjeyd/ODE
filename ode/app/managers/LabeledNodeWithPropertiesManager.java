@@ -7,7 +7,7 @@ import play.libs.F.Promise;
 
 import managers.functions.JsonFunction;
 import managers.functions.NodeCreatedFunction;
-import models.LabeledNodeWithProperties;
+import models.nodes.LabeledNodeWithProperties;
 import neo4play.Neo4jService;
 
 

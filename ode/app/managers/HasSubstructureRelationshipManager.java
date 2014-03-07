@@ -9,9 +9,9 @@ import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import models.HasSubstructureRelationship;
 import neo4play.Neo4jService;
 import managers.functions.RelationshipCreatedFunction;
+import models.relationships.HasSubstructureRelationship;
 
 
 public class HasSubstructureRelationshipManager {

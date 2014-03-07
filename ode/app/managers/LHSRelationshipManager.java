@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.WS;
 import play.libs.F.Promise;
 
-import models.LHSRelationship;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.RelationshipCreatedFunction;
+import models.relationships.LHSRelationship;
 
 
 public class LHSRelationshipManager {

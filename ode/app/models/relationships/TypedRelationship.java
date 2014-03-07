@@ -1,4 +1,4 @@
-package models;
+package models.relationships;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,6 +11,7 @@ import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.TypedRelationshipManager;
+import models.nodes.Feature;
 
 
 public class TypedRelationship extends Relationship {

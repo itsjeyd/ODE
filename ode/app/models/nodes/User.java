@@ -1,4 +1,4 @@
-package models;
+package models.nodes;
 
 import play.libs.Json;
 import play.libs.F.Function;

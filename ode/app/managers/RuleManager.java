@@ -11,12 +11,12 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import models.Rule;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.NodeDeletedFunction;
 import managers.functions.PropertyFunction;
 import managers.functions.UpdatedFunction;
+import models.nodes.Rule;
 
 
 public class RuleManager extends LabeledNodeWithPropertiesManager {

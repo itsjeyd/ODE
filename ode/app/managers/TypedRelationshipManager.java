@@ -6,9 +6,9 @@ import play.libs.WS;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
-import managers.functions.JsonFunction;
-import models.Feature;
 import neo4play.Neo4jService;
+import managers.functions.JsonFunction;
+import models.nodes.Feature;
 
 
 public class TypedRelationshipManager {

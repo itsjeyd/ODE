@@ -1,4 +1,4 @@
-package models;
+package models.relationships;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -7,6 +7,9 @@ import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.HasValueRelationshipManager;
+import models.nodes.Feature;
+import models.nodes.Rule;
+import models.nodes.Value;
 
 
 public class HasValueRelationship extends TypedRelationship {

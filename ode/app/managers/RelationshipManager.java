@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.WS;
 import play.libs.F.Promise;
 
+import neo4play.Neo4jService;
 import managers.functions.DeletedFunction;
 import managers.functions.JsonFunction;
-import models.LabeledNodeWithProperties;
-import models.Relationship;
-import neo4play.Neo4jService;
+import models.nodes.LabeledNodeWithProperties;
+import models.relationships.Relationship;
 
 
 public class RelationshipManager {

@@ -15,9 +15,9 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import constants.RelationshipType;
-import models.LabeledNodeWithProperties;
-import models.Relationship;
 import utils.StringUtils;
+import models.nodes.LabeledNodeWithProperties;
+import models.relationships.Relationship;
 
 
 public class Neo4jService {

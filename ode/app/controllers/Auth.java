@@ -11,7 +11,7 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import controllers.Application.Login;
-import models.User;
+import models.nodes.User;
 import views.html.home;
 import views.html.login;
 

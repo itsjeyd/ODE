@@ -1,7 +1,5 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.nio.charset.Charset;
 
@@ -108,51 +106,43 @@ public class LHS extends LabeledNodeWithProperties {
             this.lhs = lhs;
         }
         public Promise<LHS> apply(JsonNode json) {
-            JsonNode data = json.get("data");
+            final JsonNode data = json.get("data");
             if (data.size() > 0) {
-                // Process node-relationship-node triples appropriately;
-                // for now just get names of end nodes (i.e.,
-                // features) and add them to pairs with arbitrary
-                // default value
-                List<JsonNode> endNodes = data.findValues("end");
-                List<Promise<? extends Feature>> featureList =
-                    new ArrayList<Promise<? extends Feature>>();
-                for (JsonNode endNode: endNodes) {
-                    Promise<Feature> feature = Feature
-                        .getByURL(endNode.asText());
-                    featureList.add(feature);
-                }
-                Promise<List<Feature>> features = Promise
-                    .sequence(featureList);
-                Promise<ObjectNode> pairs = features.map(
-                    new Function<List<Feature>, ObjectNode>() {
-                        public ObjectNode apply(List<Feature> features) {
-                            ObjectNode pairs = Json.newObject();
-                            for (Feature feature: features) {
-                                ObjectNode value = Json.newObject();
-                                pairs.put(feature.name, value);
+                Promise<UUID> uuid = this.lhs.getUUID();
+                Promise<JsonNode> structure = uuid.map(
+                    new Function<UUID, JsonNode>() {
+                        public JsonNode apply(UUID uuid) {
+                            ObjectNode structure = Json.newObject();
+                            for (JsonNode row: data) {
+                                for (JsonNode column: row) {
+                                    JsonNode startNode = column.get(0)
+                                        .get("data");
+                                    JsonNode endNode = column.get(1)
+                                        .get("data");
+                                    if (startNode.has("uuid")) {
+                                        String featureName = endNode
+                                            .get("name").asText();
+                                        structure.put(
+                                            featureName, Json.newObject());
+                                    }
+                                }
                             }
-                            return pairs;
+                            return structure;
                         }
                     });
-                return pairs.map(new SetPairsFunction(this.lhs));
+                final LHS ruleLHS = this.lhs;
+                return structure.map(
+                    new Function<JsonNode, LHS>() {
+                        public LHS apply(JsonNode structure) {
+                            ruleLHS.json = structure;
+                            return ruleLHS;
+                        }
+                    });
             } else {
                 ObjectNode pairs = Json.newObject();
                 this.lhs.json = pairs;
                 return Promise.pure(this.lhs);
             }
-        }
-    }
-
-    private static class SetPairsFunction implements
-                                            Function<ObjectNode, LHS> {
-        private LHS lhs;
-        public SetPairsFunction(LHS lhs) {
-            this.lhs = lhs;
-        }
-        public LHS apply(ObjectNode pairs) {
-            this.lhs.json = pairs;
-            return this.lhs;
         }
     }
 

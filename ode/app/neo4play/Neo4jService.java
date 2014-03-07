@@ -256,7 +256,8 @@ public class Neo4jService {
     public static Promise<WS.Response> getPath(
         RelationshipType type, JsonNode relProps) {
         String query = "MATCH p=()-[r:" + type.name() + "]->() WHERE " +
-            buildConjunctiveConstraints("r", relProps) + " RETURN p";
+            buildConjunctiveConstraints("r", relProps) +
+            " RETURN extract(n IN nodes(p) | n)";
         return postCypherQuery(query);
     }
 

@@ -11,7 +11,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import managers.RuleManager;
+import managers.nodes.RuleManager;
 
 
 public class Rule extends LabeledNodeWithProperties {

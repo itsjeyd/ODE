@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import managers.RelationshipManager;
 import models.Model;
+import managers.relationships.RelationshipManager;
 import models.nodes.LabeledNodeWithProperties;
 
 

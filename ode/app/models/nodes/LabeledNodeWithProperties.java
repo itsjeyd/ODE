@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import managers.LabeledNodeWithPropertiesManager;
+import managers.nodes.LabeledNodeWithPropertiesManager;
 
 
 public abstract class LabeledNodeWithProperties extends LabeledNode {

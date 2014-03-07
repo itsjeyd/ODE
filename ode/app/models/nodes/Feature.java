@@ -16,7 +16,7 @@ import play.libs.F.Tuple;
 import constants.FeatureType;
 import constants.NodeType;
 import constants.RelationshipType;
-import managers.FeatureManager;
+import managers.nodes.FeatureManager;
 import models.relationships.AllowsRelationship;
 import models.relationships.Relationship;
 import models.relationships.HasRelationship;

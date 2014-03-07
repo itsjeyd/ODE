@@ -1,4 +1,4 @@
-package managers;
+package managers.relationships;
 
 import java.util.UUID;
 

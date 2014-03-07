@@ -6,7 +6,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
-import managers.HasValueRelationshipManager;
+import managers.relationships.HasValueRelationshipManager;
 import models.nodes.Feature;
 import models.nodes.Rule;
 import models.nodes.Value;

@@ -1,4 +1,4 @@
-package managers;
+package managers.nodes;
 
 import play.libs.F.Promise;
 

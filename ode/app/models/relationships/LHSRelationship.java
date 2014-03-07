@@ -6,7 +6,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
-import managers.LHSRelationshipManager;
+import managers.relationships.LHSRelationshipManager;
 import models.nodes.LHS;
 
 

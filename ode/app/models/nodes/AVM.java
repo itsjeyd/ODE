@@ -8,7 +8,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import managers.AVMManager;
+import managers.nodes.AVMManager;
 import models.relationships.HasSubstructureRelationship;
 
 

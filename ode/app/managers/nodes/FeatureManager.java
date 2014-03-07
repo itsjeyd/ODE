@@ -1,4 +1,4 @@
-package managers;
+package managers.nodes;
 
 import java.util.ArrayList;
 import java.util.List;

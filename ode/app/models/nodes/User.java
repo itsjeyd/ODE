@@ -9,7 +9,7 @@ import play.libs.F.Some;
 import play.libs.F.Tuple;
 
 import constants.NodeType;
-import managers.UserManager;
+import managers.nodes.UserManager;
 
 
 public class User extends LabeledNodeWithProperties {

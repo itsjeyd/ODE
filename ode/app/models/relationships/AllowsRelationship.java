@@ -13,8 +13,8 @@ import play.libs.F.Some;
 import play.libs.F.Tuple;
 
 import constants.RelationshipType;
-import managers.AllowsRelationshipManager;
-import managers.RelationshipManager;
+import managers.relationships.AllowsRelationshipManager;
+import managers.relationships.RelationshipManager;
 import models.nodes.Feature;
 import models.nodes.OntologyNode;
 

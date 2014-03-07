@@ -10,7 +10,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
-import managers.TypedRelationshipManager;
+import managers.relationships.TypedRelationshipManager;
 import models.nodes.Feature;
 
 

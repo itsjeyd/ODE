@@ -11,7 +11,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import managers.LHSManager;
+import managers.nodes.LHSManager;
 import models.relationships.HasRelationship;
 import models.relationships.LHSRelationship;
 

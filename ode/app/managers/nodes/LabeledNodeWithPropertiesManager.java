@@ -1,4 +1,4 @@
-package managers;
+package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -8,8 +8,8 @@ import play.libs.F.Some;
 import play.libs.F.Tuple;
 
 import constants.NodeType;
-import managers.FeatureManager;
-import managers.ValueManager;
+import managers.nodes.FeatureManager;
+import managers.nodes.ValueManager;
 
 
 public abstract class OntologyNode extends LabeledNodeWithProperties {

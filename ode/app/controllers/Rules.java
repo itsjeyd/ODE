@@ -153,8 +153,9 @@ public class Rules extends Controller {
         System.out.println("Request JSON: " + json.toString());
 
         // ...
-        Feature feature = new Feature(
-            json.findPath("featureName").textValue());
+        String featureName = json.findPath("featureName").textValue();
+        String featureType = json.findPath("featureType").textValue();
+        Feature feature = new Feature(featureName).setType(featureType);
         Promise<Boolean> added = new Rule(name).updateLHS(feature);
         return added.map(
             new Function<Boolean, Result>() {

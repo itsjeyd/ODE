@@ -57,11 +57,20 @@ public class LHS extends LabeledNodeWithProperties {
     public Promise<Boolean> add(final Feature feature) {
         final LHS lhs = this;
         Promise<UUID> uuid = this.getUUID();
-        return uuid.flatMap(
+        Promise<Boolean> connected = uuid.flatMap(
             new Function<UUID, Promise<Boolean>>() {
                 public Promise<Boolean> apply(UUID uuid) {
                     lhs.jsonProperties.put("uuid", uuid.toString());
                     return new HasRelationship(lhs, feature).create();
+                }
+            });
+        return connected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean connected) {
+                    if (connected) {
+                        return feature.addDefaultValue(lhs.rule);
+                    }
+                    return Promise.pure(false);
                 }
             });
     }

@@ -88,9 +88,12 @@ var Rule = Backbone.Model.extend({
 
   _addFeature: function(pair) {
     var featureName = pair.get('feature').get('name');
+    var featureType = pair.get('feature').get('type');
     var success = function(model, response, options) {};
     this._update('input', { lhs: this.get('lhs'),
-                            featureName: featureName, action: 'ADD' },
+                            featureName: featureName,
+                            featureType: featureType,
+                            action: 'ADD' },
                  success);
   },
 

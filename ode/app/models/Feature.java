@@ -48,6 +48,15 @@ public class Feature extends OntologyNode {
         return this.description;
     }
 
+    public Feature setType(String type) {
+        if (type.equals(FeatureType.COMPLEX.toString())) {
+            this.type = FeatureType.COMPLEX;
+        } else {
+            this.type = FeatureType.ATOMIC;
+        }
+        return this;
+    }
+
     public Promise<Boolean> isInUse() {
         Promise<List<Relationship>> incomingRelationships =
             this.getIncomingRelationships();
@@ -127,6 +136,16 @@ public class Feature extends OntologyNode {
                         new UpdateTypeFunction(feature, newType));
                     }
                 });
+    }
+
+    public Promise<Boolean> addDefaultValue(Rule rule) {
+        if (this.type.equals(FeatureType.COMPLEX)) {
+            return Promise.pure(true);
+        } else {
+            Value defaultValue = new Value("underspecified");
+            return new HasValueRelationship(this, defaultValue, rule)
+                .create();
+        }
     }
 
     public Promise<Boolean> delete() {

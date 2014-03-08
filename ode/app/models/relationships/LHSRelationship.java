@@ -7,6 +7,7 @@ import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.relationships.LHSRelationshipManager;
+import models.functions.ExistsFunction;
 import models.nodes.LHS;
 import models.nodes.Rule;
 
@@ -30,12 +31,6 @@ public class LHSRelationship extends TypedRelationship {
 
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction(this));
-    }
-
-    private class ExistsFunction implements Function<JsonNode, Boolean> {
-        public Boolean apply(JsonNode json) {
-            return json.get("data").size() > 0;
-        }
     }
 
     private class CreateFunction implements

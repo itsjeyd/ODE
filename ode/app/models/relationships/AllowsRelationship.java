@@ -15,6 +15,7 @@ import play.libs.F.Tuple;
 import constants.RelationshipType;
 import managers.relationships.AllowsRelationshipManager;
 import managers.relationships.RelationshipManager;
+import models.functions.ExistsFunction;
 import models.nodes.Feature;
 import models.nodes.OntologyNode;
 
@@ -79,12 +80,6 @@ public class AllowsRelationship extends TypedRelationship {
             });
     }
 
-
-    private class ExistsFunction implements Function<JsonNode, Boolean> {
-        public Boolean apply(JsonNode json) {
-            return json.get("data").size() > 0;
-        }
-    }
 
     private class GetOrCreateFunction
         implements Function<Boolean,

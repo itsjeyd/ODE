@@ -1,9 +1,7 @@
 package models.nodes;
 
 import java.util.UUID;
-import java.nio.charset.Charset;
 
-import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import models.relationships.HasSubstructureRelationship;

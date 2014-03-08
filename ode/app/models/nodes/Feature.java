@@ -98,7 +98,7 @@ public class Feature extends OntologyNode {
     }
 
     public void setTargets() {
-        Promise<List<JsonNode>> nodes = FeatureManager.values(this);
+        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
         Promise<List<String>> targets = nodes.map(new TargetsFunction());
         this.targets = targets.get();
     }

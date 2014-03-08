@@ -36,7 +36,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<List<JsonNode>> values(Feature feature) {
+    public static Promise<List<JsonNode>> getValues(Feature feature) {
         Promise<List<WS.Response>> responses = Neo4jService
             .getRelationshipTargets(feature.label.toString(),
                                     feature.jsonProperties,

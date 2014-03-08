@@ -143,10 +143,10 @@ public class Feature extends OntologyNode {
     }
 
     public Promise<Boolean> addDefaultValue(Rule rule, AVM parent) {
+        final Feature feature = this;
         if (this.type.equals(FeatureType.COMPLEX)) {
             final Substructure substructure = new Substructure(rule, parent);
             Promise<Boolean> created = substructure.create();
-            final Feature feature = this;
             return created.flatMap(
                 new Function<Boolean, Promise<Boolean>>() {
                     public Promise<Boolean> apply(Boolean created) {
@@ -158,7 +158,7 @@ public class Feature extends OntologyNode {
                 });
         } else {
             Value defaultValue = new Value("underspecified");
-            return new HasValueRelationship(this, defaultValue, rule)
+            return new HasValueRelationship(feature, defaultValue, rule)
                 .create();
         }
     }

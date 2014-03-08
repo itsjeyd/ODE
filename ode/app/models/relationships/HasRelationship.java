@@ -12,8 +12,6 @@ import models.nodes.Rule;
 
 
 public class HasRelationship extends TypedRelationship {
-    public LabeledNodeWithProperties startNode;
-    public LabeledNodeWithProperties endNode;
     public Rule rule;
 
     private HasRelationship() {

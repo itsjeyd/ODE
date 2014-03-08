@@ -10,43 +10,31 @@ import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import constants.NodeType;
 import managers.nodes.LHSManager;
 import models.relationships.HasRelationship;
 import models.relationships.LHSRelationship;
 
 
-public class LHS extends LabeledNodeWithProperties {
-    public Rule rule;
-    public JsonNode json;
-
-    private LHS() {
-        this.label = NodeType.AVM;
-        this.jsonProperties = Json.newObject();
-    }
+public class LHS extends AVM {
+    public Rule parent;
 
     public LHS(Rule rule) {
-        this();
-        this.rule = rule;
+        super(rule);
+        this.parent = rule;
     }
 
     public Promise<UUID> getUUID() {
-        Promise<UUID> ruleUUID = this.rule.getUUID();
-        return ruleUUID.map(
-            new Function<UUID, UUID>() {
-                public UUID apply(UUID ruleUUID) {
-                    byte[] bytes = ruleUUID.toString()
-                        .getBytes(Charset.forName("UTF-8"));
-                    return UUID.nameUUIDFromBytes(bytes);
-                }
-            });
+        Promise<UUID> parentUUID = this.parent.getUUID();
+        return parentUUID.map(new UUIDFunction());
     }
 
     public Promise<Boolean> create() {
-        Promise<UUID> ruleUUID = this.rule.getUUID();
-        Promise<Boolean> created = ruleUUID
-            .flatMap(new CreateFunction(this));
-        return created.flatMap(new ConnectToRuleFunction(this));
+        Promise<UUID> parentUUID = this.parent.getUUID();
+        return parentUUID.flatMap(new CreateFunction(this));
+    }
+
+    public Promise<Boolean> connectTo(Rule embeddingRule) {
+        return new LHSRelationship(embeddingRule, this).create();
     }
 
     public Promise<LHS> get() {
@@ -69,37 +57,11 @@ public class LHS extends LabeledNodeWithProperties {
                 public Promise<Boolean> apply(Boolean connected) {
                     if (connected) {
                         lhs.rule.lhs = lhs;
-                        return feature.addDefaultValue(lhs.rule);
+                        return feature.addDefaultValue(lhs.rule, lhs);
                     }
                     return Promise.pure(false);
                 }
             });
-    }
-
-    private class CreateFunction implements
-                                     Function<UUID, Promise<Boolean>> {
-        private LHS lhs;
-        public CreateFunction(LHS lhs) {
-            this.lhs = lhs;
-        }
-        public Promise<Boolean> apply(UUID ruleUUID) {
-            byte[] bytes = ruleUUID.toString()
-                .getBytes(Charset.forName("UTF-8"));
-            UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            this.lhs.jsonProperties.put("uuid", uuid.toString());
-            return LHSManager.create(this.lhs);
-        }
-    }
-
-    private class ConnectToRuleFunction
-        implements Function<Boolean, Promise<Boolean>> {
-        private LHS lhs;
-        public ConnectToRuleFunction(LHS lhs) {
-            this.lhs = lhs;
-        }
-        public Promise<Boolean> apply(Boolean created) {
-            return new LHSRelationship(this.lhs).create();
-        }
     }
 
     private class GetFunction implements Function<JsonNode, Promise<LHS>> {

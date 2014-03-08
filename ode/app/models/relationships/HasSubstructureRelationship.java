@@ -5,18 +5,23 @@ import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.relationships.HasSubstructureRelationshipManager;
-import models.nodes.AVM;
 import models.nodes.Feature;
+import models.nodes.Substructure;
 
 
 public class HasSubstructureRelationship extends TypedRelationship {
     public Feature startNode;
-    public AVM endNode;
+    public Substructure endNode;
 
-    public HasSubstructureRelationship(AVM avm) {
+    private HasSubstructureRelationship() {
         this.type = RelationshipType.HAS;
-        this.startNode = avm.embeddingFeature;
-        this.endNode = avm;
+    }
+
+    public HasSubstructureRelationship(
+        Feature startNode, Substructure endNode) {
+        this();
+        this.startNode = startNode;
+        this.endNode = endNode;
     }
 
     public Promise<Boolean> create() {

@@ -146,7 +146,18 @@ public class Rule extends LabeledNodeWithProperties {
             if (!created) {
                 return Promise.pure(false);
             }
-            return new LHS(this.rule).create();
+            final LHS lhs = new LHS(this.rule);
+            Promise<Boolean> lhsCreated = lhs.create();
+            final Rule rule = this.rule;
+            return lhsCreated.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean created) {
+                        if (created) {
+                            return lhs.connectTo(rule);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
         }
     }
 }

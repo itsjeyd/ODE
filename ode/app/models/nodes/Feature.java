@@ -143,9 +143,20 @@ public class Feature extends OntologyNode {
                 });
     }
 
-    public Promise<Boolean> addDefaultValue(Rule rule) {
+    public Promise<Boolean> addDefaultValue(Rule rule, AVM parent) {
         if (this.type.equals(FeatureType.COMPLEX)) {
-            return new AVM(rule, rule.lhs, this).create();
+            final Substructure substructure = new Substructure(rule, parent);
+            Promise<Boolean> created = substructure.create();
+            final Feature feature = this;
+            return created.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean created) {
+                        if (created) {
+                            return substructure.connectTo(feature);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
         } else {
             Value defaultValue = new Value("underspecified");
             return new HasValueRelationship(this, defaultValue, rule)

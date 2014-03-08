@@ -8,14 +8,19 @@ import play.libs.F.Promise;
 import constants.RelationshipType;
 import managers.relationships.LHSRelationshipManager;
 import models.nodes.LHS;
+import models.nodes.Rule;
 
 
 public class LHSRelationship extends TypedRelationship {
 
-    public LHSRelationship(LHS lhs) {
+    private LHSRelationship() {
         this.type = RelationshipType.LHS;
-        this.startNode = lhs.rule;
-        this.endNode = lhs;
+    }
+
+    public LHSRelationship(Rule startNode, LHS endNode) {
+        this();
+        this.startNode = startNode;
+        this.endNode = endNode;
     }
 
     public Promise<Boolean> exists() {

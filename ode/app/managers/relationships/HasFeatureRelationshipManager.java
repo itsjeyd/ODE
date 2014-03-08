@@ -13,19 +13,20 @@ import play.libs.F.Promise;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.RelationshipCreatedFunction;
-import models.relationships.HasRelationship;
+import models.relationships.HasFeatureRelationship;
 
 
-public class HasRelationshipManager {
+public class HasFeatureRelationshipManager {
 
-    public static Promise<JsonNode> get(HasRelationship relationship) {
+    public static Promise<JsonNode> get(
+        HasFeatureRelationship relationship) {
         Promise<WS.Response> response = Neo4jService.getTypedRelationship(
             relationship.startNode, relationship.endNode, relationship.type);
         return response.map(new JsonFunction());
     }
 
     public static Promise<Boolean> create(
-        final HasRelationship relationship) {
+        final HasFeatureRelationship relationship) {
         Promise<UUID> ruleUUID = relationship.startNode.rule.getUUID();
         Promise<WS.Response> response = ruleUUID.flatMap(
             new Function<UUID, Promise<WS.Response>>() {

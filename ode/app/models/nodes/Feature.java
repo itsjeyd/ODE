@@ -19,7 +19,6 @@ import constants.RelationshipType;
 import managers.nodes.FeatureManager;
 import models.relationships.AllowsRelationship;
 import models.relationships.Relationship;
-import models.relationships.HasRelationship;
 import models.relationships.HasValueRelationship;
 import models.relationships.TypedRelationship;
 

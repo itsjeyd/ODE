@@ -1,7 +1,6 @@
 package models.nodes;
 
 import java.util.UUID;
-import java.nio.charset.Charset;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,7 +10,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import managers.nodes.LHSManager;
-import models.relationships.HasRelationship;
+import models.relationships.HasFeatureRelationship;
 import models.relationships.LHSRelationship;
 
 
@@ -49,7 +48,7 @@ public class LHS extends AVM {
             new Function<UUID, Promise<Boolean>>() {
                 public Promise<Boolean> apply(UUID uuid) {
                     lhs.jsonProperties.put("uuid", uuid.toString());
-                    return new HasRelationship(lhs, feature).create();
+                    return new HasFeatureRelationship(lhs, feature).create();
                 }
             });
         return connected.flatMap(

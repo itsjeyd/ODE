@@ -91,8 +91,6 @@ public class Rule extends LabeledNodeWithProperties {
             String name = json.findValue("name").asText();
             String description = json.findValue("description").asText();
             Rule rule = new Rule(name, description);
-            String uuid = json.findValue("uuid").asText();
-            rule.jsonProperties.put("uuid", uuid);
             Promise<LHS> lhs = new LHS(rule).get();
             return lhs.map(new SetLHSFunction(rule));
         }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import play.libs.Json;
 import play.libs.F.Callback;
@@ -24,6 +25,11 @@ public class Value extends OntologyNode {
         this();
         this.name = name;
         this.jsonProperties.put("name", name);
+    }
+
+    public Promise<JsonNode> toJSON() {
+        JsonNode node = new TextNode(this.name);
+        return Promise.pure(node);
     }
 
     public static Promise<List<Value>> all() {

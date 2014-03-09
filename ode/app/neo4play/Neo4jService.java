@@ -180,6 +180,20 @@ public class Neo4jService {
         }});
     }
 
+    public static Promise<WS.Response> getRelationshipTarget(
+        LabeledNodeWithProperties startNode, RelationshipType relType,
+        JsonNode relationshipProperties) {
+        String startNodeProps = buildConjunctiveConstraints(
+            "s", startNode.jsonProperties);
+        String relProps = buildConjunctiveConstraints(
+            "r", relationshipProperties);
+        String query = String.format(
+            "MATCH (s:%s)-[r:%s]-(e) WHERE %s AND %s RETURN e",
+            startNode.label.toString(), relType.name(),
+            startNodeProps, relProps);
+        return postCypherQuery(query);
+    }
+
     public static Promise<List<WS.Response>> getRelationshipTargets(
         String nodeLabel, JsonNode nodeProps, String relationshipType) {
         Promise<WS.Response> response = getOutgoingRelationshipsByType(

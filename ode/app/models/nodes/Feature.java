@@ -97,6 +97,21 @@ public class Feature extends OntologyNode {
         return TypedRelationship.getAllFrom(this, type);
     }
 
+    public Promise<JsonNode> getValue(Rule rule, AVM avm) {
+        if (this.type.equals(FeatureType.COMPLEX)) {
+            return new Substructure(rule, avm).toJSON();
+        } else {
+            Promise<Value> value =
+                HasValueRelationship.getEndNode(this, rule);
+            return value.flatMap(
+                new Function<Value, Promise<JsonNode>>() {
+                    public Promise<JsonNode> apply(Value value) {
+                        return value.toJSON();
+                    }
+                });
+        }
+    }
+
     public void setTargets() {
         Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
         Promise<List<String>> targets = nodes.map(new TargetsFunction());

@@ -49,10 +49,6 @@ public class Rules extends Controller {
         return results.map(
             new Function<Tuple<List<Feature>, Rule>, Result>() {
                 public Result apply(Tuple<List<Feature>, Rule> results) {
-                    List<Feature> globalFeatureList = results._1;
-                    for (Feature feature: globalFeatureList) {
-                        feature.setTargets();
-                    }
                     return ok(input.render(results._1, results._2));
                 }
             });

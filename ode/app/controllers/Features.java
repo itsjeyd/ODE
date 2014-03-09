@@ -67,13 +67,7 @@ public class Features extends Controller {
             new Function<Tuple<List<Feature>, List<Value>>, Result>() {
                 public Result apply(
                     Tuple<List<Feature>, List<Value>> lists) {
-                    List<Feature> globalFeatureList = lists._1;
-                    for (Feature feature: globalFeatureList) {
-                        feature.setTargets();
-                    }
-                    List<Value> globalValueList = lists._2;
-                    return ok(features.render(globalFeatureList,
-                                              globalValueList));
+                    return ok(features.render(lists._1, lists._2));
             }});
     }
 

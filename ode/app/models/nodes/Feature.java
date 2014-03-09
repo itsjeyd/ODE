@@ -44,6 +44,19 @@ public class Feature extends OntologyNode {
         this.description = description;
     }
 
+    protected Promise<Feature> setTargets() {
+        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
+        Promise<List<String>> targets = nodes.map(new TargetsFunction());
+        final Feature feature = this;
+        return targets.map(
+            new Function<List<String>, Feature>() {
+                public Feature apply(List<String> targets) {
+                    feature.targets = targets;
+                    return feature;
+                }
+            });
+    }
+
     public String getType() {
         return this.type.toString();
     }
@@ -75,7 +88,18 @@ public class Feature extends OntologyNode {
 
     public static Promise<List<Feature>> all() {
         Promise<List<JsonNode>> json = FeatureManager.all();
-        return json.map(new AllFunction());
+        Promise<List<Feature>> features = json.map(new AllFunction());
+        return features.flatMap(
+            new Function<List<Feature>, Promise<List<Feature>>>() {
+                public Promise<List<Feature>> apply(List<Feature> features) {
+                    List<Promise<? extends Feature>> all =
+                        new ArrayList<Promise<? extends Feature>>();
+                    for (Feature feature: features) {
+                        all.add(feature.setTargets());
+                    }
+                    return Promise.sequence(all);
+                }
+            });
     }
 
     public Promise<Feature> get() {
@@ -110,12 +134,6 @@ public class Feature extends OntologyNode {
                     }
                 });
         }
-    }
-
-    public void setTargets() {
-        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
-        Promise<List<String>> targets = nodes.map(new TargetsFunction());
-        this.targets = targets.get();
     }
 
     public Promise<Boolean> updateName(final String newName) {

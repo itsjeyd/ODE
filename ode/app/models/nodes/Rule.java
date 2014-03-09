@@ -57,7 +57,8 @@ public class Rule extends LabeledNodeWithProperties {
 
     public Promise<Boolean> updateName(final String newName) {
         Promise<Rule> rule = this.get();
-        return rule.flatMap(new Function<Rule, Promise<Boolean>>() {
+        return rule.flatMap(
+            new Function<Rule, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Rule rule) {
                     return RuleManager.updateName(rule, newName);
                 }
@@ -66,7 +67,8 @@ public class Rule extends LabeledNodeWithProperties {
 
     public Promise<Boolean> updateDescription(final String newDescription) {
         Promise<Rule> rule = this.get();
-        return rule.flatMap(new Function<Rule, Promise<Boolean>>() {
+        return rule.flatMap(
+            new Function<Rule, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Rule rule) {
                     return RuleManager.updateDescription(
                         rule, newDescription);

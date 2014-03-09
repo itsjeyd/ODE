@@ -105,7 +105,8 @@ public class Feature extends OntologyNode {
 
     public Promise<Boolean> updateName(final String newName) {
         Promise<Feature> feature = this.get();
-        return feature.flatMap(new Function<Feature, Promise<Boolean>>() {
+        return feature.flatMap(
+            new Function<Feature, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Feature feature) {
                     return FeatureManager.updateName(feature, newName);
                 }
@@ -114,7 +115,8 @@ public class Feature extends OntologyNode {
 
     public Promise<Boolean> updateDescription(final String newDescription) {
         Promise<Feature> feature = this.get();
-        return feature.flatMap(new Function<Feature, Promise<Boolean>>() {
+        return feature.flatMap(
+            new Function<Feature, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Feature feature) {
                     return FeatureManager.updateDescription(
                         feature, newDescription);

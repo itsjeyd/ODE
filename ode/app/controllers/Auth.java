@@ -61,16 +61,17 @@ public class Auth extends Controller {
         Promise<Option<User>> user = new User(
             loginForm.get().email,
             loginForm.get().password).get();
-        return user.map(new Function<Option<User>, Result>() {
-            public Result apply(Option<User> user) {
-                if (user.isDefined()) {
-                    session().clear();
-                    session("username", user.get().username);
-                    flash("success", "Login successful.");
-                    return redirect(routes.Application.home());
-                } else {
-                    flash("error", "Login failed: Unknown user.");
-                    return badRequest(login.render(loginForm));
+        return user.map(
+            new Function<Option<User>, Result>() {
+                public Result apply(Option<User> user) {
+                    if (user.isDefined()) {
+                        session().clear();
+                        session("username", user.get().username);
+                        flash("success", "Login successful.");
+                        return redirect(routes.Application.home());
+                    } else {
+                        flash("error", "Login failed: Unknown user.");
+                        return badRequest(login.render(loginForm));
                 }
             }
         });

@@ -38,7 +38,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
 
     public static Promise<List<JsonNode>> getValues(Feature feature) {
         Promise<List<WS.Response>> responses = Neo4jService
-            .getRelationshipTargets(feature.label.toString(),
+            .getRelationshipTargets(feature.getLabel(),
                                     feature.jsonProperties,
                                     RelationshipType.ALLOWS.toString());
         return responses.map(
@@ -62,7 +62,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             "type", "description");
         newProps.put("name", newName);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            feature.label.toString(), feature.jsonProperties, newProps);
+            feature.getLabel(), feature.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
     }
 
@@ -72,7 +72,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         ObjectNode newProps = feature.jsonProperties.deepCopy();
         newProps.put("description", newDescription);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            feature.label.toString(), feature.jsonProperties, newProps);
+            feature.getLabel(), feature.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
     }
 
@@ -83,13 +83,13 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         ObjectNode newProps = feature.jsonProperties.deepCopy();
         newProps.put("type", newType);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            feature.label.toString(), feature.jsonProperties, newProps);
+            feature.getLabel(), feature.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
     }
 
     public static Promise<Boolean> delete(Feature feature) {
         Promise<WS.Response> response = Neo4jService
-            .deleteLabeledNodeWithProperties(feature.label.toString(),
+            .deleteLabeledNodeWithProperties(feature.getLabel(),
                                              feature.jsonProperties);
         return response.map(new NodeDeletedFunction());
     }

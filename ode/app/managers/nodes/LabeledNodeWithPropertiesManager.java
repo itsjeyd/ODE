@@ -16,14 +16,14 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
     public static Promise<JsonNode> get(LabeledNodeWithProperties node) {
         Promise<WS.Response> response = Neo4jService
             .getLabeledNodeWithProperties(
-                node.label.toString(), node.jsonProperties);
+                node.getLabel(), node.jsonProperties);
         return response.map(new JsonFunction());
     }
 
     public static Promise<Boolean> create(LabeledNodeWithProperties node) {
         Promise<WS.Response> response = Neo4jService
             .createLabeledNodeWithProperties(
-                node.label.toString(), node.jsonProperties);
+                node.getLabel(), node.jsonProperties);
         return response.map(new NodeCreatedFunction());
     }
 

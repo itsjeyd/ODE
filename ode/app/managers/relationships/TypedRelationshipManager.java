@@ -32,7 +32,7 @@ public class TypedRelationshipManager {
     public static Promise<JsonNode> getAllFrom(
         Feature startNode, RelationshipType type) {
         Promise<WS.Response> response = Neo4jService
-            .getOutgoingRelationshipsByType(startNode.label.toString(),
+            .getOutgoingRelationshipsByType(startNode.getLabel(),
                                             startNode.jsonProperties,
                                             type.name());
         return response.map(new JsonFunction());

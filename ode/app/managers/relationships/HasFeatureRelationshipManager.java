@@ -27,7 +27,7 @@ public class HasFeatureRelationshipManager extends HasRelationshipManager {
                     ObjectNode jsonProperties = Json.newObject();
                     jsonProperties.put("uuid", uuid.toString());
                     return Neo4jService
-                    .getRelationshipTargets(startNode.label.toString(),
+                    .getRelationshipTargets(startNode.getLabel(),
                                             jsonProperties,
                                             RelationshipType.HAS.toString());
                 }

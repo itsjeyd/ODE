@@ -30,7 +30,7 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
 
     public static Promise<JsonNode> getIncomingRelationships(Value value) {
         Promise<WS.Response> response = Neo4jService
-            .getIncomingRelationshipsByType(value.label.toString(),
+            .getIncomingRelationshipsByType(value.getLabel(),
                                             value.jsonProperties,
                                             RelationshipType.ALLOWS.name());
         return response.map(new JsonFunction());
@@ -40,13 +40,13 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
         ObjectNode newProps = Json.newObject();
         newProps.put("name", newName);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            value.label.toString(), value.jsonProperties, newProps);
+            value.getLabel(), value.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
     }
 
     public static Promise<Boolean> delete(Value value) {
         Promise<WS.Response> response = Neo4jService
-            .deleteLabeledNodeWithProperties(value.label.toString(),
+            .deleteLabeledNodeWithProperties(value.getLabel(),
                                              value.jsonProperties);
         return response.map(new NodeDeletedFunction());
     }

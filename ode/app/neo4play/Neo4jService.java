@@ -189,8 +189,7 @@ public class Neo4jService {
             "r", relationshipProperties);
         String query = String.format(
             "MATCH (s:%s)-[r:%s]-(e) WHERE %s AND %s RETURN e",
-            startNode.label.toString(), relType.name(),
-            startNodeProps, relProps);
+            startNode.getLabel(), relType.name(), startNodeProps, relProps);
         return postCypherQuery(query);
     }
 
@@ -212,7 +211,7 @@ public class Neo4jService {
             "e", endNode.jsonProperties);
         String query = String.format(
             "MATCH (s:%s)-[r:%s]-(e:%s) WHERE %s AND %s RETURN r",
-            startNode.label.toString(), type.name(), endNode.label.toString(),
+            startNode.getLabel(), type.name(), endNode.getLabel(),
             startNodeProps, endNodeProps);
         return postCypherQuery(query);
     }
@@ -221,9 +220,9 @@ public class Neo4jService {
         LabeledNodeWithProperties startNode,
         LabeledNodeWithProperties endNode, final RelationshipType type) {
         Promise<String> startNodeURL = getNodeURL(
-            startNode.label.toString(), startNode.jsonProperties);
+            startNode.getLabel(), startNode.jsonProperties);
         Promise<String> endNodeURL = getNodeURL(
-            endNode.label.toString(), endNode.jsonProperties);
+            endNode.getLabel(), endNode.jsonProperties);
         Promise<Tuple<String, String>> urls = startNodeURL.zip(
             endNodeURL);
         return urls.flatMap(
@@ -244,9 +243,9 @@ public class Neo4jService {
         LabeledNodeWithProperties endNode, final RelationshipType type,
         final JsonNode data) {
         Promise<String> startNodeURL = getNodeURL(
-            startNode.label.toString(), startNode.jsonProperties);
+            startNode.getLabel(), startNode.jsonProperties);
         Promise<String> endNodeURL = getNodeURL(
-            endNode.label.toString(), endNode.jsonProperties);
+            endNode.getLabel(), endNode.jsonProperties);
         Promise<Tuple<String, String>> urls = startNodeURL.zip(
             endNodeURL);
         return urls.flatMap(

@@ -32,7 +32,7 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
 
     public static Promise<String> getProperty(Rule rule, String propName) {
         Promise<String> ruleURL = Neo4jService
-            .getNodeURL(rule.label.toString(), rule.jsonProperties);
+            .getNodeURL(rule.getLabel(), rule.jsonProperties);
         Promise<WS.Response> response = ruleURL.flatMap(
             new Function<String, Promise<WS.Response>>() {
                 public Promise<WS.Response> apply(String ruleURL) {
@@ -59,7 +59,7 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
             .retain("uuid", "description");
         newProps.put("name", newName);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            rule.label.toString(), rule.jsonProperties, newProps);
+            rule.getLabel(), rule.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
     }
 
@@ -68,13 +68,13 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         ObjectNode newProps = rule.jsonProperties.deepCopy();
         newProps.put("description", newDescription);
         Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            rule.label.toString(), rule.jsonProperties, newProps);
+            rule.getLabel(), rule.jsonProperties, newProps);
         return response.map(new UpdatedFunction());
     }
 
     public static Promise<Boolean> delete(Rule rule) {
         Promise<WS.Response> response = Neo4jService
-            .deleteLabeledNodeWithProperties(rule.label.toString(),
+            .deleteLabeledNodeWithProperties(rule.getLabel(),
                                              rule.jsonProperties);
         return response.map(new NodeDeletedFunction());
     }

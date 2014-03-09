@@ -17,7 +17,7 @@ public class RelationshipManager {
     public static Promise<JsonNode> getAllTo(
         LabeledNodeWithProperties endNode) {
         Promise<WS.Response> response = Neo4jService
-            .getIncomingRelationships(endNode.label.toString(),
+            .getIncomingRelationships(endNode.getLabel(),
                                       endNode.jsonProperties);
         return response.map(new JsonFunction());
     }

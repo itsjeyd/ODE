@@ -97,27 +97,4 @@ public abstract class AVM extends LabeledNodeWithProperties {
         }
     }
 
-    protected class UUIDFunction implements Function<UUID, UUID> {
-        public UUID apply(UUID parentUUID) {
-            byte[] bytes = parentUUID.toString()
-                .getBytes(Charset.forName("UTF-8"));
-            return UUID.nameUUIDFromBytes(bytes);
-        }
-    }
-
-    protected class CreateFunction implements
-                                     Function<UUID, Promise<Boolean>> {
-        private AVM avm;
-        public CreateFunction(AVM avm) {
-            this.avm = avm;
-        }
-        public Promise<Boolean> apply(UUID parentUUID) {
-            byte[] bytes = parentUUID.toString()
-                .getBytes(Charset.forName("UTF-8"));
-            UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            this.avm.jsonProperties.put("uuid", uuid.toString());
-            return AVMManager.create(this.avm);
-        }
-    }
-
 }

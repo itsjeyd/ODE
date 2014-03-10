@@ -123,7 +123,7 @@ public class Feature extends OntologyNode {
 
     public Promise<JsonNode> getValue(Rule rule, AVM avm) {
         if (this.type.equals(FeatureType.COMPLEX)) {
-            return new Substructure(rule, avm).toJSON();
+            return new Substructure(rule, avm, this).toJSON();
         } else {
             Promise<Value> value =
                 HasValueRelationship.getEndNode(this, rule);
@@ -180,7 +180,8 @@ public class Feature extends OntologyNode {
     public Promise<Boolean> addDefaultValue(Rule rule, AVM parent) {
         final Feature feature = this;
         if (this.type.equals(FeatureType.COMPLEX)) {
-            final Substructure substructure = new Substructure(rule, parent);
+            final Substructure substructure =
+                new Substructure(rule, parent, this);
             Promise<Boolean> created = substructure.create();
             return created.flatMap(
                 new Function<Boolean, Promise<Boolean>>() {

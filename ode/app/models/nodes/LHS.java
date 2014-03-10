@@ -1,12 +1,14 @@
 package models.nodes;
 
 import java.util.UUID;
+import java.nio.charset.Charset;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
+import managers.nodes.AVMManager;
 import models.relationships.HasFeatureRelationship;
 import models.relationships.LHSRelationship;
 
@@ -64,6 +66,29 @@ public class LHS extends AVM {
                     return Promise.pure(false);
                 }
             });
+    }
+
+    protected static class UUIDFunction implements Function<UUID, UUID> {
+        public UUID apply(UUID parentUUID) {
+            byte[] bytes = parentUUID.toString()
+                .getBytes(Charset.forName("UTF-8"));
+            return UUID.nameUUIDFromBytes(bytes);
+        }
+    }
+
+    protected static class CreateFunction
+        implements Function<UUID, Promise<Boolean>> {
+        private LHS lhs;
+        public CreateFunction(LHS lhs) {
+            this.lhs = lhs;
+        }
+        public Promise<Boolean> apply(UUID parentUUID) {
+            byte[] bytes = parentUUID.toString()
+                .getBytes(Charset.forName("UTF-8"));
+            UUID uuid = UUID.nameUUIDFromBytes(bytes);
+            this.lhs.jsonProperties.put("uuid", uuid.toString());
+            return AVMManager.create(this.lhs);
+        }
     }
 
 }

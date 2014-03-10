@@ -237,6 +237,7 @@ var AVM = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.accept = options.accept;
+    this.uuid = options.uuid;
   },
 
 });
@@ -247,9 +248,15 @@ var Pair = Backbone.Model.extend({
   initialize: function(options) {
     if (options.feature.get('type') === 'complex') {
       var accept = '#' + options.feature.get('targets').join(', #');
-      this.set('value', new AVM([], { accept: accept }));
+      var pairs = [];
+      _.each(_.without(_.keys(options.value), "uuid"), function(k) {
+        pairs.push(new Pair({ feature: featureList.get(k),
+                              value: options.value[k] }));
+      });
+      this.set('value', new AVM(pairs, { accept: accept,
+                                         uuid: options.value['uuid'] }));
     } else {
-      this.set('value', 'underspecified');
+      this.set('value', options.value);
     }
   },
 
@@ -291,6 +298,7 @@ var AVMView = Backbone.View.extend({
 
   render: function() {
     this.$el.empty();
+    this.$el.attr('id', this.collection.uuid);
     this._renderBracket('left');
     this._renderContent();
     this._renderPairs();
@@ -316,7 +324,12 @@ var AVMView = Backbone.View.extend({
             type: item.data('type'),
             targets: item.dataToArray('targets'),
           });
-          view.collection.add(new Pair({ feature: feature }));
+          if (feature.get('type') === 'complex') {
+            view.collection.add(new Pair({ feature: feature, value: {} }));
+          } else {
+            view.collection.add(new Pair({ feature: feature,
+                                           value: "underspecified" }));
+          }
         },
       });
     content.append(placeholder);
@@ -391,8 +404,7 @@ var PairView = Backbone.View.extend({
 
   _renderValue: function() {
     var selectMenu = $.selectMenu();
-    var options = ['underspecified']
-      .concat(this.model.get('feature').get('targets'));
+    var options = this.model.get('feature').get('targets');
     _.each(options, function(o) {
       selectMenu.append($.option(o));
     });
@@ -465,11 +477,13 @@ $(document).ready(function() {
   var lhs = $('#rule-lhs').data('json');
 
   var pairs = [];
-  _.each(_.keys(lhs), function(fname) {
-    pairs.push(new Pair({ feature: featureList.get(fname) }));
+  _.each(_.without(_.keys(lhs), "uuid"), function(k) {
+    pairs.push(new Pair({ feature: featureList.get(k),
+                          value: lhs[k] }));
   });
 
-  var avm = new AVM(pairs, { accept: '.feature-item' });
+  var avm = new AVM(pairs, { accept: '.feature-item',
+                             uuid: lhs['uuid'] });
 
   var rule = new Rule({
     id: name,

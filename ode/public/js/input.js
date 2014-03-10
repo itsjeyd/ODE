@@ -142,6 +142,7 @@ var RuleView = Backbone.View.extend({
   },
 
   render: function() {
+    this.$el.empty();
     this.$el.append($.h3('').attr('id', 'rule-name'));
     this.$el.append($.p('').attr('id', 'rule-description'));
     this._renderName();

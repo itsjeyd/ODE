@@ -9,7 +9,6 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import managers.nodes.AVMManager;
-import models.relationships.HasFeatureRelationship;
 import models.relationships.LHSRelationship;
 
 
@@ -47,23 +46,17 @@ public class LHS extends AVM {
             });
     }
 
-    public Promise<Boolean> add(final Feature feature) {
+    public Promise<Boolean> add(final Feature feature, final UUID uuid) {
         final LHS lhs = this;
-        Promise<UUID> uuid = this.getUUID();
-        Promise<Boolean> connected = uuid.flatMap(
+        Promise<UUID> lhsUUID = this.getUUID();
+        return lhsUUID.flatMap(
             new Function<UUID, Promise<Boolean>>() {
-                public Promise<Boolean> apply(UUID uuid) {
-                    lhs.jsonProperties.put("uuid", uuid.toString());
-                    return new HasFeatureRelationship(lhs, feature).create();
-                }
-            });
-        return connected.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean connected) {
-                    if (connected) {
-                        return feature.addDefaultValue(lhs.rule, lhs);
+                public Promise<Boolean> apply(UUID lhsUUID) {
+                    if (lhsUUID.equals(uuid)) {
+                        lhs.jsonProperties.put("uuid", lhsUUID.toString());
+                        return lhs.add(feature);
                     }
-                    return Promise.pure(false);
+                    return new Substructure(lhs.rule, uuid).add(feature);
                 }
             });
     }

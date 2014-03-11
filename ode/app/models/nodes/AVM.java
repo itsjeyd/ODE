@@ -3,7 +3,6 @@ package models.nodes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.nio.charset.Charset;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,7 +12,6 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import managers.nodes.AVMManager;
 import models.relationships.HasFeatureRelationship;
 
 
@@ -86,6 +84,21 @@ public abstract class AVM extends LabeledNodeWithProperties {
                 }
             });
         return json;
+    }
+
+    public Promise<Boolean> add(final Feature feature) {
+        final AVM avm = this;
+        Promise<Boolean> connected =
+            new HasFeatureRelationship(avm, feature).create();
+        return connected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean connected) {
+                    if (connected) {
+                        return feature.addDefaultValue(avm.rule, avm);
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     private class Pair {

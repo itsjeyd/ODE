@@ -14,6 +14,11 @@ public class Substructure extends AVM {
     public AVM parent;
     public Feature embeddingFeature;
 
+    protected Substructure(Rule rule, UUID uuid) {
+        super(rule);
+        this.jsonProperties.put("uuid", uuid.toString());
+    }
+
     public Substructure(Rule rule, AVM parent, Feature embeddingFeature) {
         super(rule);
         this.parent = parent;
@@ -26,7 +31,10 @@ public class Substructure extends AVM {
     }
 
     public Promise<Boolean> create() {
-        Promise<UUID> parentUUID = this.parent.getUUID();
+        Promise<UUID> parentUUID =
+            Promise.pure(
+                UUID.fromString(this.parent.jsonProperties.findValue("uuid")
+                                .asText()));
         return parentUUID.flatMap(new CreateFunction(this));
     }
 

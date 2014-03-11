@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,6 +17,7 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import models.nodes.Feature;
+import models.nodes.LHS;
 import models.nodes.Rule;
 import views.html.input;
 import views.html.rules;
@@ -149,10 +151,13 @@ public class Rules extends Controller {
         System.out.println("Request JSON: " + json.toString());
 
         // ...
+        Rule rule = new Rule(name);
+        LHS lhs = new LHS(rule);
+        String uuid = json.findPath("uuid").textValue();
         String featureName = json.findPath("featureName").textValue();
         String featureType = json.findPath("featureType").textValue();
         Feature feature = new Feature(featureName).setType(featureType);
-        Promise<Boolean> added = new Rule(name).updateLHS(feature);
+        Promise<Boolean> added = lhs.add(feature, UUID.fromString(uuid));
         return added.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
 import play.libs.F.Function;
@@ -53,6 +56,30 @@ public class Feature extends OntologyNode {
                 public Feature apply(List<String> targets) {
                     feature.targets = targets;
                     return feature;
+                }
+            });
+    }
+
+    protected Promise<List<String>> getTargets() {
+        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
+        return nodes.map(new TargetsFunction());
+    }
+
+    public Promise<JsonNode> toJSON() {
+        final ObjectNode json = Json.newObject();
+        json.put("name", this.name);
+        json.put("type", this.getType());
+        Promise<List<String>> targets = this.getTargets();
+        return targets.map(
+            new Function<List<String>, JsonNode>() {
+                public JsonNode apply(List<String> targets) {
+                    ArrayNode targetNodes =
+                        JsonNodeFactory.instance.arrayNode();
+                    for (String target: targets) {
+                        targetNodes.add(target);
+                    }
+                    json.put("targets", targetNodes);
+                    return json;
                 }
             });
     }

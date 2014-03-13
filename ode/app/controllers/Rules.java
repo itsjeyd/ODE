@@ -154,8 +154,8 @@ public class Rules extends Controller {
         Rule rule = new Rule(name);
         LHS lhs = new LHS(rule);
         String uuid = json.findPath("uuid").textValue();
-        String featureName = json.findPath("featureName").textValue();
-        String featureType = json.findPath("featureType").textValue();
+        String featureName = json.findPath("name").textValue();
+        String featureType = json.findPath("type").textValue();
         Feature feature = new Feature(featureName).setType(featureType);
         Promise<Boolean> added = lhs.add(feature, UUID.fromString(uuid));
         return added.map(

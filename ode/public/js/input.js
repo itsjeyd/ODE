@@ -81,20 +81,6 @@ var Rule = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules';
-    this.get('lhs').on({
-      'add': this._addFeature,
-    }, this);
-  },
-
-  _addFeature: function(pair) {
-    var featureName = pair.get('feature').get('name');
-    var featureType = pair.get('feature').get('type');
-    var success = function(model, response, options) {};
-    this._update('input', { lhs: this.get('lhs'),
-                            featureName: featureName,
-                            featureType: featureType,
-                            action: 'ADD' },
-                 success);
   },
 
   _update: function(field, attrs, success) {
@@ -233,55 +219,19 @@ var RuleView = Backbone.View.extend({
 
 // AVMs: models
 
-var AVM = Backbone.Collection.extend({
-
-  initialize: function(models, options) {
-    this.accept = options.accept;
-    this.uuid = options.uuid;
-  },
-
-});
-
-
-var Pair = Backbone.Model.extend({
-
-  initialize: function(options) {
-    if (options.feature.get('type') === 'complex') {
-      var accept = '#' + options.feature.get('targets').join(', #');
-      var pairs = [];
-      _.each(_.without(_.keys(options.value), "uuid"), function(k) {
-        pairs.push(new Pair({ feature: featureList.get(k),
-                              value: options.value[k] }));
-      });
-      this.set('value', new AVM(pairs, { accept: accept,
-                                         uuid: options.value['uuid'] }));
-    } else {
-      this.set('value', options.value);
-    }
-  },
-
-});
+// ...
 
 
 // AVMs: views
 
 var AVMView = Backbone.View.extend({
 
-  className: 'avm',
+  // ...
 
   initialize: function() {
-    this.collection.on({
-      'add': function(newPair) {
-        this._renderPair(newPair);
-        this.trigger('update');
-      },
-    }, this);
+    // ...
     this.on({
-      'inserted': this._adjustBracketHeight,
-      'update': function() {
-        this._adjustBracketHeight();
-        this.trigger('re-rendered');
-      },
+      // ...
       'remove:pair': function(pair) {
         this.collection.remove(pair);
         this.trigger('update');
@@ -289,74 +239,207 @@ var AVMView = Backbone.View.extend({
     }, this);
   },
 
-  _renderPair: function(pair) {
-    var pairView = new PairView({ model: pair, parentView: this });
-    pairView.render();
-    pairView.$el
-      .insertBefore(this.$el.children('.content').children('.placeholder'));
-  },
+  // ...
 
   render: function() {
     this.$el.empty();
-    this.$el.attr('id', this.collection.uuid);
-    this._renderBracket('left');
-    this._renderContent();
-    this._renderPairs();
-    this._renderBracket('right');
-    this.$el.append($.emptyButton().css('visibility', 'hidden'));
-    return this;
+    // ...
   },
 
-  _renderBracket: function(type) {
-    this.$el.append($.div('bracket bracket-' + type));
-  },
-
-  _renderContent: function() {
-    var content = $.div('content');
-    var view = this;
-    var placeholder = $.placeholder('Drop feature here ...')
-      .droppable({
-        accept: view.collection.accept,
-        drop: function(e, ui) {
-          var item = $(ui.helper);
-          var feature = new Feature({
-            name: item.data('name'),
-            type: item.data('type'),
-            targets: item.dataToArray('targets'),
-          });
-          if (feature.get('type') === 'complex') {
-            view.collection.add(new Pair({ feature: feature, value: {} }));
-          } else {
-            view.collection.add(new Pair({ feature: feature,
-                                           value: "underspecified" }));
-          }
-        },
-      });
-    content.append(placeholder);
-    this.$el.append(content);
-  },
-
-  _renderPairs: function() {
-    this.collection.each(function(pair) { this._renderPair(pair) }, this);
-  },
-
-  _adjustBracketHeight: function() {
-    var content = this.$el.children('.content');
-    var height = content.children('.placeholder').height();
-    if (!this.collection.isEmpty()) {
-      height = content.height();
-    }
-    this.$el.children('.bracket').height(height);
-  },
+  // ...
 
   events: {
-    'mouseenter': '_showEmptyButton',
-    'mouseleave': '_hideEmptyButton',
+    // ...
     'click .empty-button': function() {
       this.collection.reset();
       this.render();
       this.trigger('re-rendered');
     },
+  },
+
+  // ...
+
+});
+
+var PairView = Backbone.View.extend({
+
+  // ...
+
+  events: {
+    // ...
+    'click .remove-button': function() {
+      this.remove();
+      this.parentView.trigger('remove:pair', this.model);
+    },
+  },
+
+});
+
+
+
+var AVM = Backbone.Collection.extend({
+
+  initialize: function(models, options) {
+    this.ruleName = options.ruleName;
+    this.uuid = options.json.uuid;
+    this.accept = options.accept || '.feature-item';
+    var avm = this;
+    _.each(options.json.pairs, (function(pair) {
+      avm.add(new Pair(null, { parent: avm,
+                               attribute: pair.attribute,
+                               value: pair.value }));
+    }));
+  },
+
+});
+
+var Pair = Backbone.Model.extend({
+
+  initialize: function(attrs, options) {
+    this.parent = options.parent;
+    this.set('attribute', new Feature({
+      name: options.attribute.name,
+      type: options.attribute.type,
+      targets: options.attribute.targets
+    }));
+    if (typeof options.value === 'string') {
+      this.set('value', options.value);
+    } else {
+      var accept = '#' + this.get('attribute').get('targets').join(', #');
+      this.set('value', new AVM(null, { ruleName: this.parent.ruleName,
+                                        accept: accept,
+                                        json: options.value }));
+    }
+  },
+
+  isNew: function() { return false }, // Will become obsolete once we update routes ...
+
+  create: function() {
+    var success = function(model, response, options) {
+      model.parent.add(model);
+    };
+    this.save({ uuid: this.parent.uuid, action: 'ADD' },
+              { url: '/rules/' + this.parent.ruleName + '/input',
+                success: success });
+  },
+
+});
+
+var AVMView = Backbone.View.extend({
+
+  className: 'avm',
+
+  attributes: function() {
+    return {
+      id: this.collection.uuid,
+    }
+  },
+
+  initialize: function(options) {
+    this.parentView = options.parentView;
+    if (this.parentView) {
+      this.parentView.on({
+        'inserted': function() {
+          this.trigger('inserted');
+        },
+      }, this);
+    }
+    this.on({
+      'inserted': function() {
+        this.trigger('rendered');
+        this._removeBrackets();
+        this._renderBrackets();
+      },
+      'update': function() {
+        this._removeBrackets();
+        this._renderBrackets();
+        this.trigger('re-rendered');
+      },
+    }, this);
+    this.collection.on({
+      'add': function(pair) {
+        this._renderPair(pair);
+        this.trigger('update');
+      },
+    }, this);
+  },
+
+  render: function() {
+    this._renderContent();
+    this._renderEmptyButton();
+    return this;
+  },
+
+  _renderBrackets: function() {
+    var leftBracket = this._makeBracket('left');
+    var rightBracket = this._makeBracket('right');
+    var h = this.$el.children('.content').height();
+    leftBracket.insertBefore(this.$el.children('.content'));
+    rightBracket.insertAfter(this.$el.children('.content'));
+    leftBracket.height(h);
+    rightBracket.height(h);
+  },
+
+  _makeBracket: function(type) {
+    return $.div('bracket bracket-' + type);
+  },
+
+  _removeBrackets: function() {
+    this.$el.children('.bracket').remove();
+  },
+
+  _renderPair: function(pair) {
+    var placeholder = this.$el.children('.content').children('.placeholder');
+    this._makePair(pair).insertBefore(placeholder);
+    this.trigger('rendered');
+  },
+
+  _renderContent: function() {
+    var content = $.div('content');
+    this.collection.each(function(pair) {
+      content.append(this._makePair(pair));
+    }, this);
+    content.append(this._makePlaceholder());
+    this.$el.append(content);
+  },
+
+  _makePair: function(pair) {
+    return new PairView({ model: pair, parentView: this }).render().$el;
+  },
+
+  _makePlaceholder: function() {
+    var view = this;
+    return $.placeholder('Drop feature here ...')
+      .droppable({
+        accept: this.collection.accept,
+        drop: function(e, ui) {
+          var item = $(ui.helper);
+          var parent = view.collection;
+          var attribute = {
+            name: item.data('name'),
+            type: item.data('type'),
+            targets: item.dataToArray('targets'),
+          };
+          var value;
+          if (attribute.type === 'complex') {
+            value = {};
+          } else {
+            value = 'underspecified';
+          }
+          new Pair(null, { parent: parent,
+                           attribute: attribute,
+                           value: value }).create();
+        },
+      });
+  },
+
+  _renderEmptyButton: function() {
+    this.$el.append($.emptyButton().css('visibility', 'hidden'));
+  },
+
+  events: {
+    'mouseenter': '_showEmptyButton',
+    'mouseleave': '_hideEmptyButton',
   },
 
   _showEmptyButton: function() {
@@ -375,41 +458,51 @@ var PairView = Backbone.View.extend({
 
   initialize: function(options) {
     this.parentView = options.parentView;
+    this.parentView.on({
+      'rendered': function() {
+        this.trigger('inserted');
+      },
+    }, this);
   },
 
   render: function() {
-    var feature = this.model.get('feature');
-    var name = feature.get('name');
-    this.$el.append($.span('attribute').text(name));
-    this.$('.attribute')
-      .append($.removeButton(name).css('visibility', 'hidden'));
-    if (feature.get('type') === 'complex') {
+    this._renderAttr();
+    this._renderVal();
+    return this;
+  },
+
+  _renderAttr: function() {
+    var name = this.model.get('attribute').get('name');
+    var attr = $.span('attribute').text(name);
+    attr.append($.removeButton(name).css('visibility', 'hidden'));
+    this.$el.append(attr);
+  },
+
+  _renderVal: function() {
+    if (this.model.get('attribute').get('type') === 'complex') {
       this._renderSubstructure();
     } else {
       this._renderValue();
     }
-    return this;
   },
 
   _renderSubstructure: function() {
-    var avmView = new AVMView({ collection: this.model.get('value') });
     var value = $.div('value');
+    var avmView = new AVMView({ collection: this.model.get('value'),
+                                parentView: this });
     value.append(avmView.render().$el);
-    avmView.trigger('inserted');
     this.$el.append(value);
-    this.listenTo(
-      avmView, 're-rendered',
-      function() { this.parentView.trigger('update') });
+    this.listenTo(avmView,
+                  're-rendered',
+                  function() { this.parentView.trigger('update') });
   },
 
   _renderValue: function() {
-    var selectMenu = $.selectMenu();
-    var options = this.model.get('feature').get('targets');
-    _.each(options, function(o) {
-      selectMenu.append($.option(o));
-    });
-    selectMenu.val(this.model.get('value'));
     var value = $.span('value');
+    var selectMenu = $.selectMenu();
+    var options = this.model.get('attribute').get('targets');
+    _.each(options, function(opt) { selectMenu.append($.option(opt)) });
+    selectMenu.val(this.model.get('value'));
     value.append(selectMenu);
     this.$el.append(value);
   },
@@ -417,13 +510,10 @@ var PairView = Backbone.View.extend({
   events: {
     'mouseenter .attribute': '_showRemoveButton',
     'mouseleave .attribute': '_hideRemoveButton',
-    'click .remove-button': function() {
-      this.remove();
-      this.parentView.trigger('remove:pair', this.model);
-    },
   },
 
-  _showRemoveButton: function() {
+  _showRemoveButton: function(e) {
+    e.stopPropagation();
     this.$('.remove-button').css('visibility', 'visible');
   },
 
@@ -474,22 +564,15 @@ $(document).ready(function() {
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();
-  var lhs = $('#rule-lhs').data('json');
+  var lhsJSON = $('#rule-lhs').data('json');
 
-  var pairs = [];
-  _.each(_.without(_.keys(lhs), "uuid"), function(k) {
-    pairs.push(new Pair({ feature: featureList.get(k),
-                          value: lhs[k] }));
-  });
-
-  var avm = new AVM(pairs, { accept: '.feature-item',
-                             uuid: lhs['uuid'] });
+  var lhs = new AVM(null, { ruleName: name, json: lhsJSON });
 
   var rule = new Rule({
     id: name,
     name: name,
     description: description,
-    lhs: avm,
+    lhs: lhs,
   });
 
   var ruleView = new RuleView({

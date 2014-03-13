@@ -26,6 +26,11 @@ public class Substructure extends AVM {
     }
 
     public Promise<UUID> getUUID() {
+        if (this.jsonProperties.has("uuid")) {
+            UUID uuid = UUID.fromString(
+                this.jsonProperties.get("uuid").asText());
+            return Promise.pure(uuid);
+        }
         Promise<UUID> parentUUID = this.parent.getUUID();
         return parentUUID.map(new UUIDFunction(this.embeddingFeature));
     }

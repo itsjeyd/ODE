@@ -19,6 +19,7 @@ import play.libs.F.Tuple;
 import models.nodes.Feature;
 import models.nodes.LHS;
 import models.nodes.Rule;
+import models.nodes.Substructure;
 import views.html.input;
 import views.html.rules;
 import views.html.rule;
@@ -152,22 +153,36 @@ public class Rules extends Controller {
 
         // ...
         Rule rule = new Rule(name);
-        LHS lhs = new LHS(rule);
-        String uuid = json.findPath("uuid").textValue();
+        final LHS lhs = new LHS(rule);
+        final String uuid = json.findPath("uuid").textValue();
         String featureName = json.findPath("name").textValue();
         String featureType = json.findPath("type").textValue();
-        Feature feature = new Feature(featureName).setType(featureType);
+        final Feature feature = new Feature(featureName).setType(featureType);
         Promise<Boolean> added = lhs.add(feature, UUID.fromString(uuid));
-        return added.map(
-            new Function<Boolean, Result>() {
+        return added.flatMap(
+            new Function<Boolean, Promise<Result>>() {
                 ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
+                public Promise<Result> apply(Boolean added) {
                     if (added) {
-                        result.put("message", "Feature successfully added.");
-                        return ok(result);
+                        Promise<JsonNode> value = lhs
+                            .getValue(feature, UUID.fromString(uuid));
+                        return value.map(
+                            new Function<JsonNode, Result>() {
+                                public Result apply(JsonNode value) {
+                                    result.put("value", value);
+                                    result.put("message",
+                                               "Feature successfully added.");
+                                    return ok(result);
+                                }
+                            });
                     }
                     result.put("message", "Feature not added.");
-                    return badRequest(result);
+                    return Promise.promise(
+                        new Function0<Result>() {
+                            public Result apply() {
+                                return badRequest(result);
+                            }
+                        });
                 }
             });
     }

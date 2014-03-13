@@ -302,24 +302,33 @@ var Pair = Backbone.Model.extend({
       type: options.attribute.type,
       targets: options.attribute.targets
     }));
-    if (typeof options.value === 'string') {
-      this.set('value', options.value);
+    if (options.value) {
+      this._setValue(options.value);
+    }
+  },
+
+  _setValue: function(value) {
+    if (typeof value === 'string') {
+      this.set('value', value);
     } else {
       var accept = '#' + this.get('attribute').get('targets').join(', #');
       this.set('value', new AVM(null, { ruleName: this.parent.ruleName,
                                         accept: accept,
-                                        json: options.value }));
+                                        json: value }));
     }
   },
 
   isNew: function() { return false }, // Will become obsolete once we update routes ...
 
   create: function() {
+    var pair = this;
     var success = function(model, response, options) {
-      model.parent.add(model);
+      pair._setValue(model.get('value'));
+      pair.parent.add(pair);
     };
     this.save({ uuid: this.parent.uuid, action: 'ADD' },
               { url: '/rules/' + this.parent.ruleName + '/input',
+                wait: true,
                 success: success });
   },
 
@@ -420,15 +429,7 @@ var AVMView = Backbone.View.extend({
             type: item.data('type'),
             targets: item.dataToArray('targets'),
           };
-          var value;
-          if (attribute.type === 'complex') {
-            value = {};
-          } else {
-            value = 'underspecified';
-          }
-          new Pair(null, { parent: parent,
-                           attribute: attribute,
-                           value: value }).create();
+          new Pair(null, { parent: parent, attribute: attribute }).create();
         },
       });
   },

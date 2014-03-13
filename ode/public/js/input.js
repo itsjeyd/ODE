@@ -117,7 +117,10 @@ var RuleView = Backbone.View.extend({
         this._updateURL();
         this._renderName();
       },
-      'change:description': this._renderDescription,
+      'change:description': function() {
+        this._removeEditControls('description');
+        this._renderDescription();
+      },
       'update-error:name': function(msg) {
         this._renderAlert('button.name', msg);
       },

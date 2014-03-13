@@ -115,7 +115,6 @@ var RuleView = Backbone.View.extend({
     this.model.on({
       'change:name': function() {
         this._updateURL();
-        this._renderName();
       },
       'change:description': function() {
         this._removeEditControls('description');

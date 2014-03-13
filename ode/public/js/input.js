@@ -318,15 +318,13 @@ var Pair = Backbone.Model.extend({
     }
   },
 
-  isNew: function() { return false }, // Will become obsolete once we update routes ...
-
   create: function() {
     var pair = this;
     var success = function(model, response, options) {
       pair._setValue(model.get('value'));
       pair.parent.add(pair);
     };
-    this.save({ uuid: this.parent.uuid, action: 'ADD' },
+    this.save({ uuid: this.parent.uuid },
               { url: '/rules/' + this.parent.ruleName + '/input',
                 wait: true,
                 success: success });

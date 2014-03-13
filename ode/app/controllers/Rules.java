@@ -147,11 +147,8 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> updateInput(String name) {
+    public static Promise<Result> addFeature(String name) {
         JsonNode json = request().body().asJson();
-        System.out.println("Request JSON: " + json.toString());
-
-        // ...
         Rule rule = new Rule(name);
         final LHS lhs = new LHS(rule);
         final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());

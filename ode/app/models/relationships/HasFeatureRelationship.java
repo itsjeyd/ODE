@@ -31,8 +31,7 @@ public class HasFeatureRelationship extends HasRelationship {
                     for (JsonNode featureNode: featureNodes) {
                         String name = featureNode.findValue("name").asText();
                         String type = featureNode.findValue("type").asText();
-                        Feature feature = new Feature(name);
-                        feature.setType(type);
+                        Feature feature = Feature.of(name, type);
                         features.add(feature);
                     }
                     return features;

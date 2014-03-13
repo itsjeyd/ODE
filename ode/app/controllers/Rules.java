@@ -155,9 +155,9 @@ public class Rules extends Controller {
         Rule rule = new Rule(name);
         final LHS lhs = new LHS(rule);
         final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());
-        String featureName = json.findPath("name").textValue();
-        String featureType = json.findPath("type").textValue();
-        final Feature feature = new Feature(featureName).setType(featureType);
+        final Feature feature = Feature.of(
+            json.findPath("name").textValue(),
+            json.findPath("type").textValue());
         Promise<Boolean> added = lhs.add(feature, uuid);
         return added.flatMap(
             new Function<Boolean, Promise<Result>>() {

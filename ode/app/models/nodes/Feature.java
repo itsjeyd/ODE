@@ -47,6 +47,21 @@ public class Feature extends OntologyNode {
         this.description = description;
     }
 
+    public static Feature of(String name, String type) {
+        Feature feature = new Feature(name);
+        feature.setType(type);
+        return feature;
+    }
+
+    protected Feature setType(String type) {
+        if (type.equals(FeatureType.COMPLEX.toString())) {
+            this.type = FeatureType.COMPLEX;
+        } else {
+            this.type = FeatureType.ATOMIC;
+        }
+        return this;
+    }
+
     protected Promise<Feature> setTargets() {
         Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
         Promise<List<String>> targets = nodes.map(new TargetsFunction());
@@ -90,15 +105,6 @@ public class Feature extends OntologyNode {
 
     public String getDescription() {
         return this.description;
-    }
-
-    public Feature setType(String type) {
-        if (type.equals(FeatureType.COMPLEX.toString())) {
-            this.type = FeatureType.COMPLEX;
-        } else {
-            this.type = FeatureType.ATOMIC;
-        }
-        return this;
     }
 
     public Promise<Boolean> isInUse() {

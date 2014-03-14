@@ -293,6 +293,12 @@ var AVM = Backbone.Collection.extend({
     }));
   },
 
+  empty: function() {
+    this.each(function(pair) {
+      pair.remove();
+    });
+  },
+
 });
 
 var Pair = Backbone.Model.extend({
@@ -464,6 +470,7 @@ var AVMView = Backbone.View.extend({
   events: {
     'mouseenter': '_showEmptyButton',
     'mouseleave': '_hideEmptyButton',
+    'click .empty-button': '_empty',
   },
 
   _showEmptyButton: function() {
@@ -473,6 +480,11 @@ var AVMView = Backbone.View.extend({
   _hideEmptyButton: function() {
     this.$('.empty-button').css('visibility', 'hidden');
   },
+
+  _empty: function(e) {
+    e.stopPropagation();
+    this.collection.empty();
+  }
 
 });
 

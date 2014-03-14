@@ -320,6 +320,10 @@ var Pair = Backbone.Model.extend({
     }
   },
 
+  url: function() {
+    return '/rules/' + this.parent.ruleName + '/input';
+  },
+
   create: function() {
     var pair = this;
     var success = function(model, response, options) {
@@ -327,7 +331,7 @@ var Pair = Backbone.Model.extend({
       pair.parent.add(pair);
     };
     this.save({ uuid: this.parent.uuid },
-              { url: '/rules/' + this.parent.ruleName + '/input',
+              { url: this.url(),
                 wait: true,
                 success: success });
   },
@@ -335,7 +339,7 @@ var Pair = Backbone.Model.extend({
   updateValue: function(newValue) {
     this.save({ uuid: this.parent.uuid,
                 newValue: newValue },
-              { url: '/rules/' + this.parent.ruleName + '/input',
+              { url: this.url(),
                 type: 'PUT',
                 wait: true });
   },

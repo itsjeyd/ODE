@@ -184,7 +184,7 @@ public class Feature extends OntologyNode {
                     return Promise.pure(false);
                 }
             });
-}
+    }
 
     public Promise<Boolean> updateName(final String newName) {
         Promise<Feature> feature = this.get();

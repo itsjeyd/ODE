@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
+import models.nodes.AVM;
 import models.nodes.Feature;
 import models.nodes.Rule;
 import models.nodes.Value;
@@ -12,17 +13,18 @@ import managers.relationships.HasValueRelationshipManager;
 
 
 public class HasValueRelationship extends HasRelationship {
-    public Feature startNode;
-    public Value endNode;
+    public AVM avm;
 
-    public HasValueRelationship(Feature startNode, Value endNode, Rule rule) {
+    public HasValueRelationship(
+        Feature startNode, Value endNode, Rule rule, AVM avm) {
         super(startNode, endNode, rule);
+        this.avm = avm;
     }
 
     public static Promise<Value> getEndNode(
-        final Feature startNode, Rule rule) {
+        final Feature startNode, Rule rule, AVM parent) {
         Promise<JsonNode> json = HasValueRelationshipManager.getEndNode(
-            startNode, rule);
+            startNode, rule, parent);
         return json.map(
             new Function<JsonNode, Value>() {
                 public Value apply(JsonNode json) {
@@ -30,6 +32,10 @@ public class HasValueRelationship extends HasRelationship {
                     return new Value(name);
                 }
             });
+    }
+
+    public Promise<Boolean> create() {
+        return HasValueRelationshipManager.create(this);
     }
 
 }

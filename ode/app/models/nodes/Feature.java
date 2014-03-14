@@ -159,7 +159,7 @@ public class Feature extends OntologyNode {
             return new Substructure(rule, avm, this).toJSON();
         } else {
             Promise<Value> value =
-                HasValueRelationship.getEndNode(this, rule);
+                HasValueRelationship.getEndNode(this, rule, avm);
             return value.flatMap(
                 new Function<Value, Promise<JsonNode>>() {
                     public Promise<JsonNode> apply(Value value) {
@@ -227,8 +227,8 @@ public class Feature extends OntologyNode {
                 });
         } else {
             Value defaultValue = new Value("underspecified");
-            return new HasValueRelationship(feature, defaultValue, rule)
-                .create();
+            return new HasValueRelationship(
+                feature, defaultValue, rule, parent).create();
         }
     }
 

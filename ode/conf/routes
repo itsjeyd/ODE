@@ -22,6 +22,7 @@ PUT     /rules/:name/name           controllers.Rules.updateName(name: String)
 PUT     /rules/:name/description    controllers.Rules.updateDescription(name: String)
 POST    /rules/:name/input          controllers.Rules.addFeature(name: String)
 PUT     /rules/:name/input          controllers.Rules.updateFeatureValue(name: String)
+DELETE  /rules/:name/input          controllers.Rules.removeFeature(name: String)
 DELETE  /rules/:name                controllers.Rules.delete(name: String)
 
 # Search

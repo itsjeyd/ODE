@@ -212,6 +212,32 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removeFeature(String name) {
+        JsonNode json = request().body().asJson();
+        Rule rule = new Rule(name);
+        LHS lhs = new LHS(rule);
+        final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());
+        final Feature feature =
+            Feature.of(json.findPath("name").textValue(),
+                       json.findPath("type").textValue());
+        Promise<Boolean> removed = lhs.remove(feature, uuid);
+        return removed.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean removed) {
+                    if (removed) {
+                        result.put("message",
+                                   "Feature successfully removed.");
+                        return ok(result);
+                    }
+                    result.put("message", "Feature not removed.");
+                    return badRequest(result);
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> delete(String name) {
         Promise<Boolean> deleted = new Rule(name).delete();
         return deleted.map(

@@ -39,4 +39,8 @@ public class HasFeatureRelationship extends HasRelationship {
             });
     }
 
+    public static Promise<Boolean> delete(AVM startNode, Feature endNode) {
+        return HasFeatureRelationshipManager.delete(startNode, endNode);
+    }
+
 }

@@ -100,6 +100,33 @@ public abstract class AVM extends LabeledNodeWithProperties {
             });
     }
 
+    public Promise<Boolean> empty() {
+        final AVM avm = this;
+        Promise<List<Feature>> features = this.getFeatures();
+        Promise<List<Boolean>> removed = features.flatMap(
+            new Function<List<Feature>, Promise<List<Boolean>>>() {
+                public Promise<List<Boolean>> apply(List<Feature> features) {
+                    List<Promise<? extends Boolean>> removed =
+                        new ArrayList<Promise<? extends Boolean>>();
+                    for (Feature feature: features) {
+                        removed.add(feature.remove(avm.rule, avm));
+                    }
+                    return Promise.sequence(removed);
+                }
+            });
+        return removed.map(
+            new Function<List<Boolean>, Boolean>() {
+                public Boolean apply(List<Boolean> removed) {
+                    for (Boolean r: removed) {
+                        if (!r) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            });
+    }
+
     private static class Pair {
         public JsonNode attribute;
         public JsonNode value;

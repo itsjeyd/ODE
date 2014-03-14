@@ -11,10 +11,12 @@ import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.mvc.Http.Status;
 
 import constants.RelationshipType;
 import neo4play.Neo4jService;
 import models.nodes.AVM;
+import models.nodes.Feature;
 
 
 public class HasFeatureRelationshipManager extends HasRelationshipManager {
@@ -41,6 +43,25 @@ public class HasFeatureRelationshipManager extends HasRelationshipManager {
                         nodes.add(json.findValue("data"));
                     }
                     return nodes;
+                }
+            });
+    }
+
+    public static Promise<Boolean> delete(
+        final AVM startNode, final Feature endNode) {
+        Promise<UUID> uuid = startNode.getUUID();
+        Promise<WS.Response> response = uuid.flatMap(
+            new Function<UUID, Promise<WS.Response>>() {
+                public Promise<WS.Response> apply(UUID uuid) {
+                    startNode.jsonProperties.put("uuid", uuid.toString());
+                    return Neo4jService.deleteTypedRelationship(
+                        startNode, endNode, RelationshipType.HAS);
+                }
+            });
+        return response.map(
+            new Function<WS.Response, Boolean>() {
+                public Boolean apply(WS.Response response) {
+                    return response.getStatus() == Status.OK;
                 }
             });
     }

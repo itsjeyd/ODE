@@ -22,6 +22,8 @@ import constants.RelationshipType;
 import managers.nodes.FeatureManager;
 import models.relationships.AllowsRelationship;
 import models.relationships.Relationship;
+import models.relationships.HasFeatureRelationship;
+import models.relationships.HasSubstructureRelationship;
 import models.relationships.HasValueRelationship;
 import models.relationships.TypedRelationship;
 
@@ -180,6 +182,39 @@ public class Feature extends OntologyNode {
                     if (deleted) {
                         return new HasValueRelationship(
                             feature, newValue, rule, avm).create();
+                    }
+                    return Promise.pure(false);
+                }
+            });
+    }
+
+    public Promise<Boolean> remove(final Rule rule, final AVM avm) {
+        final Feature feature = this;
+        Promise<Boolean> hasRelationshipdeleted;
+        if (this.type.equals(FeatureType.COMPLEX)) {
+            final Substructure substructure =
+                new Substructure(rule, avm, feature);
+            Promise<Boolean> emptied = substructure.empty();
+            hasRelationshipdeleted = emptied.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean emptied) {
+                        if (emptied) {
+                            return HasSubstructureRelationship
+                                .delete(feature, substructure);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        } else {
+            hasRelationshipdeleted = HasValueRelationship
+                .delete(this, rule, avm);
+        }
+        return hasRelationshipdeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(
+                    Boolean hasRelationshipdeleted) {
+                    if (hasRelationshipdeleted) {
+                        return HasFeatureRelationship.delete(avm, feature);
                     }
                     return Promise.pure(false);
                 }

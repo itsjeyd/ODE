@@ -133,6 +133,7 @@ var RuleView = Backbone.View.extend({
     this.$el.empty();
     this.$el.append($.h3('').attr('id', 'rule-name'));
     this.$el.append($.p('').attr('id', 'rule-description'));
+    this.$el.append($.div().attr('id', 'rule-lhs'));
     this._renderName();
     this._renderDescription();
     this._renderLHS();
@@ -149,7 +150,7 @@ var RuleView = Backbone.View.extend({
 
   _renderLHS: function() {
     var lhsView = new AVMView({ collection: this.model.get('lhs') });
-    this.$el.append(lhsView.render().$el);
+    this.$('#rule-lhs').append(lhsView.render().$el);
     lhsView.trigger('inserted');
   },
 

@@ -58,7 +58,11 @@ jQuery.cap = function(str) {
 // Utility functions for creating new DOM elements
 
 jQuery.div = function(klass) {
-  return $('<div>').addClass(klass);
+  var div = $('<div>');
+  if (klass) {
+    div.addClass(klass);
+  }
+  return div;
 }
 
 jQuery.span = function(klass) {

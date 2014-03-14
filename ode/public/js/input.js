@@ -344,6 +344,17 @@ var Pair = Backbone.Model.extend({
                 wait: true });
   },
 
+  remove: function() {
+    this.save({ uuid: this.parent.uuid, },
+              { url: this.url(),
+                type: 'DELETE',
+                wait: true,
+                success: function(model, response, options) {
+                  model.trigger('remove');
+                },
+              });
+  },
+
 });
 
 var AVMView = Backbone.View.extend({
@@ -476,6 +487,12 @@ var PairView = Backbone.View.extend({
         this.trigger('inserted');
       },
     }, this);
+    this.model.on({
+      'remove': function() {
+        this.remove();
+        this.parentView.trigger('update');
+      }
+    }, this);
   },
 
   render: function() {
@@ -524,6 +541,7 @@ var PairView = Backbone.View.extend({
     'mouseenter .attribute': '_showRemoveButton',
     'mouseleave .attribute': '_hideRemoveButton',
     'change .value > select': '_changeValue',
+    'click .remove-button': '_remove',
   },
 
   _showRemoveButton: function(e) {
@@ -539,6 +557,11 @@ var PairView = Backbone.View.extend({
     var newValue = $(e.currentTarget).val();
     this.model.updateValue(newValue);
   },
+
+  _remove: function(e) {
+    e.stopPropagation();
+    this.model.remove();
+  }
 
 });
 

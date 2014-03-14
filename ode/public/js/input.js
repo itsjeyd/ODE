@@ -332,6 +332,14 @@ var Pair = Backbone.Model.extend({
                 success: success });
   },
 
+  updateValue: function(newValue) {
+    this.save({ uuid: this.parent.uuid,
+                newValue: newValue },
+              { url: '/rules/' + this.parent.ruleName + '/input',
+                type: 'PUT',
+                wait: true });
+  },
+
 });
 
 var AVMView = Backbone.View.extend({
@@ -511,6 +519,7 @@ var PairView = Backbone.View.extend({
   events: {
     'mouseenter .attribute': '_showRemoveButton',
     'mouseleave .attribute': '_hideRemoveButton',
+    'change .value > select': '_changeValue',
   },
 
   _showRemoveButton: function(e) {
@@ -520,6 +529,11 @@ var PairView = Backbone.View.extend({
 
   _hideRemoveButton: function() {
     this.$('.remove-button').css('visibility', 'hidden');
+  },
+
+  _changeValue: function(e) {
+    var newValue = $(e.currentTarget).val();
+    this.model.updateValue(newValue);
   },
 
 });

@@ -226,56 +226,8 @@ var RuleView = Backbone.View.extend({
 
 // AVMs: views
 
-var AVMView = Backbone.View.extend({
+// ...
 
-  // ...
-
-  initialize: function() {
-    // ...
-    this.on({
-      // ...
-      'remove:pair': function(pair) {
-        this.collection.remove(pair);
-        this.trigger('update');
-      },
-    }, this);
-  },
-
-  // ...
-
-  render: function() {
-    this.$el.empty();
-    // ...
-  },
-
-  // ...
-
-  events: {
-    // ...
-    'click .empty-button': function() {
-      this.collection.reset();
-      this.render();
-      this.trigger('re-rendered');
-    },
-  },
-
-  // ...
-
-});
-
-var PairView = Backbone.View.extend({
-
-  // ...
-
-  events: {
-    // ...
-    'click .remove-button': function() {
-      this.remove();
-      this.parentView.trigger('remove:pair', this.model);
-    },
-  },
-
-});
 
 
 

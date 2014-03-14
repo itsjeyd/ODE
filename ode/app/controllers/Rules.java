@@ -17,9 +17,9 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import models.nodes.Feature;
+import models.nodes.Value;
 import models.nodes.LHS;
 import models.nodes.Rule;
-import models.nodes.Substructure;
 import views.html.input;
 import views.html.rules;
 import views.html.rule;
@@ -180,6 +180,32 @@ public class Rules extends Controller {
                                 return badRequest(result);
                             }
                         });
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateFeatureValue(String name) {
+        JsonNode json = request().body().asJson();
+        Rule rule = new Rule(name);
+        LHS lhs = new LHS(rule);
+        final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());
+        final Feature feature =
+            new Feature(json.findPath("name").textValue());
+        Value newValue = new Value(json.findPath("newValue").textValue());
+        Promise<Boolean> updated = lhs.update(feature, uuid, newValue);
+        return updated.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean updated) {
+                    if (updated) {
+                        result.put("message",
+                                   "Feature successfully updated.");
+                        return ok(result);
+                    }
+                    result.put("message", "Feature not updated.");
+                    return badRequest(result);
                 }
             });
     }

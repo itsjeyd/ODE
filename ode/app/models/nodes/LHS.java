@@ -79,6 +79,24 @@ public class LHS extends AVM {
             });
     }
 
+    public Promise<Boolean> update(
+        final Feature feature, final UUID uuid, final Value newValue) {
+        final LHS lhs = this;
+        Promise<UUID> lhsUUID = this.getUUID();
+        return lhsUUID.flatMap(
+            new Function<UUID, Promise<Boolean>>() {
+                public Promise<Boolean> apply(UUID lhsUUID) {
+                    if (lhsUUID.equals(uuid)) {
+                        lhs.jsonProperties.put("uuid", lhsUUID.toString());
+                        return feature.setValue(newValue, lhs.rule, lhs);
+                    }
+                    Substructure substructure =
+                        new Substructure(lhs.rule, uuid);
+                    return feature.setValue(newValue, lhs.rule, substructure);
+                }
+            });
+    }
+
     protected static class UUIDFunction implements Function<UUID, UUID> {
         public UUID apply(UUID parentUUID) {
             byte[] bytes = parentUUID.toString()

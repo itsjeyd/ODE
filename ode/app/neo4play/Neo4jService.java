@@ -268,6 +268,18 @@ public class Neo4jService {
         return delete(fullURL);
     }
 
+    public static Promise<WS.Response> deleteTypedRelationshipWithProperties(
+        LabeledNodeWithProperties startNode, RelationshipType type,
+        JsonNode props) {
+        String startNodeProps = buildConjunctiveConstraints(
+            "s", startNode.jsonProperties);
+        String relProps = buildConjunctiveConstraints("r", props);
+        String query = String.format(
+            "MATCH (s:%s)-[r:%s]-() WHERE %s AND %s DELETE r",
+            startNode.getLabel(), type.name(), startNodeProps, relProps);
+        return postCypherQuery(query);
+    }
+
     public static Promise<WS.Response> getPath(
         RelationshipType type, JsonNode relProps) {
         String query = "MATCH p=()-[r:" + type.name() + "]->() WHERE " +

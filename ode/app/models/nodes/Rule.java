@@ -12,6 +12,7 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.nodes.RuleManager;
+import models.relationships.LHSRelationship;
 
 
 public class Rule extends LabeledNodeWithProperties {
@@ -82,7 +83,37 @@ public class Rule extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> delete() {
-        return RuleManager.delete(this);
+        final Rule rule = this;
+        final LHS lhs = new LHS(rule);
+        Promise<Boolean> emptied = lhs.empty();
+        Promise<Boolean> lhsRelationshipDeleted = emptied.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean emptied) {
+                    if (emptied) {
+                        return LHSRelationship.delete(rule, lhs);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        Promise<Boolean> lhsDeleted = lhsRelationshipDeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(
+                    Boolean lhsRelationshipDeleted) {
+                    if (lhsRelationshipDeleted) {
+                        return lhs.delete();
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return lhsDeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean lhsDeleted) {
+                    if (lhsDeleted) {
+                        return RuleManager.delete(rule);
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     private static class GetFunction implements

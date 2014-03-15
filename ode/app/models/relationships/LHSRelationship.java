@@ -33,6 +33,11 @@ public class LHSRelationship extends TypedRelationship {
         return this.exists().flatMap(new CreateFunction(this));
     }
 
+    public static Promise<Boolean> delete(
+        Rule startNode, final LHS endNode) {
+        return LHSRelationshipManager.delete(startNode, endNode);
+    }
+
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
         private LHSRelationship relationship;

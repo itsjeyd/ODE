@@ -157,4 +157,13 @@ $(document).ready(function() {
   });
   ruleView.render();
 
+  // Header
+
+  var navbarButton = $('<li>');
+  var navbarLink = $('<a>').attr('href', rule.url() + '/input')
+    .text('InputBuilder');
+  navbarButton.append(navbarLink);
+  var browseButton = $('.navbar-right').children('li').first();
+  navbarButton.insertBefore(browseButton);
+
 });

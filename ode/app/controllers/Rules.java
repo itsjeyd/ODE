@@ -21,6 +21,7 @@ import models.nodes.Value;
 import models.nodes.LHS;
 import models.nodes.Rule;
 import views.html.input;
+import views.html.output;
 import views.html.rules;
 import views.html.rule;
 
@@ -53,6 +54,17 @@ public class Rules extends Controller {
             new Function<Tuple<List<Feature>, Rule>, Result>() {
                 public Result apply(Tuple<List<Feature>, Rule> results) {
                     return ok(input.render(results._1, results._2));
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Promise<Result> output(final String name) {
+        Promise<Rule> rule = new Rule(name).get();
+        return rule.map(
+            new Function<Rule, Result>() {
+                public Result apply(Rule rule) {
+                    return ok(output.render(rule));
                 }
             });
     }

@@ -15,6 +15,7 @@ GET     /logout                     controllers.Application.logout()
 GET     /rules                      controllers.Rules.rules()
 GET     /rules/:name                controllers.Rules.rule(name: String)
 GET     /rules/:name/input          controllers.Rules.input(name: String)
+GET     /rules/:name/output         controllers.Rules.output(name: String)
 
 # Editing
 POST    /rules                      controllers.Rules.create()

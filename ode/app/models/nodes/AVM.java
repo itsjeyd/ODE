@@ -15,6 +15,7 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import constants.NodeType;
+import managers.nodes.AVMManager;
 import models.relationships.HasFeatureRelationship;
 
 
@@ -125,6 +126,10 @@ public abstract class AVM extends LabeledNodeWithProperties {
                     return true;
                 }
             });
+    }
+
+    public Promise<Boolean> delete() {
+        return AVMManager.delete(this);
     }
 
     private static class Pair {

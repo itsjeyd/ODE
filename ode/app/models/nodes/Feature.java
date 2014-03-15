@@ -190,12 +190,12 @@ public class Feature extends OntologyNode {
 
     public Promise<Boolean> remove(final Rule rule, final AVM avm) {
         final Feature feature = this;
-        Promise<Boolean> hasRelationshipdeleted;
+        Promise<Boolean> valueDeleted;
         if (this.type.equals(FeatureType.COMPLEX)) {
             final Substructure substructure =
                 new Substructure(rule, avm, feature);
             Promise<Boolean> emptied = substructure.empty();
-            hasRelationshipdeleted = emptied.flatMap(
+            Promise<Boolean> hasRelationshipDeleted = emptied.flatMap(
                 new Function<Boolean, Promise<Boolean>>() {
                     public Promise<Boolean> apply(Boolean emptied) {
                         if (emptied) {
@@ -205,11 +205,20 @@ public class Feature extends OntologyNode {
                         return Promise.pure(false);
                     }
                 });
+            valueDeleted = hasRelationshipDeleted.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(
+                        Boolean hasRelationshipDeleted) {
+                        if (hasRelationshipDeleted) {
+                            return substructure.delete();
+                        }
+                        return Promise.pure(false);
+                    }
+                });
         } else {
-            hasRelationshipdeleted = HasValueRelationship
-                .delete(this, rule, avm);
+            valueDeleted = HasValueRelationship.delete(this, rule, avm);
         }
-        return hasRelationshipdeleted.flatMap(
+        return valueDeleted.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(
                     Boolean hasRelationshipdeleted) {

@@ -4,7 +4,6 @@ import play.libs.F.Promise;
 
 import managers.relationships.HasSubstructureRelationshipManager;
 import models.nodes.Feature;
-import models.nodes.Rule;
 import models.nodes.Substructure;
 
 

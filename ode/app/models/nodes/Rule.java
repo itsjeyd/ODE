@@ -12,6 +12,7 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.nodes.RuleManager;
+import models.nodes.RHS;
 import models.relationships.LHSRelationship;
 
 
@@ -53,7 +54,9 @@ public class Rule extends LabeledNodeWithProperties {
     public Promise<Boolean> create() {
         Promise<Boolean> created = this.exists()
             .flatMap(new CreateFunction(this));
-        return created.flatMap(new CreateLHSFunction(this));
+        Promise<Boolean> lhsCreated = created
+            .flatMap(new CreateLHSFunction(this));
+        return lhsCreated.flatMap(new CreateRHSFunction(this));
     }
 
     public Promise<Boolean> updateName(final String newName) {
@@ -193,4 +196,31 @@ public class Rule extends LabeledNodeWithProperties {
                 });
         }
     }
+
+    private class CreateRHSFunction implements
+                                        Function<Boolean, Promise<Boolean>> {
+
+        private Rule rule;
+        public CreateRHSFunction(Rule rule) {
+            this.rule = rule;
+        }
+        public Promise<Boolean> apply(Boolean lhsCreated) {
+            if (!lhsCreated) {
+                return Promise.pure(false);
+            }
+            final RHS rhs = new RHS(this.rule);
+            Promise<Boolean> rhsCreated = rhs.create();
+            final Rule rule = this.rule;
+            return rhsCreated.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean created) {
+                        if (created) {
+                            return rhs.connectTo(rule);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        }
+    }
+
 }

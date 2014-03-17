@@ -25,6 +25,11 @@ public class RHS extends LabeledNodeWithProperties {
         this.rule = rule;
     }
 
+    public Promise<UUID> getUUID() {
+        Promise<UUID> parentUUID = this.rule.getUUID();
+        return parentUUID.map(new UUIDFunction());
+    }
+
     public Promise<Boolean> create() {
         Promise<UUID> ruleUUID = this.rule.getUUID();
         return ruleUUID.flatMap(new CreateFunction(this));
@@ -32,6 +37,18 @@ public class RHS extends LabeledNodeWithProperties {
 
     public Promise<Boolean> connectTo(Rule embeddingRule) {
         return new RHSRelationship(embeddingRule, this).create();
+    }
+
+    public Promise<Boolean> delete() {
+        return RHSManager.delete(this);
+    }
+
+    private static class UUIDFunction implements Function<UUID, UUID> {
+        public UUID apply(UUID ruleUUID) {
+            byte[] bytes = ruleUUID.toString()
+                .getBytes(Charset.forName("UTF-8"));
+            return UUID.nameUUIDFromBytes(bytes);
+        }
     }
 
     protected static class CreateFunction

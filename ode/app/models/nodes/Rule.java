@@ -14,6 +14,7 @@ import constants.NodeType;
 import managers.nodes.RuleManager;
 import models.nodes.RHS;
 import models.relationships.LHSRelationship;
+import models.relationships.RHSRelationship;
 
 
 public class Rule extends LabeledNodeWithProperties {
@@ -88,6 +89,7 @@ public class Rule extends LabeledNodeWithProperties {
     public Promise<Boolean> delete() {
         final Rule rule = this;
         final LHS lhs = new LHS(rule);
+        final RHS rhs = new RHS(rule);
         Promise<Boolean> emptied = lhs.empty();
         Promise<Boolean> lhsRelationshipDeleted = emptied.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
@@ -108,10 +110,29 @@ public class Rule extends LabeledNodeWithProperties {
                     return Promise.pure(false);
                 }
             });
-        return lhsDeleted.flatMap(
+        Promise<Boolean> rhsRelationshipDeleted = lhsDeleted.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean lhsDeleted) {
                     if (lhsDeleted) {
+                        return RHSRelationship.delete(rule, rhs);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        Promise<Boolean> rhsDeleted = rhsRelationshipDeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(
+                    Boolean rhsRelationshipDeleted) {
+                    if (rhsRelationshipDeleted) {
+                        return rhs.delete();
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return rhsDeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean rhsDeleted) {
+                    if (rhsDeleted) {
                         return RuleManager.delete(rule);
                     }
                     return Promise.pure(false);

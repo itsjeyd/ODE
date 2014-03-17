@@ -142,11 +142,6 @@ public class Feature extends OntologyNode {
         return json.map(new GetFunction());
     }
 
-    public static Promise<Feature> getByURL(String url) {
-        Promise<JsonNode> json = FeatureManager.getByURL(url);
-        return json.map(new GetFunction());
-    }
-
     public Promise<List<Relationship>> getIncomingRelationships() {
         return Relationship.getAllTo(this);
     }

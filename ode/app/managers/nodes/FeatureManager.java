@@ -31,11 +31,6 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return LabeledNodeWithPropertiesManager.create(feature);
     }
 
-    public static Promise<JsonNode> getByURL(String url) {
-        Promise<WS.Response> response = Neo4jService.getNodeProperties(url);
-        return response.map(new JsonFunction());
-    }
-
     public static Promise<List<JsonNode>> getValues(Feature feature) {
         Promise<List<WS.Response>> responses = Neo4jService
             .getRelationshipTargets(feature.getLabel(),

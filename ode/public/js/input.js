@@ -246,6 +246,12 @@ var AVM = Backbone.Collection.extend({
     }));
   },
 
+  has: function(featureName) {
+    return this.some(function(p) {
+      return p.get('attribute').get('name') === featureName;
+    });
+  },
+
   empty: function() {
     this.each(function(pair) {
       pair.remove();
@@ -410,13 +416,17 @@ var AVMView = Backbone.View.extend({
         accept: this.collection.accept,
         drop: function(e, ui) {
           var item = $(ui.helper);
-          var parent = view.collection;
-          var attribute = {
-            name: item.data('name'),
-            type: item.data('type'),
-            targets: item.dataToArray('targets'),
-          };
-          new Pair(null, { parent: parent, attribute: attribute }).create();
+          if (!view.collection.has(item.data('name'))) {
+            var parent = view.collection;
+            var attribute = {
+              name: item.data('name'),
+              type: item.data('type'),
+              targets: item.dataToArray('targets'),
+            };
+            new Pair(null, { parent: parent, attribute: attribute }).create();
+          } else {
+            alert('You can not add the same feature twice.');
+          }
         },
       });
   },

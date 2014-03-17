@@ -266,6 +266,11 @@ var Pair = Backbone.Model.extend({
     if (options.value) {
       this._setValue(options.value);
     }
+    this.on({
+      'remove': function() {
+        this.destroy();
+      },
+    }, this);
   },
 
   _setValue: function(value) {
@@ -453,7 +458,7 @@ var PairView = Backbone.View.extend({
       },
     }, this);
     this.model.on({
-      'remove': function() {
+      'destroy': function() {
         this.remove();
         this.parentView.trigger('update');
       }

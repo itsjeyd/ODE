@@ -135,6 +135,40 @@ var RuleView = Backbone.View.extend({
 });
 
 
+// Output: Models
+
+var Part = Backbone.Model.extend({});
+
+var OutputString = Backbone.Model.extend({
+
+  defaults: { tokens: [] },
+
+});
+
+var CombinationGroup = Backbone.Model.extend({
+
+  initialize: function(attrs, options) {
+    var outputStrings = _.map(options.json.outputStrings, function(os) {
+      return new OutputString({ tokens: os.tokens });
+    });
+    this.set('outputStrings', outputStrings);
+    var slots = _.map(options.json.partsTable.slots, function(s) {
+      var parts = _.map(s.parts, function(p) {
+        return new Part({ content: p });
+      });
+      return new Slot(parts);
+    });
+    this.set('partsTable', new PartsTable(slots));
+    alert(JSON.stringify(this));
+  },
+
+});
+
+var PartsTable = Backbone.Collection.extend({});
+
+var Slot = Backbone.Collection.extend({});
+
+
 
 // Application
 
@@ -156,6 +190,17 @@ $(document).ready(function() {
     el: '#interaction-block',
   });
   ruleView.render();
+
+  var cgJSON = { outputStrings: [ { tokens: ['a', 'b', 'c'] },
+                                  { tokens: ['d', 'e', 'f'] }, ],
+                 partsTable: { slots: [ { parts:
+                                          ['parts', 'in', 'slot', '1'] },
+                                        { parts:
+                                          ['parts', 'in', 'slot', '2'] },
+                                      ], }, }
+
+
+  var cg = new CombinationGroup(null, { json: cgJSON });
 
   // Header
 

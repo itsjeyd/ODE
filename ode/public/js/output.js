@@ -156,17 +156,17 @@ var CombinationGroup = Backbone.Model.extend({
       var parts = _.map(s.parts, function(p) {
         return new Part({ content: p });
       });
-      return new Slot(parts);
+      return new Slot({ parts: parts });
     });
-    this.set('partsTable', new PartsTable(slots));
+    this.set('partsTable', new PartsTable({ slots: slots }));
     alert(JSON.stringify(this));
   },
 
 });
 
-var PartsTable = Backbone.Collection.extend({});
+var PartsTable = Backbone.Model.extend({});
 
-var Slot = Backbone.Collection.extend({});
+var Slot = Backbone.Model.extend({});
 
 
 

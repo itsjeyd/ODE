@@ -81,6 +81,10 @@ jQuery.alertMsg = function(text) {
   return $('<span>').addClass('alert-msg text-danger').text(text);
 }
 
+jQuery.hr = function() {
+  return $('<hr>');
+}
+
 jQuery.h3 = function(text) {
   return $('<h3>').text(text);
 }

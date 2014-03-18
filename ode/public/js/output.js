@@ -395,12 +395,17 @@ var SlotView = Backbone.View.extend({
 
   render: function() {
     this._renderHeader();
+    this._renderLine();
     this._renderParts();
     return this;
   },
 
   _renderHeader: function() {
     this.$el.append($.h5('Slot ' + this.model.id));
+  },
+
+  _renderLine: function() {
+    this.$el.append($.hr());
   },
 
   _renderParts: function() {

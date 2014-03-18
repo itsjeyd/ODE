@@ -192,9 +192,14 @@ var CombinationGroupView = Backbone.View.extend({
   className: 'combination-group',
 
   render: function() {
+    this._renderHeader();
     this._renderPartsTable();
     this._renderOutputStrings();
     return this;
+  },
+
+  _renderHeader: function() {
+    this.$el.append($.h4('Group ' + this.model.id));
   },
 
   _renderPartsTable: function() {
@@ -280,7 +285,7 @@ $(document).ready(function() {
                                       ], }, }
 
 
-  var cg = new CombinationGroup(null, { json: cgJSON });
+  var cg = new CombinationGroup({ id: 1 }, { json: cgJSON });
 
   var cgView = new CombinationGroupView({ model: cg });
   $('#rule-rhs').append(cgView.render().$el);

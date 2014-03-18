@@ -3,3 +3,13 @@ input.description {
     margin-top: 20px; /* Equal to margin-top of Bootstrap <h3> */
     margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
 }
+
+.slot {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.sep {
+    margin-left: 5px;
+    margin-right: 5px;
+}

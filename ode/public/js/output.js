@@ -169,6 +169,86 @@ var PartsTable = Backbone.Model.extend({});
 var Slot = Backbone.Model.extend({});
 
 
+// Output: Views
+
+var OutputStringView = Backbone.View.extend({
+
+  className: 'output-string',
+
+  render: function() {
+    var tokens = this.model.get('tokens');
+    _.each(_.initial(tokens), function(t) {
+      this.$el.append($.span('token').text(t));
+      this.$el.append($.span('sep'));
+    }, this);
+    this.$el.append($.span('token').text(_.last(tokens)));
+    return this;
+  },
+
+});
+
+var CombinationGroupView = Backbone.View.extend({
+
+  className: 'combination-group',
+
+  render: function() {
+    this._renderPartsTable();
+    this._renderOutputStrings();
+    return this;
+  },
+
+  _renderPartsTable: function() {
+    this.$el.append(new PartsTableView({
+      model: this.model.get('partsTable')
+    }).render().$el);
+  },
+
+  _renderOutputStrings: function() {
+    var list = $.div('output-strings');
+    _.each(this.model.get('outputStrings'), function(os) {
+      list.append(new OutputStringView({ model: os }).render().$el);
+    });
+    this.$el.append(list);
+  },
+
+});
+
+var PartsTableView = Backbone.View.extend({
+
+  className: 'parts-table',
+
+  render: function() {
+    this._renderSlots();
+    return this;
+  },
+
+  _renderSlots: function() {
+    var slots = $.div('slots');
+    _.each(this.model.get('slots'), function(slot) {
+      slots.append(new SlotView({ model: slot }).render().$el);
+    });
+    this.$el.append(slots);
+  },
+
+});
+
+var SlotView = Backbone.View.extend({
+
+  className: 'slot',
+
+  render: function() {
+    this._renderParts();
+    return this;
+  },
+
+  _renderParts: function() {
+    _.each(this.model.get('parts'), function(part) {
+      this.$el.append($.div('part').text(part.get("content")));
+    }, this);
+  },
+
+});
+
 
 // Application
 
@@ -201,6 +281,9 @@ $(document).ready(function() {
 
 
   var cg = new CombinationGroup(null, { json: cgJSON });
+
+  var cgView = new CombinationGroupView({ model: cg });
+  $('#rule-rhs').append(cgView.render().$el);
 
   // Header
 

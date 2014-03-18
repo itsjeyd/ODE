@@ -152,11 +152,12 @@ var CombinationGroup = Backbone.Model.extend({
       return new OutputString({ tokens: os.tokens });
     });
     this.set('outputStrings', outputStrings);
+    var slotID = 1;
     var slots = _.map(options.json.partsTable.slots, function(s) {
       var parts = _.map(s.parts, function(p) {
         return new Part({ content: p });
       });
-      return new Slot({ parts: parts });
+      return new Slot({ id: slotID++, parts: parts });
     });
     this.set('partsTable', new PartsTable({ slots: slots }));
     alert(JSON.stringify(this));
@@ -242,8 +243,13 @@ var SlotView = Backbone.View.extend({
   className: 'slot',
 
   render: function() {
+    this._renderHeader();
     this._renderParts();
     return this;
+  },
+
+  _renderHeader: function() {
+    this.$el.append($.h5('Slot ' + this.model.id));
   },
 
   _renderParts: function() {

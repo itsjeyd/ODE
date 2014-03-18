@@ -85,6 +85,10 @@ jQuery.h4 = function(text) {
   return $('<h4>').text(text);
 }
 
+jQuery.h5 = function(text) {
+  return $('<h5>').text(text);
+}
+
 jQuery.p = function(text) {
   return $('<p>').text(text);
 }

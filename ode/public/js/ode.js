@@ -10,6 +10,10 @@ jQuery.fn.textOnly = function() {
     .text();
 };
 
+jQuery.fn.exists = function() {
+  return this.length;
+}
+
 jQuery.fn.isEmpty = function() {
   return !$(this).val();
 }

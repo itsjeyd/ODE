@@ -200,16 +200,18 @@ var OutputStringView = Backbone.View.extend({
   },
 
   _renderEditControls: function(e) {
-    var tokens = _.map(this.$('.token'), function(t) {
-      return $(t).text();
-    });
-    var inputField = $.textInput().val(tokens.join(' '));
-    var okButton = $.okButton();
-    this.$('.token').remove();
-    this.$('.sep').remove();
-    this.$el.append(inputField);
-    this.$el.append(okButton);
-    inputField.focus();
+    if (!this.$('input').exists()) {
+      var tokens = _.map(this.$('.token'), function(t) {
+        return $(t).text();
+      });
+      var inputField = $.textInput().val(tokens.join(' '));
+      var okButton = $.okButton();
+      this.$('.token').remove();
+      this.$('.sep').remove();
+      this.$el.append(inputField);
+      this.$el.append(okButton);
+      inputField.focus();
+    }
   },
 
   _updateModel: function() {

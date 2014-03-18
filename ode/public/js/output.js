@@ -190,6 +190,35 @@ var OutputStringView = Backbone.View.extend({
     return this;
   },
 
+  events: {
+    'dblclick': '_renderEditControls',
+    'click button': function() {
+      this._updateModel();
+      this.$el.empty();
+      this.render();
+    },
+  },
+
+  _renderEditControls: function(e) {
+    var tokens = _.map(this.$('.token'), function(t) {
+      return $(t).text();
+    });
+    var inputField = $.textInput().val(tokens.join(' '));
+    var okButton = $.okButton();
+    this.$('.token').remove();
+    this.$('.sep').remove();
+    this.$el.append(inputField);
+    this.$el.append(okButton);
+    inputField.focus();
+  },
+
+  _updateModel: function() {
+    var inputField = this.$('input');
+    if (!inputField.isEmpty()) {
+      this.model.set('tokens', inputField.val().split(' '));
+    }
+  },
+
 });
 
 var CombinationGroupView = Backbone.View.extend({

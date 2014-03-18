@@ -30,6 +30,6 @@ input.description {
     cursor: default;
 }
 
-.placeholder + button {
+.placeholder + button, .form-control + button {
     margin-top: 5px;
 }

@@ -18,6 +18,11 @@ input.description {
     margin-right: 5px;
 }
 
+.remove-button {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
 .placeholder {
     width: 200px;
     height: 30px;

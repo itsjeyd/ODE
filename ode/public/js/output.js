@@ -187,10 +187,21 @@ var OutputStringView = Backbone.View.extend({
       this.$el.append($.span('sep'));
     }, this);
     this.$el.append($.span('token').text(_.last(tokens)));
+    this.$el.append($.removeButton().css('visibility', 'hidden'));
     return this;
   },
 
   events: {
+    'mouseenter': function() {
+      this.$('.remove-button').css('visibility', 'visible');
+    },
+    'mouseleave': function() {
+      this.$('.remove-button').css('visibility', 'hidden');
+    },
+    'click .remove-button': function() {
+      this.model.destroy();
+      this.remove();
+    },
     'dblclick': '_renderEditControls',
     'click button': function() {
       this._updateModel();
@@ -208,6 +219,7 @@ var OutputStringView = Backbone.View.extend({
       var okButton = $.okButton();
       this.$('.token').remove();
       this.$('.sep').remove();
+      this.$('.remove-button').remove();
       this.$el.append(inputField);
       this.$el.append(okButton);
       inputField.focus();

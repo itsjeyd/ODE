@@ -4,6 +4,10 @@ input.description {
     margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
 }
 
+.parts-table {
+    margin-bottom: 7px;
+}
+
 .slot {
     display: inline-block;
     margin-right: 10px;
@@ -19,6 +23,7 @@ input.description {
     height: 30px;
     border: solid 3px #94D6EA;
     border-radius: 10px;
+    margin-top: 5px;
     padding-top: 2px;
     padding-left: 3px;
     color: rgba(51, 51, 51, .45); /* #333333 */

@@ -14,8 +14,16 @@ input.description {
 }
 
 .sep {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+    cursor: pointer;
+}
+
+.sep:hover {
+    border: 1px solid #94D6EA;
+    border-radius: 3px;
 }
 
 .remove-button {

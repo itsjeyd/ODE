@@ -143,6 +143,14 @@ var OutputString = Backbone.Model.extend({
 
   defaults: { tokens: [] },
 
+  initialize: function() {
+    this.on({
+      'split': function(splitPoint) {
+        this.set('splitPoint', splitPoint);
+      },
+    }, this);
+  },
+
 });
 
 var CombinationGroup = Backbone.Model.extend({
@@ -151,16 +159,25 @@ var CombinationGroup = Backbone.Model.extend({
     var outputStrings = _.map(options.json.outputStrings, function(os) {
       return new OutputString({ tokens: os.tokens });
     });
-    this.set('outputStrings', outputStrings);
+    this.set('outputStrings', new Backbone.Collection(outputStrings));
     var slotID = 1;
     var slots = _.map(options.json.partsTable.slots, function(s) {
       var parts = _.map(s.parts, function(p) {
         return new Part({ content: p });
       });
-      return new Slot({ id: slotID++, parts: parts });
+      return new Slot({ id: slotID++,
+                        parts: new Backbone.Collection(parts) });
     });
-    this.set('partsTable', new PartsTable({ slots: slots }));
     alert(JSON.stringify(this));
+    this.set('partsTable', new PartsTable({
+      slots: new Backbone.Collection(slots)
+    }));
+    this.get('outputStrings').on({
+      'change:splitPoint': function(model) {
+        this.get('outputStrings').remove(model);
+        this.get('partsTable').add(model);
+      },
+    }, this);
   },
 
   addOutputString: function(outputString) {
@@ -169,9 +186,30 @@ var CombinationGroup = Backbone.Model.extend({
 
 });
 
-var PartsTable = Backbone.Model.extend({});
+var PartsTable = Backbone.Model.extend({
 
-var Slot = Backbone.Model.extend({});
+  add: function(outputString) {
+    var tokens = outputString.get('tokens');
+    var splitPoint = outputString.get('splitPoint');
+    var leftPart = new Part({
+      content: tokens.slice(0, splitPoint).join(' '),
+    });
+    var rightPart = new Part({
+      content: tokens.slice(splitPoint).join(' '),
+    });
+    this.get('slots').at(0).add(leftPart);
+    this.get('slots').at(1).add(rightPart);
+  },
+
+});
+
+var Slot = Backbone.Model.extend({
+
+  add: function(part) {
+    this.get('parts').add(part);
+  },
+
+});
 
 
 // Output: Views
@@ -180,11 +218,18 @@ var OutputStringView = Backbone.View.extend({
 
   className: 'output-string',
 
+  initialize: function() {
+    this.model.on({
+      'remove': this.remove,
+    }, this);
+  },
+
   render: function() {
+    var sepID = 1;
     var tokens = this.model.get('tokens');
     _.each(_.initial(tokens), function(t) {
       this.$el.append($.span('token').text(t));
-      this.$el.append($.span('sep'));
+      this.$el.append($.span('sep').data('ID', sepID++));
     }, this);
     this.$el.append($.span('token').text(_.last(tokens)));
     this.$el.append($.removeButton().css('visibility', 'hidden'));
@@ -197,6 +242,9 @@ var OutputStringView = Backbone.View.extend({
     },
     'mouseleave': function() {
       this.$('.remove-button').css('visibility', 'hidden');
+    },
+    'click .sep': function(e) {
+      this.model.trigger('split', $(e.currentTarget).data('ID'));
     },
     'click .remove-button': function() {
       this.model.destroy();
@@ -239,6 +287,14 @@ var CombinationGroupView = Backbone.View.extend({
 
   className: 'combination-group',
 
+  initialize: function() {
+    this.model.get('outputStrings').on({
+      'remove': function(outputString) {
+        outputString.trigger('remove');
+      },
+    }, this);
+  },
+
   render: function() {
     this._renderHeader();
     this._renderPartsTable();
@@ -259,7 +315,7 @@ var CombinationGroupView = Backbone.View.extend({
 
   _renderOutputStrings: function() {
     var list = $.div('output-strings');
-    _.each(this.model.get('outputStrings'), function(os) {
+    this.model.get('outputStrings').each(function(os) {
       list.append(new OutputStringView({ model: os }).render().$el);
     });
     this.$el.append(list);
@@ -316,7 +372,7 @@ var PartsTableView = Backbone.View.extend({
 
   _renderSlots: function() {
     var slots = $.div('slots');
-    _.each(this.model.get('slots'), function(slot) {
+    this.model.get('slots').each(function(slot) {
       slots.append(new SlotView({ model: slot }).render().$el);
     });
     this.$el.append(slots);
@@ -327,6 +383,15 @@ var PartsTableView = Backbone.View.extend({
 var SlotView = Backbone.View.extend({
 
   className: 'slot',
+
+  initialize: function() {
+    this.model.get('parts').on({
+      'add': function() {
+        this.$el.empty();
+        this.render();
+      },
+    }, this);
+  },
 
   render: function() {
     this._renderHeader();
@@ -339,7 +404,7 @@ var SlotView = Backbone.View.extend({
   },
 
   _renderParts: function() {
-    _.each(this.model.get('parts'), function(part) {
+    this.model.get('parts').each(function(part) {
       this.$el.append($.div('part').text(part.get("content")));
     }, this);
   },

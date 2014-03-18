@@ -13,3 +13,15 @@ input.description {
     margin-left: 5px;
     margin-right: 5px;
 }
+
+.placeholder {
+    width: 200px;
+    height: 30px;
+    border: solid 3px #94D6EA;
+    border-radius: 10px;
+    padding-left: 3px;
+    display: table-cell;
+    vertical-align: middle;
+    color: rgba(51, 51, 51, .45); /* #333333 */
+    cursor: default;
+}

@@ -196,6 +196,7 @@ var CombinationGroupView = Backbone.View.extend({
     this._renderHeader();
     this._renderPartsTable();
     this._renderOutputStrings();
+    this._renderPlaceholder();
     return this;
   },
 
@@ -215,6 +216,10 @@ var CombinationGroupView = Backbone.View.extend({
       list.append(new OutputStringView({ model: os }).render().$el);
     });
     this.$el.append(list);
+  },
+
+  _renderPlaceholder: function() {
+    this.$el.append($.div('placeholder').text('Add more content ...'));
   },
 
 });

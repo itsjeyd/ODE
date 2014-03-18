@@ -163,6 +163,10 @@ var CombinationGroup = Backbone.Model.extend({
     alert(JSON.stringify(this));
   },
 
+  addOutputString: function(outputString) {
+    this.get('outputStrings').push(outputString);
+  },
+
 });
 
 var PartsTable = Backbone.Model.extend({});
@@ -220,6 +224,40 @@ var CombinationGroupView = Backbone.View.extend({
 
   _renderPlaceholder: function() {
     this.$el.append($.div('placeholder').text('Add more content ...'));
+    this.$('.placeholder').makeEditable();
+    this.$el.append($.addButton().css('visibility', 'hidden'));
+  },
+
+  events: {
+    'click .placeholder': function(e) {
+      var inputField = $(e.currentTarget);
+      if (inputField.text() === 'Add more content ...') {
+        inputField.empty();
+      }
+    },
+    'keyup .placeholder': function(e) {
+      var inputField = $(e.currentTarget);
+      if (inputField.text()) {
+        inputField.next('button').css('visibility', 'visible');
+      } else {
+        inputField.next('button').css('visibility', 'hidden');
+      }
+    },
+    'click .placeholder + button': function(e) {
+      var placeholder = this.$('.placeholder');
+      var tokens = placeholder.text().split(' ');
+      var outputString = new OutputString({ tokens: tokens });
+      this.model.addOutputString(outputString);
+      var outputStringView = new OutputStringView({ model: outputString });
+      outputStringView.render().$el.insertBefore(placeholder);
+      this._resetPlaceholder();
+    },
+  },
+
+  _resetPlaceholder: function() {
+    var placeholder = this.$('.placeholder');
+    placeholder.text('Add more content ...');
+    placeholder.next('button').css('visibility', 'hidden');
   },
 
 });

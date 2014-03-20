@@ -408,6 +408,7 @@ var PartsTableView = Backbone.View.extend({
 
   render: function() {
     this._renderSlots();
+    this._renderControls();
     return this;
   },
 
@@ -417,6 +418,27 @@ var PartsTableView = Backbone.View.extend({
       slots.append(new SlotView({ model: slot }).render().$el);
     });
     this.$el.append(slots);
+  },
+
+  _renderControls: function() {
+    var controls = $.div('controls');
+    controls.append($.infoButton('Add slot'));
+    this.$('.slots').append(controls);
+  },
+
+  events: {
+    'click .btn': '_addSlot',
+  },
+
+  _addSlot: function() {
+    this.$('.controls').remove();
+    var slotID = this.model.get('slots').size() + 1;
+    var slot = new Slot({ id: slotID,
+                          parts: new Backbone.Collection([]) });
+    this.model.get('slots').add(slot);
+    var slotView = new SlotView({ model: slot });
+    this.$('.slots').append(slotView.render().$el);
+    this._renderControls();
   },
 
 });

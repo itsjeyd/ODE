@@ -22,6 +22,10 @@ input.description {
     padding-right: 3px;
 }
 
+.controls {
+    display: inline-block;
+}
+
 hr {
     margin-top: 2px; /* Bootstrap uses 20px here */
     margin-bottom: 2px; /* Bootstrap uses 20px here */

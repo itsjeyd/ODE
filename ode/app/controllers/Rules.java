@@ -17,6 +17,7 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import models.nodes.Feature;
+import models.nodes.Part;
 import models.nodes.Value;
 import models.nodes.LHS;
 import models.nodes.Rule;
@@ -60,11 +61,14 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> output(final String name) {
+        Promise<List<Part>> globalPartsList = Part.all();
         Promise<Rule> rule = new Rule(name).get();
-        return rule.map(
-            new Function<Rule, Result>() {
-                public Result apply(Rule rule) {
-                    return ok(output.render(rule));
+        Promise<Tuple<List<Part>, Rule>> results = globalPartsList
+            .zip(rule);
+        return results.map(
+            new Function<Tuple<List<Part>, Rule>, Result>() {
+                public Result apply(Tuple<List<Part>, Rule> results) {
+                    return ok(output.render(results._1, results._2));
                 }
             });
     }

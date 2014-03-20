@@ -139,6 +139,12 @@ var RuleView = Backbone.View.extend({
 
 var Part = Backbone.Model.extend({});
 
+var PartsInventory = Backbone.Collection.extend({
+
+  model: Part,
+
+});
+
 var OutputString = Backbone.Model.extend({
 
   defaults: { tokens: [] },
@@ -416,10 +422,41 @@ var SlotView = Backbone.View.extend({
 
 });
 
+var PartsInventoryView = Backbone.View.extend({
+
+  render: function() {
+    this.$el.empty();
+    this.collection.each(this._renderPart, this);
+    return this;
+  },
+
+  _renderPart: function(part) {
+    this.$el.append($.div('part').text(part.get("content")));
+  },
+
+});
+
 
 // Application
 
 $(document).ready(function() {
+
+  // "Parts" sidebar
+
+  var parts = $('.part');
+
+  var partsInventory = new PartsInventory(
+    _.map(parts, function(p) {
+      return new Part({ content: $(p).data('content') });
+    }),
+    { comparator: 'content' }
+  );
+
+  var partsInventoryView = new PartsInventoryView({
+    el: '#parts-list',
+    collection: partsInventory,
+  });
+  partsInventoryView.render();
 
   // Output Builder
 

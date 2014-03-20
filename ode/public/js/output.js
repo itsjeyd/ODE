@@ -212,7 +212,10 @@ var PartsTable = Backbone.Model.extend({
 var Slot = Backbone.Model.extend({
 
   add: function(part) {
-    this.get('parts').add(part);
+    var parts = this.get('parts');
+    if (!parts.findWhere({ content: part.get('content') })) {
+      parts.add(part);
+    }
   },
 
 });

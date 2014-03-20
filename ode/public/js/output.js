@@ -471,6 +471,7 @@ var SlotView = Backbone.View.extend({
   },
 
   events: {
+    'dblclick .part': '_renderEditControls',
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);
       if (inputField.text() === '...') {
@@ -488,7 +489,33 @@ var SlotView = Backbone.View.extend({
         this.model.add(part);
       }
     },
-  }
+    'keyup input': function(e) {
+      if (e.which === 13) {
+        var inputField = $(e.currentTarget);
+        var newContent = inputField.val();
+        var hiddenPart = inputField.prev('.part');
+        var oldContent = hiddenPart.text();
+        if (newContent && !(newContent === oldContent)) {
+          var part = this.model.get('parts')
+            .findWhere({ content: hiddenPart.text() });
+          part.set('content', newContent);
+          hiddenPart.text(newContent);
+        }
+        hiddenPart.show();
+        inputField.remove();
+      }
+    },
+  },
+
+  _renderEditControls: function(e) {
+    if (!this.$('input').exists()) {
+      var part = $(e.currentTarget);
+      var inputField = $.textInput().val(part.text());
+      part.hide();
+      inputField.insertAfter(part);
+      inputField.focus();
+    }
+  },
 
 });
 

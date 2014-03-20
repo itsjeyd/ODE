@@ -64,6 +64,7 @@ hr {
 }
 
 .slot > .placeholder {
+    display: inline-block;
     min-width: 55px;
     height: 25px;
     border: solid 2px #94D6EA;

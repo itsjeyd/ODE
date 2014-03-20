@@ -537,6 +537,7 @@ var SlotView = Backbone.View.extend({
             .findWhere({ content: hiddenPart.text() });
           part.set('content', newContent);
           hiddenPart.text(newContent);
+          hiddenPart.append($.removeButton().css('visibility', 'hidden'));
         }
         hiddenPart.show();
         inputField.remove();

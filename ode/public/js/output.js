@@ -431,8 +431,37 @@ var PartsInventoryView = Backbone.View.extend({
   },
 
   _renderPart: function(part) {
-    this.$el.append($.div('part').text(part.get("content")));
+    var partItemView = new PartItemView({ model: part });
+    this.$el.append(partItemView.render().$el);
   },
+
+  filterItems: function(input) {
+    this.collection.each(function(i) {
+      if (!$.matches(i.get('content').toLowerCase(), input)) {
+        i.trigger('hide');
+      } else {
+        i.trigger('show');
+      }
+    });
+  },
+
+});
+
+var PartItemView = Backbone.View.extend({
+
+  className: 'part',
+
+  initialize: function() {
+    this.model.on({
+      'hide': function() { this.$el.hide(); },
+      'show': function() { this.$el.show(); },
+    }, this);
+  },
+
+  render: function() {
+    this.$el.text(this.model.get('content'));
+    return this;
+  }
 
 });
 
@@ -457,6 +486,11 @@ $(document).ready(function() {
     collection: partsInventory,
   });
   partsInventoryView.render();
+
+  $('#parts-filter').on('keyup', function() {
+    var currentInput = $(this).val().toLowerCase();
+    partsInventoryView.filterItems(currentInput);
+  });
 
   // Output Builder
 

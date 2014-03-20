@@ -438,6 +438,7 @@ var SlotView = Backbone.View.extend({
     this._renderHeader();
     this._renderLine();
     this._renderParts();
+    this._renderPlaceholder();
     return this;
   },
 
@@ -454,6 +455,40 @@ var SlotView = Backbone.View.extend({
       this.$el.append($.div('part').text(part.get("content")));
     }, this);
   },
+
+  _renderPlaceholder: function() {
+    var placeholder = $.div('placeholder').text('...');
+    this.$el.append(placeholder);
+    placeholder.makeEditable();
+    var view = this;
+    placeholder.droppable({
+      accept: '.part',
+      drop: function(e, ui) {
+        var part = new Part({ content: $(ui.helper).text() });
+        view.model.add(part);
+      },
+    });
+  },
+
+  events: {
+    'click .placeholder': function(e) {
+      var inputField = $(e.currentTarget);
+      if (inputField.text() === '...') {
+        inputField.empty();
+      }
+    },
+    'keydown .placeholder': function(e) {
+      if (e.which === 13) {
+        e.preventDefault();
+      }
+    },
+    'keyup .placeholder': function(e) {
+      if (e.which === 13) {
+        var part = new Part({ content: $(e.currentTarget).text() });
+        this.model.add(part);
+      }
+    },
+  }
 
 });
 

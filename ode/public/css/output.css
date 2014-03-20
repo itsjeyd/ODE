@@ -55,7 +55,7 @@ hr {
     padding-left: 3px;
 }
 
-span.placeholder {
+.output-string > .placeholder {
     border: solid 2px #94D6EA;
     border-radius: 5px;
     margin-left: 12px;
@@ -63,7 +63,17 @@ span.placeholder {
     cursor: default;
 }
 
-div.placeholder {
+.slot > .placeholder {
+    min-width: 55px;
+    height: 25px;
+    border: solid 2px #94D6EA;
+    border-radius: 5px;
+    margin-bottom: 2px;
+    padding-right: 3px;
+    cursor: text;
+}
+
+.combination-group > .placeholder {
     width: 200px;
     height: 30px;
     border: solid 3px #94D6EA;

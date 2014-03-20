@@ -32,6 +32,8 @@ hr {
 }
 
 .sep {
+    border: 1px solid rgba(148, 214, 234, 0); /* #94D6EA */
+    border-radius: 3px;
     margin-left: 2px;
     margin-right: 2px;
     padding-left: 4px;
@@ -40,8 +42,7 @@ hr {
 }
 
 .sep:hover {
-    border: 1px solid #94D6EA;
-    border-radius: 3px;
+    border: 1px solid rgba(148, 214, 234, 1); /* #94D6EA */
 }
 
 .remove-button {

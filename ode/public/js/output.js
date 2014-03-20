@@ -241,8 +241,27 @@ var OutputStringView = Backbone.View.extend({
       this.$el.append($.span('sep').data('ID', sepID++));
     }, this);
     this.$el.append($.span('token').text(_.last(tokens)));
+    this._renderPlaceholder();
     this.$el.append($.removeButton().css('visibility', 'hidden'));
     return this;
+  },
+
+  _renderPlaceholder: function() {
+    var placeholder = $.span('placeholder').text('...');
+    this.$el.append(placeholder);
+    var view = this;
+    placeholder.droppable({
+      accept: '.part',
+      drop: function(e, ui) {
+        var tokens = view.model.get('tokens');
+        var partTokens = $(ui.helper).text().split(' ');
+        _.each(partTokens, function(t) {
+          tokens.push(t);
+        });
+        view.$el.empty();
+        view.render();
+      },
+    });
   },
 
   events: {
@@ -376,7 +395,7 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   _resetPlaceholder: function() {
-    var placeholder = this.$('.placeholder');
+    var placeholder = this.$el.children('.placeholder');
     placeholder.text('Add more content ...');
     placeholder.next('button').css('visibility', 'hidden');
   },

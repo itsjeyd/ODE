@@ -295,6 +295,7 @@ var OutputStringView = Backbone.View.extend({
       var okButton = $.okButton();
       this.$('.token').remove();
       this.$('.sep').remove();
+      this.$('.placeholder').remove();
       this.$('.remove-button').remove();
       this.$el.append(inputField);
       this.$el.append(okButton);

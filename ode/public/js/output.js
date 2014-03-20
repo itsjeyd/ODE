@@ -427,7 +427,7 @@ var SlotView = Backbone.View.extend({
 
   initialize: function() {
     this.model.get('parts').on({
-      'add': function() {
+      'add remove': function() {
         this.$el.empty();
         this.render();
       },
@@ -451,8 +451,10 @@ var SlotView = Backbone.View.extend({
   },
 
   _renderParts: function() {
-    this.model.get('parts').each(function(part) {
-      this.$el.append($.div('part').text(part.get("content")));
+    this.model.get('parts').each(function(p) {
+      var part = $.div('part').text(p.get("content"));
+      part.append($.removeButton().css('visibility', 'hidden'));
+      this.$el.append(part);
     }, this);
   },
 
@@ -471,6 +473,19 @@ var SlotView = Backbone.View.extend({
   },
 
   events: {
+    'mouseenter .part': function(e) {
+      $(e.currentTarget).find('.remove-button').css('visibility', 'visible');
+    },
+    'mouseleave .part': function(e) {
+      $(e.currentTarget).find('.remove-button').css('visibility', 'hidden');
+    },
+    'click .remove-button': function(e) {
+      var parts = this.model.get('parts');
+      var part = parts.findWhere({
+        content: $(e.currentTarget).parent().text()
+      });
+      parts.remove(part);
+    },
     'dblclick .part': '_renderEditControls',
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);

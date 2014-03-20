@@ -1,3 +1,7 @@
+#parts-list {
+    cursor: pointer;
+}
+
 input.name,
 input.description {
     margin-top: 20px; /* Equal to margin-top of Bootstrap <h3> */

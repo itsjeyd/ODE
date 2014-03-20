@@ -328,8 +328,21 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   _renderPlaceholder: function() {
-    this.$el.append($.div('placeholder').text('Add more content ...'));
-    this.$('.placeholder').makeEditable();
+    var placeholder = $.div('placeholder').text('Add more content ...');
+    this.$el.append(placeholder);
+    placeholder.makeEditable();
+    var view = this;
+    placeholder.droppable({
+      accept: '.part',
+      drop: function(e, ui) {
+        var tokens = $(ui.helper).text().split(' ');
+        var outputString = new OutputString({ tokens: tokens });
+        view.model.addOutputString(outputString);
+        var outputStringView = new OutputStringView({ model: outputString });
+        outputStringView.render().$el.insertBefore(placeholder);
+        view._resetPlaceholder();
+      },
+    });
     this.$el.append($.addButton().css('visibility', 'hidden'));
   },
 
@@ -449,7 +462,7 @@ var PartsInventoryView = Backbone.View.extend({
 
 var PartItemView = Backbone.View.extend({
 
-  className: 'part',
+  className: 'part draggable',
 
   initialize: function() {
     this.model.on({
@@ -460,6 +473,10 @@ var PartItemView = Backbone.View.extend({
 
   render: function() {
     this.$el.text(this.model.get('content'));
+    this.$el.draggable({
+      helper: 'clone',
+      revert: 'invalid',
+    });
     return this;
   }
 

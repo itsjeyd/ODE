@@ -386,7 +386,8 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   events: {
-    'click .plus-button': function() {
+    'click .plus-button': function(e) {
+      $(e.currentTarget).remove();
       var emptyGroup = this.model.create(this.model.id + 1);
       var groupView = new CombinationGroupView({ model: emptyGroup });
       this.$el.parent().append(groupView.render().$el);

@@ -407,7 +407,7 @@ var CombinationGroupView = Backbone.View.extend({
       }
     },
     'click .placeholder + button': function(e) {
-      var placeholder = this.$('.placeholder');
+      var placeholder = $(e.currentTarget).prev('.placeholder');
       var tokens = placeholder.text().split(' ');
       var outputString = new OutputString({ tokens: tokens });
       this.model.addOutputString(outputString);

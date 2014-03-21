@@ -8,6 +8,11 @@ input.description {
     margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
 }
 
+.plus-button {
+    margin-left: 7px;
+    cursor: pointer;
+}
+
 .parts-table {
     margin-bottom: 7px;
 }

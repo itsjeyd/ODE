@@ -190,6 +190,15 @@ var CombinationGroup = Backbone.Model.extend({
     this.get('outputStrings').push(outputString);
   },
 
+  create: function(id) {
+    var json = {
+      'outputStrings': [],
+      'partsTable': { 'slots': [ { 'parts': [] },
+                                 { 'parts': [] } ] },
+    };
+    return new CombinationGroup({ id: id }, { json: json });
+  },
+
 });
 
 var PartsTable = Backbone.Model.extend({
@@ -337,7 +346,10 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   _renderHeader: function() {
-    this.$el.append($.h4('Group ' + this.model.id));
+    var groupHeader = $.h4('Group ' + this.model.id);
+    var small = $.small().append($.plusButton());
+    groupHeader.append(small);
+    this.$el.append(groupHeader);
   },
 
   _renderPartsTable: function() {
@@ -374,6 +386,11 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   events: {
+    'click .plus-button': function() {
+      var emptyGroup = this.model.create(this.model.id + 1);
+      var groupView = new CombinationGroupView({ model: emptyGroup });
+      this.$el.parent().append(groupView.render().$el);
+    },
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);
       if (inputField.text() === 'Add more content ...') {

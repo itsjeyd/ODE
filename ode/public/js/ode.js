@@ -97,6 +97,10 @@ jQuery.h5 = function(text) {
   return $('<h5>').text(text);
 }
 
+jQuery.small = function() {
+  return $('<small>');
+}
+
 jQuery.p = function(text) {
   return $('<p>').text(text);
 }
@@ -172,6 +176,10 @@ jQuery.createButton = function() {
 jQuery.editButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-pencil edit-button')
     .data('target', target);
+}
+
+jQuery.plusButton = function(target) {
+  return $('<span>').addClass('glyphicon glyphicon-plus plus-button');
 }
 
 jQuery.removeButton = function(target) {

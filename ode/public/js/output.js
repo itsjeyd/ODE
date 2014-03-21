@@ -166,12 +166,12 @@ var CombinationGroup = Backbone.Model.extend({
       return new OutputString({ tokens: os.tokens });
     });
     this.set('outputStrings', new Backbone.Collection(outputStrings));
-    var slotID = 1;
+    var position = 1;
     var slots = _.map(options.json.partsTable.slots, function(s) {
       var parts = _.map(s.parts, function(p) {
         return new Part({ content: p });
       });
-      return new Slot({ id: slotID++,
+      return new Slot({ position: position++,
                         parts: new Backbone.Collection(parts) });
     });
     alert(JSON.stringify(this));
@@ -205,6 +205,10 @@ var PartsTable = Backbone.Model.extend({
     });
     this.get('slots').at(0).add(leftPart);
     this.get('slots').at(1).add(rightPart);
+  },
+
+  hasOptionalSlots: function() {
+    return this.get('slots').size() > 2;
   },
 
 });
@@ -407,6 +411,20 @@ var PartsTableView = Backbone.View.extend({
 
   className: 'parts-table',
 
+  initialize: function() {
+    this.model.get('slots').on({
+      'delete': function(slot) {
+        this.model.get('slots').remove(slot);
+        var slotsToUpdate = this.model.get('slots').filter(function(s) {
+          return s.get('position') > slot.get('position');
+        });
+        _.each(slotsToUpdate, function(s) {
+          s.set('position', s.get('position')-1);
+        });
+      },
+    }, this);
+  },
+
   render: function() {
     this._renderSlots();
     this._renderControls();
@@ -429,12 +447,24 @@ var PartsTableView = Backbone.View.extend({
 
   events: {
     'click .btn': '_addSlot',
+    'mouseenter h5': function(e) {
+      if (this.model.hasOptionalSlots()) {
+        $(e.currentTarget).find('.remove-button')
+          .css('visibility', 'visible');
+      }
+    },
+    'mouseleave h5': function(e) {
+      if (this.model.hasOptionalSlots()) {
+        $(e.currentTarget).find('.remove-button')
+          .css('visibility', 'hidden');
+      }
+    },
   },
 
   _addSlot: function() {
     this.$('.controls').remove();
-    var slotID = this.model.get('slots').size() + 1;
-    var slot = new Slot({ id: slotID,
+    var position = this.model.get('slots').size() + 1;
+    var slot = new Slot({ position: position,
                           parts: new Backbone.Collection([]) });
     this.model.get('slots').add(slot);
     var slotView = new SlotView({ model: slot });
@@ -455,6 +485,13 @@ var SlotView = Backbone.View.extend({
         this.render();
       },
     }, this);
+    this.model.on({
+      'change:position': this._updateHeader,
+    }, this);
+  },
+
+  _updateHeader: function() {
+    this.$('h5').text('Slot ' + this.model.get('position'));
   },
 
   render: function() {
@@ -466,7 +503,9 @@ var SlotView = Backbone.View.extend({
   },
 
   _renderHeader: function() {
-    this.$el.append($.h5('Slot ' + this.model.id));
+    var slotHeader = $.h5('Slot ' + this.model.get('position'));
+    slotHeader.append($.removeButton().css('visibility', 'hidden'));
+    this.$el.append(slotHeader);
   },
 
   _renderLine: function() {
@@ -496,13 +535,17 @@ var SlotView = Backbone.View.extend({
   },
 
   events: {
+    'click h5 > .remove-button': function() {
+      this.model.trigger('delete', this.model);
+      this.remove();
+    },
     'mouseenter .part': function(e) {
       $(e.currentTarget).find('.remove-button').css('visibility', 'visible');
     },
     'mouseleave .part': function(e) {
       $(e.currentTarget).find('.remove-button').css('visibility', 'hidden');
     },
-    'click .remove-button': function(e) {
+    'click .part > .remove-button': function(e) {
       var parts = this.model.get('parts');
       var part = parts.findWhere({
         content: $(e.currentTarget).parent().text()

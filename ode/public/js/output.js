@@ -162,21 +162,23 @@ var OutputString = Backbone.Model.extend({
 var CombinationGroup = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
-    var outputStrings = _.map(options.json.outputStrings, function(os) {
-      return new OutputString({ tokens: os.tokens });
-    });
-    this.set('outputStrings', new Backbone.Collection(outputStrings));
-    var position = 1;
-    var slots = _.map(options.json.partsTable.slots, function(s) {
-      var parts = _.map(s.parts, function(p) {
-        return new Part({ content: p });
+    if (options.json) {
+      var outputStrings = _.map(options.json.outputStrings, function(os) {
+        return new OutputString({ tokens: os.tokens });
       });
-      return new Slot({ position: position++,
-                        parts: new Backbone.Collection(parts) });
-    });
-    this.set('partsTable', new PartsTable({
-      slots: new Backbone.Collection(slots)
-    }));
+      this.set('outputStrings', new Backbone.Collection(outputStrings));
+      var position = 1;
+      var slots = _.map(options.json.partsTable.slots, function(s) {
+        var parts = _.map(s.parts, function(p) {
+          return new Part({ content: p });
+        });
+        return new Slot({ position: position++,
+                          parts: new Backbone.Collection(parts) });
+      });
+      this.set('partsTable', new PartsTable({
+        slots: new Backbone.Collection(slots)
+      }));
+    }
     this.get('outputStrings').on({
       'change:splitPoint': function(model) {
         this.get('outputStrings').remove(model);
@@ -196,6 +198,28 @@ var CombinationGroup = Backbone.Model.extend({
                                  { 'parts': [] } ] },
     };
     return new CombinationGroup({ id: id }, { json: json });
+  },
+
+  copy: function() {
+    var outputStrings = this.get('outputStrings').map(function(os) {
+      return new OutputString({ tokens: os.get('tokens') });
+    });
+    var position = 1;
+    var slots = this.get('partsTable').get('slots').map(function(s) {
+      var parts = s.get('parts').map(function(p) {
+          return new Part({ content: p.get('content') });
+      });
+      return new Slot({ position: position++,
+                        parts: new Backbone.Collection(parts) });
+    });
+    var partsTable = new PartsTable({
+      slots: new Backbone.Collection(slots)
+    });
+    return new CombinationGroup({
+      id: this.id + 1,
+      outputStrings: new Backbone.Collection(outputStrings),
+      partsTable: partsTable
+    }, {});
   },
 
 });
@@ -346,7 +370,9 @@ var CombinationGroupView = Backbone.View.extend({
 
   _renderHeader: function() {
     var groupHeader = $.h4('Group ' + this.model.id);
-    var small = $.small().append($.plusButton());
+    var small = $.small();
+    small.append($.plusButton());
+    small.append($.copyButton());
     groupHeader.append(small);
     this.$el.append(groupHeader);
   },
@@ -390,6 +416,11 @@ var CombinationGroupView = Backbone.View.extend({
       var emptyGroup = this.model.create(this.model.id + 1);
       var groupView = new CombinationGroupView({ model: emptyGroup });
       this.$el.parent().append(groupView.render().$el);
+    },
+    'click .copy-button': function() {
+      var groupCopy = this.model.copy();
+      var groupView = new CombinationGroupView({ model: groupCopy });
+      groupView.render().$el.insertAfter(this.$el);
     },
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);

@@ -174,7 +174,6 @@ var CombinationGroup = Backbone.Model.extend({
       return new Slot({ position: position++,
                         parts: new Backbone.Collection(parts) });
     });
-    alert(JSON.stringify(this));
     this.set('partsTable', new PartsTable({
       slots: new Backbone.Collection(slots)
     }));

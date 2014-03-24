@@ -413,11 +413,14 @@ var CombinationGroupView = Backbone.View.extend({
   events: {
     'click .plus-button': function(e) {
       $(e.currentTarget).remove();
+      this.$('.copy-button').remove();
       var emptyGroup = this.model.create(this.model.id + 1);
       var groupView = new CombinationGroupView({ model: emptyGroup });
       this.$el.parent().append(groupView.render().$el);
     },
-    'click .copy-button': function() {
+    'click .copy-button': function(e) {
+      this.$('.plus-button').remove();
+      $(e.currentTarget).remove();
       var groupCopy = this.model.copy();
       var groupView = new CombinationGroupView({ model: groupCopy });
       groupView.render().$el.insertAfter(this.$el);

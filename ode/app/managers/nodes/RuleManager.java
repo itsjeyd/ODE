@@ -72,11 +72,4 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         return response.map(new UpdatedFunction());
     }
 
-    public static Promise<Boolean> delete(Rule rule) {
-        Promise<WS.Response> response = Neo4jService
-            .deleteLabeledNodeWithProperties(rule.getLabel(),
-                                             rule.jsonProperties);
-        return response.map(new NodeDeletedFunction());
-    }
-
 }

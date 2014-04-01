@@ -7,6 +7,7 @@ import play.libs.F.Promise;
 
 import managers.functions.JsonFunction;
 import managers.functions.NodeCreatedFunction;
+import managers.functions.NodeDeletedFunction;
 import models.nodes.LabeledNodeWithProperties;
 import neo4play.Neo4jService;
 
@@ -27,4 +28,10 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
         return response.map(new NodeCreatedFunction());
     }
 
+    public static Promise<Boolean> delete(LabeledNodeWithProperties node) {
+        Promise<WS.Response> response = Neo4jService
+            .deleteLabeledNodeWithProperties(node.getLabel(),
+                                             node.jsonProperties);
+        return response.map(new NodeDeletedFunction());
+    }
 }

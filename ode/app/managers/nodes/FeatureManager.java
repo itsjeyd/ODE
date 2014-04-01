@@ -81,11 +81,4 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return response.map(new UpdatedFunction());
     }
 
-    public static Promise<Boolean> delete(Feature feature) {
-        Promise<WS.Response> response = Neo4jService
-            .deleteLabeledNodeWithProperties(feature.getLabel(),
-                                             feature.jsonProperties);
-        return response.map(new NodeDeletedFunction());
-    }
-
 }

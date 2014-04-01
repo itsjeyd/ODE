@@ -20,10 +20,6 @@ public class ValueManager extends NamedNodeManager {
         return LabeledNodeManager.all(NodeType.VALUE);
     }
 
-    public static Promise<Boolean> create(Value value) {
-        return LabeledNodeWithPropertiesManager.create(value);
-    }
-
     public static Promise<JsonNode> getIncomingRelationships(Value value) {
         Promise<WS.Response> response = Neo4jService
             .getIncomingRelationshipsByType(value.getLabel(),

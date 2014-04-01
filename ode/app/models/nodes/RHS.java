@@ -12,7 +12,7 @@ import managers.nodes.RHSManager;
 import models.relationships.RHSRelationship;
 
 
-public class RHS extends LabeledNodeWithProperties {
+public class RHS extends UUIDNode {
     public Rule rule;
 
     private RHS() {

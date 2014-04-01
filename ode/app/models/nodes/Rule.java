@@ -17,7 +17,7 @@ import models.relationships.LHSRelationship;
 import models.relationships.RHSRelationship;
 
 
-public class Rule extends LabeledNodeWithProperties {
+public class Rule extends UUIDNode {
     public String name;
     public String description;
     public LHS lhs;

@@ -19,7 +19,7 @@ import managers.nodes.AVMManager;
 import models.relationships.HasFeatureRelationship;
 
 
-public abstract class AVM extends LabeledNodeWithProperties {
+public abstract class AVM extends UUIDNode {
     public Rule rule;
     public JsonNode json;
 
@@ -31,8 +31,6 @@ public abstract class AVM extends LabeledNodeWithProperties {
         this();
         this.rule = rule;
     }
-
-    public abstract Promise<UUID> getUUID();
 
     public abstract Promise<Boolean> create();
 

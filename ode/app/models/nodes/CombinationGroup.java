@@ -3,7 +3,6 @@ package models.nodes;
 import java.util.UUID;
 
 import play.libs.F.Promise;
-import play.libs.Json;
 
 import constants.NodeType;
 import managers.nodes.CombinationGroupManager;

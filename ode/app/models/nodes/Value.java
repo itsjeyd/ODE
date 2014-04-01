@@ -6,7 +6,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import play.libs.Json;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;

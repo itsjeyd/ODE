@@ -8,7 +8,6 @@ import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Option;
 import play.libs.F.Promise;
-import play.libs.F.Tuple;
 
 import controllers.Application.Login;
 import models.nodes.User;

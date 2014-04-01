@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 

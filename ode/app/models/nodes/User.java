@@ -1,12 +1,10 @@
 package models.nodes;
 
-import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.None;
 import play.libs.F.Option;
 import play.libs.F.Promise;
 import play.libs.F.Some;
-import play.libs.F.Tuple;
 
 import constants.NodeType;
 import managers.nodes.UserManager;

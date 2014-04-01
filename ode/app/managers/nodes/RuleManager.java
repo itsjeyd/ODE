@@ -13,13 +13,12 @@ import play.libs.F.Promise;
 import constants.NodeType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
-import managers.functions.NodeDeletedFunction;
 import managers.functions.PropertyFunction;
 import managers.functions.UpdatedFunction;
 import models.nodes.Rule;
 
 
-public class RuleManager extends LabeledNodeWithPropertiesManager {
+public class RuleManager extends NamedNodeManager {
 
     public static Promise<List<JsonNode>> all() {
         return LabeledNodeManager.all(NodeType.RULE);
@@ -55,12 +54,7 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
 
     public static Promise<Boolean> updateName(Rule rule, String newName) {
         rule.jsonProperties.put("description", rule.description);
-        ObjectNode newProps = rule.jsonProperties.deepCopy()
-            .retain("uuid", "description");
-        newProps.put("name", newName);
-        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            rule.getLabel(), rule.jsonProperties, newProps);
-        return response.map(new UpdatedFunction());
+        return NamedNodeManager.updateName(rule, newName);
     }
 
     public static Promise<Boolean> updateDescription(

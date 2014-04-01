@@ -27,46 +27,12 @@ public class User extends LabeledNodeWithProperties {
         this.jsonProperties.put("username", username);
     }
 
-    public Promise<Tuple<Option<User>, Boolean>> getOrCreate() {
-        return this.exists().flatMap(new GetOrCreateFunction(this));
-    }
-
     public Promise<Option<User>> get() {
         return this.exists().map(new GetFunction(this));
     }
 
-
-    private class GetOrCreateFunction
-        implements Function<Boolean, Promise<Tuple<Option<User>, Boolean>>> {
-        private User user;
-        public GetOrCreateFunction(User user) {
-            this.user = user;
-        }
-        public Promise<Tuple<Option<User>, Boolean>> apply(Boolean exists) {
-            if (exists) {
-                return Promise.pure(
-                    new Tuple<Option<User>, Boolean>(
-                        new Some<User>(this.user), false));
-            }
-            Promise<Boolean> created = UserManager.create(this.user);
-            return created.map(new CreatedFunction(this.user));
-        }
-    }
-
-    private class CreatedFunction
-        implements Function<Boolean, Tuple<Option<User>, Boolean>> {
-        private User user;
-        public CreatedFunction(User user) {
-            this.user = user;
-        }
-        public Tuple<Option<User>, Boolean> apply(Boolean created) {
-            if (created) {
-                return new Tuple<Option<User>, Boolean>(
-                    new Some<User>(this.user), true);
-            }
-            return new Tuple<Option<User>, Boolean>(
-                new None<User>(), false);
-        }
+    public Promise<Boolean> create() {
+        return this.exists().flatMap(new CreateFunction(this));
     }
 
     private class GetFunction implements Function<Boolean, Option<User>> {
@@ -79,6 +45,19 @@ public class User extends LabeledNodeWithProperties {
                 return new Some<User>(this.user);
             }
             return new None<User>();
+        }
+    }
+
+    private class CreateFunction implements Function<Boolean, Promise<Boolean>> {
+        private User user;
+        public CreateFunction(User user) {
+            this.user = user;
+        }
+        public Promise<Boolean> apply(Boolean exists) {
+            if (exists) {
+                return Promise.pure(false);
+            }
+            return UserManager.create(this.user);
         }
     }
 

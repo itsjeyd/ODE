@@ -78,34 +78,24 @@ public class Features extends Controller {
         final String name = json.findPath("name").textValue();
         String description = json.findPath("description").textValue();
         String type = json.findPath("type").textValue();
-        Promise<Tuple<Option<OntologyNode>, Boolean>> result = null;
+        Promise<Boolean> created = null;
         if (type.equals(FeatureType.COMPLEX.toString())) {
-            result = new ComplexFeature(name, description).getOrCreate();
+            created = new ComplexFeature(name, description).create();
         } else if (type.equals(FeatureType.ATOMIC.toString())) {
-            result = new AtomicFeature(name, description).getOrCreate();
+            created = new AtomicFeature(name, description).create();
         }
-        return result.map(
-            new Function<Tuple<Option<OntologyNode>, Boolean>, Result>() {
+        return created.map(
+            new Function<Boolean, Result>() {
                 ObjectNode jsonResult = Json.newObject();
-                public Result apply(
-                    Tuple<Option<OntologyNode>, Boolean> result) {
-                    Boolean created = result._2;
+                public Result apply(Boolean created) {
                     if (created) {
                         jsonResult.put("id", name);
                         jsonResult.put("message",
                                        "Feature successfully created.");
                         return ok(jsonResult);
-                    } else {
-                        Option<OntologyNode> feature = result._1;
-                        if (feature.isDefined()) {
-                            jsonResult.put("message",
-                                           "Feature already exists.");
-                        } else {
-                            jsonResult.put("error",
-                                           "Feature not created.");
-                        }
-                        return badRequest(jsonResult);
                     }
+                    jsonResult.put("error", "Feature not created.");
+                    return badRequest(jsonResult);
                 }
             });
     }
@@ -276,11 +266,10 @@ public class Features extends Controller {
             relationshipResult = new AllowsRelationship(feature, target)
                 .getOrCreate();
         } else if (featureType.equals(FeatureType.ATOMIC.toString())) {
-            final Feature feature = new AtomicFeature(name);
-            Promise<Tuple<Option<OntologyNode>, Boolean>> valueResult =
-                new Value(targetName).getOrCreate();
-            relationshipResult = valueResult.flatMap(
-                new MaybeConnectToValueFunction(feature));
+            Value value = new Value(targetName);
+            Promise<Boolean> created = value.create();
+            relationshipResult = created.flatMap(
+                new MaybeConnectFunction(new AtomicFeature(name), value));
         }
         return relationshipResult.map(
             new Function<Tuple<Option<Relationship>, Boolean>, Result>() {
@@ -328,19 +317,20 @@ public class Features extends Controller {
     }
 
 
-    private static class MaybeConnectToValueFunction
-        implements Function<Tuple<Option<OntologyNode>, Boolean>,
+    private static class MaybeConnectFunction
+        implements Function<Boolean,
                             Promise<Tuple<Option<Relationship>, Boolean>>> {
         private Feature feature;
-        public MaybeConnectToValueFunction(Feature feature) {
+        private Value value;
+        public MaybeConnectFunction(Feature feature, Value value) {
             this.feature = feature;
+            this.value = value;
         }
         public Promise<Tuple<Option<Relationship>, Boolean>> apply(
-            Tuple<Option<OntologyNode>, Boolean> valueResult) {
-            Option<OntologyNode> value = valueResult._1;
-            if (value.isDefined()) {
+            Boolean valueCreated) {
+            if (valueCreated) {
                 return new AllowsRelationship(
-                    feature, value.get()).getOrCreate();
+                    this.feature, this.value).getOrCreate();
             }
             return Promise.pure(
                 new Tuple<Option<Relationship>, Boolean>(

@@ -32,8 +32,6 @@ public abstract class AVM extends UUIDNode {
         this.rule = rule;
     }
 
-    public abstract Promise<Boolean> create();
-
     public Promise<List<Feature>> getFeatures() {
         return HasFeatureRelationship.getEndNodes(this);
     }

@@ -27,26 +27,16 @@ public class Auth extends Controller {
             return Promise.promise(
                 new ErrorResult(home.render(registrationForm)));
         }
-        Promise<Tuple<Option<User>, Boolean>> result = new User(
+        Promise<Boolean> created = new User(
             registrationForm.get().email,
-            registrationForm.get().password).getOrCreate();
-        return result.map(
-            new Function<Tuple<Option<User>, Boolean>, Result>() {
-                public Result apply(Tuple<Option<User>, Boolean> result) {
-                    Boolean created = result._2;
-                    // Three cases:
-                    // 1. User was created successfully: Some<User>, true
-                    // 2. User already exists: Some<User>, false
-                    // 3. User could not be created: None<User>, false
+            registrationForm.get().password).create();
+        return created.map(
+            new Function<Boolean, Result>() {
+                public Result apply(Boolean created) {
                     if (created) {
                         flash("success", "Registration successful.");
                     } else {
-                        Option<User> user = result._1;
-                        if (user.isDefined()) {
-                            flash("error", "User already exists.");
-                        } else {
-                            flash("error", "Registration failed.");
-                        }
+                        flash("error", "Registration failed.");
                     }
                     return redirect(routes.Application.home());
                 }

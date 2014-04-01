@@ -25,6 +25,10 @@ public class Part extends LabeledNodeWithProperties {
         return parts;
     }
 
+    public Promise<Boolean> create() {
+        return Promise.pure(false);
+    }
+
     private static class AllFunction
         implements Function<List<JsonNode>, List<Part>> {
         public List<Part> apply(List<JsonNode> dataNodes) {

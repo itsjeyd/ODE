@@ -32,7 +32,8 @@ public class RHS extends LabeledNodeWithProperties {
 
     public Promise<Boolean> create() {
         Promise<UUID> ruleUUID = this.rule.getUUID();
-        return ruleUUID.flatMap(new CreateFunction(this));
+        Promise<Boolean> created = ruleUUID.flatMap(new CreateFunction(this));
+        return created.flatMap(new CreateGroupFunction(this));
     }
 
     public Promise<Boolean> connectTo(Rule embeddingRule) {
@@ -63,6 +64,31 @@ public class RHS extends LabeledNodeWithProperties {
             UUID uuid = UUID.nameUUIDFromBytes(bytes);
             this.rhs.jsonProperties.put("uuid", uuid.toString());
             return RHSManager.create(this.rhs);
+        }
+    }
+
+    private static class CreateGroupFunction
+        implements Function<Boolean, Promise<Boolean>> {
+        private RHS rhs;
+        public CreateGroupFunction(RHS rhs) {
+            this.rhs = rhs;
+        }
+        public Promise<Boolean> apply(Boolean created) {
+            if (created) {
+                final RHS rhs = this.rhs;
+                final CombinationGroup group = new CombinationGroup();
+                Promise<Boolean> groupCreated = group.create();
+                return groupCreated.flatMap(
+                    new Function<Boolean, Promise<Boolean>>() {
+                        public Promise<Boolean> apply(Boolean groupCreated) {
+                            if (groupCreated) {
+                                return group.connectTo(rhs);
+                            }
+                            return Promise.pure(false);
+                        }
+                    });
+            }
+            return Promise.pure(false);
         }
     }
 

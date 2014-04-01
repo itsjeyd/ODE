@@ -59,9 +59,8 @@ public class FeatureManager extends NamedNodeManager {
         feature.jsonProperties.put("type", feature.getType());
         ObjectNode newProps = feature.jsonProperties.deepCopy();
         newProps.put("description", newDescription);
-        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            feature.getLabel(), feature.jsonProperties, newProps);
-        return response.map(new UpdatedFunction());
+        return LabeledNodeWithPropertiesManager
+            .updateProperties(feature, newProps);
     }
 
     public static Promise<Boolean> updateType(
@@ -70,9 +69,8 @@ public class FeatureManager extends NamedNodeManager {
             "description", feature.getDescription());
         ObjectNode newProps = feature.jsonProperties.deepCopy();
         newProps.put("type", newType);
-        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            feature.getLabel(), feature.jsonProperties, newProps);
-        return response.map(new UpdatedFunction());
+        return LabeledNodeWithPropertiesManager
+            .updateProperties(feature, newProps);
     }
 
 }

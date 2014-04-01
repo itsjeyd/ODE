@@ -8,6 +8,7 @@ import play.libs.F.Promise;
 import managers.functions.JsonFunction;
 import managers.functions.NodeCreatedFunction;
 import managers.functions.NodeDeletedFunction;
+import managers.functions.UpdatedFunction;
 import models.nodes.LabeledNodeWithProperties;
 import neo4play.Neo4jService;
 
@@ -34,4 +35,12 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
                                              node.jsonProperties);
         return response.map(new NodeDeletedFunction());
     }
+
+    public static Promise<Boolean> updateProperties(
+        LabeledNodeWithProperties node, JsonNode newProps) {
+        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
+            node.getLabel(), node.jsonProperties, newProps);
+        return response.map(new UpdatedFunction());
+    }
+
 }

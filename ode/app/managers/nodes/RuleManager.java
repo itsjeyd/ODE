@@ -14,7 +14,6 @@ import constants.NodeType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
-import managers.functions.UpdatedFunction;
 import models.nodes.Rule;
 
 
@@ -61,9 +60,8 @@ public class RuleManager extends NamedNodeManager {
         Rule rule, String newDescription) {
         ObjectNode newProps = rule.jsonProperties.deepCopy();
         newProps.put("description", newDescription);
-        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            rule.getLabel(), rule.jsonProperties, newProps);
-        return response.map(new UpdatedFunction());
+        return LabeledNodeWithPropertiesManager
+            .updateProperties(rule, newProps);
     }
 
 }

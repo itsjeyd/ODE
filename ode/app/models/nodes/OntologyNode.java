@@ -15,6 +15,10 @@ import managers.nodes.ValueManager;
 public abstract class OntologyNode extends LabeledNodeWithProperties {
     public String name;
 
+    protected OntologyNode(NodeType label) {
+        super(label);
+    }
+
     public Boolean isFeature() {
         return this.label.equals(NodeType.FEATURE);
     }

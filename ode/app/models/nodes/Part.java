@@ -8,12 +8,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
+import constants.NodeType;
 import managers.nodes.PartManager;
 
 public class Part extends LabeledNodeWithProperties {
     public String content;
 
     private Part(String content) {
+        super(NodeType.PART);
         this.content = content;
     }
 

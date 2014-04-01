@@ -13,8 +13,7 @@ import models.relationships.GroupRelationship;
 public class CombinationGroup extends LabeledNodeWithProperties {
 
     public CombinationGroup() {
-        this.label = NodeType.COMBINATION_GROUP;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.COMBINATION_GROUP);
     }
 
     public Promise<Boolean> create() {

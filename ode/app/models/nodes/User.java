@@ -17,8 +17,7 @@ public class User extends LabeledNodeWithProperties {
     public String password;
 
     private User() {
-        this.label = NodeType.USER;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.USER);
     }
 
     public User(String username, String password) {

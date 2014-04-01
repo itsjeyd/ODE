@@ -24,8 +24,7 @@ public abstract class AVM extends LabeledNodeWithProperties {
     public JsonNode json;
 
     protected AVM() {
-        this.label = NodeType.AVM;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.AVM);
     }
 
     public AVM(Rule rule) {

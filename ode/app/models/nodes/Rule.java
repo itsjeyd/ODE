@@ -23,8 +23,7 @@ public class Rule extends LabeledNodeWithProperties {
     public LHS lhs;
 
     private Rule() {
-        this.label = NodeType.RULE;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.RULE);
     }
 
     public Rule(String name) {

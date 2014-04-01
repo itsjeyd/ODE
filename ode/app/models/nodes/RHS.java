@@ -16,8 +16,7 @@ public class RHS extends LabeledNodeWithProperties {
     public Rule rule;
 
     private RHS() {
-        this.label = NodeType.RHS;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.RHS);
     }
 
     public RHS(Rule rule) {

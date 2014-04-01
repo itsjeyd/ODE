@@ -17,8 +17,7 @@ import managers.nodes.ValueManager;
 
 public class Value extends OntologyNode {
     private Value() {
-        this.label = NodeType.VALUE;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.VALUE);
     }
 
     public Value(String name) {

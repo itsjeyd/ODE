@@ -34,8 +34,7 @@ public class Feature extends OntologyNode {
     public List<String> targets;
 
     private Feature() {
-        this.label = NodeType.FEATURE;
-        this.jsonProperties = Json.newObject();
+        super(NodeType.FEATURE);
     }
 
     public Feature(String name) {

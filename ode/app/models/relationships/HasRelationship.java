@@ -28,6 +28,7 @@ public class HasRelationship extends TypedRelationship {
         this.rule = rule;
     }
 
+    @Override
     public Promise<Boolean> exists() {
         Promise<JsonNode> json = HasRelationshipManager.get(this);
         return json.map(new ExistsFunction());

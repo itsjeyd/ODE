@@ -15,7 +15,6 @@ import play.libs.F.Tuple;
 import constants.RelationshipType;
 import managers.relationships.AllowsRelationshipManager;
 import managers.relationships.RelationshipManager;
-import models.functions.ExistsFunction;
 import models.nodes.Feature;
 import models.nodes.OntologyNode;
 
@@ -30,11 +29,6 @@ public class AllowsRelationship extends TypedRelationship {
         this();
         this.startNode = startNode;
         this.endNode = endNode;
-    }
-
-    public Promise<Boolean> exists() {
-        Promise<JsonNode> json = AllowsRelationshipManager.get(this);
-        return json.map(new ExistsFunction());
     }
 
     public Promise<Tuple<Option<Relationship>, Boolean>> getOrCreate() {

@@ -11,6 +11,7 @@ import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.relationships.TypedRelationshipManager;
+import models.functions.ExistsFunction;
 import models.nodes.Feature;
 
 
@@ -23,6 +24,11 @@ public class TypedRelationship extends Relationship {
 
     public TypedRelationship(int ID) {
         this.ID = ID;
+    }
+
+    public Promise<Boolean> exists() {
+        Promise<JsonNode> json = TypedRelationshipManager.get(this);
+        return json.map(new ExistsFunction());
     }
 
     public static Promise<List<Relationship>> getAllFrom(

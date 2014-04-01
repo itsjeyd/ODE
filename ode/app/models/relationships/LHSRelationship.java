@@ -1,13 +1,10 @@
 package models.relationships;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.relationships.LHSRelationshipManager;
-import models.functions.ExistsFunction;
 import models.nodes.LHS;
 import models.nodes.Rule;
 
@@ -22,11 +19,6 @@ public class LHSRelationship extends TypedRelationship {
         this();
         this.startNode = startNode;
         this.endNode = endNode;
-    }
-
-    public Promise<Boolean> exists() {
-        Promise<JsonNode> json = LHSRelationshipManager.get(this);
-        return json.map(new ExistsFunction());
     }
 
     public Promise<Boolean> create() {

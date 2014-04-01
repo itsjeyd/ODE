@@ -24,11 +24,6 @@ public class RHSRelationship extends TypedRelationship {
         this.endNode = endNode;
     }
 
-    public Promise<Boolean> exists() {
-        Promise<JsonNode> json = RHSRelationshipManager.get(this);
-        return json.map(new ExistsFunction());
-    }
-
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction(this));
     }

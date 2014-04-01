@@ -1,13 +1,10 @@
 package models.relationships;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.relationships.GroupRelationshipManager;
-import models.functions.ExistsFunction;
 import models.nodes.CombinationGroup;
 import models.nodes.RHS;
 
@@ -22,11 +19,6 @@ public class GroupRelationship extends TypedRelationship {
         this();
         this.startNode = startNode;
         this.endNode = endNode;
-    }
-
-    public Promise<Boolean> exists() {
-        Promise<JsonNode> json = GroupRelationshipManager.get(this);
-        return json.map(new ExistsFunction());
     }
 
     public Promise<Boolean> create() {

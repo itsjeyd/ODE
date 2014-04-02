@@ -17,7 +17,6 @@ import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Option;
 import play.libs.F.Promise;
-import play.libs.F.None;
 import play.libs.F.Tuple;
 
 import constants.FeatureType;
@@ -27,7 +26,6 @@ import models.nodes.Feature;
 import models.nodes.OntologyNode;
 import models.nodes.Value;
 import models.relationships.AllowsRelationship;
-import models.relationships.Relationship;
 
 import views.html.features;
 
@@ -258,26 +256,21 @@ public class Features extends Controller {
     private static Promise<Result> addTarget(String name, JsonNode json) {
         String featureType = json.findPath("type").textValue();
         String targetName = json.findPath("target").textValue();
-        Promise<Tuple<Option<Relationship>, Boolean>> relationshipResult =
-            null;
+        Promise<Boolean> connected = null;
         if (featureType.equals(FeatureType.COMPLEX.toString())) {
             Feature feature = new ComplexFeature(name);
             Feature target = new Feature(targetName);
-            relationshipResult = new AllowsRelationship(feature, target)
-                .getOrCreate();
+            connected = target.connectTo(feature);
         } else if (featureType.equals(FeatureType.ATOMIC.toString())) {
-            Value value = new Value(targetName);
-            Promise<Boolean> created = value.create();
-            relationshipResult = created.flatMap(
-                new MaybeConnectFunction(new AtomicFeature(name), value));
+            Feature feature = new AtomicFeature(name);
+            Value target = new Value(targetName);
+            connected = target.connectTo(feature);
         }
-        return relationshipResult.map(
-            new Function<Tuple<Option<Relationship>, Boolean>, Result>() {
+        return connected.map(
+            new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();
-                public Result apply(
-                    Tuple<Option<Relationship>, Boolean> relationshipResult) {
-                    Boolean created = relationshipResult._2;
-                    if (created) {
+                public Result apply(Boolean connected) {
+                    if (connected) {
                         result.put("message", "Target successfully added.");
                         return ok(result);
                     }
@@ -314,28 +307,6 @@ public class Features extends Controller {
                     return badRequest(result);
                 }
             });
-    }
-
-
-    private static class MaybeConnectFunction
-        implements Function<Boolean,
-                            Promise<Tuple<Option<Relationship>, Boolean>>> {
-        private Feature feature;
-        private Value value;
-        public MaybeConnectFunction(Feature feature, Value value) {
-            this.feature = feature;
-            this.value = value;
-        }
-        public Promise<Tuple<Option<Relationship>, Boolean>> apply(
-            Boolean valueCreated) {
-            if (valueCreated) {
-                return new AllowsRelationship(
-                    this.feature, this.value).getOrCreate();
-            }
-            return Promise.pure(
-                new Tuple<Option<Relationship>, Boolean>(
-                    new None<Relationship>(), false));
-        }
     }
 
 }

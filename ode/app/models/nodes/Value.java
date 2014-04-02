@@ -39,6 +39,29 @@ public class Value extends OntologyNode {
         return ValueManager.updateName(this, newName);
     }
 
+    @Override
+    public Promise<Boolean> connectTo(final Feature feature) {
+        Promise<Boolean> exists = this.exists();
+        return exists.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean exists) {
+                    if (exists) {
+                        return Value.super.connectTo(feature);
+                    }
+                    Promise<Boolean> created = Value.this.create();
+                    return created.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean created) {
+                                if (created) {
+                                    return Value.super.connectTo(feature);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                    }
+            });
+    }
+
     public Promise<Boolean> delete() {
         return ValueManager.delete(this);
     }

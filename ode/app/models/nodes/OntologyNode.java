@@ -6,6 +6,7 @@ import play.libs.F.Promise;
 import constants.NodeType;
 import managers.nodes.FeatureManager;
 import managers.nodes.ValueManager;
+import models.relationships.AllowsRelationship;
 
 
 public abstract class OntologyNode extends LabeledNodeWithProperties {
@@ -25,6 +26,10 @@ public abstract class OntologyNode extends LabeledNodeWithProperties {
 
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction(this));
+    }
+
+    public Promise<Boolean> connectTo(Feature feature) {
+        return new AllowsRelationship(feature, this).create();
     }
 
     public abstract Promise<Boolean> delete();

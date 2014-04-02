@@ -31,6 +31,24 @@ public class AllowsRelationship extends TypedRelationship {
         this.endNode = endNode;
     }
 
+    public Promise<Boolean> create() {
+        return this.exists().flatMap(new CreateFunction(this));
+    }
+
+    private class CreateFunction implements
+                                     Function<Boolean, Promise<Boolean>> {
+        private AllowsRelationship relationship;
+        public CreateFunction(AllowsRelationship relationship) {
+            this.relationship = relationship;
+        }
+        public Promise<Boolean> apply(Boolean exists) {
+            if (exists) {
+                return Promise.pure(false);
+            }
+            return AllowsRelationshipManager.create(this.relationship);
+        }
+    }
+
     public Promise<Tuple<Option<Relationship>, Boolean>> getOrCreate() {
         return this.exists().flatMap(new GetOrCreateFunction(this));
     }

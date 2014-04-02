@@ -1,13 +1,10 @@
 package models.relationships;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;
 import managers.relationships.RHSRelationshipManager;
-import models.functions.ExistsFunction;
 import models.nodes.Rule;
 import models.nodes.RHS;
 

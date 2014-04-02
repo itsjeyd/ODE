@@ -52,6 +52,15 @@ public class Feature extends OntologyNode {
         return feature;
     }
 
+    private Promise<List<Relationship>> getIncomingRelationships() {
+        return Relationship.getAllTo(this);
+    }
+
+    protected Promise<List<String>> getTargets() {
+        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
+        return nodes.map(new TargetsFunction());
+    }
+
     protected Feature setType(String type) {
         if (type.equals(FeatureType.COMPLEX.toString())) {
             this.type = FeatureType.COMPLEX;
@@ -72,11 +81,6 @@ public class Feature extends OntologyNode {
                     return feature;
                 }
             });
-    }
-
-    protected Promise<List<String>> getTargets() {
-        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
-        return nodes.map(new TargetsFunction());
     }
 
     public Promise<JsonNode> toJSON() {
@@ -139,10 +143,6 @@ public class Feature extends OntologyNode {
         return json.map(new GetFunction());
     }
 
-    private Promise<List<Relationship>> getIncomingRelationships() {
-        return Relationship.getAllTo(this);
-    }
-
     public Promise<JsonNode> getValue(Rule rule, AVM avm) {
         if (this.type.equals(FeatureType.COMPLEX)) {
             return new Substructure(rule, avm, this).toJSON();
@@ -169,48 +169,6 @@ public class Feature extends OntologyNode {
                     if (deleted) {
                         return new HasValueRelationship(
                             feature, newValue, rule, avm).create();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
-    public Promise<Boolean> remove(final Rule rule, final AVM avm) {
-        final Feature feature = this;
-        Promise<Boolean> valueDeleted;
-        if (this.type.equals(FeatureType.COMPLEX)) {
-            final Substructure substructure =
-                new Substructure(rule, avm, feature);
-            Promise<Boolean> emptied = substructure.empty();
-            Promise<Boolean> hasRelationshipDeleted = emptied.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean emptied) {
-                        if (emptied) {
-                            return HasSubstructureRelationship
-                                .delete(feature, substructure);
-                        }
-                        return Promise.pure(false);
-                    }
-                });
-            valueDeleted = hasRelationshipDeleted.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(
-                        Boolean hasRelationshipDeleted) {
-                        if (hasRelationshipDeleted) {
-                            return substructure.delete();
-                        }
-                        return Promise.pure(false);
-                    }
-                });
-        } else {
-            valueDeleted = HasValueRelationship.delete(this, rule, avm);
-        }
-        return valueDeleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(
-                    Boolean hasRelationshipdeleted) {
-                    if (hasRelationshipdeleted) {
-                        return HasFeatureRelationship.delete(avm, feature);
                     }
                     return Promise.pure(false);
                 }
@@ -278,6 +236,48 @@ public class Feature extends OntologyNode {
             return new HasValueRelationship(
                 feature, defaultValue, rule, parent).create();
         }
+    }
+
+    public Promise<Boolean> remove(final Rule rule, final AVM avm) {
+        final Feature feature = this;
+        Promise<Boolean> valueDeleted;
+        if (this.type.equals(FeatureType.COMPLEX)) {
+            final Substructure substructure =
+                new Substructure(rule, avm, feature);
+            Promise<Boolean> emptied = substructure.empty();
+            Promise<Boolean> hasRelationshipDeleted = emptied.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean emptied) {
+                        if (emptied) {
+                            return HasSubstructureRelationship
+                                .delete(feature, substructure);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+            valueDeleted = hasRelationshipDeleted.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(
+                        Boolean hasRelationshipDeleted) {
+                        if (hasRelationshipDeleted) {
+                            return substructure.delete();
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        } else {
+            valueDeleted = HasValueRelationship.delete(this, rule, avm);
+        }
+        return valueDeleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(
+                    Boolean hasRelationshipdeleted) {
+                    if (hasRelationshipdeleted) {
+                        return HasFeatureRelationship.delete(avm, feature);
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     public Promise<Boolean> delete() {

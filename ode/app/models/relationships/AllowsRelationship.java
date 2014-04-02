@@ -6,11 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.F.Function;
-import play.libs.F.None;
-import play.libs.F.Option;
 import play.libs.F.Promise;
-import play.libs.F.Some;
-import play.libs.F.Tuple;
 
 import constants.RelationshipType;
 import managers.relationships.AllowsRelationshipManager;
@@ -47,10 +43,6 @@ public class AllowsRelationship extends TypedRelationship {
             }
             return AllowsRelationshipManager.create(this.relationship);
         }
-    }
-
-    public Promise<Tuple<Option<Relationship>, Boolean>> getOrCreate() {
-        return this.exists().flatMap(new GetOrCreateFunction(this));
     }
 
     @Override
@@ -94,43 +86,6 @@ public class AllowsRelationship extends TypedRelationship {
                     return allDeleted;
                 }
             });
-    }
-
-
-    private class GetOrCreateFunction
-        implements Function<Boolean,
-                   Promise<Tuple<Option<Relationship>, Boolean>>> {
-        private AllowsRelationship relationship;
-        public GetOrCreateFunction(AllowsRelationship relationship) {
-            this.relationship = relationship;
-        }
-        public Promise<Tuple<Option<Relationship>, Boolean>> apply(
-            Boolean exists) {
-            if (exists) {
-                return Promise.pure(
-                    new Tuple<Option<Relationship>, Boolean>(
-                        new Some<Relationship>(this.relationship), false));
-            }
-            Promise<Boolean> created = AllowsRelationshipManager.create(
-                this.relationship);
-            return created.map(new CreatedFunction(this.relationship));
-        }
-    }
-
-    private class CreatedFunction
-        implements Function<Boolean, Tuple<Option<Relationship>, Boolean>> {
-        private Relationship relationship;
-        public CreatedFunction(Relationship relationship) {
-            this.relationship = relationship;
-        }
-        public Tuple<Option<Relationship>, Boolean> apply(Boolean created) {
-            if (created) {
-                return new Tuple<Option<Relationship>, Boolean>(
-                    new Some<Relationship>(this.relationship), true);
-            }
-            return new Tuple<Option<Relationship>, Boolean>(
-                new None<Relationship>(), false);
-        }
     }
 
     private class GetFunction implements Function<JsonNode, Relationship> {

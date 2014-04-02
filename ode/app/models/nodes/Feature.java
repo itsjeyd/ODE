@@ -141,7 +141,7 @@ public class Feature extends OntologyNode {
         return json.map(new GetFunction());
     }
 
-    public Promise<List<Relationship>> getIncomingRelationships() {
+    private Promise<List<Relationship>> getIncomingRelationships() {
         return Relationship.getAllTo(this);
     }
 

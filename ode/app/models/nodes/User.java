@@ -50,7 +50,8 @@ public class User extends LabeledNodeWithProperties {
         }
     }
 
-    private class CreateFunction implements Function<Boolean, Promise<Boolean>> {
+    private class CreateFunction
+        implements Function<Boolean, Promise<Boolean>> {
         private User user;
         public CreateFunction(User user) {
             this.user = user;

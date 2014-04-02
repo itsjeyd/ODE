@@ -35,7 +35,8 @@ public abstract class OntologyNode extends LabeledNodeWithProperties {
     public abstract Promise<Boolean> delete();
 
 
-    private class CreateFunction implements Function<Boolean, Promise<Boolean>> {
+    private class CreateFunction implements
+                                     Function<Boolean, Promise<Boolean>> {
         private OntologyNode node;
         public CreateFunction(OntologyNode node) {
             this.node = node;

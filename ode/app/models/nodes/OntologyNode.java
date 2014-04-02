@@ -32,8 +32,6 @@ public abstract class OntologyNode extends LabeledNodeWithProperties {
         return new AllowsRelationship(feature, this).create();
     }
 
-    public abstract Promise<Boolean> delete();
-
 
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {

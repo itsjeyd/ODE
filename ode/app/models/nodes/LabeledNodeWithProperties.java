@@ -26,4 +26,6 @@ public abstract class LabeledNodeWithProperties extends LabeledNode {
 
     public abstract Promise<Boolean> create();
 
+    public abstract Promise<Boolean> delete();
+
 }

@@ -25,4 +25,8 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return new GroupRelationship(embeddingRHS, this).create();
     }
 
+    public Promise<Boolean> delete() {
+        return Promise.pure(false);
+    }
+
 }

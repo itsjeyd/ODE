@@ -33,6 +33,10 @@ public class User extends LabeledNodeWithProperties {
         return this.exists().flatMap(new CreateFunction(this));
     }
 
+    public Promise<Boolean> delete() {
+        return Promise.pure(false);
+    }
+
     private class GetFunction implements Function<Boolean, Option<User>> {
         private User user;
         public GetFunction(User user) {

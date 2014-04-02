@@ -204,7 +204,7 @@ public class Features extends Controller {
                     ObjectNode result = Json.newObject();
                     public Result apply() {
                         result.put(
-                            "message", "Name already taken.");
+                            "message", "Unknown action.");
                         return badRequest(result);
                     }
                 });

@@ -17,14 +17,8 @@ import models.nodes.OntologyNode;
 
 public class AllowsRelationship extends TypedRelationship {
 
-    private AllowsRelationship() {
-        this.type = RelationshipType.ALLOWS;
-    }
-
     public AllowsRelationship(Feature startNode, OntologyNode endNode) {
-        this();
-        this.startNode = startNode;
-        this.endNode = endNode;
+        super(RelationshipType.ALLOWS, startNode, endNode);
     }
 
     public Promise<Boolean> create() {

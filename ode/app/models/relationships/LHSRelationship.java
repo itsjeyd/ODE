@@ -11,14 +11,8 @@ import models.nodes.Rule;
 
 public class LHSRelationship extends TypedRelationship {
 
-    private LHSRelationship() {
-        this.type = RelationshipType.LHS;
-    }
-
     public LHSRelationship(Rule startNode, LHS endNode) {
-        this();
-        this.startNode = startNode;
-        this.endNode = endNode;
+        super(RelationshipType.LHS, startNode, endNode);
     }
 
     public Promise<Boolean> create() {

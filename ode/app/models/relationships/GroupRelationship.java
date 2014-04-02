@@ -11,14 +11,8 @@ import models.nodes.RHS;
 
 public class GroupRelationship extends TypedRelationship {
 
-    public GroupRelationship() {
-        this.type = RelationshipType.HAS;
-    }
-
     public GroupRelationship(RHS startNode, CombinationGroup endNode) {
-        this();
-        this.startNode = startNode;
-        this.endNode = endNode;
+        super(RelationshipType.HAS, startNode, endNode);
     }
 
     public Promise<Boolean> create() {

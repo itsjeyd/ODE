@@ -14,17 +14,11 @@ import models.nodes.Rule;
 public class HasRelationship extends TypedRelationship {
     public Rule rule;
 
-    private HasRelationship() {
-        this.type = RelationshipType.HAS;
-    }
-
     protected HasRelationship(
         LabeledNodeWithProperties startNode,
         LabeledNodeWithProperties endNode,
         Rule rule) {
-        this();
-        this.startNode = startNode;
-        this.endNode = endNode;
+        super(RelationshipType.HAS, startNode, endNode);
         this.rule = rule;
     }
 

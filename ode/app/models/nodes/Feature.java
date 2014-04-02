@@ -145,11 +145,6 @@ public class Feature extends OntologyNode {
         return Relationship.getAllTo(this);
     }
 
-    public Promise<List<Relationship>> getOutgoingRelationships(
-        RelationshipType type) {
-        return TypedRelationship.getAllFrom(this, type);
-    }
-
     public Promise<JsonNode> getValue(Rule rule, AVM avm) {
         if (this.type.equals(FeatureType.COMPLEX)) {
             return new Substructure(rule, avm, this).toJSON();

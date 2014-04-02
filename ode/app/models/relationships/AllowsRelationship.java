@@ -25,6 +25,11 @@ public class AllowsRelationship extends TypedRelationship {
         return this.exists().flatMap(new CreateFunction(this));
     }
 
+    public static Promise<List<Relationship>> getAllFrom(Feature startNode) {
+        return TypedRelationship.getAllFrom(startNode,
+                                            RelationshipType.ALLOWS);
+    }
+
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
         private AllowsRelationship relationship;
@@ -52,9 +57,9 @@ public class AllowsRelationship extends TypedRelationship {
     }
 
     public static Promise<Boolean> deleteAllFrom(Feature startNode) {
-        Promise<List<Relationship>> outgoingRelationships = startNode
-            .getOutgoingRelationships(RelationshipType.ALLOWS);
-        Promise<List<Boolean>> deletedList = outgoingRelationships.flatMap(
+        Promise<List<Relationship>> relationships = AllowsRelationship
+            .getAllFrom(startNode);
+        Promise<List<Boolean>> deletedList = relationships.flatMap(
             new Function<List<Relationship>, Promise<List<Boolean>>>() {
                 public Promise<List<Boolean>> apply(
                     List<Relationship> relationships) {

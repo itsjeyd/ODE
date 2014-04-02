@@ -9,7 +9,7 @@ import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.RelationshipCreatedFunction;
-import models.nodes.Feature;
+import models.nodes.LabeledNodeWithProperties;
 import models.relationships.TypedRelationship;
 
 
@@ -30,7 +30,7 @@ public class TypedRelationshipManager {
     }
 
     public static Promise<JsonNode> getAllFrom(
-        Feature startNode, RelationshipType type) {
+        LabeledNodeWithProperties startNode, RelationshipType type) {
         Promise<WS.Response> response = Neo4jService
             .getOutgoingRelationshipsByType(startNode.getLabel(),
                                             startNode.jsonProperties,

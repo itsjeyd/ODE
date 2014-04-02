@@ -12,7 +12,6 @@ import play.libs.F.Promise;
 import constants.RelationshipType;
 import managers.relationships.TypedRelationshipManager;
 import models.functions.ExistsFunction;
-import models.nodes.Feature;
 import models.nodes.LabeledNodeWithProperties;
 
 
@@ -42,7 +41,7 @@ public class TypedRelationship extends Relationship {
     }
 
     public static Promise<List<Relationship>> getAllFrom(
-        Feature startNode, RelationshipType type) {
+        LabeledNodeWithProperties startNode, RelationshipType type) {
         Promise<JsonNode> json = TypedRelationshipManager.getAllFrom(
             startNode, type);
         return json.map(new AllFromFunction());

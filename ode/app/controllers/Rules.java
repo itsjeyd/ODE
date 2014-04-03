@@ -285,7 +285,20 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeString(
         String name, String groupID, String stringID) {
-        return null;
+        Promise<Boolean> removed = CombinationGroup.of(groupID)
+            .removeString(stringID);
+        return removed.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean removed) {
+                    if (removed) {
+                        result.put("message", "String successfully removed.");
+                        return ok(result);
+                    }
+                    result.put("message", "String not removed.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

@@ -278,7 +278,22 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateString(
         String name, String groupID, String stringID) {
-        return null;
+        JsonNode json = request().body().asJson();
+        String content = json.findPath("content").textValue();
+        Promise<Boolean> updated = CombinationGroup.of(groupID)
+            .updateString(stringID, content);
+        return updated.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean updated) {
+                    if (updated) {
+                        result.put("message", "String successfully updated.");
+                        return ok(result);
+                    }
+                    result.put("message", "String not updated.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

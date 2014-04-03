@@ -299,7 +299,19 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeGroup(String name, String groupID) {
-        return null;
+        Promise<Boolean> removed = new Rule(name).removeGroup(groupID);
+        return removed.map(
+        new Function<Boolean, Result>() {
+            ObjectNode result = Json.newObject();
+            public Result apply(Boolean removed) {
+                if (removed) {
+                    result.put("message", "Group successfully removed.");
+                    return ok(result);
+                }
+                result.put("message", "Group not removed.");
+                return badRequest(result);
+            }
+        });
     }
 
     @Security.Authenticated(Secured.class)

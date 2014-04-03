@@ -88,6 +88,10 @@ public class Rule extends UUIDNode {
         return null;
     }
 
+    public Promise<Boolean> removeGroup(String groupID) {
+        return null;
+    }
+
     public Promise<Boolean> delete() {
         final Rule rule = this;
         final LHS lhs = new LHS(rule);

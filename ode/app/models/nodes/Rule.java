@@ -185,7 +185,8 @@ public class Rule extends UUIDNode {
             if (exists) {
                 return Promise.pure(false);
             }
-            rule.jsonProperties.put("uuid", UUID.randomUUID().toString());
+            this.rule.jsonProperties
+                .put("uuid", UUID.randomUUID().toString());
             return RuleManager.create(rule);
         }
     }

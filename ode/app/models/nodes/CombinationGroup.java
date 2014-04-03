@@ -54,6 +54,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return null;
     }
 
+    public Promise<Boolean> addPart(String slotID, String part) {
+        return null;
+    }
+
     public Promise<Boolean> delete() {
         return Promise.pure(false);
     }

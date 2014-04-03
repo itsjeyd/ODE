@@ -399,7 +399,22 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addPart(
         String name, String groupID, String slotID) {
-        return null;
+        JsonNode json = request().body().asJson();
+        String part = json.findPath("part").textValue();
+        Promise<Boolean> added = CombinationGroup.of(groupID)
+            .addPart(slotID, part);
+        return added.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean added) {
+                    if (added) {
+                        result.put("message", "Part successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "Part not added.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

@@ -254,6 +254,79 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> addString(String name, String groupID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateString(
+        String name, String groupID, String stringID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removeString(
+        String name, String groupID, String stringID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> addGroup(String name) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removeGroup(String name, String groupID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> addSlot(String name, String groupID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removeSlot(
+        String name, String groupID, String slotID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> addPart(
+        String name, String groupID, String slotID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updatePart(
+        String name, String groupID, String slotID, String partID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removePart(
+        String name, String groupID, String slotID, String partID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> addRef(
+        String name, String groupID, String slotID) {
+        return null;
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> delete(String name) {
         Promise<Boolean> deleted = new Rule(name).delete();
         return deleted.map(

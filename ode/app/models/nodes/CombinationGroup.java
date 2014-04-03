@@ -38,6 +38,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return null;
     }
 
+    public Promise<Boolean> removeSlot(String slotID) {
+        return null;
+    }
+
     public Promise<Boolean> delete() {
         return Promise.pure(false);
     }

@@ -336,7 +336,20 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeSlot(
         String name, String groupID, String slotID) {
-        return null;
+        Promise<Boolean> removed = CombinationGroup.of(groupID)
+            .removeSlot(slotID);
+        return removed.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean removed) {
+                    if (removed) {
+                        result.put("message", "Slot successfully removed.");
+                        return ok(result);
+                    }
+                    result.put("message", "Slot not removed.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

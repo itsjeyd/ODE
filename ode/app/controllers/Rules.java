@@ -260,18 +260,8 @@ public class Rules extends Controller {
         String string = json.findPath("string").textValue();
         Promise<Boolean> added = CombinationGroup.of(groupID)
             .addString(string);
-        return added.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
-                    if (added) {
-                        result.put("message", "String successfully added.");
-                        return ok(result);
-                    }
-                    result.put("message", "String not added.");
-                    return badRequest(result);
-                }
-            });
+        return added.map(new ResultFunction("String successfully added.",
+                                            "String not added"));
     }
 
     @Security.Authenticated(Secured.class)
@@ -282,18 +272,8 @@ public class Rules extends Controller {
         String content = json.findPath("content").textValue();
         Promise<Boolean> updated = CombinationGroup.of(groupID)
             .updateString(stringID, content);
-        return updated.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean updated) {
-                    if (updated) {
-                        result.put("message", "String successfully updated.");
-                        return ok(result);
-                    }
-                    result.put("message", "String not updated.");
-                    return badRequest(result);
-                }
-            });
+        return updated.map(new ResultFunction("String successfully updated.",
+                                              "String not removed."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -302,18 +282,8 @@ public class Rules extends Controller {
         String name, String groupID, String stringID) {
         Promise<Boolean> removed = CombinationGroup.of(groupID)
             .removeString(stringID);
-        return removed.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean removed) {
-                    if (removed) {
-                        result.put("message", "String successfully removed.");
-                        return ok(result);
-                    }
-                    result.put("message", "String not removed.");
-                    return badRequest(result);
-                }
-            });
+        return removed.map(new ResultFunction("String successfully removed.",
+                                              "String not removed."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -324,55 +294,24 @@ public class Rules extends Controller {
         int position = json.findPath("position").intValue();
         CombinationGroup group = new CombinationGroup(uuid, position);
         Promise<Boolean> added = new Rule(name).addGroup(group);
-        return added.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
-                    if (added) {
-                        result.put("id", uuid.toString());
-                        result.put("message", "Group successfully added.");
-                        return ok(result);
-                    }
-                    result.put("message", "Group not added.");
-                    return badRequest(result);
-                }
-            });
+        return added.map(new ResultFunction("Group successfully added.",
+                                            "Group not added."));
     }
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeGroup(String name, String groupID) {
         Promise<Boolean> removed = new Rule(name).removeGroup(groupID);
-        return removed.map(
-        new Function<Boolean, Result>() {
-            ObjectNode result = Json.newObject();
-            public Result apply(Boolean removed) {
-                if (removed) {
-                    result.put("message", "Group successfully removed.");
-                    return ok(result);
-                }
-                result.put("message", "Group not removed.");
-                return badRequest(result);
-            }
-        });
+        return removed.map(new ResultFunction("Group successfully removed.",
+                                              "Group not removed."));
     }
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addSlot(String name, String groupID) {
         Promise<Boolean> added = CombinationGroup.of(groupID).addSlot();
-        return added.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
-                    if (added) {
-                        result.put("message", "Slot successfully added.");
-                        return ok(result);
-                    }
-                    result.put("message", "Slot not added.");
-                    return badRequest(result);
-                }
-            });
+        return added.map(new ResultFunction("Slot successfully added.",
+                                            "Slot not added."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -381,18 +320,8 @@ public class Rules extends Controller {
         String name, String groupID, String slotID) {
         Promise<Boolean> removed = CombinationGroup.of(groupID)
             .removeSlot(slotID);
-        return removed.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean removed) {
-                    if (removed) {
-                        result.put("message", "Slot successfully removed.");
-                        return ok(result);
-                    }
-                    result.put("message", "Slot not removed.");
-                    return badRequest(result);
-                }
-            });
+        return removed.map(new ResultFunction("Slot successfully removed.",
+                                              "Slot not removed."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -403,18 +332,8 @@ public class Rules extends Controller {
         String part = json.findPath("part").textValue();
         Promise<Boolean> added = CombinationGroup.of(groupID)
             .addPart(slotID, part);
-        return added.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
-                    if (added) {
-                        result.put("message", "Part successfully added.");
-                        return ok(result);
-                    }
-                    result.put("message", "Part not added.");
-                    return badRequest(result);
-                }
-            });
+        return added.map(new ResultFunction("Part successfully added.",
+                                            "Part not added."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -425,18 +344,8 @@ public class Rules extends Controller {
         String content = json.findPath("content").textValue();
         Promise<Boolean> updated = CombinationGroup.of(groupID)
             .updatePart(slotID, partID, content);
-        return updated.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean updated) {
-                    if (updated) {
-                        result.put("message", "Part successfully updated.");
-                        return ok(result);
-                    }
-                    result.put("message", "Part not updated.");
-                    return badRequest(result);
-                }
-            });
+        return updated.map(new ResultFunction("Part successfully updated.",
+                                              "Part not updated."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -445,18 +354,8 @@ public class Rules extends Controller {
         String name, String groupID, String slotID, String partID) {
         Promise<Boolean> removed = CombinationGroup.of(groupID)
             .removePart(slotID, partID);
-        return removed.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean removed) {
-                    if (removed) {
-                        result.put("message", "Part successfully removed.");
-                        return ok(result);
-                    }
-                    result.put("message", "Part not removed.");
-                    return badRequest(result);
-                }
-            });
+        return removed.map(new ResultFunction("Part successfully removed.",
+                                              "Part not removed."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -467,19 +366,9 @@ public class Rules extends Controller {
         String ruleName = json.findPath("ruleName").textValue();
         Promise<Boolean> added = CombinationGroup.of(groupID)
             .addRef(slotID, ruleName);
-        return added.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
-                    if (added) {
-                        result.put("message",
-                                   "Cross-reference successfully added.");
-                        return ok(result);
-                    }
-                    result.put("message", "Cross-reference not added.");
-                    return badRequest(result);
-                }
-            });
+        return added.map(new ResultFunction(
+                             "Cross-reference successfully added.",
+                             "Cross-reference not removed."));
     }
 
     @Security.Authenticated(Secured.class)
@@ -496,6 +385,24 @@ public class Rules extends Controller {
                     return badRequest(result);
                 }
             });
+    }
+
+    private static class ResultFunction implements Function<Boolean, Result> {
+        private String successMsg;
+        private String errorMsg;
+        public ResultFunction(String successMsg, String errorMsg) {
+            this.successMsg = successMsg;
+            this.errorMsg = errorMsg;
+        }
+        public Result apply(Boolean actionSuccessful) {
+            ObjectNode result = Json.newObject();
+            if (actionSuccessful) {
+                result.put("message", successMsg);
+                return ok(result);
+            }
+            result.put("message", errorMsg);
+            return badRequest(result);
+        }
     }
 
 }

@@ -67,6 +67,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return null;
     }
 
+    public Promise<Boolean> addRef(String slotID, String ruleName) {
+        return null;
+    }
+
     public Promise<Boolean> delete() {
         return Promise.pure(false);
     }

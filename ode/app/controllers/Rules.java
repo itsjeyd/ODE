@@ -317,7 +317,19 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addSlot(String name, String groupID) {
-        return null;
+        Promise<Boolean> added = CombinationGroup.of(groupID).addSlot();
+        return added.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean added) {
+                    if (added) {
+                        result.put("message", "Slot successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "Slot not added.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

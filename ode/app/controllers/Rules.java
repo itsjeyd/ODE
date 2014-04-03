@@ -16,6 +16,7 @@ import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
+import models.nodes.CombinationGroup;
 import models.nodes.Feature;
 import models.nodes.Part;
 import models.nodes.Value;
@@ -275,7 +276,24 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addGroup(String name) {
-        return null;
+        JsonNode json = request().body().asJson();
+        final UUID uuid = UUID.randomUUID();
+        int position = json.findPath("position").intValue();
+        CombinationGroup group = new CombinationGroup(uuid, position);
+        Promise<Boolean> added = new Rule(name).addGroup(group);
+        return added.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean added) {
+                    if (added) {
+                        result.put("id", uuid.toString());
+                        result.put("message", "Group successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "Group not added.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

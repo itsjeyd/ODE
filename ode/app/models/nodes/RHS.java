@@ -74,7 +74,8 @@ public class RHS extends UUIDNode {
         public Promise<Boolean> apply(Boolean created) {
             if (created) {
                 final RHS rhs = this.rhs;
-                final CombinationGroup group = new CombinationGroup();
+                final CombinationGroup group =
+                    new CombinationGroup(UUID.randomUUID(), 1);
                 Promise<Boolean> groupCreated = group.create();
                 return groupCreated.flatMap(
                     new Function<Boolean, Promise<Boolean>>() {

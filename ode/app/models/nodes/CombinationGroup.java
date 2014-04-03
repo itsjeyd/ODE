@@ -11,13 +11,13 @@ import models.relationships.GroupRelationship;
 
 public class CombinationGroup extends LabeledNodeWithProperties {
 
-    public CombinationGroup() {
+    public CombinationGroup(UUID uuid, int position) {
         super(NodeType.COMBINATION_GROUP);
+        this.jsonProperties.put("uuid", uuid.toString());
+        this.jsonProperties.put("position", position);
     }
 
     public Promise<Boolean> create() {
-        UUID uuid = UUID.randomUUID();
-        this.jsonProperties.put("uuid", uuid.toString());
         return CombinationGroupManager.create(this);
     }
 

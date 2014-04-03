@@ -84,6 +84,10 @@ public class Rule extends UUIDNode {
         return lhs.add(feature);
     }
 
+    public Promise<Boolean> addGroup(CombinationGroup group) {
+        return null;
+    }
+
     public Promise<Boolean> delete() {
         final Rule rule = this;
         final LHS lhs = new LHS(rule);

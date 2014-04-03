@@ -256,7 +256,22 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addString(String name, String groupID) {
-        return null;
+        JsonNode json = request().body().asJson();
+        String string = json.findPath("string").textValue();
+        Promise<Boolean> added = CombinationGroup.of(groupID)
+            .addString(string);
+        return added.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean added) {
+                    if (added) {
+                        result.put("message", "String successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "String not added.");
+                    return badRequest(result);
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

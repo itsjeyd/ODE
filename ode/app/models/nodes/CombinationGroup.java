@@ -34,6 +34,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return new GroupRelationship(embeddingRHS, this).create();
     }
 
+    public Promise<Boolean> addString(String string) {
+        return null;
+    }
+
     public Promise<Boolean> addSlot() {
         return null;
     }

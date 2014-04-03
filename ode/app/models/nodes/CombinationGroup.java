@@ -58,6 +58,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return null;
     }
 
+    public Promise<Boolean> removePart(String slotID, String partID) {
+        return null;
+    }
+
     public Promise<Boolean> delete() {
         return Promise.pure(false);
     }

@@ -21,9 +21,9 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.flash;
 import static play.test.Helpers.status;
 
-import models.AtomicFeature;
-import models.ComplexFeature;
-import models.Feature;
+import models.nodes.AtomicFeature;
+import models.nodes.ComplexFeature;
+import models.nodes.Feature;
 
 
 public class FeaturesTest extends WithApplication {

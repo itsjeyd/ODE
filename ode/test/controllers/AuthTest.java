@@ -22,7 +22,7 @@ import static play.test.Helpers.header;
 import static play.test.Helpers.session;
 import static play.test.Helpers.status;
 
-import models.User;
+import models.nodes.User;
 
 
 public class AuthTest extends WithApplication {

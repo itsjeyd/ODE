@@ -34,8 +34,8 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return new GroupRelationship(embeddingRHS, this).create();
     }
 
-    public Promise<Boolean> addString(String string) {
-        return null;
+    public Promise<Boolean> addString(String content) {
+        return OutputString.of(content).connectTo(this);
     }
 
     public Promise<Boolean> updateString(String stringID, String content) {

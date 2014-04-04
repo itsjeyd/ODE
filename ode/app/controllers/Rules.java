@@ -257,9 +257,9 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addString(String name, String groupID) {
         JsonNode json = request().body().asJson();
-        String string = json.findPath("string").textValue();
+        String content = json.findPath("content").textValue();
         Promise<Boolean> added = CombinationGroup.of(groupID)
-            .addString(string);
+            .addString(content);
         return added.map(new ResultFunction("String successfully added.",
                                             "String not added"));
     }

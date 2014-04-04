@@ -23,6 +23,10 @@ public class RHS extends UUIDNode {
         this.rule = rule;
     }
 
+    public static RHS of(Rule rule) {
+        return new RHS(rule);
+    }
+
     public Promise<UUID> getUUID() {
         Promise<UUID> parentUUID = this.rule.getUUID();
         return parentUUID.map(new UUIDFunction());
@@ -36,6 +40,27 @@ public class RHS extends UUIDNode {
 
     public Promise<Boolean> connectTo(Rule embeddingRule) {
         return new RHSRelationship(embeddingRule, this).create();
+    }
+
+    public Promise<Boolean> add(final CombinationGroup group) {
+        Promise<Boolean> groupCreated = group.create();
+        return groupCreated.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean groupCreated) {
+                    if (groupCreated) {
+                        Promise<UUID> uuid = RHS.this.getUUID();
+                        return uuid.flatMap(
+                            new Function<UUID, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(UUID uuid) {
+                                    RHS.this.jsonProperties
+                                        .put("uuid", uuid.toString());
+                                    return group.connectTo(RHS.this);
+                                }
+                            });
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     public Promise<Boolean> delete() {

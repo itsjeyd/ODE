@@ -11,15 +11,21 @@ import models.relationships.HasStringRelationship;
 
 
 public class OutputString extends LabeledNodeWithProperties {
+    private String content;
 
     private OutputString() {
         super(NodeType.OUTPUT_STRING);
     }
 
-    private OutputString(UUID uuid, String content) {
+    private OutputString(String content) {
         this();
-        this.jsonProperties.put("uuid", uuid.toString());
+        this.content = content;
         this.jsonProperties.put("content", content);
+    }
+
+    private OutputString(UUID uuid, String content) {
+        this(content);
+        this.jsonProperties.put("uuid", uuid.toString());
     }
 
     public static OutputString of(UUID uuid, String content) {
@@ -31,13 +37,13 @@ public class OutputString extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> connectTo(final CombinationGroup group) {
-        Promise<Boolean> exists = this.exists();
-        return exists.flatMap(
+        final OutputString outputString = new OutputString(this.content);
+        return outputString.exists().flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean exists) {
                     if (exists) {
                         return new HasStringRelationship(
-                            group, OutputString.this).create();
+                            group, outputString).create();
                     }
                     Promise<Boolean> created = OutputString.this.create();
                     return created.flatMap(

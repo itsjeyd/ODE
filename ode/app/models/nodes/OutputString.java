@@ -16,13 +16,14 @@ public class OutputString extends LabeledNodeWithProperties {
         super(NodeType.OUTPUT_STRING);
     }
 
-    private OutputString(String content) {
+    private OutputString(UUID uuid, String content) {
         this();
+        this.jsonProperties.put("uuid", uuid.toString());
         this.jsonProperties.put("content", content);
     }
 
-    public static OutputString of(String content) {
-        return new OutputString(content);
+    public static OutputString of(UUID uuid, String content) {
+        return new OutputString(uuid, content);
     }
 
     public Promise<Boolean> create() {

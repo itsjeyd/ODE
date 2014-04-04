@@ -18,6 +18,7 @@ import play.libs.F.Tuple;
 
 import models.nodes.CombinationGroup;
 import models.nodes.Feature;
+import models.nodes.OutputString;
 import models.nodes.Part;
 import models.nodes.Value;
 import models.nodes.LHS;
@@ -257,11 +258,15 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addString(String name, String groupID) {
         JsonNode json = request().body().asJson();
+        final UUID uuid = UUID.randomUUID();
         String content = json.findPath("content").textValue();
+        OutputString outputString = OutputString.of(uuid, content);
         Promise<Boolean> added = CombinationGroup.of(groupID)
-            .addString(content);
+            .addString(outputString);
+        ObjectNode result = Json.newObject();
+        result.put("id", uuid.toString());
         return added.map(new ResultFunction("String successfully added.",
-                                            "String not added"));
+                                            "String not added", result));
     }
 
     @Security.Authenticated(Secured.class)
@@ -390,12 +395,20 @@ public class Rules extends Controller {
     private static class ResultFunction implements Function<Boolean, Result> {
         private String successMsg;
         private String errorMsg;
+        private ObjectNode result;
         public ResultFunction(String successMsg, String errorMsg) {
             this.successMsg = successMsg;
             this.errorMsg = errorMsg;
         }
+        public ResultFunction(String successMsg,
+                              String errorMsg,
+                              ObjectNode result) {
+            this(successMsg, errorMsg);
+            this.result = result;
+        }
         public Result apply(Boolean actionSuccessful) {
-            ObjectNode result = Json.newObject();
+            ObjectNode result =
+                (this.result == null) ? Json.newObject() : this.result;
             if (actionSuccessful) {
                 result.put("message", successMsg);
                 return ok(result);

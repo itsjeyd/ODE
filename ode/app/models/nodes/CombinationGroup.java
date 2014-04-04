@@ -42,8 +42,8 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return null;
     }
 
-    public Promise<Boolean> removeString(String stringID) {
-        return null;
+    public Promise<Boolean> removeString(OutputString string) {
+        return string.removeFrom(this);
     }
 
     public Promise<Boolean> addSlot() {

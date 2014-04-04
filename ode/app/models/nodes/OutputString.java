@@ -17,6 +17,11 @@ public class OutputString extends LabeledNodeWithProperties {
         super(NodeType.OUTPUT_STRING);
     }
 
+    private OutputString(UUID uuid) {
+        this();
+        this.jsonProperties.put("uuid", uuid.toString());
+    }
+
     private OutputString(String content) {
         this();
         this.content = content;
@@ -28,8 +33,16 @@ public class OutputString extends LabeledNodeWithProperties {
         this.jsonProperties.put("uuid", uuid.toString());
     }
 
+    public static OutputString of(UUID uuid) {
+        return new OutputString(uuid);
+    }
+
     public static OutputString of(UUID uuid, String content) {
         return new OutputString(uuid, content);
+    }
+
+    public Promise<Boolean> isOrphan() {
+        return OutputStringManager.isOrphan(this);
     }
 
     public Promise<Boolean> create() {
@@ -60,8 +73,34 @@ public class OutputString extends LabeledNodeWithProperties {
             });
     }
 
+    public Promise<Boolean> removeFrom(CombinationGroup group) {
+        Promise<Boolean> disconnected = HasStringRelationship
+            .delete(group, this);
+        return disconnected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean disconnected) {
+                    if (disconnected) {
+                        return OutputString.this.deleteIfOrphaned();
+                    }
+                    return Promise.pure(false);
+                }
+            });
+    }
+
     public Promise<Boolean> delete() {
-        return null;
+        return OutputStringManager.delete(this);
+    }
+
+    public Promise<Boolean> deleteIfOrphaned() {
+        return this.isOrphan().flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean isOrphan) {
+                    if (isOrphan) {
+                        return OutputString.this.delete();
+                    }
+                    return Promise.pure(true);
+                }
+            });
     }
 
 }

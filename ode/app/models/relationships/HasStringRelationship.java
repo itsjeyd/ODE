@@ -19,6 +19,11 @@ public class HasStringRelationship extends TypedRelationship {
         return this.exists().flatMap(new CreateFunction());
     }
 
+    public static Promise<Boolean> delete(CombinationGroup startNode,
+                                          OutputString endNode) {
+        return HasStringRelationshipManager.delete(startNode, endNode);
+    }
+
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
         public Promise<Boolean> apply(Boolean exists) {

@@ -285,8 +285,9 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeString(
         String name, String groupID, String stringID) {
+        OutputString string = OutputString.of(UUID.fromString(stringID));
         Promise<Boolean> removed = CombinationGroup.of(groupID)
-            .removeString(stringID);
+            .removeString(string);
         return removed.map(new ResultFunction("String successfully removed.",
                                               "String not removed."));
     }

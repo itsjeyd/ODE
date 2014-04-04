@@ -53,26 +53,14 @@ public class OutputString extends LabeledNodeWithProperties {
         return OutputStringManager.isOrphan(this);
     }
 
-    public Promise<Option<UUID>> getUUID() {
+    public Promise<UUID> getUUID() {
         return this.exists().flatMap(
-            new Function<Boolean, Promise<Option<UUID>>>() {
-                public Promise<Option<UUID>> apply(Boolean exists) {
+            new Function<Boolean, Promise<UUID>>() {
+                public Promise<UUID> apply(Boolean exists) {
                     if (exists) {
-                        Promise<UUID> uuid = OutputStringManager
-                            .getUUID(OutputString.this);
-                        return uuid.map(
-                            new Function<UUID, Option<UUID>>() {
-                                public Option<UUID> apply(UUID uuid) {
-                                    return new Some<UUID>(uuid);
-                                }
-                            });
+                        return OutputStringManager.getUUID(OutputString.this);
                     }
-                    return Promise.promise(
-                        new Function0<Option<UUID>>() {
-                            public Option<UUID> apply() {
-                                return new None<UUID>();
-                            }
-                        });
+                    return Promise.pure(UUID.randomUUID());
                 }
             });
     }

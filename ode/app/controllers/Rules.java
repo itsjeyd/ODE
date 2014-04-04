@@ -263,18 +263,13 @@ public class Rules extends Controller {
         JsonNode json = request().body().asJson();
         final String content = json.findPath("content").textValue();
         final OutputString string = OutputString.of(content);
-        Promise<Option<UUID>> uuid = string.getUUID();
+        Promise<UUID> uuid = string.getUUID();
         Promise<Boolean> added = uuid.flatMap(
-            new Function<Option<UUID>, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Option<UUID> uuid) {
-                    if (!uuid.isDefined()) {
-                        UUID newUUID = UUID.randomUUID();
-                        result.put("id", newUUID.toString());
-                        return OutputString.of(newUUID, content)
-                            .connectTo(group);
-                    }
-                    result.put("id", uuid.get().toString());
-                    return string.connectTo(group);
+            new Function<UUID, Promise<Boolean>>() {
+                public Promise<Boolean> apply(UUID uuid) {
+                    result.put("id", uuid.toString());
+                    string.jsonProperties.put("uuid", uuid.toString());
+                    return group.addString(string);
                 }
             });
         return added.map(new ResultFunction("String successfully added.",

@@ -13,6 +13,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import play.libs.F.Function;
 import play.libs.F.Function0;
+import play.libs.F.Option;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
@@ -257,14 +258,25 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addString(String name, String groupID) {
+        final ObjectNode result = Json.newObject();
+        final CombinationGroup group = CombinationGroup.of(groupID);
         JsonNode json = request().body().asJson();
-        final UUID uuid = UUID.randomUUID();
-        String content = json.findPath("content").textValue();
-        OutputString outputString = OutputString.of(uuid, content);
-        Promise<Boolean> added = CombinationGroup.of(groupID)
-            .addString(outputString);
-        ObjectNode result = Json.newObject();
-        result.put("id", uuid.toString());
+        final String content = json.findPath("content").textValue();
+        final OutputString string = OutputString.of(content);
+        Promise<Option<UUID>> uuid = string.getUUID();
+        Promise<Boolean> added = uuid.flatMap(
+            new Function<Option<UUID>, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Option<UUID> uuid) {
+                    if (!uuid.isDefined()) {
+                        UUID newUUID = UUID.randomUUID();
+                        result.put("id", newUUID.toString());
+                        return OutputString.of(newUUID, content)
+                            .connectTo(group);
+                    }
+                    result.put("id", uuid.get().toString());
+                    return string.connectTo(group);
+                }
+            });
         return added.map(new ResultFunction("String successfully added.",
                                             "String not added", result));
     }

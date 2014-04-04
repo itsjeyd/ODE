@@ -3,7 +3,11 @@ package models.nodes;
 import java.util.UUID;
 
 import play.libs.F.Function;
+import play.libs.F.Function0;
+import play.libs.F.None;
+import play.libs.F.Option;
 import play.libs.F.Promise;
+import play.libs.F.Some;
 
 import constants.NodeType;
 import managers.nodes.OutputStringManager;
@@ -37,12 +41,40 @@ public class OutputString extends LabeledNodeWithProperties {
         return new OutputString(uuid);
     }
 
+    public static OutputString of(String content) {
+        return new OutputString(content);
+    }
+
     public static OutputString of(UUID uuid, String content) {
         return new OutputString(uuid, content);
     }
 
     public Promise<Boolean> isOrphan() {
         return OutputStringManager.isOrphan(this);
+    }
+
+    public Promise<Option<UUID>> getUUID() {
+        return this.exists().flatMap(
+            new Function<Boolean, Promise<Option<UUID>>>() {
+                public Promise<Option<UUID>> apply(Boolean exists) {
+                    if (exists) {
+                        Promise<UUID> uuid = OutputStringManager
+                            .getUUID(OutputString.this);
+                        return uuid.map(
+                            new Function<UUID, Option<UUID>>() {
+                                public Option<UUID> apply(UUID uuid) {
+                                    return new Some<UUID>(uuid);
+                                }
+                            });
+                    }
+                    return Promise.promise(
+                        new Function0<Option<UUID>>() {
+                            public Option<UUID> apply() {
+                                return new None<UUID>();
+                            }
+                        });
+                }
+            });
     }
 
     public Promise<Boolean> create() {

@@ -326,13 +326,15 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addGroup(String name) {
+        final ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
         final UUID uuid = UUID.randomUUID();
+        result.put("id", uuid.toString());
         int position = json.findPath("position").intValue();
         CombinationGroup group = new CombinationGroup(uuid, position);
         Promise<Boolean> added = new Rule(name).addGroup(group);
         return added.map(new ResultFunction("Group successfully added.",
-                                            "Group not added."));
+                                            "Group not added.", result));
     }
 
     @Security.Authenticated(Secured.class)

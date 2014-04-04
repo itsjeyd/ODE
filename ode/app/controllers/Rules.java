@@ -280,12 +280,36 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateString(
         String name, String groupID, String stringID) {
-        JsonNode json = request().body().asJson();
-        String content = json.findPath("content").textValue();
-        Promise<Boolean> updated = CombinationGroup.of(groupID)
-            .updateString(stringID, content);
-        return updated.map(new ResultFunction("String successfully updated.",
-                                              "String not removed."));
+        final ObjectNode result = Json.newObject();
+        OutputString oldString = OutputString.of(UUID.fromString(stringID));
+        final CombinationGroup group = CombinationGroup.of(groupID);
+        Promise<Boolean> removed = group.removeString(oldString);
+        Promise<Boolean> added = removed.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean removed) {
+                    if (removed) {
+                        JsonNode json = request().body().asJson();
+                        final String content = json
+                            .findPath("content").textValue();
+                        final OutputString newString =
+                            OutputString.of(content);
+                        Promise<UUID> uuid = newString.getUUID();
+                        Promise<Boolean> added = uuid.flatMap(
+                            new Function<UUID, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(UUID uuid) {
+                                    result.put("id", uuid.toString());
+                                    newString.jsonProperties
+                                        .put("uuid", uuid.toString());
+                                    return group.addString(newString);
+                                }
+                            });
+                        return added;
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return added.map(new ResultFunction("String successfully updated.",
+                                            "String not updated.", result));
     }
 
     @Security.Authenticated(Secured.class)

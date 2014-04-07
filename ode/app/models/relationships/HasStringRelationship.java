@@ -15,6 +15,7 @@ public class HasStringRelationship extends TypedRelationship {
                                  OutputString endNode) {
         super(RelationshipType.HAS, startNode, endNode);
     }
+
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction());
     }

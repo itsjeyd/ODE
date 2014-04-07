@@ -1,5 +1,7 @@
 package models.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import play.libs.F.Function;
@@ -7,6 +9,7 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.nodes.SlotManager;
+import models.relationships.HasPartRelationship;
 import models.relationships.HasSlotRelationship;
 
 
@@ -32,6 +35,10 @@ public class Slot extends LabeledNodeWithProperties {
 
     public static Slot of(UUID uuid, int position) {
         return new Slot(uuid, position);
+    }
+
+    private Promise<List<Part>> getParts() {
+        return HasPartRelationship.getEndNodes(this);
     }
 
     public Promise<Boolean> create() {
@@ -74,8 +81,43 @@ public class Slot extends LabeledNodeWithProperties {
         return part.removeFrom(this);
     }
 
+    private Promise<Boolean> empty() {
+        Promise<List<Part>> parts = this.getParts();
+        Promise<List<Boolean>> removed = parts.flatMap(
+            new Function<List<Part>, Promise<List<Boolean>>>() {
+                public Promise<List<Boolean>> apply(List<Part> parts) {
+                    List<Promise<? extends Boolean>> removed =
+                        new ArrayList<Promise<? extends Boolean>>();
+                    for (Part part: parts) {
+                        removed.add(part.removeFrom(Slot.this));
+                    }
+                    return Promise.sequence(removed);
+                }
+            });
+        return removed.map(
+            new Function<List<Boolean>, Boolean>() {
+                public Boolean apply(List<Boolean> removed) {
+                    for (Boolean r: removed) {
+                        if (!r) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            });
+    }
+
     public Promise<Boolean> delete() {
-        return SlotManager.delete(this);
+        Promise<Boolean> emptied = this.empty();
+        return emptied.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean emptied) {
+                    if (emptied) {
+                        return SlotManager.delete(Slot.this);
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
 }

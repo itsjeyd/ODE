@@ -1,5 +1,7 @@
 package models.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.nio.charset.Charset;
 
@@ -8,6 +10,7 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.nodes.RHSManager;
+import models.relationships.GroupRelationship;
 import models.relationships.RHSRelationship;
 
 
@@ -30,6 +33,10 @@ public class RHS extends UUIDNode {
     public Promise<UUID> getUUID() {
         Promise<UUID> parentUUID = this.rule.getUUID();
         return parentUUID.map(new UUIDFunction());
+    }
+
+    private Promise<List<CombinationGroup>> getGroups() {
+        return GroupRelationship.getEndNodes(this);
     }
 
     public Promise<Boolean> create() {
@@ -74,8 +81,44 @@ public class RHS extends UUIDNode {
             });
     }
 
+    private Promise<Boolean> removeGroups() {
+        Promise<List<CombinationGroup>> groups = this.getGroups();
+        Promise<List<Boolean>> removed = groups.flatMap(
+            new Function<List<CombinationGroup>, Promise<List<Boolean>>>() {
+                public Promise<List<Boolean>> apply(
+                    List<CombinationGroup> groups) {
+                    List<Promise<? extends Boolean>> removed =
+                        new ArrayList<Promise<? extends Boolean>>();
+                    for (CombinationGroup group: groups) {
+                        removed.add(RHS.this.remove(group));
+                    }
+                    return Promise.sequence(removed);
+                }
+            });
+        return removed.map(
+            new Function<List<Boolean>, Boolean>() {
+                public Boolean apply(List<Boolean> removed) {
+                    for (Boolean r: removed) {
+                        if (!r) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            });
+    }
+
     public Promise<Boolean> delete() {
-        return RHSManager.delete(this);
+        Promise<Boolean> groupsRemoved = this.removeGroups();
+        return groupsRemoved.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean groupsRemoved) {
+                    if (groupsRemoved) {
+                        return RHSManager.delete(RHS.this);
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     private static class UUIDFunction implements Function<UUID, UUID> {

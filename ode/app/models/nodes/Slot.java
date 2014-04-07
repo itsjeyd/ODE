@@ -66,6 +66,10 @@ public class Slot extends LabeledNodeWithProperties {
             });
     }
 
+    public Promise<Boolean> addPart(Part part) {
+        return part.connectTo(this);
+    }
+
     public Promise<Boolean> delete() {
         return SlotManager.delete(this);
     }

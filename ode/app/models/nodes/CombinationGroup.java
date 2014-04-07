@@ -38,10 +38,6 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return string.connectTo(this);
     }
 
-    public Promise<Boolean> updateString(String stringID, String content) {
-        return null;
-    }
-
     public Promise<Boolean> removeString(OutputString string) {
         return string.removeFrom(this);
     }

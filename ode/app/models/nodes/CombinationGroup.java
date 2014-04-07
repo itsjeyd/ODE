@@ -50,8 +50,8 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return slot.connectTo(this);
     }
 
-    public Promise<Boolean> removeSlot(String slotID) {
-        return null;
+    public Promise<Boolean> removeSlot(Slot slot) {
+        return slot.removeFrom(this);
     }
 
     public Promise<Boolean> addPart(String slotID, String part) {

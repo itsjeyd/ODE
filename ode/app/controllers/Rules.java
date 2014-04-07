@@ -24,6 +24,7 @@ import models.nodes.Part;
 import models.nodes.Value;
 import models.nodes.LHS;
 import models.nodes.Rule;
+import models.nodes.Slot;
 import views.html.input;
 import views.html.output;
 import views.html.rules;
@@ -348,9 +349,15 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addSlot(String name, String groupID) {
-        Promise<Boolean> added = CombinationGroup.of(groupID).addSlot();
+        ObjectNode result = Json.newObject();
+        JsonNode json = request().body().asJson();
+        int position = json.findPath("position").intValue();
+        UUID uuid = UUID.randomUUID();
+        result.put("id", uuid.toString());
+        Slot slot = Slot.of(uuid, position);
+        Promise<Boolean> added = CombinationGroup.of(groupID).addSlot(slot);
         return added.map(new ResultFunction("Slot successfully added.",
-                                            "Slot not added."));
+                                            "Slot not added", result));
     }
 
     @Security.Authenticated(Secured.class)

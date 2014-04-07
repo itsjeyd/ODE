@@ -70,6 +70,10 @@ public class Slot extends LabeledNodeWithProperties {
         return part.connectTo(this);
     }
 
+    public Promise<Boolean> removePart(Part part) {
+        return part.removeFrom(this);
+    }
+
     public Promise<Boolean> delete() {
         return SlotManager.delete(this);
     }

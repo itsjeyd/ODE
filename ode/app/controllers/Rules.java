@@ -408,8 +408,9 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removePart(
         String name, String groupID, String slotID, String partID) {
-        Promise<Boolean> removed = CombinationGroup.of(groupID)
-            .removePart(slotID, partID);
+        Part part = Part.of(UUID.fromString(partID));
+        Promise<Boolean> removed = Slot.of(UUID.fromString(slotID))
+            .removePart(part);
         return removed.map(new ResultFunction("Part successfully removed.",
                                               "Part not removed."));
     }

@@ -19,6 +19,10 @@ public class HasPartRelationship extends TypedRelationship {
         return this.exists().flatMap(new CreateFunction());
     }
 
+    public static Promise<Boolean> delete(Slot startNode, Part endNode) {
+        return HasPartRelationshipManager.delete(startNode, endNode);
+    }
+
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
         public Promise<Boolean> apply(Boolean exists) {

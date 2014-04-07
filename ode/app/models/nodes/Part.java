@@ -17,14 +17,31 @@ import models.relationships.HasPartRelationship;
 public class Part extends LabeledNodeWithProperties {
     public String content;
 
-    private Part(String content) {
+    private Part() {
         super(NodeType.PART);
+    }
+
+    private Part(UUID uuid) {
+        this();
+        this.jsonProperties.put("uuid", uuid.toString());
+    }
+
+    private Part(String content) {
+        this();
         this.content = content;
         this.jsonProperties.put("content", content);
     }
 
+    public static Part of(UUID uuid) {
+        return new Part(uuid);
+    }
+
     public static Part of(String content) {
         return new Part(content);
+    }
+
+    public Promise<Boolean> isOrphan() {
+        return PartManager.isOrphan(this);
     }
 
     public Promise<UUID> getUUID() {
@@ -72,8 +89,34 @@ public class Part extends LabeledNodeWithProperties {
             });
     }
 
+    public Promise<Boolean> removeFrom(Slot slot) {
+        Promise<Boolean> disconnected = HasPartRelationship
+            .delete(slot, this);
+        return disconnected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean disconnected) {
+                    if (disconnected) {
+                        return Part.this.deleteIfOrphaned();
+                    }
+                    return Promise.pure(false);
+                }
+            });
+    }
+
     public Promise<Boolean> delete() {
-        return Promise.pure(false);
+        return PartManager.delete(this);
+    }
+
+    public Promise<Boolean> deleteIfOrphaned() {
+        return this.isOrphan().flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean isOrphan) {
+                    if (isOrphan) {
+                        return Part.this.delete();
+                    }
+                    return Promise.pure(true);
+                }
+            });
     }
 
     private static class AllFunction

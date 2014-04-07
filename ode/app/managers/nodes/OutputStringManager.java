@@ -32,8 +32,8 @@ public class OutputStringManager extends LabeledNodeWithPropertiesManager {
             .getNodeURL(string.getLabel(), string.jsonProperties);
         Promise<WS.Response> response = stringURL.flatMap(
             new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String ruleURL) {
-                    return Neo4jService.getNodeProperties(ruleURL);
+                public Promise<WS.Response> apply(String stringURL) {
+                    return Neo4jService.getNodeProperties(stringURL);
                 }
             });
         Promise<JsonNode> json = response.map(new JsonFunction());

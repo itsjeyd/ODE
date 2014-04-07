@@ -396,12 +396,35 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updatePart(
         String name, String groupID, String slotID, String partID) {
-        JsonNode json = request().body().asJson();
-        String content = json.findPath("content").textValue();
-        Promise<Boolean> updated = CombinationGroup.of(groupID)
-            .updatePart(slotID, partID, content);
-        return updated.map(new ResultFunction("Part successfully updated.",
-                                              "Part not updated."));
+        final ObjectNode result = Json.newObject();
+        Part oldPart = Part.of(UUID.fromString(partID));
+        final Slot slot = Slot.of(UUID.fromString(slotID));
+        Promise<Boolean> removed = slot.removePart(oldPart);
+        Promise<Boolean> added = removed.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean removed) {
+                    if (removed) {
+                        JsonNode json = request().body().asJson();
+                        final String content = json
+                            .findPath("content").textValue();
+                        final Part newPart = Part.of(content);
+                        Promise<UUID> uuid = newPart.getUUID();
+                        Promise<Boolean> added = uuid.flatMap(
+                            new Function<UUID, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(UUID uuid) {
+                                    result.put("id", uuid.toString());
+                                    newPart.jsonProperties
+                                        .put("uuid", uuid.toString());
+                                    return slot.addPart(newPart);
+                                }
+                            });
+                        return added;
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return added.map(new ResultFunction("Part successfully updated.",
+                                            "Part not updated.", result));
     }
 
     @Security.Authenticated(Secured.class)

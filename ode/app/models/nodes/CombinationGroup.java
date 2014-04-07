@@ -54,11 +54,6 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return slot.removeFrom(this);
     }
 
-    public Promise<Boolean> updatePart(
-        String slotID, String partID, String content) {
-        return null;
-    }
-
     public Promise<Boolean> addRef(String slotID, String ruleName) {
         return null;
     }

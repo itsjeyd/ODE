@@ -63,6 +63,17 @@ public class RHS extends UUIDNode {
             });
     }
 
+    public Promise<Boolean> remove(final CombinationGroup group) {
+        Promise<UUID> uuid = this.getUUID();
+        return uuid.flatMap(
+            new Function<UUID, Promise<Boolean>>() {
+                public Promise<Boolean> apply(UUID uuid) {
+                    RHS.this.jsonProperties.put("uuid", uuid.toString());
+                    return group.removeFrom(RHS.this);
+                }
+            });
+    }
+
     public Promise<Boolean> delete() {
         return RHSManager.delete(this);
     }

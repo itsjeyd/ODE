@@ -19,6 +19,11 @@ public class GroupRelationship extends TypedRelationship {
         return this.exists().flatMap(new CreateFunction(this));
     }
 
+    public static Promise<Boolean> delete(RHS startNode,
+                                          CombinationGroup endNode) {
+        return GroupRelationshipManager.delete(startNode, endNode);
+    }
+
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
         private GroupRelationship relationship;

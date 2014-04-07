@@ -88,8 +88,8 @@ public class Rule extends UUIDNode {
         return RHS.of(this).add(group);
     }
 
-    public Promise<Boolean> removeGroup(String groupID) {
-        return null;
+    public Promise<Boolean> removeGroup(CombinationGroup group) {
+        return RHS.of(this).remove(group);
     }
 
     public Promise<Boolean> delete() {

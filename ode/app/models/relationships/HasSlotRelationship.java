@@ -1,5 +1,11 @@
 package models.relationships;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -18,6 +24,26 @@ public class HasSlotRelationship extends TypedRelationship {
 
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction());
+    }
+
+    public static Promise<List<Slot>> getEndNodes(
+        final CombinationGroup startNode) {
+        Promise<List<JsonNode>> endNodes = HasSlotRelationshipManager
+            .getEndNodes(startNode);
+        return endNodes.map(
+            new Function<List<JsonNode>, List<Slot>>() {
+                public List<Slot> apply(List<JsonNode> slotNodes) {
+                    List<Slot> slots = new ArrayList<Slot>();
+                    for (JsonNode slotNode: slotNodes) {
+                        if (slotNode.has("position")) {
+                            String uuid = slotNode.findValue("uuid").asText();
+                            Slot slot = Slot.of(UUID.fromString(uuid));
+                            slots.add(slot);
+                        }
+                    }
+                    return slots;
+                }
+            });
     }
 
     public static Promise<Boolean> delete(CombinationGroup startNode,

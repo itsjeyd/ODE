@@ -340,7 +340,8 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeGroup(String name, String groupID) {
-        Promise<Boolean> removed = new Rule(name).removeGroup(groupID);
+        CombinationGroup group = CombinationGroup.of(groupID);
+        Promise<Boolean> removed = new Rule(name).removeGroup(group);
         return removed.map(new ResultFunction("Group successfully removed.",
                                               "Group not removed."));
     }

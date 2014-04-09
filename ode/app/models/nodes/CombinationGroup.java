@@ -4,8 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 
 import constants.NodeType;
 import managers.nodes.CombinationGroupManager;
@@ -37,6 +44,49 @@ public class CombinationGroup extends LabeledNodeWithProperties {
 
     private Promise<List<Slot>> getSlots() {
         return HasSlotRelationship.getEndNodes(this);
+    }
+
+    protected Promise<JsonNode> toJSON() {
+        Promise<List<JsonNode>> strings = this.getStrings().map(
+            new Function<List<OutputString>, List<JsonNode>>() {
+                public List<JsonNode> apply(
+                    List<OutputString> outputStrings) {
+                    List<JsonNode> stringList = new ArrayList<JsonNode>();
+                    for (OutputString string: outputStrings) {
+                        JsonNode stringJSON = string.toJSON();
+                        stringList.add(stringJSON);
+                    }
+                    return stringList;
+                }
+            });
+        Promise<List<JsonNode>> slots = this.getSlots().flatMap(
+            new Function<List<Slot>, Promise<List<JsonNode>>>() {
+                public Promise<List<JsonNode>> apply(List<Slot> slots) {
+                    List<Promise<? extends JsonNode>> slotList =
+                        new ArrayList<Promise<? extends JsonNode>>();
+                    for (Slot slot: slots) {
+                        Promise<JsonNode> slotJSON = slot.toJSON();
+                        slotList.add(slotJSON);
+                    }
+                    return Promise.sequence(slotList);
+                }
+            });
+        final ObjectNode json = this.jsonProperties.deepCopy();
+        return strings.zip(slots).map(
+            new Function<Tuple<List<JsonNode>, List<JsonNode>>, JsonNode>() {
+                public JsonNode apply(
+                    Tuple<List<JsonNode>, List<JsonNode>> components) {
+                    ArrayNode strings = JsonNodeFactory.instance.arrayNode();
+                    strings.addAll(components._1);
+                    ArrayNode slots = JsonNodeFactory.instance.arrayNode();
+                    slots.addAll(components._2);
+                    json.put("outputStrings", strings);
+                    ObjectNode partsTable = Json.newObject();
+                    partsTable.put("slots", slots);
+                    json.put("partsTable", partsTable);
+                    return json;
+                }
+            });
     }
 
     public Promise<Boolean> create() {

@@ -34,7 +34,9 @@ public class HasPartRelationship extends TypedRelationship {
                     List<Part> parts = new ArrayList<Part>();
                     for (JsonNode partNode: partNodes) {
                         String uuid = partNode.findValue("uuid").asText();
-                        Part part = Part.of(UUID.fromString(uuid));
+                        String content = partNode
+                            .findValue("content").asText();
+                        Part part = Part.of(UUID.fromString(uuid), content);
                         parts.add(part);
                     }
                     return parts;

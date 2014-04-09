@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 
 import constants.NodeType;
 import managers.nodes.RuleManager;
@@ -20,6 +21,7 @@ public class Rule extends UUIDNode {
     public String name;
     public String description;
     public LHS lhs;
+    public RHS rhs;
 
     private Rule() {
         super(NodeType.RULE);
@@ -152,21 +154,18 @@ public class Rule extends UUIDNode {
             String name = json.findValue("name").asText();
             String description = json.findValue("description").asText();
             String uuid = json.findValue("uuid").asText();
-            Rule rule = new Rule(name, description);
+            final Rule rule = new Rule(name, description);
             rule.jsonProperties.put("uuid", uuid);
             Promise<LHS> lhs = new LHS(rule).get();
-            return lhs.map(new SetLHSFunction(rule));
-        }
-    }
-
-    private static class SetLHSFunction implements Function<LHS, Rule> {
-        private Rule rule;
-        public SetLHSFunction(Rule rule) {
-            this.rule = rule;
-        }
-        public Rule apply(LHS lhs) {
-            this.rule.lhs = lhs;
-            return this.rule;
+            Promise<RHS> rhs = new RHS(rule).get();
+            return lhs.zip(rhs).map(
+                new Function<Tuple<LHS, RHS>, Rule>() {
+                    public Rule apply(Tuple<LHS, RHS> components) {
+                        rule.lhs = components._1;
+                        rule.rhs = components._2;
+                        return rule;
+                    }
+                });
         }
     }
 

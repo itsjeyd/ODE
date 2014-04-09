@@ -37,9 +37,12 @@ public class HasStringRelationship extends TypedRelationship {
                         new ArrayList<OutputString>();
                     for (JsonNode stringNode: stringNodes) {
                         if (!stringNode.has("position")) {
-                            String uuid = stringNode.findValue("uuid").asText();
-                            OutputString string =
-                                OutputString.of(UUID.fromString(uuid));
+                            String uuid = stringNode
+                                .findValue("uuid").asText();
+                            String content = stringNode
+                                .findValue("content").asText();
+                            OutputString string = OutputString
+                                .of(UUID.fromString(uuid), content);
                             strings.add(string);
                         }
                     }

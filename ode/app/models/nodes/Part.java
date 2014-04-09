@@ -40,6 +40,21 @@ public class Part extends LabeledNodeWithProperties {
         return new Part(content);
     }
 
+    private Part(UUID uuid, String content) {
+        this();
+        this.jsonProperties.put("uuid", uuid.toString());
+        this.jsonProperties.put("content", content);
+        this.content = content;
+    }
+
+    public static Part of(UUID uuid, String content) {
+        return new Part(uuid, content);
+    }
+
+    protected JsonNode toJSON() {
+        return this.jsonProperties.deepCopy();
+    }
+
     public Promise<Boolean> isOrphan() {
         return PartManager.isOrphan(this);
     }

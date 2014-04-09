@@ -5,17 +5,25 @@ import java.util.List;
 import java.util.UUID;
 import java.nio.charset.Charset;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 
 import constants.NodeType;
 import managers.nodes.RHSManager;
 import models.relationships.GroupRelationship;
 import models.relationships.RHSRelationship;
+import play.libs.Json;
 
 
 public class RHS extends UUIDNode {
     public Rule rule;
+    public JsonNode json;
 
     private RHS() {
         super(NodeType.RHS);
@@ -28,6 +36,50 @@ public class RHS extends UUIDNode {
 
     public static RHS of(Rule rule) {
         return new RHS(rule);
+    }
+
+    private Promise<JsonNode> toJSON() {
+        Promise<List<JsonNode>> groups = this.getGroups().flatMap(
+            new Function<List<CombinationGroup>, Promise<List<JsonNode>>>() {
+                public Promise<List<JsonNode>> apply(
+                    List<CombinationGroup> groups) {
+                    List<Promise<? extends JsonNode>> groupList =
+                        new ArrayList<Promise<? extends JsonNode>>();
+                    for (CombinationGroup group: groups) {
+                        Promise<JsonNode> groupJSON = group.toJSON();
+                        groupList.add(groupJSON);
+                    }
+                    return Promise.sequence(groupList);
+                }
+            });
+        final ObjectNode json = this.jsonProperties.deepCopy();
+        return groups.map(
+            new Function<List<JsonNode>, JsonNode>() {
+                public JsonNode apply(List<JsonNode> groupList) {
+                    ArrayNode groups = JsonNodeFactory.instance.arrayNode();
+                    groups.addAll(groupList);
+                    json.put("groups", groups);
+                    return json;
+                }
+            });
+    }
+
+    public Promise<RHS> get() {
+        Promise<UUID> uuid = this.getUUID();
+        Promise<JsonNode> json = uuid.flatMap(
+            new Function<UUID, Promise<JsonNode>>() {
+                public Promise<JsonNode> apply(UUID uuid) {
+                    RHS.this.jsonProperties.put("uuid", uuid.toString());
+                    return RHS.this.toJSON();
+                }
+            });
+        return json.map(
+            new Function<JsonNode, RHS>() {
+                public RHS apply(JsonNode json) {
+                    RHS.this.json = json;
+                    return RHS.this;
+                }
+            });
     }
 
     public Promise<UUID> getUUID() {

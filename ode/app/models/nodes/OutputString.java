@@ -1,6 +1,13 @@
 package models.nodes;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -43,6 +50,17 @@ public class OutputString extends LabeledNodeWithProperties {
 
     public static OutputString of(UUID uuid, String content) {
         return new OutputString(uuid, content);
+    }
+
+    protected JsonNode toJSON() {
+        ObjectNode json = this.jsonProperties.deepCopy();
+        ArrayNode tokens = JsonNodeFactory.instance.arrayNode();
+        String[] contentTokens = this.content.split(" ");
+        for (String token: contentTokens) {
+            tokens.add(token);
+        }
+        json.put("tokens", tokens);
+        return json;
     }
 
     public Promise<Boolean> isOrphan() {

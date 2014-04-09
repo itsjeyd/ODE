@@ -89,7 +89,7 @@ public class Slot extends LabeledNodeWithProperties {
                     List<Promise<? extends Boolean>> removed =
                         new ArrayList<Promise<? extends Boolean>>();
                     for (Part part: parts) {
-                        removed.add(part.removeFrom(Slot.this));
+                        removed.add(Slot.this.removePart(part));
                     }
                     return Promise.sequence(removed);
                 }

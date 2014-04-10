@@ -816,20 +816,6 @@ $(document).ready(function() {
   });
   ruleView.render();
 
-  var cgJSON = { outputStrings: [ { tokens: ['a', 'b', 'c'] },
-                                  { tokens: ['d', 'e', 'f'] }, ],
-                 partsTable: { slots: [ { parts:
-                                          ['parts', 'in', 'slot', '1'] },
-                                        { parts:
-                                          ['parts', 'in', 'slot', '2'] },
-                                      ], }, }
-
-
-  var cg = new CombinationGroup({ id: 1 }, { json: cgJSON });
-
-  var cgView = new CombinationGroupView({ model: cg });
-  $('#rule-rhs').append(cgView.render().$el);
-
   // Header
 
   var navbarButton = $('<li>');

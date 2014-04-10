@@ -137,14 +137,15 @@ var RuleView = Backbone.View.extend({
 
 // Output: Models
 
-var Part = Backbone.Model.extend({});
 var RHS = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     var groups = [];
     var pos = 1;
     _.each(options.json.groups, function(g) {
-      var group = new CombinationGroup({ id: g.uuid, position: pos++ },
+      var group = new CombinationGroup({ id: g.uuid,
+                                         position: pos++,
+                                         ruleID: this.get('ruleID') },
                                        { json: g });
       groups.push(group);
     }, this);
@@ -153,6 +154,14 @@ var RHS = Backbone.Model.extend({
 
 });
 
+var Part = Backbone.Model.extend({
+
+  initialize: function() {
+    this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
+      this.get('groupID') + '/slots/' + this.get('slotID') + '/parts';
+  },
+
+});
 
 var PartsInventory = Backbone.Collection.extend({
 
@@ -165,6 +174,8 @@ var OutputString = Backbone.Model.extend({
   defaults: { tokens: [] },
 
   initialize: function() {
+    this.urlRoot = '/rules/' + this.get('ruleID') +
+      '/groups/' + this.get('groupID') + '/strings';
     this.on({
       'split': function(splitPoint) {
         this.set('splitPoint', splitPoint);
@@ -177,19 +188,30 @@ var OutputString = Backbone.Model.extend({
 var CombinationGroup = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
+    this.urlRoot = '/rules/' + this.get('ruleID') + '/groups';
     if (options.json) {
       var outputStrings = _.map(options.json.outputStrings, function(os) {
-        return new OutputString({ tokens: os.tokens });
-      });
+        return new OutputString({ id: os.uuid,
+                                  tokens: os.tokens,
+                                  ruleID: this.get('ruleID'),
+                                  groupID: this.id });
+      }, this);
       this.set('outputStrings', new Backbone.Collection(outputStrings));
       var position = 1;
       var slots = _.map(options.json.partsTable.slots, function(s) {
         var parts = _.map(s.parts, function(p) {
-          return new Part({ content: p });
-        });
-        return new Slot({ position: position++,
-                          parts: new Backbone.Collection(parts) });
-      });
+          return new Part({ id: p.uuid,
+                            content: p,
+                            ruleID: this.get('ruleID'),
+                            groupID: this.id,
+                            slotID: s.uuid });
+        }, this);
+        return new Slot({ id: s.uuid,
+                          position: position++,
+                          parts: new Backbone.Collection(parts),
+                          ruleID: this.get('ruleID'),
+                          groupID: this.id });
+      }, this);
       this.set('partsTable', new PartsTable({
         slots: new Backbone.Collection(slots)
       }));
@@ -261,6 +283,11 @@ var PartsTable = Backbone.Model.extend({
 });
 
 var Slot = Backbone.Model.extend({
+
+  initialize: function() {
+    this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
+      this.get('groupID') + '/slots';
+  },
 
   add: function(part) {
     var parts = this.get('parts');
@@ -747,7 +774,7 @@ $(document).ready(function() {
   var description = $('#rule-description').text();
   var rhsJSON = $('#rule-rhs').data('json');
 
-  var rhs = new RHS({ rule: name }, { json: rhsJSON });
+  var rhs = new RHS({ ruleID: name }, { json: rhsJSON });
 
   var rule = new Rule({
     id: name,

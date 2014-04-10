@@ -554,6 +554,9 @@ var PartsTableView = Backbone.View.extend({
       slots.append(new SlotView({ model: slot }).render().$el);
     });
     this.$el.append(slots);
+    if (this.model.get('slots').size() === 0) {
+      slots.hide();
+    }
   },
 
   _renderControls: function() {

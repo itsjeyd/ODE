@@ -435,7 +435,7 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   _renderHeader: function() {
-    var groupHeader = $.h4('Group ' + this.model.id);
+    var groupHeader = $.h4('Group ' + this.model.get('position'));
     var small = $.small();
     small.append($.plusButton());
     small.append($.copyButton());

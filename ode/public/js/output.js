@@ -56,8 +56,10 @@ var RuleView = Backbone.View.extend({
     this.$el.empty();
     this.$el.append($.h3('').attr('id', 'rule-name'));
     this.$el.append($.p('').attr('id', 'rule-description'));
+    this.$el.append($.div().attr('id', 'rule-rhs'));
     this._renderName();
     this._renderDescription();
+    this._renderRHS();
     return this;
   },
 
@@ -67,6 +69,12 @@ var RuleView = Backbone.View.extend({
 
   _renderDescription: function() {
     this.$('#rule-description').text(this.model.get('description'));
+  },
+
+  _renderRHS: function() {
+    var rhsView = new RHSView({ model: this.model.get('rhs'),
+                                el: this.$('#rule-rhs') });
+    rhsView.render();
   },
 
   _updateURL: function() {
@@ -300,6 +308,22 @@ var Slot = Backbone.Model.extend({
 
 
 // Output: Views
+
+var RHSView = Backbone.View.extend({
+
+  render: function() {
+    this._renderGroups();
+    return this;
+  },
+
+  _renderGroups: function() {
+    this.model.get('groups').each(function(group) {
+      var groupView = new CombinationGroupView({ model: group });
+      this.$el.append(groupView.render().$el);
+    }, this);
+  },
+
+});
 
 var OutputStringView = Backbone.View.extend({
 

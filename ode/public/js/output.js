@@ -138,6 +138,21 @@ var RuleView = Backbone.View.extend({
 // Output: Models
 
 var Part = Backbone.Model.extend({});
+var RHS = Backbone.Model.extend({
+
+  initialize: function(attrs, options) {
+    var groups = [];
+    var pos = 1;
+    _.each(options.json.groups, function(g) {
+      var group = new CombinationGroup({ id: g.uuid, position: pos++ },
+                                       { json: g });
+      groups.push(group);
+    }, this);
+    this.set('groups', new Backbone.Collection(groups));
+  },
+
+});
+
 
 var PartsInventory = Backbone.Collection.extend({
 
@@ -730,11 +745,15 @@ $(document).ready(function() {
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();
+  var rhsJSON = $('#rule-rhs').data('json');
+
+  var rhs = new RHS({ rule: name }, { json: rhsJSON });
 
   var rule = new Rule({
     id: name,
     name: name,
     description: description,
+    rhs: rhs,
   });
 
   var ruleView = new RuleView({

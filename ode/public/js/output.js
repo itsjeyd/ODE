@@ -739,7 +739,7 @@ var SlotView = Backbone.View.extend({
       var part = parts.findWhere({
         content: $(e.currentTarget).parent().text()
       });
-      parts.remove(part);
+      part.destroy({ wait: true });
     },
     'dblclick .part': '_renderEditControls',
     'click .placeholder': function(e) {

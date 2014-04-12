@@ -345,10 +345,7 @@ var Slot = Backbone.Model.extend({
   },
 
   add: function(part) {
-    var parts = this.get('parts');
-    if (!parts.findWhere({ content: part.get('content') })) {
-      parts.add(part);
-    }
+    this.get('parts').add(part);
   },
 
 });
@@ -729,8 +726,15 @@ var SlotView = Backbone.View.extend({
     placeholder.droppable({
       accept: '.part',
       drop: function(e, ui) {
-        var part = new Part({ content: $(ui.helper).text() });
-        view.model.add(part);
+        var part = new Part({ content: $(ui.helper).text(),
+                              ruleID: view.model.get('ruleID'),
+                              groupID: view.model.get('groupID'),
+                              slotID: view.model.id,
+                            });
+        part.save(null,
+                  { success: function(model, response, options) {
+                    view.model.add(part);
+                  }});
       },
     });
   },

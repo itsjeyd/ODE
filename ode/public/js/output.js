@@ -209,7 +209,7 @@ var CombinationGroup = Backbone.Model.extend({
       var slots = _.map(options.json.partsTable.slots, function(s) {
         var parts = _.map(s.parts, function(p) {
           return new Part({ id: p.uuid,
-                            content: p,
+                            content: p.content,
                             ruleID: this.get('ruleID'),
                             groupID: this.id,
                             slotID: s.uuid });

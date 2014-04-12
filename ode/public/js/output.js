@@ -228,7 +228,7 @@ var CombinationGroup = Backbone.Model.extend({
     }
     this.get('outputStrings').on({
       'change:splitPoint': function(model) {
-        this.get('outputStrings').remove(model);
+        this.get('outputStrings').get(model).destroy();
         this.get('partsTable').add(model);
       },
     }, this);
@@ -274,16 +274,62 @@ var CombinationGroup = Backbone.Model.extend({
 var PartsTable = Backbone.Model.extend({
 
   add: function(outputString) {
+    if (this.get('slots').size() === 0) {
+      var added = this._addDefaultSlots();
+      if (added) {
+        this._addParts(outputString);
+      }
+    } else {
+      this._addParts(outputString);
+    }
+  },
+
+  _addDefaultSlots: function() {
+    return this._makeSlot(1) && this._makeSlot(2);
+  },
+
+  _makeSlot: function(position) {
+    var slot = new Slot({ position: position,
+                          parts: new Backbone.Collection([]),
+                          ruleID: this.get('ruleID'),
+                          groupID: this.get('groupID'),
+                        });
+    var partsTable = this;
+    return slot.save(null,
+                     { wait: true,
+                       success: function(model, response, options) {
+                         partsTable.get('slots').add(slot);
+                       }});
+  },
+
+  _addParts: function(outputString) {
     var tokens = outputString.get('tokens');
     var splitPoint = outputString.get('splitPoint');
-    var leftPart = new Part({
-      content: tokens.slice(0, splitPoint).join(' '),
+    var firstSlot = this.get('slots').at(0);
+    var secondSlot = this.get('slots').at(1);
+    var leftPart = this._makePart(tokens.slice(0, splitPoint).join(' '),
+                                  firstSlot);
+    var rightPart = this._makePart(tokens.slice(splitPoint).join(' '),
+                                   secondSlot);
+    leftPart.save(null,
+                  { wait: true,
+                    success: function(model, response, options) {
+                      firstSlot.add(model);
+                    }});
+    rightPart.save(null,
+                   { wait: true,
+                     success: function(model, response, options) {
+                       secondSlot.add(model);
+                     }});
+  },
+
+  _makePart: function(content, slot) {
+    return new Part({
+      content: content,
+      ruleID: this.get('ruleID'),
+      groupID: this.get('groupID'),
+      slotID: slot.id,
     });
-    var rightPart = new Part({
-      content: tokens.slice(splitPoint).join(' '),
-    });
-    this.get('slots').at(0).add(leftPart);
-    this.get('slots').at(1).add(rightPart);
   },
 
   hasOptionalSlots: function() {

@@ -452,7 +452,10 @@ var OutputStringView = Backbone.View.extend({
   _updateModel: function() {
     var inputField = this.$('input');
     if (!inputField.isEmpty()) {
-      this.model.set('tokens', inputField.val().split(' '));
+      var content = inputField.val();
+      this.model.set('tokens', content.split(' '));
+      this.model.set('content', content);
+      this.model.save(null, { wait: true });
     }
   },
 

@@ -404,6 +404,8 @@ var OutputStringView = Backbone.View.extend({
         _.each(partTokens, function(t) {
           tokens.push(t);
         });
+        view.model.set('content', tokens.join(' '));
+        view.model.save(null, { wait: true });
         view.$el.empty();
         view.render();
       },

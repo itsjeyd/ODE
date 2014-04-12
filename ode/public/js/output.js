@@ -508,11 +508,24 @@ var CombinationGroupView = Backbone.View.extend({
     'click .placeholder + button': function(e) {
       var placeholder = $(e.currentTarget).prev('.placeholder');
       var tokens = placeholder.text().split(' ');
-      var outputString = new OutputString({ tokens: tokens });
-      this.model.addOutputString(outputString);
-      var outputStringView = new OutputStringView({ model: outputString });
-      outputStringView.render().$el.insertBefore(placeholder);
-      this._resetPlaceholder();
+      var outputString = new OutputString({
+        content: placeholder.text(),
+        tokens: tokens,
+        ruleID: this.model.get('ruleID'),
+        groupID: this.model.id,
+      });
+      var group = this.model;
+      var groupView =  this;
+      outputString.save(
+        null,
+        { wait: true,
+          success: function(model, response, options) {
+            group.addOutputString(outputString);
+            var outputStringView =
+              new OutputStringView({ model: outputString });
+            outputStringView.render().$el.insertBefore(placeholder);
+            groupView._resetPlaceholder();
+          }});
     },
   },
 

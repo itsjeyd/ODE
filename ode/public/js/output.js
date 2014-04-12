@@ -221,7 +221,9 @@ var CombinationGroup = Backbone.Model.extend({
                           groupID: this.id });
       }, this);
       this.set('partsTable', new PartsTable({
-        slots: new Backbone.Collection(slots)
+        slots: new Backbone.Collection(slots),
+        ruleID: this.get('ruleID'),
+        groupID: this.id,
       }));
     }
     this.get('outputStrings').on({
@@ -598,12 +600,21 @@ var PartsTableView = Backbone.View.extend({
     this.$('.controls').remove();
     var position = this.model.get('slots').size() + 1;
     var slot = new Slot({ position: position,
-                          parts: new Backbone.Collection([]) });
-    this.model.get('slots').add(slot);
-    var slotView = new SlotView({ model: slot });
-    this.$('.slots').append(slotView.render().$el);
-    this._renderControls();
-  },
+                          parts: new Backbone.Collection([]),
+                          ruleID: this.model.get('ruleID'),
+                          groupID: this.model.get('groupID'),
+                        });
+    var partsTable = this.model;
+    var partsTableView = this;
+    slot.save(null,
+              { wait: true,
+                success: function(model, response, options) {
+                  partsTable.get('slots').add(slot);
+                  var slotView = new SlotView({ model: slot });
+                  partsTableView.$('.slots').append(slotView.render().$el);
+                  partsTableView._renderControls();
+                }});
+},
 
 });
 

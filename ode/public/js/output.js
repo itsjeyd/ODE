@@ -205,7 +205,6 @@ var CombinationGroup = Backbone.Model.extend({
                                   groupID: this.id });
       }, this);
       this.set('outputStrings', new Backbone.Collection(outputStrings));
-      var position = 1;
       var slots = _.map(options.json.partsTable.slots, function(s) {
         var parts = _.map(s.parts, function(p) {
           return new Part({ id: p.uuid,
@@ -215,13 +214,13 @@ var CombinationGroup = Backbone.Model.extend({
                             slotID: s.uuid });
         }, this);
         return new Slot({ id: s.uuid,
-                          position: position++,
+                          position: s.position,
                           parts: new Backbone.Collection(parts),
                           ruleID: this.get('ruleID'),
                           groupID: this.id });
       }, this);
       this.set('partsTable', new PartsTable({
-        slots: new Backbone.Collection(slots),
+        slots: new Backbone.Collection(slots, { comparator: 'position' }),
         ruleID: this.get('ruleID'),
         groupID: this.id,
       }));

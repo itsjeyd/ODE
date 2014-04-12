@@ -37,7 +37,10 @@ public class HasSlotRelationship extends TypedRelationship {
                     for (JsonNode slotNode: slotNodes) {
                         if (slotNode.has("position")) {
                             String uuid = slotNode.findValue("uuid").asText();
-                            Slot slot = Slot.of(UUID.fromString(uuid));
+                            int position =
+                                slotNode.findValue("position").asInt();
+                            Slot slot =
+                                Slot.of(UUID.fromString(uuid), position);
                             slots.add(slot);
                         }
                     }

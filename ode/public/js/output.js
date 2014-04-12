@@ -379,7 +379,7 @@ var OutputStringView = Backbone.View.extend({
       this.model.trigger('split', $(e.currentTarget).data('ID'));
     },
     'click .remove-button': function() {
-      this.model.destroy();
+      this.model.destroy({ wait: true });
       this.remove();
     },
     'dblclick': '_renderEditControls',

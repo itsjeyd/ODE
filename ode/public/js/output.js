@@ -508,16 +508,28 @@ var CombinationGroupView = Backbone.View.extend({
     var placeholder = $.div('placeholder').text('Add more content ...');
     this.$el.append(placeholder);
     placeholder.makeEditable();
-    var view = this;
+    var group = this.model;
+    var groupView = this;
     placeholder.droppable({
       accept: '.part',
       drop: function(e, ui) {
-        var tokens = $(ui.helper).text().split(' ');
-        var outputString = new OutputString({ tokens: tokens });
-        view.model.addOutputString(outputString);
-        var outputStringView = new OutputStringView({ model: outputString });
-        outputStringView.render().$el.insertBefore(placeholder);
-        view._resetPlaceholder();
+        var content = $(ui.helper).text()
+        var tokens = content.split(' ');
+        var outputString = new OutputString({
+          tokens: tokens,
+          content: content,
+          ruleID: group.get('ruleID'),
+          groupID: group.id,
+        });
+        outputString.save(
+          null,
+          { success: function(model, response, options) {
+            group.addOutputString(outputString);
+            var outputStringView =
+              new OutputStringView({ model: outputString });
+            outputStringView.render().$el.insertBefore(placeholder);
+            groupView._resetPlaceholder();
+          }});
       },
     });
     this.$el.append($.addButton().css('visibility', 'hidden'));

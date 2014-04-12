@@ -699,8 +699,18 @@ var SlotView = Backbone.View.extend({
     },
     'keyup .placeholder': function(e) {
       if (e.which === 13) {
-        var part = new Part({ content: $(e.currentTarget).text() });
-        this.model.add(part);
+        var slot = this.model;
+        var part = new Part({
+          content: $(e.currentTarget).text(),
+          ruleID: slot.get('ruleID'),
+          groupID: slot.get('groupID'),
+          slotID: slot.id,
+        });
+        part.save(null,
+                  { wait: true,
+                    success: function(model, response, options) {
+                      slot.add(part);
+                    }});
       }
     },
     'keyup input': function(e) {

@@ -591,7 +591,7 @@ var PartsTableView = Backbone.View.extend({
   initialize: function() {
     this.model.get('slots').on({
       'delete': function(slot) {
-        this.model.get('slots').remove(slot);
+        slot.destroy({ wait: true });
         var slotsToUpdate = this.model.get('slots').filter(function(s) {
           return s.get('position') > slot.get('position');
         });

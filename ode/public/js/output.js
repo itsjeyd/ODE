@@ -275,6 +275,7 @@ var CombinationGroup = Backbone.Model.extend({
       string.save(null, { wait: true,
                           success: function(model, response, options) {
                             group.get('outputStrings').add(model);
+                            group.trigger('update');
                           }});
     });
   },
@@ -306,6 +307,7 @@ var CombinationGroup = Backbone.Model.extend({
                                         success: function(
                                           model, response, options) {
                                           slot.get('parts').add(model);
+                                          group.trigger('update');
                                         }});
                           });
                         }});
@@ -513,6 +515,12 @@ var CombinationGroupView = Backbone.View.extend({
   className: 'combination-group',
 
   initialize: function() {
+    this.model.on({
+      'update': function() {
+        this.$el.empty();
+        this.render();
+      },
+    }, this);
     this.model.get('outputStrings').on({
       'remove': function(outputString) {
         outputString.trigger('remove');

@@ -541,7 +541,13 @@ var CombinationGroupView = Backbone.View.extend({
     'click .plus-button': function(e) {
       $(e.currentTarget).remove();
       this.$('.copy-button').remove();
-      var emptyGroup = this.model.create(this.model.id + 1);
+      var json = { outputStrings: [],
+                   partsTable: { slots: [] } }
+      var emptyGroup = new CombinationGroup(
+        { position: this.model.get('position') + 1,
+          ruleID: this.model.get('ruleID') },
+        { json: json });
+      emptyGroup.save(null, { wait: true });
       var groupView = new CombinationGroupView({ model: emptyGroup });
       this.$el.parent().append(groupView.render().$el);
     },

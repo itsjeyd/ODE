@@ -247,25 +247,70 @@ var CombinationGroup = Backbone.Model.extend({
   },
 
   copy: function() {
-    var outputStrings = this.get('outputStrings').map(function(os) {
-      return new OutputString({ tokens: os.get('tokens') });
+    var json = { outputStrings: [],
+                 partsTable: { slots: [] } }
+    var group = new CombinationGroup(
+      { position: this.get('position') + 1,
+        ruleID: this.get('ruleID') },
+      { json: json });
+    var outputStrings = this.get('outputStrings');
+    var partsTable = this.get('partsTable');
+    group.save(null, { wait: true,
+                       success: function(model, response, options) {
+                         model.id = model.get('id');
+                         model.addStrings(outputStrings);
+                         model.addPartsTable(partsTable);
+                       }});
+    return group;
+  },
+
+  addStrings: function(strings) {
+    var group = this;
+    strings.each(function(os) {
+      var string = new OutputString({ tokens: os.get('tokens'),
+                                      content: os.get('tokens').join(' '),
+                                      ruleID: group.get('ruleID'),
+                                      groupID: group.id,
+                                    });
+      string.save(null, { wait: true,
+                          success: function(model, response, options) {
+                            group.get('outputStrings').add(model);
+                          }});
     });
-    var position = 1;
-    var slots = this.get('partsTable').get('slots').map(function(s) {
-      var parts = s.get('parts').map(function(p) {
-          return new Part({ content: p.get('content') });
-      });
-      return new Slot({ position: position++,
-                        parts: new Backbone.Collection(parts) });
+  },
+
+  addPartsTable: function(partsTable) {
+    var group = this;
+    var partsTableCopy = new PartsTable({
+      slots: new Backbone.Collection([], { comparator: 'position' }),
+      ruleID: group.get('ruleID'),
+      groupID: group.id,
     });
-    var partsTable = new PartsTable({
-      slots: new Backbone.Collection(slots)
+    partsTable.get('slots').each(function(s) {
+      var slot = new Slot({ position: s.get('position'),
+                            parts: new Backbone.Collection([]),
+                            ruleID: group.get('ruleID'),
+                            groupID: group.id });
+      slot.save(null, { wait: true,
+                        success: function(model, response, options) {
+                          partsTableCopy.get('slots').add(model);
+                          s.get('parts').each(function(p) {
+                            var part = new Part({
+                              content: p.get('content'),
+                              ruleID: group.get('ruleID'),
+                              groupID: group.id,
+                              slotID: model.id
+                            });
+                            part.save(null,
+                                      { wait: true,
+                                        success: function(
+                                          model, response, options) {
+                                          slot.get('parts').add(model);
+                                        }});
+                          });
+                        }});
     });
-    return new CombinationGroup({
-      id: this.id + 1,
-      outputStrings: new Backbone.Collection(outputStrings),
-      partsTable: partsTable
-    }, {});
+    this.set('partsTable', partsTableCopy);
   },
 
 });

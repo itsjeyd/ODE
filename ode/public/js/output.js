@@ -430,10 +430,19 @@ var RHSView = Backbone.View.extend({
     }, this);
   },
 
-  _addGroup: function(group) {
-    this.model.get('groups').add(group);
-    var groupView = new CombinationGroupView({ model: group });
-    this.$el.append(groupView.render().$el);
+  _addGroup: function(newGroup) {
+    var position = newGroup.get('position');
+    var groupsToUpdate = this.model.get('groups').filter(function(g) {
+      return g.get('position') >= position;
+    });
+    _.each(groupsToUpdate, function(g) {
+      g.save({ position: g.get('position') + 1}, { wait: true });
+    });
+    newGroup.save(null, { wait: true });
+    this.model.get('groups').add(newGroup);
+    var groupView = new CombinationGroupView({ model: newGroup });
+    groupView.render().$el.insertAfter(
+      this.$('[data-position="' + --position + '"]'));
     this.listenTo(groupView, 'added', this._addGroup);
   },
 
@@ -537,13 +546,22 @@ var CombinationGroupView = Backbone.View.extend({
 
   className: 'combination-group',
 
+  attributes: function() {
+    return {
+      'data-position': this.model.get('position'),
+    }
+  },
+
   initialize: function() {
     this.model.on({
       'update': function() {
         this.$el.empty();
         this.render();
       },
-      'change:position': this._updateHeader,
+      'change:position': function() {
+        this.$el.data('position', this.model.get('position'));
+        this._updateHeader();
+      },
     }, this);
     this.model.get('outputStrings').on({
       'remove': function(outputString) {
@@ -634,7 +652,6 @@ var CombinationGroupView = Backbone.View.extend({
         { position: this.model.get('position') + 1,
           ruleID: this.model.get('ruleID') },
         { json: json });
-      emptyGroup.save(null, { wait: true });
       this.trigger('added', emptyGroup);
     },
     'click .copy-button': function(e) {

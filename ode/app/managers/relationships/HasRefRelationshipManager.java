@@ -8,9 +8,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.mvc.Http.Status;
 
 import constants.RelationshipType;
 import neo4play.Neo4jService;
+import models.nodes.Rule;
 import models.nodes.Slot;
 
 
@@ -30,6 +32,18 @@ public class HasRefRelationshipManager extends TypedRelationshipManager {
                         nodes.add(json.findValue("data"));
                     }
                     return nodes;
+                }
+            });
+    }
+
+    public static Promise<Boolean> delete(
+        final Slot startNode, final Rule endNode) {
+        Promise<WS.Response> response = Neo4jService.deleteTypedRelationship(
+            startNode, endNode, RelationshipType.HAS);
+        return response.map(
+            new Function<WS.Response, Boolean>() {
+                public Boolean apply(WS.Response response) {
+                    return response.getStatus() == Status.OK;
                 }
             });
     }

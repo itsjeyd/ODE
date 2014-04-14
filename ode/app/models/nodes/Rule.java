@@ -74,6 +74,10 @@ public class Rule extends UUIDNode {
             });
     }
 
+    public Promise<Boolean> removeFrom(Slot slot) {
+        return HasRefRelationship.delete(slot, this);
+    }
+
     public Promise<Boolean> updateName(final String newName) {
         Promise<Rule> rule = this.get();
         return rule.flatMap(

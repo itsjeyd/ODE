@@ -468,6 +468,17 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> removeRef(
+        String name, String groupID, String slotID, String refID) {
+        Rule rule = new Rule(refID);
+        Promise<Boolean> removed = Slot.of(UUID.fromString(slotID))
+            .removeRef(rule);
+        return removed.map(new ResultFunction("Part successfully removed.",
+                                              "Part not removed."));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> delete(String name) {
         Promise<Boolean> deleted = new Rule(name).delete();
         return deleted.map(

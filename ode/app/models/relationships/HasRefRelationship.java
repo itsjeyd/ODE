@@ -45,6 +45,10 @@ public class HasRefRelationship extends TypedRelationship {
             });
     }
 
+    public static Promise<Boolean> delete(Slot startNode, Rule endNode) {
+        return HasRefRelationshipManager.delete(startNode, endNode);
+    }
+
     private class CreateFunction implements
                                      Function<Boolean, Promise<Boolean>> {
         public Promise<Boolean> apply(Boolean exists) {

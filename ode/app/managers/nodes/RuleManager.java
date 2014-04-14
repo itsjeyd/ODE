@@ -11,6 +11,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
+import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
@@ -28,6 +29,14 @@ public class RuleManager extends NamedNodeManager {
         return LabeledNodeWithPropertiesManager.create(rule);
     }
 
+    private static Promise<JsonNode> getIncomingRelationships(Rule rule) {
+        Promise<WS.Response> response = Neo4jService
+            .getIncomingRelationshipsByType(rule.getLabel(),
+                                            rule.jsonProperties,
+                                            RelationshipType.HAS.name());
+        return response.map(new JsonFunction());
+    }
+
     public static Promise<String> getProperty(Rule rule, String propName) {
         Promise<String> ruleURL = Neo4jService
             .getNodeURL(rule.getLabel(), rule.jsonProperties);
@@ -39,6 +48,17 @@ public class RuleManager extends NamedNodeManager {
             });
         Promise<JsonNode> json = response.map(new JsonFunction());
         return json.map(new PropertyFunction(propName));
+    }
+
+    public static Promise<Boolean> isOrphan(Rule rule) {
+        Promise<JsonNode> relationships = RuleManager
+            .getIncomingRelationships(rule);
+        return relationships.map(
+            new Function<JsonNode, Boolean>() {
+                public Boolean apply(JsonNode relationships) {
+                    return relationships.size() == 0;
+                }
+            });
     }
 
     public static Promise<UUID> getUUID(Rule rule) {

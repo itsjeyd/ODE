@@ -39,6 +39,10 @@ public class Rule extends UUIDNode {
         this.description = description;
     }
 
+    public Promise<Boolean> isOrphan() {
+        return RuleManager.isOrphan(this);
+    }
+
     public Promise<UUID> getUUID() {
         return RuleManager.getUUID(this);
     }
@@ -110,6 +114,18 @@ public class Rule extends UUIDNode {
 
     public Promise<Boolean> removeGroup(CombinationGroup group) {
         return RHS.of(this).remove(group);
+    }
+
+    public Promise<Boolean> deleteIfOrphaned() {
+        return this.isOrphan().flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean isOrphan) {
+                    if (isOrphan) {
+                        return Rule.this.delete();
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     public Promise<Boolean> delete() {

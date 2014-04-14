@@ -91,7 +91,11 @@ var RuleListView = Backbone.View.extend({
   _delete: function(e) {
     var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
     var rule = this.collection.get(ruleID);
-    rule.destroy();
+    rule.destroy({ wait: true,
+                   error: function(model, xhr, options) {
+                     alert('Rule can not be deleted. ' +
+                           'It is referenced by at least one other rule.');
+                   }});
   },
 
   filterItems: function(input) {

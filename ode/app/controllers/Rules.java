@@ -487,7 +487,7 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> delete(String name) {
-        Promise<Boolean> deleted = new Rule(name).delete();
+        Promise<Boolean> deleted = new Rule(name).deleteIfOrphaned();
         return deleted.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

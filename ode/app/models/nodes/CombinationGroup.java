@@ -135,10 +135,6 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return slot.removeFrom(this);
     }
 
-    public Promise<Boolean> addRef(String slotID, String ruleName) {
-        return null;
-    }
-
     private Promise<Boolean> empty() {
         Promise<Boolean> stringsRemoved = this.removeStrings();
         Promise<Boolean> slotsRemoved = stringsRemoved.flatMap(

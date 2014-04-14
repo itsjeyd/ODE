@@ -13,6 +13,7 @@ import play.libs.F.Tuple;
 import constants.NodeType;
 import managers.nodes.RuleManager;
 import models.nodes.RHS;
+import models.relationships.HasRefRelationship;
 import models.relationships.LHSRelationship;
 import models.relationships.RHSRelationship;
 
@@ -58,6 +59,19 @@ public class Rule extends UUIDNode {
         Promise<Boolean> lhsCreated = created
             .flatMap(new CreateLHSFunction(this));
         return lhsCreated.flatMap(new CreateRHSFunction(this));
+    }
+
+    public Promise<Boolean> connectTo(final Slot slot) {
+        return this.exists().flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean exists) {
+                    if (exists) {
+                        return new HasRefRelationship(
+                            slot, Rule.this).create();
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     public Promise<Boolean> updateName(final String newName) {

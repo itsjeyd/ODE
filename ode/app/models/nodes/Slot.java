@@ -110,6 +110,10 @@ public class Slot extends LabeledNodeWithProperties {
         return part.removeFrom(this);
     }
 
+    public Promise<Boolean> addRef(Rule rule) {
+        return rule.connectTo(this);
+    }
+
     private Promise<Boolean> empty() {
         Promise<List<Part>> parts = this.getParts();
         Promise<List<Boolean>> removed = parts.flatMap(

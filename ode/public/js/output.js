@@ -286,6 +286,7 @@ var CombinationGroup = Backbone.Model.extend({
     partsTable.get('slots').each(function(s) {
       var slot = new Slot({ position: s.get('position'),
                             parts: new Backbone.Collection([]),
+                            refs: new Backbone.Collection([]),
                             ruleID: group.get('ruleID'),
                             groupID: group.id });
       slot.save(null, { wait: true,
@@ -333,6 +334,7 @@ var PartsTable = Backbone.Model.extend({
   _makeSlot: function(position) {
     var slot = new Slot({ position: position,
                           parts: new Backbone.Collection([]),
+                          refs: new Backbone.Collection([]),
                           ruleID: this.get('ruleID'),
                           groupID: this.get('groupID'),
                         });
@@ -817,6 +819,7 @@ var PartsTableView = Backbone.View.extend({
     var position = this.model.get('slots').size() + 1;
     var slot = new Slot({ position: position,
                           parts: new Backbone.Collection([]),
+                          refs: new Backbone.Collection([]),
                           ruleID: this.model.get('ruleID'),
                           groupID: this.model.get('groupID'),
                         });

@@ -628,8 +628,6 @@ var CombinationGroupView = Backbone.View.extend({
 
   events: {
     'click .plus-button': function(e) {
-      $(e.currentTarget).remove();
-      this.$('.copy-button').remove();
       var json = { outputStrings: [],
                    partsTable: { slots: [] } }
       var emptyGroup = new CombinationGroup(
@@ -640,8 +638,6 @@ var CombinationGroupView = Backbone.View.extend({
       this.trigger('added', emptyGroup);
     },
     'click .copy-button': function(e) {
-      this.$('.plus-button').remove();
-      $(e.currentTarget).remove();
       var groupCopy = this.model.copy();
       this.trigger('added', groupCopy);
     },

@@ -421,13 +421,21 @@ var RHSView = Backbone.View.extend({
     _.each(groupsToUpdate, function(g) {
       g.save({ position: g.get('position') + 1}, { wait: true });
     });
-    newGroup.save(null, { wait: true });
-    this.model.get('groups').add(newGroup);
-    var groupView = new CombinationGroupView({ model: newGroup });
-    groupView.render().$el.insertAfter(
-      this.$('[data-position="' + --position + '"]'));
-    this.listenTo(groupView, 'added', this._addGroup);
-    this.listenTo(groupView, 'copied', this._copyGroup);
+    var rhs = this.model;
+    var rhsView = this;
+    newGroup.save(null,
+                  { wait: true,
+                    success: function(model, response, options) {
+                      rhs.get('groups').add(model);
+                      var groupView =
+                        new CombinationGroupView({ model: newGroup });
+                      groupView.render().$el.insertAfter(
+                        rhsView.$('[data-position="' + --position + '"]'));
+                      rhsView.listenTo(
+                        groupView, 'added', rhsView._addGroup);
+                      rhsView.listenTo(
+                        groupView, 'copied', rhsView._copyGroup);
+                    }});
   },
 
   _copyGroup: function(existingGroup, newGroup) {
@@ -440,18 +448,24 @@ var RHSView = Backbone.View.extend({
     });
     var outputStrings = existingGroup.get('outputStrings');
     var partsTable = existingGroup.get('partsTable');
-    newGroup.save(null, { wait: true,
-                          success: function(model, response, options) {
-                            model.id = model.get('id');
-                            model.addStrings(outputStrings);
-                            model.addPartsTable(partsTable);
-                       }});
-    this.model.get('groups').add(newGroup);
-    var groupView = new CombinationGroupView({ model: newGroup });
-    groupView.render().$el.insertAfter(
-      this.$('[data-position="' + --position + '"]'));
-    this.listenTo(groupView, 'added', this._addGroup);
-    this.listenTo(groupView, 'copied', this._copyGroup);
+    var rhs = this.model;
+    var rhsView = this;
+    newGroup.save(null,
+                  { wait: true,
+                    success: function(model, response, options) {
+                      rhs.get('groups').add(model);
+                      var groupView =
+                        new CombinationGroupView({ model: newGroup });
+                      groupView.render().$el.insertAfter(
+                        rhsView.$('[data-position="' + --position + '"]'));
+                      rhsView.listenTo(
+                        groupView, 'added', rhsView._addGroup);
+                      rhsView.listenTo(
+                        groupView, 'copied', rhsView._copyGroup);
+                      model.id = model.get('id');
+                      model.addStrings(outputStrings);
+                      model.addPartsTable(partsTable);
+                    }});
   },
 
 });

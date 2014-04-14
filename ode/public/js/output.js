@@ -247,24 +247,6 @@ var CombinationGroup = Backbone.Model.extend({
     return new CombinationGroup({ id: id }, { json: json });
   },
 
-  copy: function() {
-    var json = { outputStrings: [],
-                 partsTable: { slots: [] } }
-    var group = new CombinationGroup(
-      { position: this.get('position') + 1,
-        ruleID: this.get('ruleID') },
-      { json: json });
-    var outputStrings = this.get('outputStrings');
-    var partsTable = this.get('partsTable');
-    group.save(null, { wait: true,
-                       success: function(model, response, options) {
-                         model.id = model.get('id');
-                         model.addStrings(outputStrings);
-                         model.addPartsTable(partsTable);
-                       }});
-    return group;
-  },
-
   addStrings: function(strings) {
     var group = this;
     strings.each(function(os) {
@@ -427,6 +409,7 @@ var RHSView = Backbone.View.extend({
       var groupView = new CombinationGroupView({ model: group });
       this.$el.append(groupView.render().$el);
       this.listenTo(groupView, 'added', this._addGroup);
+      this.listenTo(groupView, 'copied', this._copyGroup);
     }, this);
   },
 
@@ -444,6 +427,31 @@ var RHSView = Backbone.View.extend({
     groupView.render().$el.insertAfter(
       this.$('[data-position="' + --position + '"]'));
     this.listenTo(groupView, 'added', this._addGroup);
+    this.listenTo(groupView, 'copied', this._copyGroup);
+  },
+
+  _copyGroup: function(existingGroup, newGroup) {
+    var position = newGroup.get('position');
+    var groupsToUpdate = this.model.get('groups').filter(function(g) {
+      return g.get('position') >= position;
+    });
+    _.each(groupsToUpdate, function(g) {
+      g.save({ position: g.get('position') + 1}, { wait: true });
+    });
+    var outputStrings = existingGroup.get('outputStrings');
+    var partsTable = existingGroup.get('partsTable');
+    newGroup.save(null, { wait: true,
+                          success: function(model, response, options) {
+                            model.id = model.get('id');
+                            model.addStrings(outputStrings);
+                            model.addPartsTable(partsTable);
+                       }});
+    this.model.get('groups').add(newGroup);
+    var groupView = new CombinationGroupView({ model: newGroup });
+    groupView.render().$el.insertAfter(
+      this.$('[data-position="' + --position + '"]'));
+    this.listenTo(groupView, 'added', this._addGroup);
+    this.listenTo(groupView, 'copied', this._copyGroup);
   },
 
 });
@@ -655,8 +663,13 @@ var CombinationGroupView = Backbone.View.extend({
       this.trigger('added', emptyGroup);
     },
     'click .copy-button': function(e) {
-      var groupCopy = this.model.copy();
-      this.trigger('added', groupCopy);
+      var json = { outputStrings: [],
+                   partsTable: { slots: [] } }
+      var groupCopy = new CombinationGroup(
+        { position: this.model.get('position') + 1,
+          ruleID: this.model.get('ruleID') },
+        { json: json });
+      this.trigger('copied', this.model, groupCopy);
     },
     'click .remove-button': function() {
       var groupView = this;

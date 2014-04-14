@@ -567,7 +567,7 @@ var CombinationGroupView = Backbone.View.extend({
         this.render();
       },
       'change:position': function() {
-        this.$el.data('position', this.model.get('position'));
+        this.$el.attr('data-position', this.model.get('position'));
         this._updateHeader();
       },
     }, this);

@@ -386,6 +386,15 @@ var Slot = Backbone.Model.extend({
 
 });
 
+var CrossRef = Backbone.Model.extend({
+
+  initialize: function() {
+    this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
+      this.get('groupID') + '/slots/' + this.get('slotID') + '/refs';
+  },
+
+});
+
 
 // Output: Views
 
@@ -915,17 +924,28 @@ var SlotView = Backbone.View.extend({
     'keyup .placeholder': function(e) {
       if (e.which === 13) {
         var slot = this.model;
-        var part = new Part({
-          content: $(e.currentTarget).text(),
-          ruleID: slot.get('ruleID'),
-          groupID: slot.get('groupID'),
-          slotID: slot.id,
-        });
-        part.save(null,
-                  { wait: true,
-                    success: function(model, response, options) {
-                      slot.add(part);
-                    }});
+        var text = $(e.currentTarget).text();
+        if (text.charAt(0) === '@') {
+          var crossRef = new CrossRef({
+            ruleName: text.substring(1),
+            ruleID: slot.get('ruleID'),
+            groupID: slot.get('groupID'),
+            slotID: slot.id,
+          });
+          crossRef.save(null, { wait: true });
+        } else {
+          var part = new Part({
+            content: text,
+            ruleID: slot.get('ruleID'),
+            groupID: slot.get('groupID'),
+            slotID: slot.id,
+          });
+          part.save(null,
+                    { wait: true,
+                      success: function(model, response, options) {
+                        slot.add(part);
+                      }});
+        }
       }
     },
     'keyup input': function(e) {

@@ -893,6 +893,7 @@ var SlotView = Backbone.View.extend({
       $(e.currentTarget).find('.remove-button').css('visibility', 'hidden');
     },
     'click .part > .remove-button': function(e) {
+      e.stopPropagation();
       var parts = this.model.get('parts');
       var part = parts.findWhere({
         content: $(e.currentTarget).parent().text()

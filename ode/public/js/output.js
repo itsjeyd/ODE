@@ -541,6 +541,7 @@ var CombinationGroupView = Backbone.View.extend({
     var small = $.small();
     small.append($.plusButton());
     small.append($.copyButton());
+    small.append($.removeButton());
     groupHeader.append(small);
     this.$el.append(groupHeader);
   },
@@ -610,6 +611,13 @@ var CombinationGroupView = Backbone.View.extend({
       var groupCopy = this.model.copy();
       var groupView = new CombinationGroupView({ model: groupCopy });
       groupView.render().$el.insertAfter(this.$el);
+    },
+    'click .remove-button': function() {
+      var groupView = this;
+      this.model.destroy({ wait: true,
+                           success: function(model, response, options) {
+                             groupView.remove();
+                           }});
     },
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);

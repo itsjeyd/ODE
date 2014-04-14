@@ -142,7 +142,7 @@ public class Slot extends LabeledNodeWithProperties {
 
     private Promise<Boolean> empty() {
         Promise<List<Part>> parts = this.getParts();
-        Promise<List<Boolean>> removed = parts.flatMap(
+        Promise<List<Boolean>> partsRemoved = parts.flatMap(
             new Function<List<Part>, Promise<List<Boolean>>>() {
                 public Promise<List<Boolean>> apply(List<Part> parts) {
                     List<Promise<? extends Boolean>> removed =
@@ -153,10 +153,28 @@ public class Slot extends LabeledNodeWithProperties {
                     return Promise.sequence(removed);
                 }
             });
-        return removed.map(
-            new Function<List<Boolean>, Boolean>() {
-                public Boolean apply(List<Boolean> removed) {
-                    for (Boolean r: removed) {
+        Promise<List<Rule>> refs = this.getRefs();
+        Promise<List<Boolean>> refsRemoved = refs.flatMap(
+            new Function<List<Rule>, Promise<List<Boolean>>>() {
+                public Promise<List<Boolean>> apply(List<Rule> refs) {
+                    List<Promise<? extends Boolean>> removed =
+                        new ArrayList<Promise<? extends Boolean>>();
+                    for (Rule ref: refs) {
+                        removed.add(Slot.this.removeRef(ref));
+                    }
+                    return Promise.sequence(removed);
+                }
+            });
+        return partsRemoved.zip(refsRemoved).map(
+            new Function<Tuple<List<Boolean>, List<Boolean>>, Boolean>() {
+                public Boolean apply(
+                    Tuple<List<Boolean>, List<Boolean>> removed) {
+                    for (Boolean r: removed._1) {
+                        if (!r) {
+                            return false;
+                        }
+                    }
+                    for (Boolean r: removed._2) {
                         if (!r) {
                             return false;
                         }

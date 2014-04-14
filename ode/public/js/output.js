@@ -462,7 +462,6 @@ var RHSView = Backbone.View.extend({
                         groupView, 'added', rhsView._addGroup);
                       rhsView.listenTo(
                         groupView, 'copied', rhsView._copyGroup);
-                      model.id = model.get('id');
                       model.addStrings(outputStrings);
                       model.addPartsTable(partsTable);
                     }});

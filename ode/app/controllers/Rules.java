@@ -454,14 +454,16 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addRef(
         String name, String groupID, String slotID) {
+        final ObjectNode result = Json.newObject();
         final Slot slot = Slot.of(UUID.fromString(slotID));
         JsonNode json = request().body().asJson();
         String ruleName = json.findPath("ruleName").textValue();
         Rule rule = new Rule(ruleName);
+        result.put("id", ruleName);
         Promise<Boolean> added = slot.addRef(rule);
         return added.map(new ResultFunction(
                              "Cross-reference successfully added.",
-                             "Cross-reference not added."));
+                             "Cross-reference not added.", result));
     }
 
     @Security.Authenticated(Secured.class)

@@ -391,6 +391,10 @@ var Slot = Backbone.Model.extend({
     this.get('parts').add(part);
   },
 
+  addRef: function(ref) {
+    this.get('refs').add(ref);
+  },
+
 });
 
 var CrossRef = Backbone.Model.extend({
@@ -841,6 +845,12 @@ var SlotView = Backbone.View.extend({
         this.render();
       },
     }, this);
+    this.model.get('refs').on({
+      'add': function() {
+        this.$el.empty();
+        this.render();
+      },
+    }, this);
     this.model.on({
       'change:position': this._updateHeader,
     }, this);
@@ -956,7 +966,13 @@ var SlotView = Backbone.View.extend({
             groupID: slot.get('groupID'),
             slotID: slot.id,
           });
-          crossRef.save(null, { wait: true });
+          crossRef.save(null, { wait: true,
+                                success: function(model, response, options) {
+                                  slot.addRef(model);
+                                },
+                                error: function(model, xhr, options) {
+                                  alert('Rule does not exist.');
+                                }});
         } else {
           var part = new Part({
             content: text,

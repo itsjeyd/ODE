@@ -387,6 +387,14 @@ var RHSView = Backbone.View.extend({
           g.save({ position: g.get('position') - 1}, { wait: true });
         });
       },
+      'add': function(newGroup) {
+        var groupView = new CombinationGroupView({ model: newGroup });
+        var prevPos = newGroup.get('position') - 1;
+        groupView.render().$el
+          .insertAfter(this.$('[data-position="' + prevPos + '"]'));
+        this.listenTo(groupView, 'added', this._addGroup);
+        this.listenTo(groupView, 'copied', this._copyGroup);
+      },
     }, this);
   },
 
@@ -407,20 +415,10 @@ var RHSView = Backbone.View.extend({
   _addGroup: function(newGroup) {
     this._updateGroups(newGroup);
     var rhs = this.model;
-    var rhsView = this;
     newGroup.save(null,
                   { wait: true,
                     success: function(model, response, options) {
                       rhs.get('groups').add(model);
-                      var groupView =
-                        new CombinationGroupView({ model: newGroup });
-                      var prevPos = model.get('position') - 1;
-                      groupView.render().$el.insertAfter(
-                        rhsView.$('[data-position="' + prevPos + '"]'));
-                      rhsView.listenTo(
-                        groupView, 'added', rhsView._addGroup);
-                      rhsView.listenTo(
-                        groupView, 'copied', rhsView._copyGroup);
                     }});
   },
 
@@ -429,20 +427,10 @@ var RHSView = Backbone.View.extend({
     var outputStrings = existingGroup.get('outputStrings');
     var partsTable = existingGroup.get('partsTable');
     var rhs = this.model;
-    var rhsView = this;
     newGroup.save(null,
                   { wait: true,
                     success: function(model, response, options) {
                       rhs.get('groups').add(model);
-                      var groupView =
-                        new CombinationGroupView({ model: newGroup });
-                      var prevPos = model.get('position') - 1;
-                      groupView.render().$el.insertAfter(
-                        rhsView.$('[data-position="' + prevPos + '"]'));
-                      rhsView.listenTo(
-                        groupView, 'added', rhsView._addGroup);
-                      rhsView.listenTo(
-                        groupView, 'copied', rhsView._copyGroup);
                       model.addStrings(outputStrings);
                       model.addPartsTable(partsTable);
                     }});

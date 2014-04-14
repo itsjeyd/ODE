@@ -156,7 +156,8 @@ var RHS = Backbone.Model.extend({
                                        { json: g });
       groups.push(group);
     }, this);
-    this.set('groups', new Backbone.Collection(groups));
+    this.set('groups', new Backbone.Collection(groups,
+                                               { comparator: 'position'}));
   },
 
 });
@@ -405,9 +406,15 @@ var RHSView = Backbone.View.extend({
   initialize: function() {
     this.model.get('groups').on({
       'remove': function(group) {
-        // ...
+        var position = group.get('position');
+        var groupsToUpdate = this.model.get('groups').filter(function(g) {
+          return g.get('position') > position;
+        });
+        _.each(groupsToUpdate, function(g) {
+          g.save({ position: g.get('position') - 1}, { wait: true });
+        });
       },
-    });
+    }, this);
   },
 
   render: function() {
@@ -535,12 +542,24 @@ var CombinationGroupView = Backbone.View.extend({
         this.$el.empty();
         this.render();
       },
+      'change:position': this._updateHeader,
     }, this);
     this.model.get('outputStrings').on({
       'remove': function(outputString) {
         outputString.trigger('remove');
       },
     }, this);
+  },
+
+  _updateHeader: function() {
+    this.$('h4').remove();
+    var groupHeader = $.h4('Group ' + this.model.get('position'));
+    var small = $.small();
+    small.append($.plusButton());
+    small.append($.copyButton());
+    small.append($.removeButton());
+    groupHeader.append(small);
+    groupHeader.insertBefore(this.$('.parts-table'));
   },
 
   render: function() {

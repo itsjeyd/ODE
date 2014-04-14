@@ -97,6 +97,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return CombinationGroupManager.create(this);
     }
 
+    public Promise<Boolean> update(int position) {
+        return CombinationGroupManager.update(this, position);
+    }
+
     public Promise<Boolean> connectTo(RHS embeddingRHS) {
         return new GroupRelationship(embeddingRHS, this).create();
     }

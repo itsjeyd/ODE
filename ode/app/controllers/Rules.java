@@ -339,6 +339,17 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateGroup(String name, String groupID) {
+        CombinationGroup group = CombinationGroup.of(groupID);
+        JsonNode json = request().body().asJson();
+        int position = json.findPath("position").intValue();
+        Promise<Boolean> updated = group.update(position);
+        return updated.map(new ResultFunction("Group successfully updated.",
+                                              "Group not updated."));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeGroup(String name, String groupID) {
         CombinationGroup group = CombinationGroup.of(groupID);
         Promise<Boolean> removed = new Rule(name).removeGroup(group);

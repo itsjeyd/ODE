@@ -228,6 +228,7 @@ var CombinationGroup = Backbone.Model.extend({
       'change:splitPoint': function(model) {
         this.get('outputStrings').get(model).destroy();
         this.get('partsTable').add(model);
+        this.trigger('update');
       },
     }, this);
   },

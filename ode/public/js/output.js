@@ -402,6 +402,14 @@ var Slot = Backbone.Model.extend({
 
 var RHSView = Backbone.View.extend({
 
+  initialize: function() {
+    this.model.get('groups').on({
+      'remove': function(group) {
+        // ...
+      },
+    });
+  },
+
   render: function() {
     this._renderGroups();
     return this;
@@ -411,7 +419,14 @@ var RHSView = Backbone.View.extend({
     this.model.get('groups').each(function(group) {
       var groupView = new CombinationGroupView({ model: group });
       this.$el.append(groupView.render().$el);
+      this.listenTo(groupView, 'added', this._addGroup);
     }, this);
+  },
+
+  _addGroup: function(group) {
+    this.model.get('groups').add(group);
+    var groupView = new CombinationGroupView({ model: group });
+    this.$el.append(groupView.render().$el);
   },
 
 });
@@ -602,15 +617,13 @@ var CombinationGroupView = Backbone.View.extend({
           ruleID: this.model.get('ruleID') },
         { json: json });
       emptyGroup.save(null, { wait: true });
-      var groupView = new CombinationGroupView({ model: emptyGroup });
-      this.$el.parent().append(groupView.render().$el);
+      this.trigger('added', emptyGroup);
     },
     'click .copy-button': function(e) {
       this.$('.plus-button').remove();
       $(e.currentTarget).remove();
       var groupCopy = this.model.copy();
-      var groupView = new CombinationGroupView({ model: groupCopy });
-      groupView.render().$el.insertAfter(this.$el);
+      this.trigger('added', groupCopy);
     },
     'click .remove-button': function() {
       var groupView = this;

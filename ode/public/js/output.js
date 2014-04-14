@@ -405,13 +405,7 @@ var RHSView = Backbone.View.extend({
   },
 
   _addGroup: function(newGroup) {
-    var position = newGroup.get('position');
-    var groupsToUpdate = this.model.get('groups').filter(function(g) {
-      return g.get('position') >= position;
-    });
-    _.each(groupsToUpdate, function(g) {
-      g.save({ position: g.get('position') + 1 }, { wait: true });
-    });
+    this._updateGroups(newGroup);
     var rhs = this.model;
     var rhsView = this;
     newGroup.save(null,
@@ -420,8 +414,9 @@ var RHSView = Backbone.View.extend({
                       rhs.get('groups').add(model);
                       var groupView =
                         new CombinationGroupView({ model: newGroup });
+                      var prevPos = model.get('position') - 1;
                       groupView.render().$el.insertAfter(
-                        rhsView.$('[data-position="' + --position + '"]'));
+                        rhsView.$('[data-position="' + prevPos + '"]'));
                       rhsView.listenTo(
                         groupView, 'added', rhsView._addGroup);
                       rhsView.listenTo(
@@ -430,13 +425,7 @@ var RHSView = Backbone.View.extend({
   },
 
   _copyGroup: function(existingGroup, newGroup) {
-    var position = newGroup.get('position');
-    var groupsToUpdate = this.model.get('groups').filter(function(g) {
-      return g.get('position') >= position;
-    });
-    _.each(groupsToUpdate, function(g) {
-      g.save({ position: g.get('position') + 1}, { wait: true });
-    });
+    this._updateGroups(newGroup);
     var outputStrings = existingGroup.get('outputStrings');
     var partsTable = existingGroup.get('partsTable');
     var rhs = this.model;
@@ -447,8 +436,9 @@ var RHSView = Backbone.View.extend({
                       rhs.get('groups').add(model);
                       var groupView =
                         new CombinationGroupView({ model: newGroup });
+                      var prevPos = model.get('position') - 1;
                       groupView.render().$el.insertAfter(
-                        rhsView.$('[data-position="' + --position + '"]'));
+                        rhsView.$('[data-position="' + prevPos + '"]'));
                       rhsView.listenTo(
                         groupView, 'added', rhsView._addGroup);
                       rhsView.listenTo(
@@ -456,6 +446,16 @@ var RHSView = Backbone.View.extend({
                       model.addStrings(outputStrings);
                       model.addPartsTable(partsTable);
                     }});
+  },
+
+  _updateGroups: function(newGroup) {
+    var position = newGroup.get('position');
+    var groupsToUpdate = this.model.get('groups').filter(function(g) {
+      return g.get('position') >= position;
+    });
+    _.each(groupsToUpdate, function(g) {
+      g.save({ position: g.get('position') + 1}, { wait: true });
+    });
   },
 
 });

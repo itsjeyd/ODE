@@ -158,6 +158,21 @@ var RHS = Backbone.Model.extend({
     }, this);
     this.set('groups', new Backbone.Collection(groups,
                                                { comparator: 'position'}));
+    if (this.get('groups').size() === 1) {
+      this.get('groups').at(0).set('last', true);
+    }
+    this.get('groups').on({
+      'add': function() {
+        if (this.get('groups').size() === 2) {
+          this.get('groups').findWhere({ last: true }).unset('last');
+        }
+      },
+      'remove': function() {
+        if (this.get('groups').size() === 1) {
+          this.get('groups').at(0).set('last', true);
+        }
+      },
+    }, this);
   },
 
 });
@@ -664,11 +679,15 @@ var CombinationGroupView = Backbone.View.extend({
       this.trigger('copied', this.model, groupCopy);
     },
     'click .remove-button': function() {
-      var groupView = this;
-      this.model.destroy({ wait: true,
-                           success: function(model, response, options) {
-                             groupView.remove();
-                           }});
+      if (this.model.has('last')) {
+        alert('You can not delete the last remaining group.');
+      } else {
+        var groupView = this;
+        this.model.destroy({ wait: true,
+                             success: function(model, response, options) {
+                               groupView.remove();
+                             }});
+      }
     },
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);

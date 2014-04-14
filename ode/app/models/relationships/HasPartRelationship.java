@@ -33,11 +33,14 @@ public class HasPartRelationship extends TypedRelationship {
                 public List<Part> apply(List<JsonNode> partNodes) {
                     List<Part> parts = new ArrayList<Part>();
                     for (JsonNode partNode: partNodes) {
-                        String uuid = partNode.findValue("uuid").asText();
-                        String content = partNode
-                            .findValue("content").asText();
-                        Part part = Part.of(UUID.fromString(uuid), content);
-                        parts.add(part);
+                        if (!partNode.has("name")) {
+                            String uuid = partNode.findValue("uuid").asText();
+                            String content = partNode
+                                .findValue("content").asText();
+                            Part part =
+                                Part.of(UUID.fromString(uuid), content);
+                            parts.add(part);
+                        }
                     }
                     return parts;
                 }

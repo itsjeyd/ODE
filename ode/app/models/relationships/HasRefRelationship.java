@@ -1,5 +1,11 @@
 package models.relationships;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.UUID;
+
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -17,6 +23,26 @@ public class HasRefRelationship extends TypedRelationship {
 
     public Promise<Boolean> create() {
         return this.exists().flatMap(new CreateFunction());
+    }
+
+    public static Promise<List<Rule>> getEndNodes(final Slot startNode) {
+        Promise<List<JsonNode>> endNodes = HasRefRelationshipManager
+            .getEndNodes(startNode);
+        return endNodes.map(
+            new Function<List<JsonNode>, List<Rule>>() {
+                public List<Rule> apply(List<JsonNode> ruleNodes) {
+                    List<Rule> rules = new ArrayList<Rule>();
+                    for (JsonNode ruleNode: ruleNodes) {
+                        if (!ruleNode.has("content")) {
+                            String name = ruleNode
+                                .findValue("name").asText();
+                            Rule rule = new Rule(name);
+                            rules.add(rule);
+                        }
+                    }
+                    return rules;
+                }
+            });
     }
 
     private class CreateFunction implements

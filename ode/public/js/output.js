@@ -978,7 +978,9 @@ var SlotView = Backbone.View.extend({
                                   slot.addRef(model);
                                 },
                                 error: function(model, xhr, options) {
-                                  alert('Rule does not exist.');
+                                  var response =
+                                    $.parseJSON(xhr.responseText);
+                                  alert(response.message);
                                 }});
         } else {
           var part = new Part({

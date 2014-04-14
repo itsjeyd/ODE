@@ -228,9 +228,16 @@ var CombinationGroup = Backbone.Model.extend({
                             groupID: this.id,
                             slotID: s.uuid });
         }, this);
+        var refs = _.map(s.refs, function(r) {
+          return new CrossRef({ id: r,
+                                ruleID: this.get('ruleID'),
+                                groupID: this.id,
+                                slotID: s.uuid });
+        }, this);
         return new Slot({ id: s.uuid,
                           position: s.position,
                           parts: new Backbone.Collection(parts),
+                          refs: new Backbone.Collection(refs),
                           ruleID: this.get('ruleID'),
                           groupID: this.id });
       }, this);
@@ -847,6 +854,7 @@ var SlotView = Backbone.View.extend({
     this._renderHeader();
     this._renderLine();
     this._renderParts();
+    this._renderRefs();
     this._renderPlaceholder();
     return this;
   },
@@ -866,6 +874,16 @@ var SlotView = Backbone.View.extend({
       var part = $.div('part').text(p.get("content"));
       part.append($.removeButton().css('visibility', 'hidden'));
       this.$el.append(part);
+    }, this);
+  },
+
+  _renderRefs: function() {
+    this.model.get('refs').each(function(r) {
+      var link = $('<a>').attr('href', '/rules/' + r.id + '/output')
+        .text('@' + r.id);
+      var ref = $.div('ref').html(link);
+      ref.append($.removeButton().css('visibility', 'hidden'));
+      this.$el.append(ref);
     }, this);
   },
 
@@ -910,6 +928,12 @@ var SlotView = Backbone.View.extend({
       part.destroy({ wait: true });
     },
     'dblclick .part': '_renderEditControls',
+    'mouseenter .ref': function(e) {
+      $(e.currentTarget).find('.remove-button').css('visibility', 'visible');
+    },
+    'mouseleave .ref': function(e) {
+      $(e.currentTarget).find('.remove-button').css('visibility', 'hidden');
+    },
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);
       if (inputField.text() === '...') {

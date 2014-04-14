@@ -102,7 +102,6 @@ public class CombinationGroup extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> removeFrom(RHS embeddingRHS) {
-        // - Delete ...
         Promise<Boolean> disconnected = GroupRelationship
             .delete(embeddingRHS, this);
         return disconnected.flatMap(

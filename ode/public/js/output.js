@@ -846,7 +846,7 @@ var SlotView = Backbone.View.extend({
       },
     }, this);
     this.model.get('refs').on({
-      'add': function() {
+      'add remove': function() {
         this.$el.empty();
         this.render();
       },
@@ -943,6 +943,13 @@ var SlotView = Backbone.View.extend({
     },
     'mouseleave .ref': function(e) {
       $(e.currentTarget).find('.remove-button').css('visibility', 'hidden');
+    },
+    'click .ref > .remove-button': function(e) {
+      e.stopPropagation();
+      var refs = this.model.get('refs');
+      var ref = refs.get(
+        $(e.currentTarget).prev().text().substring(1));
+      ref.destroy({ wait: true });
     },
     'click .placeholder': function(e) {
       var inputField = $(e.currentTarget);

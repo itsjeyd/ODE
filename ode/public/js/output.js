@@ -476,6 +476,7 @@ var RHSView = Backbone.View.extend({
     newGroup.save(null,
                   { wait: true,
                     success: function(model, response, options) {
+                      model.get('partsTable').set('groupID', model.id);
                       rhs.get('groups').add(model);
                     }});
   },
@@ -488,6 +489,7 @@ var RHSView = Backbone.View.extend({
     newGroup.save(null,
                   { wait: true,
                     success: function(model, response, options) {
+                      model.get('partsTable').set('groupID', model.id);
                       rhs.get('groups').add(model);
                       model.addStrings(outputStrings);
                       model.addPartsTable(partsTable);

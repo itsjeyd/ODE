@@ -238,15 +238,6 @@ var CombinationGroup = Backbone.Model.extend({
     this.get('outputStrings').push(outputString);
   },
 
-  create: function(id) {
-    var json = {
-      'outputStrings': [],
-      'partsTable': { 'slots': [ { 'parts': [] },
-                                 { 'parts': [] } ] },
-    };
-    return new CombinationGroup({ id: id }, { json: json });
-  },
-
   addStrings: function(strings) {
     var group = this;
     strings.each(function(os) {

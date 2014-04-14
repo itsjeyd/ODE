@@ -172,6 +172,9 @@ var RHS = Backbone.Model.extend({
           this.get('groups').at(0).set('last', true);
         }
       },
+      'new:part': function(part) {
+        this.trigger('new:part', part);
+      },
     }, this);
   },
 
@@ -254,6 +257,11 @@ var CombinationGroup = Backbone.Model.extend({
         this.trigger('update');
       },
     }, this);
+    this.get('partsTable').on({
+      'new:part': function(part) {
+        this.trigger('new:part', part);
+      },
+    }, this);
   },
 
   addOutputString: function(outputString) {
@@ -315,6 +323,14 @@ var CombinationGroup = Backbone.Model.extend({
 });
 
 var PartsTable = Backbone.Model.extend({
+
+  initialize: function() {
+    this.get('slots').on({
+      'new:part': function(part) {
+        this.trigger('new:part', part);
+      },
+    }, this);
+  },
 
   add: function(outputString) {
     if (this.get('slots').size() === 0) {
@@ -387,6 +403,11 @@ var Slot = Backbone.Model.extend({
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
       this.get('groupID') + '/slots';
+    this.get('parts').on({
+      'add': function(part) {
+        this.trigger('new:part', part);
+      },
+    }, this);
   },
 
   add: function(part) {
@@ -1034,6 +1055,14 @@ var SlotView = Backbone.View.extend({
 
 var PartsInventoryView = Backbone.View.extend({
 
+  initialize: function() {
+    this.collection.on({
+      'add': function(part) {
+        this._renderPart(part)
+      },
+    }, this);
+  },
+
   render: function() {
     this.$el.empty();
     this.collection.each(this._renderPart, this);
@@ -1126,6 +1155,12 @@ $(document).ready(function() {
     el: '#interaction-block',
   });
   ruleView.render();
+
+  partsInventory.listenTo(rhs, 'new:part', function(part) {
+    if (!this.findWhere({ content: part.get('content') })) {
+      this.add(part);
+    }
+  });
 
   // Header
 

@@ -149,10 +149,9 @@ var RHS = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     var groups = [];
-    var pos = 1;
     _.each(options.json.groups, function(g) {
       var group = new CombinationGroup({ id: g.uuid,
-                                         position: pos++,
+                                         position: g.position,
                                          ruleID: this.get('ruleID') },
                                        { json: g });
       groups.push(group);

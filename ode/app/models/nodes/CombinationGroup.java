@@ -38,6 +38,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return new CombinationGroup(UUID.fromString(groupID));
     }
 
+    public static CombinationGroup of(String groupID, int position) {
+        return new CombinationGroup(UUID.fromString(groupID), position);
+    }
+
     private Promise<List<OutputString>> getStrings() {
         return HasStringRelationship.getEndNodes(this);
     }

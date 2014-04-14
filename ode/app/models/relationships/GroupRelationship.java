@@ -37,8 +37,10 @@ public class GroupRelationship extends TypedRelationship {
                         new ArrayList<CombinationGroup>();
                     for (JsonNode groupNode: groupNodes) {
                         String uuid = groupNode.findValue("uuid").asText();
+                        int position =
+                            groupNode.findValue("position").asInt();
                         CombinationGroup group =
-                            CombinationGroup.of(uuid);
+                            CombinationGroup.of(uuid, position);
                         groups.add(group);
                     }
                     return groups;

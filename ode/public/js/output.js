@@ -434,6 +434,7 @@ var RHSView = Backbone.View.extend({
     this.model.get('groups').add(group);
     var groupView = new CombinationGroupView({ model: group });
     this.$el.append(groupView.render().$el);
+    this.listenTo(groupView, 'added', this._addGroup);
   },
 
 });

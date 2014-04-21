@@ -889,9 +889,11 @@ var PartsTableView = Backbone.View.extend({
         });
       },
       'add': function(slot) {
+        this.$('.controls').remove();
         var slots = this.$('.slots');
         var slotView = new SlotView({ model: slot });
-        slotView.render().$el.insertBefore(slots.find('.controls'));
+        slots.append(slotView.render().$el);
+        this._renderControls();
         slots.show();
       },
     }, this);

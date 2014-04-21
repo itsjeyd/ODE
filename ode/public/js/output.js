@@ -158,6 +158,72 @@ var RuleView = Backbone.View.extend({
 
 });
 
+// Input: Models
+
+var AbbreviatedLHS = Backbone.Model.extend({
+
+  initialize: function(attrs, options) {
+    var pairs = [];
+    _.each(options.json.pairs, function(p) {
+      var pair = new AbbreviatedPair({ attribute: p.attribute.name });
+      if (p.attribute.type === 'atomic') {
+        pair.set('value', p.value);
+      } else {
+        pair.set('value', '[...]');
+      }
+      pairs.push(pair);
+    });
+    this.set('pairs', new Backbone.Collection(pairs));
+  },
+
+});
+
+var AbbreviatedPair = Backbone.Model.extend({});
+
+
+// Input: Views
+
+var AbbreviatedLHSView = Backbone.View.extend({
+
+  render: function() {
+    this._renderContent();
+    return this;
+  },
+
+  _renderContent: function() {
+    var content = $.div('content');
+    this.model.get('pairs').each(function(pair) {
+      content.append(this._renderPair(pair));
+    }, this);
+    this.$el.append(content);
+  },
+
+  _renderPair: function(pair) {
+    return new AbbreviatedPairView({ model: pair }).render().$el;
+  },
+
+});
+
+var AbbreviatedPairView = Backbone.View.extend({
+
+  render: function() {
+    this._renderAttr();
+    this._renderValue();
+    return this;
+  },
+
+  _renderAttr: function() {
+    var attr = $.span('attribute').text(this.model.get('attribute'));
+    this.$el.append(attr);
+  },
+
+  _renderValue: function() {
+    var val = $.span('value').text(this.model.get('value'));
+    this.$el.append(val);
+  },
+
+});
+
 
 // Output: Models
 
@@ -1234,6 +1300,14 @@ $(document).ready(function() {
   });
 
   // Output Builder
+
+  var lhsJSON = $('#rule-lhs').data('json');
+  var lhs = new AbbreviatedLHS(null, { json: lhsJSON });
+  var lhsView = new AbbreviatedLHSView({
+    model: lhs,
+    el: '#rule-lhs',
+  });
+  lhsView.render();
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();

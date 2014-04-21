@@ -2,6 +2,10 @@
     cursor: pointer;
 }
 
+.value {
+    float: right;
+}
+
 input.name,
 input.description {
     margin-top: 20px; /* Equal to margin-top of Bootstrap <h3> */

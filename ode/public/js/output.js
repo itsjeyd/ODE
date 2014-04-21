@@ -58,6 +58,7 @@ var RuleView = Backbone.View.extend({
     this.$el.append($.p('').attr('id', 'rule-description'));
     this.$el.append($.div().attr('id', 'rule-rhs'));
     this._renderName();
+    this._renderOutputButton();
     this._renderDescription();
     this._renderRHS();
     return this;
@@ -65,6 +66,12 @@ var RuleView = Backbone.View.extend({
 
   _renderName: function() {
     this.$('#rule-name').text('@' + this.model.get('name'));
+  },
+
+  _renderOutputButton: function() {
+    var successButton = $.successButton('Show output')
+      .addClass('pull-right output-button');
+    this.$('#rule-name').append(successButton);
   },
 
   _renderDescription: function() {
@@ -99,6 +106,9 @@ var RuleView = Backbone.View.extend({
     },
     'click button.description': function() {
       this._saveEdits('description')(this)
+    },
+    'click .output-button': function() {
+      var output = this.model.get('rhs').compileOutput();
     },
   },
 
@@ -178,6 +188,14 @@ var RHS = Backbone.Model.extend({
     }, this);
   },
 
+  compileOutput: function() {
+    var output = [];
+    this.get('groups').each(function(g) {
+      output = output.concat(g.compileOutput());
+    });
+    return output;
+  },
+
 });
 
 var Part = Backbone.Model.extend({
@@ -219,6 +237,7 @@ var CombinationGroup = Backbone.Model.extend({
       var outputStrings = _.map(options.json.outputStrings, function(os) {
         return new OutputString({ id: os.uuid,
                                   tokens: os.tokens,
+                                  content: os.content,
                                   ruleID: this.get('ruleID'),
                                   groupID: this.id });
       }, this);
@@ -320,6 +339,12 @@ var CombinationGroup = Backbone.Model.extend({
     this.set('partsTable', partsTableCopy);
   },
 
+  compileOutput: function() {
+    return this.get('outputStrings').map(function(os) {
+      return os.get('content');
+    }).concat(this.get('partsTable').getFullStrings());
+  },
+
 });
 
 var PartsTable = Backbone.Model.extend({
@@ -394,6 +419,62 @@ var PartsTable = Backbone.Model.extend({
 
   hasOptionalSlots: function() {
     return this.get('slots').size() > 2;
+  },
+
+  getFullStrings: function() {
+    var parts = this.get('slots').map(function(s) {
+      return s.get('parts').map(function(p) {
+        return p.get('content');
+      });
+    });
+    return this._cart(parts);
+  },
+
+  _cart: function(parts) {
+    if (parts.length === 0) {
+      return [];
+    } else if (parts.length === 1) {
+      return parts.pop();
+    } else if (parts.length === 2) {
+      return this._combineSlots(parts[0], parts[1]);
+    } else {
+      var intermediateResult = this._combineSlots(parts[0], parts[1]);
+      var remainingSlots = parts.slice(2);
+      return this._cart([intermediateResult].concat(remainingSlots));
+    }
+  },
+
+  _combineSlots: function(slot1, slot2) {
+    var partsTable = this;
+    var acc = function(a, b, result) {
+      if (a.length === 0) {
+        return result
+      } else {
+        var intermediateResult = partsTable._combineStrings(a[0], b);
+        return acc(a.slice(1), b, result.concat(intermediateResult));
+      }
+    };
+    if (slot1.length === 0 && slot2.length === 0) {
+      return [];
+    } else {
+      return acc(slot1, slot2, []);
+    }
+  },
+
+  _combineStrings: function(string, slot) {
+    var acc = function(str, slt, result) {
+      if (slt.length === 0) {
+        return result
+      } else {
+        var concatenatedString = str + ' ' + slt[0];
+        return acc(str, slt.slice(1), result.concat([concatenatedString]));
+      }
+    }
+    if (slot.length === 0) {
+      return [str];
+    } else {
+      return acc(string, slot, []);
+    }
   },
 
 });

@@ -937,7 +937,6 @@ var PartsTableView = Backbone.View.extend({
   },
 
   _addSlot: function() {
-    this.$('.controls').remove();
     var position = this.model.get('slots').size() + 1;
     var slot = new Slot({ position: position,
                           parts: new Backbone.Collection([]),
@@ -946,14 +945,10 @@ var PartsTableView = Backbone.View.extend({
                           groupID: this.model.get('groupID'),
                         });
     var partsTable = this.model;
-    var partsTableView = this;
     slot.save(null,
               { wait: true,
                 success: function(model, response, options) {
                   partsTable.get('slots').add(slot);
-                  var slotView = new SlotView({ model: slot });
-                  partsTableView.$('.slots').append(slotView.render().$el);
-                  partsTableView._renderControls();
                 }});
 },
 

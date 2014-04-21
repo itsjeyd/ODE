@@ -185,6 +185,12 @@ var AbbreviatedPair = Backbone.Model.extend({});
 
 var AbbreviatedLHSView = Backbone.View.extend({
 
+  initialize: function() {
+    this.on({
+      'rendered': this._renderBrackets,
+    });
+  },
+
   render: function() {
     this._renderContent();
     return this;
@@ -200,6 +206,20 @@ var AbbreviatedLHSView = Backbone.View.extend({
 
   _renderPair: function(pair) {
     return new AbbreviatedPairView({ model: pair }).render().$el;
+  },
+
+  _renderBrackets: function() {
+    var leftBracket = this._makeBracket('left');
+    var rightBracket = this._makeBracket('right');
+    var h = this.$('.content').height();
+    leftBracket.insertBefore(this.$('.content'));
+    rightBracket.insertAfter(this.$('.content'));
+    leftBracket.height(h);
+    rightBracket.height(h);
+  },
+
+  _makeBracket: function(type) {
+    return $.div('bracket bracket-' + type);
   },
 
 });
@@ -1308,6 +1328,7 @@ $(document).ready(function() {
     el: '#rule-lhs',
   });
   lhsView.render();
+  lhsView.trigger('rendered');
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();

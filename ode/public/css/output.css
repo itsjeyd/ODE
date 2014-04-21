@@ -2,7 +2,28 @@
     cursor: pointer;
 }
 
+.bracket {
+    display: inline-block;
+    width: 10px;
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+}
+
+.bracket-left {
+    border-left: 3px solid black;
+}
+
+.bracket-right {
+    border-right: 3px solid black;
+}
+
+.content {
+    display: inline-block;
+    vertical-align: top;
+}
+
 .value {
+    margin-left: 15px;
     float: right;
 }
 

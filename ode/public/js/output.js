@@ -365,20 +365,18 @@ var PartsTable = Backbone.Model.extend({
 
   add: function(outputString) {
     if (this.get('slots').size() === 0) {
-      var added = this._addDefaultSlots();
-      if (added) {
-        this._addParts(outputString);
-      }
+      var tokens = outputString.get('tokens');
+      var splitPoint = outputString.get('splitPoint');
+      var leftTokens = tokens.slice(0, splitPoint).join(' ');
+      var rightTokens = tokens.slice(splitPoint).join(' ');
+      this._makeSlot(1, leftTokens);
+      this._makeSlot(2, rightTokens);
     } else {
       this._addParts(outputString);
     }
   },
 
-  _addDefaultSlots: function() {
-    return this._makeSlot(1) && this._makeSlot(2);
-  },
-
-  _makeSlot: function(position) {
+  _makeSlot: function(position, tokens) {
     var slot = new Slot({ position: position,
                           parts: new Backbone.Collection([]),
                           refs: new Backbone.Collection([]),
@@ -389,7 +387,15 @@ var PartsTable = Backbone.Model.extend({
     return slot.save(null,
                      { wait: true,
                        success: function(model, response, options) {
-                         partsTable.get('slots').add(slot);
+                         partsTable.get('slots').add(model);
+                         var part = partsTable._makePart(tokens, model);
+                         var createdSlot = model;
+                         part.save(null,
+                                   { wait: true,
+                                     success: function(
+                                       model, response, options) {
+                                       createdSlot.add(model);
+                                     }});
                        }});
   },
 

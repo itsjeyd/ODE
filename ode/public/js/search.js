@@ -9,7 +9,13 @@ var SearchTarget = Backbone.Model.extend({
 
   addFeatures: function(names) {
     _.each(names, function(n) {
-      this.get('features').add(new Feature({ name: n }));
+      if (n.match(/^<.+>.*/i)) {
+        var name = n.slice(1, n.indexOf('>'));
+        var value = n.slice(n.indexOf('>') + 1);
+        this.get('features').add(new Feature({ name: name, value: value }));
+      } else {
+        this.get('features').add(new Feature({ name: n }));
+      }
     }, this);
   },
 

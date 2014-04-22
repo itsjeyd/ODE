@@ -59,10 +59,21 @@ var String = Backbone.Model.extend({});
 var SearchTargetView = Backbone.View.extend({
 
   initialize: function() {
+    this.on({
+      'emptysearch': this._showWarningMsg,
+    });
     this.model.on({
       'found': this._showResults,
       'notfound': this._showErrorMsg,
     }, this);
+  },
+
+  _showWarningMsg: function() {
+    var results = this.$('#results');
+    results.empty();
+    results.append(
+      $.span('text-warning warning-msg')
+        .text('Please enter at least one search term.'));
   },
 
   _showResults: function() {
@@ -111,17 +122,24 @@ var SearchTargetView = Backbone.View.extend({
   },
 
   _performSearch: function() {
-    this.model.reset();
     var searchFeatures = this._getSearchParams('#features');
-    this.model.addFeatures(searchFeatures);
     var searchStrings = this._getSearchParams('#strings');
-    this.model.addStrings(searchStrings);
-    this.model.search();
+    if (searchFeatures.length > 0 || searchStrings.length > 0) {
+      this.model.reset();
+      this.model.addFeatures(searchFeatures);
+      this.model.addStrings(searchStrings);
+      this.model.search();
+    } else {
+      this.trigger('emptysearch');
+    }
   },
 
   _getSearchParams: function(blockID) {
-    return _.map(this.$(blockID).find('input'), function(field) {
+    var searchParams = _.map(this.$(blockID).find('input'), function(field) {
       return $(field).val();
+    });
+    return _.filter(searchParams, function(p) {
+      return p.length > 0;
     });
   },
 

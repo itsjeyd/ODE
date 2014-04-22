@@ -11,7 +11,7 @@ public class Search extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result search() {
-        return ok(search.render("Hi! This is Ode's Search Interface."));
+        return ok(search.render());
     }
 
 }

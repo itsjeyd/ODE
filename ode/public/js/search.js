@@ -31,7 +31,16 @@ var SearchTarget = Backbone.Model.extend({
   },
 
   search: function() {
-    alert('Pretending to do some serious searching ...');
+    this.fetch({
+      url: '/search',
+      method: 'POST',
+      success: function(model, response, options) {
+        model.trigger('found');
+      },
+      error: function(model, response, options) {
+        model.trigger('notfound');
+      },
+    });
   },
 
 });

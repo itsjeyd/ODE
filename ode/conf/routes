@@ -41,6 +41,7 @@ DELETE  /rules/:name                                      controllers.Rules.dele
 
 # Search
 GET     /search                         controllers.Search.search()
+POST    /search                         controllers.Search.doSearch()
 
 # Features
 GET     /features                       controllers.Features.list()

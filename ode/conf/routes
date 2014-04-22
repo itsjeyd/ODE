@@ -40,7 +40,7 @@ DELETE  /rules/:name/groups/:gid/slots/:slid/refs/:rid    controllers.Rules.remo
 DELETE  /rules/:name                                      controllers.Rules.delete(name: String)
 
 # Search
-GET     /search                         controllers.Application.search()
+GET     /search                         controllers.Search.search()
 
 # Features
 GET     /features                       controllers.Features.list()

@@ -27,11 +27,6 @@ public class Application extends Controller {
         return redirect(routes.Application.login());
     }
 
-    @Security.Authenticated(Secured.class)
-    public static Result search() {
-        return ok(search.render("Hi! This is Ode's Search Interface."));
-    }
-
     // Forms
 
     public static class Login {

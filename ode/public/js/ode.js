@@ -105,6 +105,10 @@ jQuery.p = function(text) {
   return $('<p>').text(text);
 }
 
+jQuery.a = function(target, text) {
+  return $('<a>').attr('href', target).text(text);
+}
+
 jQuery.form = function() {
   return $('<form>').attr('role', 'form');
 }
@@ -193,4 +197,28 @@ jQuery.removeButton = function(target) {
 
 jQuery.emptyButton = function() {
   return $('<span>').addClass('glyphicon glyphicon-unchecked empty-button');
+}
+
+jQuery.table = function() {
+  return $('<table>').addClass('table');
+}
+
+jQuery.thead = function() {
+  return $('<thead>').html($.tr());
+}
+
+jQuery.tr = function() {
+  return $('<tr>');
+}
+
+jQuery.th = function() {
+  return $('<th>');
+}
+
+jQuery.tbody = function() {
+  return $('<tbody>');
+}
+
+jQuery.td = function() {
+  return $('<td>');
 }

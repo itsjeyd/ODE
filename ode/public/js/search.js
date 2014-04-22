@@ -58,6 +58,31 @@ var String = Backbone.Model.extend({});
 
 var SearchTargetView = Backbone.View.extend({
 
+  initialize: function() {
+    this.model.on({
+      'found': this._showResults,
+      'notfound': this._showErrorMsg,
+    }, this);
+  },
+
+  _showResults: function() {
+    var results = this.$('#results');
+    results.empty();
+    var resultView = new ResultView({
+      model: this.model,
+      el: results,
+    });
+    resultView.render();
+  },
+
+  _showErrorMsg: function() {
+    var results = this.$('#results');
+    results.empty();
+    results.append(
+      $.span('text-danger error-msg')
+        .text('There are no rules matching the search terms you entered.'));
+  },
+
   render: function() {
     this._addFeatureField();
     this._addStringField();
@@ -101,6 +126,38 @@ var SearchTargetView = Backbone.View.extend({
   },
 
 });
+
+var ResultView = Backbone.View.extend({
+
+  render: function() {
+    var table = $.table();
+    table.append(this._makeTableHeader());
+    table.append(this._makeTableBody());
+    this.$el.append(table);
+    return this;
+  },
+
+  _makeTableHeader: function() {
+    var thead = $.thead();
+    thead.append($.th().text('Rule'));
+    thead.append($.th().text('Description'));
+    return thead;
+  },
+
+  _makeTableBody: function() {
+    var tbody = $.tbody();
+    _.each(this.model.get('matchingRules'), function(r) {
+      var tr = $.tr();
+      tr.append($.td().html($.a('rules/' + r.name, r.name)));
+      tr.append($.td().text(r.description));
+      tbody.append(tr);
+    });
+    return tbody;
+  },
+
+});
+
+
 
 // Application
 

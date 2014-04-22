@@ -7,6 +7,22 @@ var SearchTarget = Backbone.Model.extend({
     strings: new Backbone.Collection([]),
   },
 
+  addFeatures: function(names) {
+    _.each(names, function(n) {
+      this.get('features').add(new Feature({ name: n }));
+    }, this);
+  },
+
+  addStrings: function(strings) {
+    _.each(strings, function(s) {
+      this.get('strings').add(new String({ content: s }));
+    }, this);
+  },
+
+  search: function() {
+    alert('Pretending to do some serious searching ...');
+  },
+
 });
 
 var Feature = Backbone.Model.extend({
@@ -14,6 +30,9 @@ var Feature = Backbone.Model.extend({
   defaults: { value: '' }
 
 });
+
+var String = Backbone.Model.extend({});
+
 
 // Views
 
@@ -40,6 +59,24 @@ var SearchTargetView = Backbone.View.extend({
     var controls = $.div('controls col-md-1');
     controls.append($.plusButton());
     this.$(blockID).append(controls);
+  },
+
+  events: {
+    'click #search-button': '_performSearch',
+  },
+
+  _performSearch: function() {
+    var searchFeatures = this._getSearchParams('#features');
+    this.model.addFeatures(searchFeatures);
+    var searchStrings = this._getSearchParams('#strings');
+    this.model.addStrings(searchStrings);
+    this.model.search();
+  },
+
+  _getSearchParams: function(blockID) {
+    return _.map(this.$(blockID).find('input'), function(field) {
+      return $(field).val();
+    });
   },
 
 });

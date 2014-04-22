@@ -110,7 +110,13 @@ var SearchTargetView = Backbone.View.extend({
 
   _addSearchField: function(blockID) {
     var searchField = $.div('search-field col-md-11');
-    searchField.append($.textInput());
+    var textInput = $.textInput();
+    if (blockID === '#features') {
+      textInput.attr( 'placeholder', 'Enter feature ...');
+    } else {
+      textInput.attr('placeholder', 'Enter output string ...');
+    }
+    searchField.append(textInput);
     this.$(blockID).append(searchField);
     var controls = $.div('controls col-md-1');
     controls.append($.plusButton());

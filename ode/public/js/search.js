@@ -7,6 +7,11 @@ var SearchTarget = Backbone.Model.extend({
     strings: new Backbone.Collection([]),
   },
 
+  reset: function() {
+    this.get('features').reset();
+    this.get('strings').reset();
+  },
+
   addFeatures: function(names) {
     _.each(names, function(n) {
       if (n.match(/^<.+>.*/i)) {
@@ -72,6 +77,7 @@ var SearchTargetView = Backbone.View.extend({
   },
 
   _performSearch: function() {
+    this.model.reset();
     var searchFeatures = this._getSearchParams('#features');
     this.model.addFeatures(searchFeatures);
     var searchStrings = this._getSearchParams('#strings');

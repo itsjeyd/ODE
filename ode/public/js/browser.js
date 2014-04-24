@@ -84,7 +84,7 @@ var RuleListView = Backbone.View.extend({
     $(e.currentTarget).find('.controls').remove() },
 
   _goEdit: function(e) {
-    var ruleID = $(e.currentTarget).parents('.rule-item').attr('id')
+    var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
     window.location.href = this.collection.get(ruleID).url() + '/input';
   },
 

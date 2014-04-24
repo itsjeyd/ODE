@@ -42,7 +42,71 @@ var RHS = Backbone.Collection.extend({});
 
 // Views
 
-var AVMView = Backbone.View.extend({});
+var AVMView = Backbone.View.extend({
+
+  className: 'avm',
+
+  render: function() {
+    this._renderContent();
+    return this;
+  },
+
+  _renderContent: function() {
+    var content = $.div('content');
+    this.collection.each(function(pair) {
+      content.append(this._makePair(pair));
+    }, this);
+    this.$el.append(content);
+  },
+
+  _makePair: function(pair) {
+    return new PairView({ model: pair, parentView: this }).render().$el;
+  },
+
+});
+
+var PairView = Backbone.View.extend({
+
+  className: 'pair',
+
+  initialize: function(options) {
+    this.parentView = options.parentView;
+  },
+
+  render: function() {
+    this._renderAttr();
+    this._renderVal();
+    return this;
+  },
+
+  _renderAttr: function() {
+    var name = this.model.get('attribute').get('name');
+    var attr = $.span('attribute').text(name);
+    this.$el.append(attr);
+  },
+
+  _renderVal: function() {
+    if (this.model.get('attribute').get('type') === 'complex') {
+      this._renderSubstructure();
+    } else {
+      this._renderValue();
+    }
+  },
+
+  _renderSubstructure: function() {
+    var value = $.div('value');
+    var avmView = new AVMView({ collection: this.model.get('value'),
+                                parentView: this });
+    value.append(avmView.render().$el);
+    this.$el.append(value);
+  },
+
+  _renderValue: function() {
+    var value = $.span('value').text(this.model.get('value'));
+    this.$el.append(value);
+  },
+
+});
 
 var RHSView = Backbone.View.extend({});
 

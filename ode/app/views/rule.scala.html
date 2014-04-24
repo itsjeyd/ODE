@@ -1,5 +1,30 @@
-@(message: String)
+@(rule: nodes.Rule)
 
 @main("Ode: Rule Details") {
-  @message
+
+  <div class="container-full">
+
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <h2>
+          @@@rule.name
+          <small>@rule.description</small>
+        </h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div id="lhs" data-json="@rule.lhs.json"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div id="rhs" data-json="@rule.rhs.json"></div>
+      </div>
+    </div>
+
+  </div>
+
 }

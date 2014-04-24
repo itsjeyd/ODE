@@ -44,8 +44,14 @@ public class Rules extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result rule(String name) {
-        return ok(rule.render("Hi! You are looking at rule " + name + "."));
+    public static Promise<Result> rule(String name) {
+        Promise<Rule> requestedRule = new Rule(name).get();
+        return requestedRule.map(
+            new Function<Rule, Result>() {
+                public Result apply(Rule requestedRule) {
+                    return ok(rule.render(requestedRule));
+                }
+            });
     }
 
     @Security.Authenticated(Secured.class)

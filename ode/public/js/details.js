@@ -66,7 +66,8 @@ var AVMView = Backbone.View.extend({
   _renderBrackets: function() {
     var leftBracket = this._makeBracket('left');
     var rightBracket = this._makeBracket('right');
-    var h = this.$el.children('.content').height() || 14;
+    var h = this.$el.children('.content').height() ||
+      this.$el.children('.content').css('font-size');
     leftBracket.insertBefore(this.$el.children('.content'));
     rightBracket.insertAfter(this.$el.children('.content'));
     leftBracket.height(h);

@@ -204,7 +204,7 @@ jQuery.emptyButton = function() {
 }
 
 jQuery.table = function() {
-  return $('<table>').addClass('table');
+  return $('<table>').addClass('table table-striped table-hover');
 }
 
 jQuery.thead = function() {

@@ -38,7 +38,8 @@ var SearchTarget = Backbone.Model.extend({
         var matchingRules = _.map(model.get('matchingRules'), function(r) {
           return new Rule({ name: r.name, description: r.description });
         });
-        model.set('matchingRules', new Results(matchingRules));
+        model.set('matchingRules',
+                  new Results(matchingRules, { comparator: 'name' }));
         model.trigger('found');
       },
       error: function(model, response, options) {
@@ -75,8 +76,18 @@ var Rule = Backbone.Model.extend({
 
 var Results = Backbone.Collection.extend({
 
-  setComparator: function(attr) {
-    this.comparator = function(r) { return r.get(attr) };
+  initialize: function() {
+    this.sortState = { name: 'ASC' };
+  },
+
+  setComparator: function(attr, direction) {
+    if (direction === 'ASC') {
+      this.comparator =
+        function(r1, r2) { return r1.get(attr) >= r2.get(attr) };
+    } else if (direction === 'DESC') {
+      this.comparator =
+        function(r1, r2) { return r1.get(attr) <= r2.get(attr) };
+    }
     return this;
   },
 
@@ -268,11 +279,29 @@ var ResultView = Backbone.View.extend({
   },
 
   _sortByName: function() {
-    this.collection.setComparator('name').sort();
+    var sortState = this.collection.sortState;
+    if (sortState.name && sortState.name === 'ASC') {
+      sortState.name = 'DESC';
+      this.collection.setComparator('name', sortState.name).sort();
+    } else {
+      delete sortState['description'];
+      sortState.name = 'ASC';
+      this.collection.setComparator('name', sortState.name).sort();
+    }
   },
 
   _sortByDescription: function() {
-    this.collection.setComparator('description').sort();
+    var sortState = this.collection.sortState;
+    if (sortState.description && sortState.description === 'ASC') {
+      sortState.description = 'DESC';
+      this.collection.setComparator('description', sortState.description)
+        .sort();
+    } else {
+      delete sortState['name'];
+      sortState.description = 'ASC';
+      this.collection.setComparator('description', sortState.description)
+        .sort();
+    }
   },
 
 });

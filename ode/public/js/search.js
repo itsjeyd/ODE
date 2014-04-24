@@ -35,6 +35,10 @@ var SearchTarget = Backbone.Model.extend({
       url: '/search',
       method: 'POST',
       success: function(model, response, options) {
+        var matchingRules = _.map(model.get('matchingRules'), function(r) {
+          return new Rule({ name: r.name, description: r.description });
+        });
+        model.set('matchingRules', new Results(matchingRules));
         model.trigger('found');
       },
       error: function(model, response, options) {
@@ -52,6 +56,31 @@ var Feature = Backbone.Model.extend({
 });
 
 var String = Backbone.Model.extend({});
+
+
+var Rule = Backbone.Model.extend({
+
+  initialize: function() {
+    this.urlRoot = '/rules';
+  },
+
+  url: function() {
+    return this.urlRoot + '/' + this.get('name');
+  },
+
+});
+
+
+// Collections
+
+var Results = Backbone.Collection.extend({
+
+  setComparator: function(attr) {
+    this.comparator = function(r) { return r.get(attr) };
+    return this;
+  },
+
+});
 
 
 // Views
@@ -80,7 +109,7 @@ var SearchTargetView = Backbone.View.extend({
     var results = this.$('#results');
     results.empty();
     var resultView = new ResultView({
-      model: this.model,
+      collection: this.model.get('matchingRules'),
       el: results,
     });
     resultView.render();
@@ -198,6 +227,15 @@ var SearchTargetView = Backbone.View.extend({
 
 var ResultView = Backbone.View.extend({
 
+  initialize: function() {
+    this.collection.on({
+      'sort': function() {
+        this.$el.empty();
+        this.render();
+      },
+    }, this);
+  },
+
   render: function() {
     var table = $.table();
     table.append(this._makeTableHeader());
@@ -208,20 +246,33 @@ var ResultView = Backbone.View.extend({
 
   _makeTableHeader: function() {
     var thead = $.thead();
-    thead.append($.th().text('Rule'));
-    thead.append($.th().text('Description'));
+    thead.append($.th().attr('id', 'name-col').text('Rule'));
+    thead.append($.th().attr('id', 'desc-col').text('Description'));
     return thead;
   },
 
   _makeTableBody: function() {
     var tbody = $.tbody();
-    _.each(this.model.get('matchingRules'), function(r) {
+    this.collection.each(function(r) {
       var tr = $.tr();
-      tr.append($.td().html($.a('rules/' + r.name, r.name)));
-      tr.append($.td().text(r.description));
+      tr.append($.td().html($.a(r.url(), r.get('name'))));
+      tr.append($.td().text(r.get('description')));
       tbody.append(tr);
     });
     return tbody;
+  },
+
+  events: {
+    'click #name-col': '_sortByName',
+    'click #desc-col': '_sortByDescription',
+  },
+
+  _sortByName: function() {
+    this.collection.setComparator('name').sort();
+  },
+
+  _sortByDescription: function() {
+    this.collection.setComparator('description').sort();
   },
 
 });

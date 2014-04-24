@@ -186,6 +186,10 @@ jQuery.plusButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-plus plus-button');
 }
 
+jQuery.minusButton = function(target) {
+  return $('<span>').addClass('glyphicon glyphicon-minus minus-button');
+}
+
 jQuery.copyButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-new-window copy-button');
 }

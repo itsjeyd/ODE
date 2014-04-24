@@ -120,11 +120,11 @@ var SearchTargetView = Backbone.View.extend({
     this.$(blockID).append(searchField);
     var controls = $.div('controls col-md-1');
     controls.append($.plusButton());
-    var removeButton = $.removeButton();
+    var minusButton = $.minusButton();
     if (!optional) {
-      removeButton.hide();
+      minusButton.hide();
     }
-    controls.append(removeButton);
+    controls.append(minusButton);
     this.$(blockID).append(controls);
   },
 
@@ -132,19 +132,19 @@ var SearchTargetView = Backbone.View.extend({
     'click #search-button': '_performSearch',
     'click #features > .controls > .plus-button': '_addFeatureField',
     'click #strings > .controls > .plus-button': '_addStringField',
-    'click #features > .controls > .remove-button': '_removeFeatureField',
-    'click #strings > .controls > .remove-button': '_removeStringField',
+    'click #features > .controls > .minus-button': '_removeFeatureField',
+    'click #strings > .controls > .minus-button': '_removeStringField',
   },
 
   _addFeatureField: function(e) {
     $(e.currentTarget).hide();
-    this.$('#features').find('.remove-button').show();
+    this.$('#features').find('.minus-button').show();
     this._renderFeatureField(true);
   },
 
   _addStringField: function(e) {
     $(e.currentTarget).hide();
-    this.$('#strings').find('.remove-button').show();
+    this.$('#strings').find('.minus-button').show();
     this._renderStringField(true);
   },
 
@@ -162,7 +162,7 @@ var SearchTargetView = Backbone.View.extend({
     var block = this.$(blockID);
     block.find('.plus-button').last().show();
     if (block.find('.search-field').length === 1) {
-      block.find('.remove-button').last().hide();
+      block.find('.minus-button').last().hide();
     }
   },
 

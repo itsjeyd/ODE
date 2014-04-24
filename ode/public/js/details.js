@@ -1,6 +1,41 @@
+// Models
+
+var Pair = Backbone.Model.extend({
+
+  initialize: function(attrs, options) {
+    this.parent = options.parent;
+    this.set('attribute', new Feature({
+      name: options.attribute.name,
+      type: options.attribute.type
+    }));
+    this._setValue(options.value);
+  },
+
+  _setValue: function(value) {
+    if (typeof value === 'string') {
+      this.set('value', value);
+    } else {
+      this.set('value', new AVM(null, { json: value }));
+    }
+  },
+
+});
+
+var Feature = Backbone.Model.extend({});
+
 // Collections
 
-var AVM = Backbone.Collection.extend({});
+var AVM = Backbone.Collection.extend({
+
+  initialize: function(models, options) {
+    _.each(options.json.pairs, function(pair) {
+      this.add(new Pair(null, { parent: this,
+                                attribute: pair.attribute,
+                                value: pair.value }));
+    }, this);
+  },
+
+});
 
 var RHS = Backbone.Collection.extend({});
 

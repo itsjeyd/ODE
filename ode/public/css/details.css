@@ -1,3 +1,41 @@
+.row {
+    margin-bottom: 20px;
+}
+
+.bracket {
+    display: inline-block;
+    width: 10px;
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+}
+
+.bracket-left {
+    border-left: 3px solid black;
+}
+
+.bracket-right {
+    border-right: 3px solid black;
+}
+
+.content {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.pair {
+    margin-right: 2px;
+    margin-left: 2px;
+}
+
+
+.pair:after {
+    clear: both;
+    display: table;
+    content: " ";
+}
+
 .value {
     margin-left: 10px;
     float: right;

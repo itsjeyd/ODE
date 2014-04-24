@@ -46,6 +46,37 @@ var AVMView = Backbone.View.extend({
 
   className: 'avm',
 
+  initialize: function(options) {
+    this.parentView = options.parentView;
+    if (this.parentView) {
+      this.parentView.on({
+        'inserted': function() {
+          this.trigger('inserted');
+        },
+      }, this);
+    }
+    this.on({
+      'inserted': function() {
+        this.trigger('rendered');
+        this._renderBrackets();
+      },
+    }, this);
+  },
+
+  _renderBrackets: function() {
+    var leftBracket = this._makeBracket('left');
+    var rightBracket = this._makeBracket('right');
+    var h = this.$el.children('.content').height() || 14;
+    leftBracket.insertBefore(this.$el.children('.content'));
+    rightBracket.insertAfter(this.$el.children('.content'));
+    leftBracket.height(h);
+    rightBracket.height(h);
+  },
+
+  _makeBracket: function(type) {
+    return $.div('bracket bracket-' + type);
+  },
+
   render: function() {
     this._renderContent();
     return this;
@@ -71,6 +102,11 @@ var PairView = Backbone.View.extend({
 
   initialize: function(options) {
     this.parentView = options.parentView;
+    this.parentView.on({
+      'rendered': function() {
+        this.trigger('inserted');
+      },
+    }, this);
   },
 
   render: function() {
@@ -123,6 +159,7 @@ $(document).ready(function() {
     el: '#lhs'
   });
   lhsView.render();
+  lhsView.trigger('inserted');
 
   var rhsJSON = $('#rhs').data('json');
   var rhs = new RHS(null, { json: rhsJSON });

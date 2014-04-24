@@ -100,15 +100,15 @@ var SearchTargetView = Backbone.View.extend({
     return this;
   },
 
-  _addFeatureField: function() {
-    this._addSearchField('#features');
+  _addFeatureField: function(optional) {
+    this._addSearchField('#features', optional);
   },
 
-  _addStringField: function() {
-    this._addSearchField('#strings');
+  _addStringField: function(optional) {
+    this._addSearchField('#strings', optional);
   },
 
-  _addSearchField: function(blockID) {
+  _addSearchField: function(blockID, optional) {
     var searchField = $.div('search-field col-md-11');
     var textInput = $.textInput();
     if (blockID === '#features') {
@@ -120,11 +120,52 @@ var SearchTargetView = Backbone.View.extend({
     this.$(blockID).append(searchField);
     var controls = $.div('controls col-md-1');
     controls.append($.plusButton());
+    var removeButton = $.removeButton();
+    if (!optional) {
+      removeButton.hide();
+    }
+    controls.append(removeButton);
     this.$(blockID).append(controls);
   },
 
   events: {
     'click #search-button': '_performSearch',
+    'click #features > .controls > .plus-button': '_featureDispatch',
+    'click #strings > .controls > .plus-button': '_stringDispatch',
+    'click #features > .controls > .remove-button': '_removeFeatureField',
+    'click #strings > .controls > .remove-button': '_removeStringField',
+  },
+
+  _featureDispatch: function(e) {
+    $(e.currentTarget).hide();
+    this.$('#features').find('.remove-button').show();
+    this._addFeatureField(true);
+  },
+
+  _stringDispatch: function(e) {
+    $(e.currentTarget).hide();
+    this.$('#strings').find('.remove-button').show();
+    this._addStringField(true);
+  },
+
+  _removeFeatureField: function(e) {
+    var controls = $(e.currentTarget).parent('.controls');
+    controls.prev('.search-field').remove();
+    controls.remove();
+    this.$('#features').find('.plus-button').last().show();
+    if (this.$('#features').find('.search-field').length === 1) {
+      this.$('#features').find('.remove-button').last().hide();
+    }
+  },
+
+  _removeStringField: function(e) {
+    var controls = $(e.currentTarget).parent('.controls');
+    controls.prev('.search-field').remove();
+    controls.remove();
+    this.$('#strings').find('.plus-button').last().show();
+    if (this.$('#strings').find('.search-field').length === 1) {
+      this.$('#strings').find('.remove-button').last().hide();
+    }
   },
 
   _performSearch: function() {

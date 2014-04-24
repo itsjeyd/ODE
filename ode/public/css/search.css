@@ -2,6 +2,14 @@
     margin-bottom: 20px;
 }
 
+.search-field {
+    margin-bottom: 15px;
+}
+
 .controls {
     padding-left: 0px;
+}
+
+.plus-button, .remove-button {
+    cursor: pointer;
 }

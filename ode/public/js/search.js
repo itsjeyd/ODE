@@ -149,9 +149,7 @@ var SearchTargetView = Backbone.View.extend({
   },
 
   _removeFeatureField: function(e) {
-    var controls = $(e.currentTarget).parent('.controls');
-    controls.prev('.search-field').remove();
-    controls.remove();
+    this._removeSearchField(e);
     this.$('#features').find('.plus-button').last().show();
     if (this.$('#features').find('.search-field').length === 1) {
       this.$('#features').find('.remove-button').last().hide();
@@ -159,13 +157,17 @@ var SearchTargetView = Backbone.View.extend({
   },
 
   _removeStringField: function(e) {
-    var controls = $(e.currentTarget).parent('.controls');
-    controls.prev('.search-field').remove();
-    controls.remove();
+    this._removeSearchField(e);
     this.$('#strings').find('.plus-button').last().show();
     if (this.$('#strings').find('.search-field').length === 1) {
       this.$('#strings').find('.remove-button').last().hide();
     }
+  },
+
+  _removeSearchField: function(e) {
+    var controls = $(e.currentTarget).parent('.controls');
+    controls.prev('.search-field').remove();
+    controls.remove();
   },
 
   _performSearch: function() {

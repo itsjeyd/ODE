@@ -95,16 +95,16 @@ var SearchTargetView = Backbone.View.extend({
   },
 
   render: function() {
-    this._addFeatureField();
-    this._addStringField();
+    this._renderFeatureField();
+    this._renderStringField();
     return this;
   },
 
-  _addFeatureField: function(optional) {
+  _renderFeatureField: function(optional) {
     this._addSearchField('#features', optional);
   },
 
-  _addStringField: function(optional) {
+  _renderStringField: function(optional) {
     this._addSearchField('#strings', optional);
   },
 
@@ -130,22 +130,22 @@ var SearchTargetView = Backbone.View.extend({
 
   events: {
     'click #search-button': '_performSearch',
-    'click #features > .controls > .plus-button': '_featureDispatch',
-    'click #strings > .controls > .plus-button': '_stringDispatch',
+    'click #features > .controls > .plus-button': '_addFeatureField',
+    'click #strings > .controls > .plus-button': '_addStringField',
     'click #features > .controls > .remove-button': '_removeFeatureField',
     'click #strings > .controls > .remove-button': '_removeStringField',
   },
 
-  _featureDispatch: function(e) {
+  _addFeatureField: function(e) {
     $(e.currentTarget).hide();
     this.$('#features').find('.remove-button').show();
-    this._addFeatureField(true);
+    this._renderFeatureField(true);
   },
 
-  _stringDispatch: function(e) {
+  _addStringField: function(e) {
     $(e.currentTarget).hide();
     this.$('#strings').find('.remove-button').show();
-    this._addStringField(true);
+    this._renderStringField(true);
   },
 
   _removeFeatureField: function(e) {

@@ -56,6 +56,7 @@ var RuleListView = Backbone.View.extend({
   events: {
     'mouseenter .rule-item': '_active',
     'mouseleave .rule-item': '_inactive',
+    'click .rule-item': '_goDetails',
     'click .edit-button': '_goEdit',
     'click .remove-button': '_delete',
   },
@@ -82,6 +83,11 @@ var RuleListView = Backbone.View.extend({
 
   _hideControls: function(e) {
     $(e.currentTarget).find('.controls').remove() },
+
+  _goDetails: function(e) {
+    var ruleID = $(e.currentTarget).attr('id');
+    window.location.href = this.collection.get(ruleID).url();
+  },
 
   _goEdit: function(e) {
     var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');

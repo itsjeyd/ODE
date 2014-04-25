@@ -90,11 +90,13 @@ var RuleListView = Backbone.View.extend({
   },
 
   _goEdit: function(e) {
+    e.stopPropagation();
     var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
     window.location.href = this.collection.get(ruleID).url() + '/input';
   },
 
   _delete: function(e) {
+    e.stopPropagation();
     var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
     var rule = this.collection.get(ruleID);
     rule.destroy({ wait: true,

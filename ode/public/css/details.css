@@ -2,6 +2,10 @@
     margin-bottom: 20px;
 }
 
+#edit-button {
+    float: right;
+}
+
 .bracket {
     display: inline-block;
     width: 10px;

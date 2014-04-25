@@ -11,7 +11,12 @@
       <div class="col-md-10 col-md-offset-1">
         <h2>
           @@@rule.name
-          <small>@rule.description</small>
+          <small>
+            @rule.description
+            <a href="@routes.Rules.input(rule.name)"
+               class="btn btn-success"
+               id="edit-button">Edit</a>
+          </small>
         </h2>
       </div>
     </div>

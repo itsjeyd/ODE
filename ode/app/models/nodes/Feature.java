@@ -1,7 +1,9 @@
 package models.nodes;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -171,6 +173,25 @@ public class Feature extends OntologyNode {
                             feature, newValue, rule, avm).create();
                     }
                     return Promise.pure(false);
+                }
+            });
+    }
+
+    public Promise<Set<Rule>> getRules() {
+        Promise<JsonNode> embeddingRules = FeatureManager.getRules(this);
+        return embeddingRules.map(
+            new Function<JsonNode, Set<Rule>>() {
+                public Set<Rule> apply(JsonNode embeddingRules) {
+                    Set<Rule> rules = new HashSet<Rule>();
+                    List<JsonNode> ruleNodes =
+                        embeddingRules.findValue("data").findValues("data");
+                    for (JsonNode ruleNode: ruleNodes) {
+                        String name = ruleNode.findValue("name").asText();
+                        String description = ruleNode.findValue("description")
+                            .asText();
+                        rules.add(new Rule(name, description));
+                    }
+                    return rules;
                 }
             });
     }

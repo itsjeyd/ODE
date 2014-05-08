@@ -87,7 +87,17 @@ public class RHS extends UUIDNode {
         return parentUUID.map(new UUIDFunction());
     }
 
-    private Promise<List<CombinationGroup>> getGroups() {
+    protected Promise<List<CombinationGroup>> getGroups() {
+        if (!this.jsonProperties.has("uuid")) {
+            Promise<UUID> uuid = this.getUUID();
+            return uuid.flatMap(
+                new Function<UUID, Promise<List<CombinationGroup>>>() {
+                    public Promise<List<CombinationGroup>> apply(UUID uuid) {
+                        RHS.this.jsonProperties.put("uuid", uuid.toString());
+                        return RHS.this.getGroups();
+                    }
+                });
+        }
         return GroupRelationship.getEndNodes(this);
     }
 

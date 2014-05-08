@@ -45,7 +45,7 @@ public class Slot extends LabeledNodeWithProperties {
         return new Slot(uuid, position);
     }
 
-    private Promise<List<Part>> getParts() {
+    protected Promise<List<Part>> getParts() {
         return HasPartRelationship.getEndNodes(this);
     }
 

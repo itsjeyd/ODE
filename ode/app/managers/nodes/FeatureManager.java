@@ -13,6 +13,7 @@ import play.libs.F.Promise;
 import constants.NodeType;
 import constants.RelationshipType;
 import neo4play.Neo4jService;
+import managers.functions.JsonFunction;
 import models.nodes.Feature;
 
 
@@ -44,6 +45,12 @@ public class FeatureManager extends NamedNodeManager {
                     return nodes;
                 }
             });
+    }
+
+    public static Promise<JsonNode> getRules(Feature feature) {
+        Promise<WS.Response> response = Neo4jService
+            .findEmbeddingNodesAnyDepth(feature, "Rule");
+        return response.map(new JsonFunction());
     }
 
     public static Promise<Boolean> updateName(

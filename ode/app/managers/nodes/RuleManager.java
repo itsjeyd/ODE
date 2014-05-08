@@ -15,6 +15,7 @@ import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
+import models.functions.ExistsFunction;
 import models.nodes.Rule;
 
 
@@ -59,6 +60,14 @@ public class RuleManager extends NamedNodeManager {
                     return relationships.size() == 0;
                 }
             });
+    }
+
+    public static Promise<Boolean> has(Rule rule, String string) {
+        Promise<WS.Response> response = Neo4jService
+            .fuzzyFindTargetsAnyDepth(
+                rule, NodeType.OUTPUT_STRING.toString(), "content", string);
+        Promise<JsonNode> json = response.map(new JsonFunction());
+        return json.map(new ExistsFunction());
     }
 
     public static Promise<UUID> getUUID(Rule rule) {

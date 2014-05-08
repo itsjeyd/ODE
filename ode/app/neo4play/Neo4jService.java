@@ -202,6 +202,28 @@ public class Neo4jService {
         return targetURLs.flatMap(new NodesByURLFunction());
     }
 
+    public static Promise<WS.Response> findEmbeddingNodesAnyDepth(
+        LabeledNodeWithProperties node, String relatedNodesLabel) {
+        String nodeProps = buildConjunctiveConstraints(
+            "s", node.jsonProperties);
+        String query = String.format(
+            "MATCH (e:%s)-[*]->(s:%s) WHERE %s RETURN e",
+            relatedNodesLabel, node.getLabel(), nodeProps);
+        return postCypherQuery(query);
+    }
+
+    public static Promise<WS.Response> fuzzyFindTargetsAnyDepth(
+        LabeledNodeWithProperties startNode, String targetNodeLabel,
+        String targetPropName, String targetPropValue) {
+        String startNodeProps = buildConjunctiveConstraints(
+            "s", startNode.jsonProperties);
+        String query = String.format(
+            "MATCH (s:%s)-[*]->(t:%s) WHERE %s AND lower(t.%s) =~ lower('.*%s.*') RETURN t",
+            startNode.getLabel(), targetNodeLabel, startNodeProps,
+            targetPropName, targetPropValue);
+        return postCypherQuery(query);
+    }
+
     public static Promise<WS.Response> getTypedRelationship(
         LabeledNodeWithProperties startNode,
         LabeledNodeWithProperties endNode, RelationshipType type) {

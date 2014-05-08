@@ -1,19 +1,67 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.nodes.Feature;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.libs.F.Function;
+import play.libs.F.Promise;
 
+import models.nodes.Rule;
 import views.html.search;
 
 
 public class Search extends Controller {
+
+    private static Promise<Set<Rule>> getRulesMatchingFeatures(
+        JsonNode json) {
+        Iterator<JsonNode> features = json.findPath("features").elements();
+        List<Promise<? extends Set<Rule>>> ruleSets =
+            new ArrayList<Promise<? extends Set<Rule>>>();
+        while (features.hasNext()) {
+            JsonNode featureJSON = features.next();
+            Feature feature =
+                new Feature(featureJSON.get("name").textValue());
+            ruleSets.add(feature.getRules());
+        }
+        return Promise.sequence(ruleSets).map(new IntersectFunction());
+    }
+
+    private static Promise<Set<Rule>> getRulesMatchingStrings(
+        JsonNode json) {
+        JsonNode strings = json.findPath("strings");
+        return Rule.findMatching(strings);
+    }
+
+    private static class IntersectFunction
+        implements Function<List<Set<Rule>>, Set<Rule>> {
+        public Set<Rule> apply(List<Set<Rule>> ruleSets) {
+            Set<Rule> rules = new HashSet<Rule>();
+            boolean firstSet = true;
+            for (Set<Rule> ruleSet: ruleSets) {
+                if (firstSet) {
+                    rules.addAll(ruleSet);
+                    firstSet = false;
+                } else {
+                    rules.retainAll(ruleSet);
+                }
+            }
+            return rules;
+        }
+    }
 
     @Security.Authenticated(Secured.class)
     public static Result search() {
@@ -22,19 +70,56 @@ public class Search extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Result doSearch() {
-        ObjectNode result = Json.newObject();
-        ArrayNode matchingRules = JsonNodeFactory.instance.arrayNode();
-        ObjectNode dummyRule1 = Json.newObject();
-        dummyRule1.put("name", "rule1");
-        dummyRule1.put("description", "The second rule of fight club is...");
-        matchingRules.add(dummyRule1);
-        ObjectNode dummyRule2 = Json.newObject();
-        dummyRule2.put("name", "rule2");
-        dummyRule2.put("description", "The first rule of fight club is...");
-        matchingRules.add(dummyRule2);
-        result.put("matchingRules", matchingRules);
-        return ok(result);
+    public static Promise<Result> doSearch() {
+        final JsonNode json = request().body().asJson();
+        ArrayNode features = (ArrayNode) json.findPath("features");
+        final ArrayNode strings = (ArrayNode) json.findPath("strings");
+        if (features.size() > 0) {
+            Promise<Set<Rule>> rulesMatchingFeatures =
+                getRulesMatchingFeatures(json);
+            Promise<Set<Rule>> matchingRules =
+                rulesMatchingFeatures.flatMap(
+                    new Function<Set<Rule>, Promise<Set<Rule>>>() {
+                        public Promise<Set<Rule>> apply(
+                            Set<Rule> rulesMatchingFeatures) {
+                            if (rulesMatchingFeatures.isEmpty() ||
+                                strings.size() == 0) {
+                                return Promise.pure(rulesMatchingFeatures);
+                            } else {
+                                return Rule
+                                    .findMatching(rulesMatchingFeatures,
+                                                  json.findPath("strings"));
+                            }
+                        }
+                    });
+            return matchingRules.map(new ResultFunction());
+        } else if (strings.size() > 0) {
+            Promise<Set<Rule>> rulesMatchingStrings =
+                getRulesMatchingStrings(json);
+            return rulesMatchingStrings.map(new ResultFunction());
+        } else {
+            Set<Rule> matchingRules = new HashSet<Rule>();
+            return Promise.pure(matchingRules).map(new ResultFunction());
+        }
+    }
+
+    private static class ResultFunction
+        implements Function<Set<Rule>, Result> {
+        public Result apply(Set<Rule> matchingRules) {
+            ObjectNode result = Json.newObject();
+            ArrayNode ruleList = JsonNodeFactory.instance.arrayNode();
+            if (matchingRules.isEmpty()) {
+                return badRequest(result);
+            }
+            for (Rule matchingRule: matchingRules) {
+                ObjectNode ruleJSON = Json.newObject();
+                ruleJSON.put("name", matchingRule.name);
+                ruleJSON.put("description", matchingRule.description);
+                ruleList.add(ruleJSON);
+            }
+            result.put("matchingRules", ruleList);
+            return ok(result);
+        }
     }
 
 }

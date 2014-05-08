@@ -2,6 +2,10 @@
 
 var SearchTarget = Backbone.Model.extend({
 
+  initialize: function() {
+    this.urlRoot = '/search';
+  },
+
   defaults: {
     features: new Backbone.Collection([]),
     strings: new Backbone.Collection([]),
@@ -31,9 +35,7 @@ var SearchTarget = Backbone.Model.extend({
   },
 
   search: function() {
-    this.fetch({
-      url: '/search',
-      method: 'POST',
+    this.save(null, {
       success: function(model, response, options) {
         var matchingRules = _.map(model.get('matchingRules'), function(r) {
           return new Rule({ name: r.name, description: r.description });

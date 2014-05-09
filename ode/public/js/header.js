@@ -1,4 +1,4 @@
-var Rule = Backbone.Model.extend({
+var NewRule = Backbone.Model.extend({
 
   defaults: {
     description: '',
@@ -16,7 +16,7 @@ $(document).ready(function() {
     e.preventDefault();
     var name = prompt('Enter name:');
     var description = prompt('Enter description (optional):');
-    var newRule = new Rule({ name: name, description: description });
+    var newRule = new NewRule({ name: name, description: description });
     newRule.save(
       {},
       { success: function(model, response, options) {

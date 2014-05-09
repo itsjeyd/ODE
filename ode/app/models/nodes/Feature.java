@@ -12,11 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.Json;
 import play.libs.F.Function;
-import play.libs.F.None;
-import play.libs.F.Option;
 import play.libs.F.Promise;
-import play.libs.F.Some;
-import play.libs.F.Tuple;
 
 import constants.FeatureType;
 import constants.NodeType;
@@ -222,24 +218,31 @@ public class Feature extends OntologyNode {
             });
     }
 
-    public Promise<Tuple<Option<Feature>, Boolean>> updateType(
+    public Promise<Boolean> updateType(
         final String newType) {
-        Promise<Feature> feature = this.get();
-        return feature.flatMap(
-            new Function<Feature, Promise<Tuple<Option<Feature>, Boolean>>>() {
-                public Promise<Tuple<Option<Feature>, Boolean>> apply(
-                    Feature feature) {
-                    if (feature.getType().equals(newType)) {
-                        return Promise.pure(
-                            new Tuple<Option<Feature>, Boolean>(
-                                new Some<Feature>(feature), false));
+        Promise<Boolean> isInUse = this.isInUse();
+        return isInUse.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean isInUse) {
+                    if (isInUse) {
+                        return Promise.pure(false);
                     }
-                    Promise<Boolean> allDeleted =
-                        AllowsRelationship.deleteAllFrom(feature);
-                    return allDeleted.flatMap(
-                        new UpdateTypeFunction(feature, newType));
-                    }
-                });
+                    Promise<Feature> feature = Feature.this.get();
+                    return feature.flatMap(
+                        new Function<Feature, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(
+                                Feature feature) {
+                                if (feature.getType().equals(newType)) {
+                                    return Promise.pure(false);
+                                }
+                                Promise<Boolean> allDeleted =
+                                    AllowsRelationship.deleteAllFrom(feature);
+                                return allDeleted.flatMap(
+                                    new UpdateTypeFunction(feature, newType));
+                            }
+                        });
+                }
+            });
     }
 
     public Promise<Boolean> addDefaultValue(Rule rule, AVM parent) {
@@ -374,39 +377,18 @@ public class Feature extends OntologyNode {
     }
 
     private class UpdateTypeFunction
-        implements Function<Boolean, Promise<Tuple<Option<Feature>, Boolean>>> {
+        implements Function<Boolean, Promise<Boolean>> {
         private Feature feature;
         private String newType;
         public UpdateTypeFunction(Feature feature, String newType) {
             this.feature = feature;
             this.newType = newType;
         }
-        public Promise<Tuple<Option<Feature>, Boolean>> apply(
-            Boolean allDeleted) {
+        public Promise<Boolean> apply(Boolean allDeleted) {
             if (allDeleted) {
-                Promise<Boolean> typeUpdated = FeatureManager.updateType(
-                    this.feature, this.newType);
-                return typeUpdated.map(new UpdatedFunction(this.feature));
+                return FeatureManager.updateType(this.feature, this.newType);
             }
-            return Promise.pure(
-                new Tuple<Option<Feature>, Boolean>(
-                    new None<Feature>(), false));
-        }
-    }
-
-    private class UpdatedFunction
-        implements Function<Boolean, Tuple<Option<Feature>, Boolean>> {
-        private Feature feature;
-        public UpdatedFunction(Feature feature) {
-            this.feature = feature;
-        }
-        public Tuple<Option<Feature>, Boolean> apply(Boolean updated) {
-            if (updated) {
-                return new Tuple<Option<Feature>, Boolean>(
-                    new Some<Feature>(this.feature), true);
-            }
-            return new Tuple<Option<Feature>, Boolean>(
-                new None<Feature>(), false);
+            return Promise.pure(false);
         }
     }
 

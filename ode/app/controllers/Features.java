@@ -15,7 +15,6 @@ import play.libs.Json;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Function0;
-import play.libs.F.Option;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
@@ -169,14 +168,13 @@ public class Features extends Controller {
     public static Promise<Result> updateType(String name) {
         JsonNode json = request().body().asJson();
         final String newType = json.findPath("type").textValue();
-        Promise<Tuple<Option<Feature>, Boolean>> result =
+        Promise<Boolean> typeUpdated =
             new Feature(name).updateType(newType);
-        return result.map(
-            new Function<Tuple<Option<Feature>, Boolean>, Result>() {
+        return typeUpdated.map(
+            new Function<Boolean, Result>() {
                 ObjectNode jsonResult = Json.newObject();
-                public Result apply(Tuple<Option<Feature>, Boolean> result) {
-                    Boolean updated = result._2;
-                    if (updated) {
+                public Result apply(Boolean typeUpdated) {
+                    if (typeUpdated) {
                         if (newType.equals(FeatureType.COMPLEX.toString())) {
                             Value.deleteOrphans();
                         }

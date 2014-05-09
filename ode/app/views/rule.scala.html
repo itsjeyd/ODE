@@ -13,6 +13,9 @@
           @@@rule.name
           <small>
             @rule.description
+            <a href="@routes.Rules.similar(rule.name)"
+               class="btn btn-success"
+               id="similar-button">Similar rules</a>
             <a href="@routes.Rules.input(rule.name)"
                class="btn btn-success"
                id="edit-button">Edit</a>

@@ -58,6 +58,7 @@ var RuleView = Backbone.View.extend({
     this.$el.append($.p('').attr('id', 'rule-description'));
     this.$el.append($.div().attr('id', 'rule-rhs'));
     this._renderName();
+    this._renderSimilarRulesButton();
     this._renderOutputButton();
     this._renderDescription();
     this._renderRHS();
@@ -66,6 +67,12 @@ var RuleView = Backbone.View.extend({
 
   _renderName: function() {
     this.$('#rule-name').text('@' + this.model.get('name'));
+  },
+
+  _renderSimilarRulesButton: function() {
+    var successButton = $.successButton('Similar rules')
+      .addClass('pull-right similar-button');
+    this.$('#rule-name').append(successButton);
   },
 
   _renderOutputButton: function() {
@@ -95,6 +102,7 @@ var RuleView = Backbone.View.extend({
   },
 
   events: {
+    'click .similar-button': '_goSimilar',
     'dblclick #rule-name': function(e) {
       this._renderEditControls('name')(e)
     },
@@ -116,6 +124,10 @@ var RuleView = Backbone.View.extend({
       });
       $('.modal').modal();
     },
+  },
+
+  _goSimilar: function() {
+    window.location.href = this.model.url() + '/similar';
   },
 
   _renderEditControls: function(modelField) {

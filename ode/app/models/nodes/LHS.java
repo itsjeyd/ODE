@@ -1,5 +1,7 @@
 package models.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.nio.charset.Charset;
 
@@ -23,6 +25,23 @@ public class LHS extends AVM {
     public Promise<UUID> getUUID() {
         Promise<UUID> parentUUID = this.parent.getUUID();
         return parentUUID.map(new UUIDFunction());
+    }
+
+    public Promise<List<Feature>> getAllFeatures() {
+        Promise<JsonNode> json = this.toJSON();
+        return json.map(
+            new Function<JsonNode, List<Feature>>() {
+                public List<Feature> apply(JsonNode json) {
+                    List<Feature> features = new ArrayList<Feature>();
+                    List<JsonNode> featureNodes = json
+                        .findValues("attribute");
+                    for (JsonNode featureNode : featureNodes) {
+                        String name = featureNode.findValue("name").asText();
+                        features.add(new Feature(name));
+                    }
+                    return features;
+                }
+            });
     }
 
     public Promise<Boolean> create() {

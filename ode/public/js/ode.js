@@ -177,6 +177,11 @@ jQuery.createButton = function() {
   return $.successButton('Create').addClass('btn-lg').attr('id', 'create');
 }
 
+jQuery.similarButton = function(target) {
+  return $('<span>').addClass('glyphicon glyphicon-pause similar-button')
+    .data('target', target);
+}
+
 jQuery.editButton = function(target) {
   return $('<span>').addClass('glyphicon glyphicon-pencil edit-button')
     .data('target', target);

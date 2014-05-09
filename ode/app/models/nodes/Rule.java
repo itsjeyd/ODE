@@ -82,6 +82,48 @@ public class Rule extends UUIDNode {
         return json.map(new AllFunction());
     }
 
+    public Promise<List<Rule>> getSimilarRules() {
+        LHS lhs = new LHS(this);
+        Promise<List<Feature>> features = lhs.getAllFeatures();
+        Promise<Set<Rule>> similarRules = features.flatMap(
+            new Function<List<Feature>, Promise<Set<Rule>>>() {
+                public Promise<Set<Rule>> apply(List<Feature> features) {
+                    List<Promise<? extends Set<Rule>>> ruleSets =
+                        new ArrayList<Promise<? extends Set<Rule>>>();
+                    for (Feature feature: features) {
+                        ruleSets.add(feature.getRules());
+                    }
+                    return Promise.sequence(ruleSets)
+                        .map(new IntersectFunction());
+                }
+            });
+        return similarRules.map(
+            new Function<Set<Rule>, List<Rule>>() {
+                public List<Rule> apply(Set<Rule> similarRules) {
+                    List<Rule> rules = new ArrayList<Rule>();
+                    rules.addAll(similarRules);
+                    return rules;
+                }
+            });
+    }
+
+    private static class IntersectFunction
+        implements Function<List<Set<Rule>>, Set<Rule>> {
+        public Set<Rule> apply(List<Set<Rule>> ruleSets) {
+            Set<Rule> rules = new HashSet<Rule>();
+            boolean firstSet = true;
+            for (Set<Rule> ruleSet: ruleSets) {
+                if (firstSet) {
+                    rules.addAll(ruleSet);
+                    firstSet = false;
+                } else {
+                    rules.retainAll(ruleSet);
+                }
+            }
+            return rules;
+        }
+    }
+
     public static Promise<Set<Rule>> findMatching(final JsonNode strings) {
         Promise<List<Rule>> ruleList = Rule.all();
         Promise<Set<Rule>> rules = ruleList.map(

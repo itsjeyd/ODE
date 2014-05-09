@@ -231,7 +231,7 @@ public class Features extends Controller {
             deleted.onRedeem(
                 new Callback<Boolean>() {
                     public void invoke(Boolean deleted) {
-                        if (deleted) {
+                        if (deleted && !value.name.equals("underspecified")) {
                             value.deleteIfOrphaned();
                         }
                     }

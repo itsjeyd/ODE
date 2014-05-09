@@ -115,7 +115,9 @@ public class Value extends OntologyNode {
             List<Value> values = new ArrayList<Value>();
             for (JsonNode dataNode: dataNodes) {
                 String name = dataNode.get("name").asText();
-                values.add(new Value(name));
+                if (!name.equals("underspecified")) {
+                    values.add(new Value(name));
+                }
             }
             return values;
         }

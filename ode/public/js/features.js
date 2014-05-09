@@ -362,7 +362,9 @@ var FeatureView = Backbone.View.extend({
       '<% _.each(targets, function(target) { %>' +
         '<div class="target"><%= target %></div>' +
         '<% }); %>');
-    var node = $(targetListTemplate({ targets: this.model.get('targets') }));
+    var node = $(targetListTemplate({
+      targets: _.without(this.model.get('targets'), 'underspecified')
+    }));
     this.$el.append(node);
   },
 

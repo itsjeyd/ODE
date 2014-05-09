@@ -2,7 +2,7 @@
     margin-bottom: 20px;
 }
 
-#similar-button, #edit-button {
+#similar-button, #edit-input-button, #edit-output-button {
     float: right;
 }
 

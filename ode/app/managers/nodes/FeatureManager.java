@@ -15,6 +15,7 @@ import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import models.nodes.Feature;
+import models.nodes.Value;
 
 
 public class FeatureManager extends NamedNodeManager {
@@ -50,6 +51,17 @@ public class FeatureManager extends NamedNodeManager {
     public static Promise<JsonNode> getRules(Feature feature) {
         Promise<WS.Response> response = Neo4jService
             .findEmbeddingNodesAnyDepth(feature, "Rule");
+        return response.map(new JsonFunction());
+    }
+
+    public static Promise<JsonNode> getRules(Feature feature, Value value) {
+        String query = String.format(
+            "MATCH (e:Rule)-[:LHS]->()-[*]->(s:Feature)-[r:HAS]->(v:Value) " +
+            "WHERE s.name = '%s' AND v.name='%s' AND r.rule = e.uuid " +
+            "RETURN e",
+            feature.name, value.name);
+        Promise<WS.Response> response = Neo4jService
+            .executeCustomQuery(query);
         return response.map(new JsonFunction());
     }
 

@@ -196,6 +196,26 @@ public class Feature extends OntologyNode {
             });
     }
 
+    public Promise<Set<Rule>> getRules(Value value) {
+        Promise<JsonNode> embeddingRules = FeatureManager
+            .getRules(this, value);
+        return embeddingRules.map(
+            new Function<JsonNode, Set<Rule>>() {
+                public Set<Rule> apply(JsonNode embeddingRules) {
+                    Set<Rule> rules = new HashSet<Rule>();
+                    List<JsonNode> ruleNodes =
+                        embeddingRules.findValue("data").findValues("data");
+                    for (JsonNode ruleNode: ruleNodes) {
+                        String name = ruleNode.findValue("name").asText();
+                        String description = ruleNode.findValue("description")
+                            .asText();
+                        rules.add(new Rule(name, description));
+                    }
+                    return rules;
+                }
+            });
+    }
+
     public Promise<Boolean> updateName(final String newName) {
         Promise<Feature> feature = this.get();
         return feature.flatMap(

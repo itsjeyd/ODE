@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.nodes.Feature;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -20,7 +19,9 @@ import play.mvc.Security;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
+import models.nodes.Feature;
 import models.nodes.Rule;
+import models.nodes.Value;
 import views.html.search;
 
 
@@ -35,7 +36,12 @@ public class Search extends Controller {
             JsonNode featureJSON = features.next();
             Feature feature =
                 new Feature(featureJSON.get("name").textValue());
-            ruleSets.add(feature.getRules());
+            String value = featureJSON.get("value").textValue();
+            if (value.equals("")) {
+                ruleSets.add(feature.getRules());
+            } else {
+                ruleSets.add(feature.getRules(new Value(value)));
+            }
         }
         return Promise.sequence(ruleSets).map(new IntersectFunction());
     }
@@ -68,6 +74,7 @@ public class Search extends Controller {
         return ok(search.render());
     }
 
+    // TODO: Include feature *values* in the search (if specified) ...
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> doSearch() {

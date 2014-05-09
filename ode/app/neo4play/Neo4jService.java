@@ -96,6 +96,10 @@ public class Neo4jService {
 
     // API for external clients (managers)
 
+    public static Promise<WS.Response> executeCustomQuery(String query) {
+        return postCypherQuery(query);
+    }
+
     public static Promise<String> getNodeURL(
         String label, JsonNode props) {
         Promise<WS.Response> nodeResponse = getLabeledNodeWithProperties(

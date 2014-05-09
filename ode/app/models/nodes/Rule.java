@@ -67,6 +67,16 @@ public class Rule extends UUIDNode {
         return RuleManager.getUUID(this);
     }
 
+    public static Set<Rule> makeRules(List<JsonNode> ruleNodes) {
+        Set<Rule> rules = new HashSet<Rule>();
+        for (JsonNode ruleNode: ruleNodes) {
+            String name = ruleNode.findValue("name").asText();
+            String description = ruleNode.findValue("description").asText();
+            rules.add(new Rule(name, description));
+        }
+        return rules;
+    }
+
     public static Promise<List<Rule>> all() {
         Promise<List<JsonNode>> json = RuleManager.all();
         return json.map(new AllFunction());

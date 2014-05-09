@@ -14,6 +14,9 @@ var SearchTarget = Backbone.Model.extend({
   reset: function() {
     this.get('features').reset();
     this.get('strings').reset();
+    if (this.has('matchingRules')) {
+      this.unset('matchingRules');
+    }
   },
 
   addFeatures: function(names) {

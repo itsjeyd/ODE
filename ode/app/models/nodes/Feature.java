@@ -386,7 +386,24 @@ public class Feature extends OntologyNode {
         }
         public Promise<Boolean> apply(Boolean allDeleted) {
             if (allDeleted) {
-                return FeatureManager.updateType(this.feature, this.newType);
+                Promise<Boolean> typeUpdated =
+                    FeatureManager.updateType(this.feature, this.newType);
+                final Feature f = this.feature;
+                final String t = this.newType;
+                return typeUpdated.flatMap(
+                    new Function<Boolean, Promise<Boolean>>() {
+                        public Promise<Boolean> apply(Boolean typeUpdated) {
+                            if (typeUpdated) {
+                                if (t.equals(FeatureType.ATOMIC.toString())) {
+                                    Value underspecified =
+                                        new Value("underspecified");
+                                    return underspecified.connectTo(f);
+                                }
+                                return Promise.pure(true);
+                            }
+                            return Promise.pure(false);
+                        }
+                    });
             }
             return Promise.pure(false);
         }

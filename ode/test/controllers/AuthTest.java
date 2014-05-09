@@ -121,7 +121,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(ruleResult)).isEqualTo(Status.OK);
         Result searchResult = callAction(
-            controllers.routes.ref.Application.search(),
+            controllers.routes.ref.Search.search(),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(searchResult)).isEqualTo(Status.OK);
         Result featuresResult = callAction(
@@ -151,7 +151,7 @@ public class AuthTest extends WithApplication {
         assertThat(header("Location", ruleResult)).isEqualTo(
                 routes.Application.login().url());
         Result searchResult = callAction(
-            controllers.routes.ref.Application.search(),
+            controllers.routes.ref.Search.search(),
             fakeRequest());
         assertThat(status(searchResult)).isEqualTo(Status.SEE_OTHER);
         assertThat(header("Location", searchResult)).isEqualTo(

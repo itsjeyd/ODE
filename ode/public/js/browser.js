@@ -58,7 +58,8 @@ var RuleListView = Backbone.View.extend({
     'mouseleave .rule-item': '_inactive',
     'click .rule-item': '_goDetails',
     'click .similar-button': '_goSimilar',
-    'click .edit-button': '_goEdit',
+    'click .edit-input-button': '_goEditInput',
+    'click .edit-output-button': '_goEditOutput',
     'click .remove-button': '_delete',
   },
 
@@ -78,7 +79,8 @@ var RuleListView = Backbone.View.extend({
     var item = $(e.currentTarget);
     var controls = $('<span>').addClass('pull-right controls');
     controls.append($.similarButton(item.attr('id')));
-    controls.append($.editButton(item.attr('id')));
+    controls.append($.editInputButton(item.attr('id')));
+    controls.append($.editOutputButton(item.attr('id')));
     controls.append($.removeButton(item.attr('id')));
     item.find('h2').append(controls);
   },
@@ -97,10 +99,16 @@ var RuleListView = Backbone.View.extend({
     window.location.href = this.collection.get(ruleID).url();
   },
 
-  _goEdit: function(e) {
+  _goEditInput: function(e) {
     e.stopPropagation();
     var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
     window.location.href = this.collection.get(ruleID).url() + '/input';
+  },
+
+  _goEditOutput: function(e) {
+    e.stopPropagation();
+    var ruleID = $(e.currentTarget).parents('.rule-item').attr('id');
+    window.location.href = this.collection.get(ruleID).url() + '/output';
   },
 
   _delete: function(e) {

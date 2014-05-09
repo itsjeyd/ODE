@@ -11,8 +11,12 @@
     background-color: rgba(97, 204, 236, .2); /* #61CCEC */
 }
 
-.remove-button, .edit-button {
+.remove-button, .edit-input-button {
     margin-left: 5px;
+}
+
+.edit-output-button {
+    margin-left: 10px;
 }
 
 .similar-button {

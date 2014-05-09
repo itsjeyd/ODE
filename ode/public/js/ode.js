@@ -182,8 +182,14 @@ jQuery.similarButton = function(target) {
     .data('target', target);
 }
 
-jQuery.editButton = function(target) {
-  return $('<span>').addClass('glyphicon glyphicon-pencil edit-button')
+jQuery.editInputButton = function(target) {
+  return $('<span>').addClass('glyphicon glyphicon-log-in edit-input-button')
+    .data('target', target);
+}
+
+jQuery.editOutputButton = function(target) {
+  return $('<span>')
+    .addClass('glyphicon glyphicon-log-out edit-output-button')
     .data('target', target);
 }
 

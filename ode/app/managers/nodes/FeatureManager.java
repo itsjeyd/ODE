@@ -14,7 +14,9 @@ import constants.NodeType;
 import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
+import models.functions.ExistsFunction;
 import models.nodes.Feature;
+import models.nodes.OntologyNode;
 import models.nodes.Value;
 
 
@@ -22,6 +24,14 @@ public class FeatureManager extends NamedNodeManager {
 
     public static Promise<List<JsonNode>> all() {
         return LabeledNodeManager.all(NodeType.FEATURE);
+    }
+
+    public static Promise<Boolean> has(Feature feature, OntologyNode value) {
+        Promise<WS.Response> response = Neo4jService
+            .getTypedRelationshipVariableLength(
+                feature, value, RelationshipType.HAS, 1, 2);
+        Promise<JsonNode> json = response.map(new JsonFunction());
+        return json.map(new ExistsFunction());
     }
 
     public static Promise<Boolean> create(Feature feature) {

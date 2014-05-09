@@ -242,6 +242,21 @@ public class Neo4jService {
         return postCypherQuery(query);
     }
 
+    public static Promise<WS.Response> getTypedRelationshipVariableLength(
+        LabeledNodeWithProperties startNode,
+        LabeledNodeWithProperties endNode, RelationshipType type,
+        int minHops, int maxHops) {
+        String startNodeProps = buildConjunctiveConstraints(
+            "s", startNode.jsonProperties);
+        String endNodeProps = buildConjunctiveConstraints(
+            "e", endNode.jsonProperties);
+        String query = String.format(
+            "MATCH (s:%s)-[r:%s*%d..%d]->(e) WHERE %s AND %s RETURN r",
+            startNode.getLabel(), type.name(), minHops, maxHops,
+            startNodeProps, endNodeProps);
+        return postCypherQuery(query);
+    }
+
     public static Promise<WS.Response> createTypedRelationship(
         LabeledNodeWithProperties startNode,
         LabeledNodeWithProperties endNode, final RelationshipType type) {

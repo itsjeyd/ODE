@@ -224,8 +224,18 @@ public class Features extends Controller {
             feature = new AtomicFeature(name);
             target = new Value(targetName);
         }
-        Promise<Boolean> deleted = new AllowsRelationship(
-            feature, target).delete();
+        final Feature allowingFeature = feature;
+        Promise<Boolean> hasTarget = feature.has(target);
+        Promise<Boolean> deleted = hasTarget.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean hasTarget) {
+                    if (hasTarget) {
+                        return Promise.pure(false);
+                    }
+                    return new AllowsRelationship(allowingFeature, target)
+                        .delete();
+                }
+            });
         if (target.isValue()) {
             final Value value = (Value) target;
             deleted.onRedeem(

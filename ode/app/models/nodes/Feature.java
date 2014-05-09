@@ -124,6 +124,10 @@ public class Feature extends OntologyNode {
             });
     }
 
+    public Promise<Boolean> has(OntologyNode value) {
+        return FeatureManager.has(this, value);
+    }
+
     public static Promise<List<Feature>> all() {
         Promise<List<JsonNode>> json = FeatureManager.all();
         Promise<List<Feature>> features = json.map(new AllFunction());

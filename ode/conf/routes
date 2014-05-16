@@ -18,6 +18,10 @@ GET     /rules/:name/similar        controllers.Rules.similar(name: String)
 GET     /rules/:name/input          controllers.Rules.input(name: String)
 GET     /rules/:name/output         controllers.Rules.output(name: String)
 
+# Export
+GET     /rules/:name/lhs            controllers.Rules.lhs(name: String)
+GET     /rules/:name/rhs            controllers.Rules.rhs(name: String)
+
 # Editing
 POST    /rules                                            controllers.Rules.create()
 PUT     /rules/:name/name                                 controllers.Rules.updateName(name: String)

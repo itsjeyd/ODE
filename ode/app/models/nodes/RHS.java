@@ -36,7 +36,7 @@ public class RHS extends UUIDNode {
         return new RHS(rule);
     }
 
-    private Promise<JsonNode> toJSON() {
+    public Promise<JsonNode> toJSON() {
         Promise<List<JsonNode>> groups = this.getGroups().flatMap(
             new Function<List<CombinationGroup>, Promise<List<JsonNode>>>() {
                 public Promise<List<JsonNode>> apply(

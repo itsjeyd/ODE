@@ -22,6 +22,7 @@ import models.nodes.OutputString;
 import models.nodes.Part;
 import models.nodes.Value;
 import models.nodes.LHS;
+import models.nodes.RHS;
 import models.nodes.Rule;
 import models.nodes.Slot;
 import views.html.input;
@@ -92,6 +93,36 @@ public class Rules extends Controller {
             new Function<Tuple<List<Part>, Rule>, Result>() {
                 public Result apply(Tuple<List<Part>, Rule> results) {
                     return ok(output.render(results._1, results._2));
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> lhs(String name) {
+        Rule rule = new Rule(name);
+        Promise<JsonNode> lhsJSON = new LHS(rule).toJSON();
+        return lhsJSON.map(
+            new Function<JsonNode, Result>() {
+                public Result apply(JsonNode lhsJSON) {
+                    ObjectNode result = Json.newObject();
+                    result.put("json", lhsJSON);
+                    return ok(result);
+                }
+            });
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> rhs(String name) {
+        Rule rule = new Rule(name);
+        Promise<JsonNode> rhsJSON = new RHS(rule).toJSON();
+        return rhsJSON.map(
+            new Function<JsonNode, Result>() {
+                public Result apply(JsonNode rhsJSON) {
+                    ObjectNode result = Json.newObject();
+                    result.put("json", rhsJSON);
+                    return ok(result);
                 }
             });
     }

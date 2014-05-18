@@ -4,32 +4,64 @@ var Rule = Backbone.Model.extend({
     this.urlRoot = '/rules';
   },
 
-  getNativeFormat: function() {
-    var name = '// Name: @' + this.get('name') + '\n';
-    var doc = '// Description: ' + this.get('description') + '\n';
-    var nativeFormatLHS = this._nativeFormatLHS();
-    var nativeFormatRHS = this._nativeFormatRHS();
-    return $.when(nativeFormatLHS, nativeFormatRHS).then(function(x, y) {
-      var nativeFormat = x + '\n->\n' + y + '.\n\n';
-      return name + doc + nativeFormat;
+  withInputOutput: function() {
+    var rule = this;
+    var lhs = this._lhs();
+    var rhs = this._rhs();
+    return $.when(lhs, rhs).then(function(x, y) {
+      rule.set('lhs', x);
+      rule.set('rhs', y);
+      return rule;
     });
   },
 
-  _nativeFormatLHS: function() {
+  _lhs: function() {
     var lhs = new LHS({ ruleName: this.get('name') });
-    var promise = $.when(lhs.fetch()).then(function(model) {
-      return lhs.getNativeFormat();
+    return $.when(lhs.fetch()).then(function() {
+      return lhs;
     });
-    return promise;
   },
 
-  _nativeFormatRHS: function() {
+  _rhs: function() {
     var rhs = new RHS({ ruleName: this.get('name') });
-    var promise = $.when(rhs.fetch()).then(function(model) {
-      return rhs.getNativeFormat();
+    var jqXHR = rhs.fetch({ success: function(model, response, options) {
+      model.setCrossRefs();
+    }});
+    return $.when(jqXHR).then(function() {
+      return rhs;
     });
-    return promise;
-  }
+  },
+
+  setNativeFormat: function(processed) {
+    var nativeFormat = {};
+    nativeFormat.crossRefs = '';
+    _.each(this.get('rhs').get('crossRefs'), function(r) {
+      nativeFormat.crossRefs += processed[r].get('nativeFormat').rhs;
+    });
+    nativeFormat.name = this._nativeFormatName();
+    nativeFormat.desc = this._nativeFormatDesc();
+    nativeFormat.lhs = this.get('lhs').getNativeFormat();
+    nativeFormat.rhs = this.get('rhs').getNativeFormat();
+    this.set('nativeFormat', nativeFormat);
+  },
+
+  getNativeFormat: function() {
+    var nativeFormat = this.get('nativeFormat');
+    var outputVar = nativeFormat.rhs ?
+      '###' + this.get('name') + '_output' : '';
+    return nativeFormat.name + nativeFormat.desc +
+      ':dvp ^ ' + nativeFormat.lhs + '\n->\n' +
+      nativeFormat.crossRefs + nativeFormat.rhs +
+      '# ^ :canned ^ <stringOutput>' + outputVar + '.\n\n';
+  },
+
+  _nativeFormatName: function() {
+    return '// Name: @' + this.get('name') + '\n';
+  },
+
+  _nativeFormatDesc: function() {
+    return '// Description: ' + this.get('description') + '\n';
+  },
 
 });
 
@@ -37,7 +69,6 @@ var LHS = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleName') + '/lhs';
-    this.set('defaultFormat', ':dvp ^ ');
   },
 
   getNativeFormat: function() {
@@ -47,7 +78,7 @@ var LHS = Backbone.Model.extend({
                            type: p.attribute.type,
                            value: p.value }).getNativeFormat();
     });
-    return this.get('defaultFormat') + featureStrings.join(' ^ ');
+    return featureStrings.join(' ^ ');
   },
 
 });
@@ -82,13 +113,23 @@ var RHS = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleName') + '/rhs';
-    this.set('defaultFormat', '# ^ :canned ^ <stringOutput>');
+    this.set('outputVar', '###' + this.get('ruleName') + '_output');
+  },
+
+  setCrossRefs: function() {
+    var slots = _.flatten(_.map(this.get('json').groups, function(g) {
+      return g.partsTable.slots;
+    }), true);
+    var crossRefs = _.uniq(_.flatten(_.map(slots, function(slot) {
+      return slot.refs;
+    })));
+    this.set('crossRefs', crossRefs);
   },
 
   getNativeFormat: function() {
     var groups = this.get('json').groups;
     if (groups.length === 0) {
-      return this.get('defaultFormat');
+      return '';
     } else if (groups.length === 1) {
       return this._nativeFormatSingleGroup(groups.pop());
     } else {
@@ -98,11 +139,11 @@ var RHS = Backbone.Model.extend({
 
   _nativeFormatSingleGroup: function(group) {
     var nativeFormat = new CombinationGroup({ json: group })
-      .getNativeFormat();
+      .getNativeFormat(this.get('outputVar'));
     if (nativeFormat) {
-      return nativeFormat + '\n' + this.get('defaultFormat') + '###output';
+      return nativeFormat + '\n';
     } else {
-      return this.get('defaultFormat');
+      return '';
     }
   },
 
@@ -110,7 +151,7 @@ var RHS = Backbone.Model.extend({
     var counter = 1;
     var outputs = _.map(groups, function(g) {
       return new CombinationGroup({ json: g })
-        .getNativeFormat('output' + counter++);
+        .getNativeFormat('###output' + counter++);
     });
     if (outputs && _.some(outputs, function(o) {
       return o !== '';
@@ -119,10 +160,9 @@ var RHS = Backbone.Model.extend({
         return '###output' + i;
       });
       return outputs.join('\n') + '\n' +
-        '###output = random(' + variables.join(', ') + ')\n' +
-        this.get('defaultFormat') + '###output';
+        this.get('outputVar') + ' = random(' + variables.join(', ') + ')\n';
     } else {
-      return this.get('defaultFormat');
+      return '';
     }
   },
 
@@ -139,19 +179,18 @@ var CombinationGroup = Backbone.Model.extend({
   },
 
   getNativeFormat: function(variableName) {
-    var defaultFormat = '';
     var noOutputStrings = this._noOutputStrings();
     var slotsEmpty = this._slotsEmpty();
     if (noOutputStrings && slotsEmpty) {
-      return defaultFormat;
+      return '';
     } else if (noOutputStrings) {
       return this._nativeFormatParts(variableName);
     } else if (slotsEmpty) {
       return this._nativeFormatStrings(variableName);
     } else {
-      var x = this._nativeFormatStrings('x');
-      var y = this._nativeFormatParts('y');
-      return [x, y, '###' + (variableName || 'output') + ' = random(###x, ###y)'].join('\n');
+      var x = this._nativeFormatStrings('###x');
+      var y = this._nativeFormatParts('###y');
+      return [x, y, variableName + ' = random(###x, ###y)'].join('\n');
     }
   },
 
@@ -168,26 +207,28 @@ var CombinationGroup = Backbone.Model.extend({
   _nativeFormatParts: function(variableName) {
     var counter = 1;
     var parts = _.map(this.get('slots'), function(s) {
+      var refs = _.map(s.refs, function(r) {
+        return '###' + r + '_output';
+      }).join(', ');
       var contents = _.map(s.parts, function(p) {
         return p.content;
-      });
-      return '###part' + counter++ +
-        ' = random("' + contents.join('", "') + '")';
+      }).join('", "');
+      var choices = refs ? refs + ', "' + contents + '"' :
+        '"' + contents + '"';
+      return '###part' + counter++ + ' = random(' + choices + ')';
     });
     var variables = _.map(_.range(1, parts.length+1), function(i) {
       return '###part' + i;
     });
     return parts.join('\n') + '\n' +
-      '###' + (variableName || 'output') +
-      ' = concatenate(' + variables.join(', ') + ')';
+      variableName + ' = concatenate(' + variables.join(', ') + ')';
   },
 
   _nativeFormatStrings: function(variableName) {
     var strings = _.map(this.get('outputStrings'), function(os) {
       return os.content;
     });
-    return '###' + (variableName || 'output') +
-      ' = random("' + strings.join('", "') + '")';
+    return variableName + ' = random("' + strings.join('", "') + '")';
   },
 
 });
@@ -196,11 +237,52 @@ var RuleList = Backbone.Collection.extend({
 
   model: Rule,
 
-  exportRules: function() {
-    var promises = this.map(function(r) {
-      return r.getNativeFormat();
+  all: function(arrayOfPromises) {
+    return $.when.apply($, arrayOfPromises).then(function() {
+      return Array.prototype.slice.call(arguments, 0);
     });
-    return promises;
+  },
+
+  exportRules: function() {
+    var promises = this.map(function(rule) {
+      return rule.withInputOutput();
+    });
+    var ruleList = this;
+    return this.all(promises).then(function(rules) {
+      rules = rules.sort(function(r1, r2) {
+        return r1.get('rhs').get('crossRefs').length -
+          r2.get('rhs').get('crossRefs').length;
+      });
+      var nativeFormats = ruleList._nativeFormats(rules, {});
+      return nativeFormats;
+    });
+  },
+
+  _nativeFormats: function(rulesToProcess, processed) {
+    if (rulesToProcess.length === 0) {
+      var nativeFormats = [];
+      for (var r in processed) {
+        nativeFormats.push(processed[r].getNativeFormat());
+      }
+      return nativeFormats;
+    }
+    var stillToProcess = [];
+    _.each(rulesToProcess, function(rule) {
+      if (rule.get('rhs').get('crossRefs') === 0) {
+        rule.setNativeFormat();
+        processed[rule.get('name')] = rule;
+      } else {
+        if (_.every(rule.get('crossRefs'), function(r) {
+          return r in processed;
+        })) {
+          rule.setNativeFormat(processed);
+          processed[rule.get('name')] = rule;
+        } else {
+          stillToProcess.push(rule);
+        }
+      }
+    });
+    return this._nativeFormats(stillToProcess, processed);
   },
 
 });
@@ -359,13 +441,7 @@ $(document).ready(function() {
     var button = $(e.currentTarget);
     if (!button.attr('href')) {
 
-      function all(arrayOfPromises) {
-        return $.when.apply($, arrayOfPromises).then(function() {
-          return Array.prototype.slice.call(arguments, 0);
-        });
-      };
-
-      all(ruleList.exportRules()).then(function(content) {
+      ruleList.exportRules().then(function(content) {
         var blob = new Blob(content, { type : 'text/plain' });
         var url = (window.URL || window.webkitURL).createObjectURL(blob);
         button.attr('href', url);

@@ -47,3 +47,11 @@ input.description {
     margin-left: 5px;
     cursor: pointer;
 }
+
+.in-motion {
+    border-radius: 5px;
+    border: solid 1px #94D6EA;
+    padding-left: 3px;
+    padding-right: 3px;
+    background-color: #FFF;
+}

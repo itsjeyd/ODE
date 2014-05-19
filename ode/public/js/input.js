@@ -26,10 +26,21 @@ var FeatureItemView = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.text(this.model.get('name'));
+    var model = this.model;
+    this.$el.text(model.get('name'));
     this.$el.draggable({
-      helper: 'clone',
       revert: 'invalid',
+      appendTo: 'body',
+      zIndex: 1,
+      cursor: 'pointer',
+      helper: function(event) {
+        var helper = $.div('in-motion').data({
+          name: model.get('name'),
+          type: model.get('type'),
+          targets: '[' + model.get('targets') + ']',
+        }).text(model.get('name'));
+        return helper;
+      },
     });
     return this;
   }

@@ -1317,7 +1317,6 @@ var PartItemView = Backbone.View.extend({
       appendTo: 'body',
       zIndex: 1,
       cursor: 'pointer',
-      cursorAt: { top: 4, left: 10 },
       helper: function(event) {
         return $('<div>').addClass('in-motion').text($(this).text());
       },

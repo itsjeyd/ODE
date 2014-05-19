@@ -336,6 +336,14 @@ var RuleListView = Backbone.View.extend({
     'click .edit-input-button': '_goEditInput',
     'click .edit-output-button': '_goEditOutput',
     'click .remove-button': '_delete',
+    'mouseenter .similar-button': '_showTooltip',
+    'mouseenter .edit-input-button': '_showTooltip',
+    'mouseenter .edit-output-button': '_showTooltip',
+    'mouseenter .remove-button': '_showTooltip',
+  },
+
+  _showTooltip: function(e) {
+    var button = $(e.currentTarget).tooltip('show');
   },
 
   _active: function(e) { this._highlight(e); this._showControls(e); },
@@ -353,10 +361,18 @@ var RuleListView = Backbone.View.extend({
   _showControls: function(e) {
     var item = $(e.currentTarget);
     var controls = $('<span>').addClass('pull-right controls');
-    controls.append($.similarButton(item.attr('id')));
-    controls.append($.editInputButton(item.attr('id')));
-    controls.append($.editOutputButton(item.attr('id')));
-    controls.append($.removeButton(item.attr('id')));
+    controls.append($.similarButton(item.attr('id'))
+                    .tooltip({ placement: 'top',
+                               title: 'View similar rules' }));
+    controls.append($.editInputButton(item.attr('id'))
+                    .tooltip({ placement: 'top',
+                               title: 'Edit input' }));
+    controls.append($.editOutputButton(item.attr('id'))
+                    .tooltip({ placement: 'top',
+                               title: 'Edit output' }));
+    controls.append($.removeButton(item.attr('id'))
+                    .tooltip({ placement: 'top',
+                               title: 'Delete rule' }));
     item.find('h2').append(controls);
   },
 

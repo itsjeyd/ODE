@@ -116,13 +116,15 @@ var RuleView = Backbone.View.extend({
       this._saveEdits('description')(this)
     },
     'click .output-button': function() {
-      $('.modal-body').empty();
+      var modal = $('#show-output-modal');
+      var modalBody = modal.find('.modal-body')
+      modalBody.empty();
       var output = this.model.get('rhs').compileOutput();
       _.each(output, function(o) {
         var item = $('<p>').text(o);
-        $('.modal-body').append(item);
+        modalBody.append(item);
       });
-      $('.modal').modal();
+      modal.modal();
     },
   },
 

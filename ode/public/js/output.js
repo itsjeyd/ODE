@@ -965,6 +965,12 @@ var CombinationGroupView = Backbone.View.extend({
             groupView._resetPlaceholder();
           }});
     },
+    'blur .placeholder': function(e) {
+      var placeholder = $(e.currentTarget);
+      if (!placeholder.text()) {
+        this._resetPlaceholder();
+      }
+    },
   },
 
   _resetPlaceholder: function() {
@@ -1238,6 +1244,12 @@ var SlotView = Backbone.View.extend({
         }
         hiddenPart.show();
         inputField.remove();
+      }
+    },
+    'blur .placeholder': function(e) {
+      var placeholder = $(e.currentTarget);
+      if (!placeholder.text()) {
+        placeholder.text('...');
       }
     },
   },

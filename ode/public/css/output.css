@@ -121,3 +121,11 @@ hr {
 .placeholder + button, .form-control + button {
     margin-top: 5px;
 }
+
+.in-motion {
+    border-radius: 5px;
+    border: solid 1px #94D6EA;
+    padding-left: 3px;
+    padding-right: 3px;
+    background-color: #FFF;
+}

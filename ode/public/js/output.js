@@ -1298,8 +1298,14 @@ var PartItemView = Backbone.View.extend({
   render: function() {
     this.$el.text(this.model.get('content'));
     this.$el.draggable({
-      helper: 'clone',
       revert: 'invalid',
+      appendTo: 'body',
+      zIndex: 1,
+      cursor: 'pointer',
+      cursorAt: { top: 4, left: 10 },
+      helper: function(event) {
+        return $('<div>').addClass('in-motion').text($(this).text());
+      },
     });
     return this;
   }

@@ -545,8 +545,14 @@ var FeatureItemView = ItemView.extend({
       this.$el.append(removeButton);
     }
     this.$el.draggable({
-      helper: 'clone',
       revert: 'invalid',
+      appendTo: 'body',
+      zIndex: 1,
+      cursor: 'pointer',
+      helper: function(event) {
+        return $('<div>').addClass('in-motion').text($(this).text());
+      },
+
     });
     return this;
   },
@@ -575,8 +581,13 @@ var ValueItemView = ItemView.extend({
   render: function() {
     this.$el.text(this.model.get('name'));
     this.$el.draggable({
-      helper: 'clone',
       revert: 'invalid',
+      appendTo: 'body',
+      zIndex: 1,
+      cursor: 'pointer',
+      helper: function(event) {
+        return $('<div>').addClass('in-motion').text($(this).text());
+      },
     });
     return this;
   },

@@ -57,3 +57,11 @@ button.vname {
     margin-top: 5px;
     margin-bottom: 10px;
 }
+
+.in-motion {
+    border-radius: 5px;
+    border: solid 1px #94D6EA;
+    padding-left: 3px;
+    padding-right: 3px;
+    background-color: #FFF;
+}

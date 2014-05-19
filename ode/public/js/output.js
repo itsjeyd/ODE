@@ -730,6 +730,7 @@ var OutputStringView = Backbone.View.extend({
     var view = this;
     placeholder.droppable({
       accept: '.part',
+      tolerance: 'pointer',
       drop: function(e, ui) {
         var tokens = view.model.get('tokens');
         var partTokens = $(ui.helper).text().split(' ');
@@ -874,6 +875,7 @@ var CombinationGroupView = Backbone.View.extend({
     var groupView = this;
     placeholder.droppable({
       accept: '.part',
+      tolerance: 'pointer',
       drop: function(e, ui) {
         var content = $(ui.helper).text()
         var tokens = content.split(' ');
@@ -1126,6 +1128,7 @@ var SlotView = Backbone.View.extend({
     var view = this;
     placeholder.droppable({
       accept: '.part',
+      tolerance: 'pointer',
       drop: function(e, ui) {
         var part = new Part({ content: $(ui.helper).text(),
                               ruleID: view.model.get('ruleID'),

@@ -90,6 +90,8 @@ hr {
 }
 
 .output-string > .placeholder {
+    display: inline-block;
+    width: 40px;
     border: solid 2px #94D6EA;
     border-radius: 5px;
     margin-left: 12px;

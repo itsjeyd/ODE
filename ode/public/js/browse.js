@@ -354,14 +354,6 @@ Browse.View.RuleListView = Backbone.View.extend({
     'click .edit-input-button': '_goEditInput',
     'click .edit-output-button': '_goEditOutput',
     'click .remove-button': '_delete',
-    'mouseenter .similar-button': '_showTooltip',
-    'mouseenter .edit-input-button': '_showTooltip',
-    'mouseenter .edit-output-button': '_showTooltip',
-    'mouseenter .remove-button': '_showTooltip',
-  },
-
-  _showTooltip: function(e) {
-    var button = $(e.currentTarget).tooltip('show');
   },
 
   _active: function(e) { this._highlight(e); this._showControls(e); },

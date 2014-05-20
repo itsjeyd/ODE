@@ -1,10 +1,17 @@
+var Details = {};
+
+Details.Model = {};
+Details.Collection = {};
+Details.View = {};
+
+
 // Models
 
-var Pair = Backbone.Model.extend({
+Details.Model.Pair = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     this.parent = options.parent;
-    this.set('attribute', new Feature({
+    this.set('attribute', new Details.Model.Feature({
       name: options.attribute.name,
       type: options.attribute.type
     }));
@@ -15,35 +22,42 @@ var Pair = Backbone.Model.extend({
     if (typeof value === 'string') {
       this.set('value', value);
     } else {
-      this.set('value', new AVM(null, { json: value }));
+      this.set('value', new Details.Collection.AVM(null, { json: value }));
     }
   },
 
 });
 
-var Feature = Backbone.Model.extend({});
+Details.Model.Feature = Backbone.Model.extend({});
+
+Details.Model.OutputString = Backbone.Model.extend({});
+
+
 
 // Collections
 
-var AVM = Backbone.Collection.extend({
+Details.Collection.AVM = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     _.each(options.json.pairs, function(pair) {
-      this.add(new Pair(null, { parent: this,
-                                attribute: pair.attribute,
-                                value: pair.value }));
+      this.add(new Details.Model.Pair(null, { parent: this,
+                                              attribute: pair.attribute,
+                                              value: pair.value }));
     }, this);
   },
 
 });
 
-var RHS = Backbone.Collection.extend({
+
+Details.Collection.RHS = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     var outputStrings = [];
     _.each(options.json.groups, function(g) {
       _.each(g.outputStrings, function(os) {
-        outputStrings.push(new OutputString({ content: os.content }));
+        outputStrings.push(new Details.Model.OutputString({
+          content: os.content
+        }));
       });
       var parts = _.map(
         _.sortBy(g.partsTable.slots, function(s) {
@@ -55,7 +69,7 @@ var RHS = Backbone.Collection.extend({
           });
         });
       var combinations = _.map(this._cart(parts), function(os) {
-        return new OutputString({ content: os });
+        return new Details.Model.OutputString({ content: os });
       });
       outputStrings = outputStrings.concat(combinations);
     }, this);
@@ -111,12 +125,11 @@ var RHS = Backbone.Collection.extend({
 
 });
 
-var OutputString = Backbone.Model.extend({});
 
 
 // Views
 
-var AVMView = Backbone.View.extend({
+Details.View.AVMView = Backbone.View.extend({
 
   className: 'avm',
 
@@ -166,12 +179,15 @@ var AVMView = Backbone.View.extend({
   },
 
   _makePair: function(pair) {
-    return new PairView({ model: pair, parentView: this }).render().$el;
+    return new Details.View.PairView({
+      model: pair, parentView: this
+    }).render().$el;
   },
 
 });
 
-var PairView = Backbone.View.extend({
+
+Details.View.PairView = Backbone.View.extend({
 
   className: 'pair',
 
@@ -206,8 +222,10 @@ var PairView = Backbone.View.extend({
 
   _renderSubstructure: function() {
     var value = $.div('value');
-    var avmView = new AVMView({ collection: this.model.get('value'),
-                                parentView: this });
+    var avmView = new Details.View.AVMView({
+      collection: this.model.get('value'),
+      parentView: this
+    });
     value.append(avmView.render().$el);
     this.$el.append(value);
   },
@@ -219,7 +237,8 @@ var PairView = Backbone.View.extend({
 
 });
 
-var RHSView = Backbone.View.extend({
+
+Details.View.RHSView = Backbone.View.extend({
 
   render: function() {
     this.collection.each(function(os) {
@@ -232,14 +251,15 @@ var RHSView = Backbone.View.extend({
 });
 
 
+
 // Application
 
 $(document).ready(function() {
 
   var lhsJSON = $('#lhs').data('json');
-  var lhs = new AVM(null, { json: lhsJSON });
+  var lhs = new Details.Collection.AVM(null, { json: lhsJSON });
 
-  var lhsView = new AVMView({
+  var lhsView = new Details.View.AVMView({
     collection: lhs,
     el: '#lhs'
   });
@@ -247,9 +267,9 @@ $(document).ready(function() {
   lhsView.trigger('inserted');
 
   var rhsJSON = $('#rhs').data('json');
-  var rhs = new RHS(null, { json: rhsJSON });
+  var rhs = new Details.Collection.RHS(null, { json: rhsJSON });
 
-  var rhsView = new RHSView({
+  var rhsView = new Details.View.RHSView({
     collection: rhs,
     el: '#rhs'
   });

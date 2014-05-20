@@ -872,9 +872,12 @@ Output.View.CombinationGroupView = Backbone.View.extend({
     this.$('h4').remove();
     var groupHeader = $.h4('Group ' + this.model.get('position'));
     var small = $.small();
-    small.append($.plusButton());
-    small.append($.copyButton());
-    small.append($.removeButton());
+    small.append($.plusButton().tooltip({ placement: 'top',
+                                          title: 'Add group' }));
+    small.append($.copyButton().tooltip({ placement: 'top',
+                                          title: 'Copy group' }));
+    small.append($.removeButton().tooltip({ placement: 'top',
+                                          title: 'Delete group' }));
     groupHeader.append(small);
     groupHeader.insertBefore(this.$('.parts-table'));
   },
@@ -890,9 +893,12 @@ Output.View.CombinationGroupView = Backbone.View.extend({
   _renderHeader: function() {
     var groupHeader = $.h4('Group ' + this.model.get('position'));
     var small = $.small();
-    small.append($.plusButton());
-    small.append($.copyButton());
-    small.append($.removeButton());
+    small.append($.plusButton().tooltip({ placement: 'top',
+                                          title: 'Add group' }));
+    small.append($.copyButton().tooltip({ placement: 'top',
+                                          title: 'Copy group' }));
+    small.append($.removeButton().tooltip({ placement: 'top',
+                                          title: 'Delete group' }));
     groupHeader.append(small);
     this.$el.append(groupHeader);
   },

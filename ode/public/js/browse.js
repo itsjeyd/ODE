@@ -1,4 +1,11 @@
-var Rule = Backbone.Model.extend({
+var Browse = {};
+
+Browse.Model = {};
+Browse.Collection = {};
+Browse.View = {};
+
+
+Browse.Model.Rule = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules';
@@ -16,14 +23,14 @@ var Rule = Backbone.Model.extend({
   },
 
   _lhs: function() {
-    var lhs = new LHS({ ruleName: this.get('name') });
+    var lhs = new Browse.Model.LHS({ ruleName: this.get('name') });
     return $.when(lhs.fetch()).then(function() {
       return lhs;
     });
   },
 
   _rhs: function() {
-    var rhs = new RHS({ ruleName: this.get('name') });
+    var rhs = new Browse.Model.RHS({ ruleName: this.get('name') });
     var jqXHR = rhs.fetch({ success: function(model, response, options) {
       model.setCrossRefs();
     }});
@@ -65,7 +72,8 @@ var Rule = Backbone.Model.extend({
 
 });
 
-var LHS = Backbone.Model.extend({
+
+Browse.Model.LHS = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleName') + '/lhs';
@@ -74,16 +82,19 @@ var LHS = Backbone.Model.extend({
   getNativeFormat: function() {
     var pairs = this.get('json').pairs;
     var featureStrings = _.map(pairs, function(p) {
-      return new Feature({ name: p.attribute.name,
-                           type: p.attribute.type,
-                           value: p.value }).getNativeFormat();
+      return new Browse.Model.Feature({
+        name: p.attribute.name,
+        type: p.attribute.type,
+        value: p.value
+      }).getNativeFormat();
     });
     return featureStrings.join(' ^ ');
   },
 
 });
 
-var Feature = Backbone.Model.extend({
+
+Browse.Model.Feature = Backbone.Model.extend({
 
   getNativeFormat: function() {
       return this._nativeFormatName() + this._nativeFormatValue();
@@ -99,9 +110,11 @@ var Feature = Backbone.Model.extend({
       return value === 'underspecified' ? '' : value;
     } else {
       var embeddedFeatures = _.map(this.get('value').pairs, function(p) {
-        return new Feature({ name: p.attribute.name,
-                             type: p.attribute.type,
-                             value: p.value }).getNativeFormat();
+        return new Browse.Model.Feature({
+          name: p.attribute.name,
+          type: p.attribute.type,
+          value: p.value
+        }).getNativeFormat();
       });
       return '(' + embeddedFeatures.join(' ^ ') + ')';
     }
@@ -109,7 +122,8 @@ var Feature = Backbone.Model.extend({
 
 });
 
-var RHS = Backbone.Model.extend({
+
+Browse.Model.RHS = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleName') + '/rhs';
@@ -138,7 +152,7 @@ var RHS = Backbone.Model.extend({
   },
 
   _nativeFormatSingleGroup: function(group) {
-    var nativeFormat = new CombinationGroup({ json: group })
+    var nativeFormat = new Browse.Model.CombinationGroup({ json: group })
       .getNativeFormat(this.get('outputVar'));
     if (nativeFormat) {
       return nativeFormat + '\n';
@@ -150,7 +164,7 @@ var RHS = Backbone.Model.extend({
   _nativeFormatMultipleGroups: function(groups) {
     var counter = 1;
     var outputs = _.map(groups, function(g) {
-      return new CombinationGroup({ json: g })
+      return new Browse.Model.CombinationGroup({ json: g })
         .getNativeFormat('###output' + counter++);
     });
     if (outputs && _.some(outputs, function(o) {
@@ -168,7 +182,8 @@ var RHS = Backbone.Model.extend({
 
 });
 
-var CombinationGroup = Backbone.Model.extend({
+
+Browse.Model.CombinationGroup = Backbone.Model.extend({
 
   initialize: function() {
     var json = this.get('json');
@@ -233,9 +248,10 @@ var CombinationGroup = Backbone.Model.extend({
 
 });
 
-var RuleList = Backbone.Collection.extend({
 
-  model: Rule,
+Browse.Collection.RuleList = Backbone.Collection.extend({
+
+  model: Browse.Model.Rule,
 
   all: function(arrayOfPromises) {
     return $.when.apply($, arrayOfPromises).then(function() {
@@ -287,7 +303,8 @@ var RuleList = Backbone.Collection.extend({
 
 });
 
-var RuleItemView = Backbone.View.extend({
+
+Browse.View.RuleItemView = Backbone.View.extend({
 
   className: 'rule-item',
 
@@ -309,7 +326,8 @@ var RuleItemView = Backbone.View.extend({
 
 });
 
-var RuleListView = Backbone.View.extend({
+
+Browse.View.RuleListView = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on({
@@ -324,7 +342,7 @@ var RuleListView = Backbone.View.extend({
   },
 
   _addRuleItem: function(ruleItem) {
-    var ruleItemView = new RuleItemView({ model: ruleItem });
+    var ruleItemView = new Browse.View.RuleItemView({ model: ruleItem });
     this.$el.append(ruleItemView.render().$el);
   },
 
@@ -431,18 +449,20 @@ $(document).ready(function() {
 
   var ruleItems = $('.rule-item');
 
-  var ruleList = new RuleList(
+  var ruleList = new Browse.Collection.RuleList(
     _.map(ruleItems, function(i) {
       var item = $(i);
       var id = item.attr('id');
       var name = item.data('name');
       var description = item.data('description');
-      return new Rule({ id: name, name: name, description: description });
+      return new Browse.Model.Rule({
+        id: name, name: name, description: description
+      });
     }),
     { comparator: 'name' }
   );
 
-  var ruleListView = new RuleListView({
+  var ruleListView = new Browse.View.RuleListView({
     el: '#rule-list',
     collection: ruleList,
   });

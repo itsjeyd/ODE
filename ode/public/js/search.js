@@ -1,6 +1,13 @@
+var Search = {};
+
+Search.Model = {};
+Search.Collection = {};
+Search.View = {};
+
+
 // Models
 
-var SearchTarget = Backbone.Model.extend({
+Search.Model.SearchTarget = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/search';
@@ -24,16 +31,18 @@ var SearchTarget = Backbone.Model.extend({
       if (n.match(/^<.+>.*/i)) {
         var name = n.slice(1, n.indexOf('>'));
         var value = n.slice(n.indexOf('>') + 1);
-        this.get('features').add(new Feature({ name: name, value: value }));
+        this.get('features')
+          .add(new Search.Model.Feature({ name: name, value: value }));
       } else {
-        this.get('features').add(new Feature({ name: n }));
+        this.get('features')
+          .add(new Search.Model.Feature({ name: n }));
       }
     }, this);
   },
 
   addStrings: function(strings) {
     _.each(strings, function(s) {
-      this.get('strings').add(new String({ content: s }));
+      this.get('strings').add(new Search.Model.String({ content: s }));
     }, this);
   },
 
@@ -41,10 +50,13 @@ var SearchTarget = Backbone.Model.extend({
     this.save(null, {
       success: function(model, response, options) {
         var matchingRules = _.map(model.get('matchingRules'), function(r) {
-          return new Rule({ name: r.name, description: r.description });
+          return new Search.Model.Rule({
+            name: r.name, description: r.description
+          });
         });
         model.set('matchingRules',
-                  new Results(matchingRules, { comparator: 'name' }));
+                  new Search.Collection.Results(matchingRules,
+                                                { comparator: 'name' }));
         model.trigger('found');
       },
       error: function(model, response, options) {
@@ -55,16 +67,18 @@ var SearchTarget = Backbone.Model.extend({
 
 });
 
-var Feature = Backbone.Model.extend({
+
+Search.Model.Feature = Backbone.Model.extend({
 
   defaults: { value: '' }
 
 });
 
-var String = Backbone.Model.extend({});
+
+Search.Model.String = Backbone.Model.extend({});
 
 
-var Rule = Backbone.Model.extend({
+Search.Model.Rule = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules';
@@ -77,9 +91,10 @@ var Rule = Backbone.Model.extend({
 });
 
 
+
 // Collections
 
-var Results = Backbone.Collection.extend({
+Search.Collection.Results = Backbone.Collection.extend({
 
   initialize: function() {
     this.sortState = { name: 'ASC' };
@@ -99,9 +114,10 @@ var Results = Backbone.Collection.extend({
 });
 
 
+
 // Views
 
-var SearchTargetView = Backbone.View.extend({
+Search.View.SearchTargetView = Backbone.View.extend({
 
   initialize: function() {
     this.on({
@@ -124,7 +140,7 @@ var SearchTargetView = Backbone.View.extend({
   _showResults: function() {
     var results = this.$('#results');
     results.empty();
-    var resultView = new ResultView({
+    var resultView = new Search.View.ResultView({
       collection: this.model.get('matchingRules'),
       el: results,
     });
@@ -241,7 +257,8 @@ var SearchTargetView = Backbone.View.extend({
 
 });
 
-var ResultView = Backbone.View.extend({
+
+Search.View.ResultView = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on({
@@ -317,9 +334,9 @@ var ResultView = Backbone.View.extend({
 
 $(document).ready(function() {
 
-  var searchTarget = new SearchTarget();
+  var searchTarget = new Search.Model.SearchTarget();
 
-  var searchTargetView = new SearchTargetView({
+  var searchTargetView = new Search.View.SearchTargetView({
     model: searchTarget,
     el: '.container-full',
   });

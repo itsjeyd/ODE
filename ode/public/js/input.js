@@ -1,10 +1,17 @@
+var Input = {};
+
+Input.Model = {};
+Input.Collection = {};
+Input.View = {};
+
+
 // Features
 
-var Feature = Backbone.Model.extend({});
+Input.Model.Feature = Backbone.Model.extend({});
 
-var FeatureList = Backbone.Collection.extend({});
+Input.Collection.FeatureList = Backbone.Collection.extend({});
 
-var FeatureItemView = Backbone.View.extend({
+Input.View.FeatureItemView = Backbone.View.extend({
 
   className: 'feature-item draggable',
 
@@ -47,7 +54,8 @@ var FeatureItemView = Backbone.View.extend({
 
 });
 
-var FeatureListView = Backbone.View.extend({
+
+Input.View.FeatureListView = Backbone.View.extend({
 
   render: function() {
     this.$el.empty();
@@ -56,7 +64,9 @@ var FeatureListView = Backbone.View.extend({
   },
 
   _addFeatureItem: function(featureItem) {
-    var featureItemView = new FeatureItemView({ model: featureItem });
+    var featureItemView = new Input.View.FeatureItemView({
+      model: featureItem
+    });
     this.$el.append(featureItemView.render().$el);
   },
 
@@ -86,9 +96,10 @@ var FeatureListView = Backbone.View.extend({
 });
 
 
+
 // Rules
 
-var Rule = Backbone.Model.extend({
+Input.Model.Rule = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules';
@@ -120,7 +131,8 @@ var Rule = Backbone.Model.extend({
 
 });
 
-var RuleView = Backbone.View.extend({
+
+Input.View.RuleView = Backbone.View.extend({
 
   initialize: function() {
     this.model.on({
@@ -167,7 +179,9 @@ var RuleView = Backbone.View.extend({
   },
 
   _renderLHS: function() {
-    var lhsView = new AVMView({ collection: this.model.get('lhs') });
+    var lhsView = new Input.View.AVMView({
+      collection: this.model.get('lhs')
+    });
     this.$('#rule-lhs').append(lhsView.render().$el);
     lhsView.trigger('inserted');
   },
@@ -243,19 +257,7 @@ var RuleView = Backbone.View.extend({
 });
 
 
-// AVMs: models
-
-// ...
-
-
-// AVMs: views
-
-// ...
-
-
-
-
-var AVM = Backbone.Collection.extend({
+Input.Collection.AVM = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.ruleName = options.ruleName;
@@ -263,9 +265,9 @@ var AVM = Backbone.Collection.extend({
     this.accept = options.accept || '.feature-item';
     var avm = this;
     _.each(options.json.pairs, (function(pair) {
-      avm.add(new Pair(null, { parent: avm,
-                               attribute: pair.attribute,
-                               value: pair.value }));
+      avm.add(new Input.Model.Pair(
+        null, { parent: avm, attribute: pair.attribute, value: pair.value }
+      ));
     }));
   },
 
@@ -283,11 +285,12 @@ var AVM = Backbone.Collection.extend({
 
 });
 
-var Pair = Backbone.Model.extend({
+
+Input.Model.Pair = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     this.parent = options.parent;
-    this.set('attribute', new Feature({
+    this.set('attribute', new Input.Model.Feature({
       name: options.attribute.name,
       type: options.attribute.type,
       targets: options.attribute.targets
@@ -307,9 +310,11 @@ var Pair = Backbone.Model.extend({
       this.set('value', value);
     } else {
       var accept = '#' + this.get('attribute').get('targets').join(', #');
-      this.set('value', new AVM(null, { ruleName: this.parent.ruleName,
-                                        accept: accept,
-                                        json: value }));
+      this.set('value', new Input.Collection.AVM(
+        null, { ruleName: this.parent.ruleName,
+                accept: accept,
+                json: value }
+      ));
     }
   },
 
@@ -350,7 +355,8 @@ var Pair = Backbone.Model.extend({
 
 });
 
-var AVMView = Backbone.View.extend({
+
+Input.View.AVMView = Backbone.View.extend({
 
   className: 'avm',
 
@@ -429,7 +435,8 @@ var AVMView = Backbone.View.extend({
   },
 
   _makePair: function(pair) {
-    return new PairView({ model: pair, parentView: this }).render().$el;
+    return new Input.View.PairView({ model: pair, parentView: this })
+      .render().$el;
   },
 
   _makePlaceholder: function() {
@@ -446,7 +453,9 @@ var AVMView = Backbone.View.extend({
               type: item.data('type'),
               targets: item.dataToArray('targets'),
             };
-            new Pair(null, { parent: parent, attribute: attribute }).create();
+            new Input.Model.Pair(
+              null, { parent: parent, attribute: attribute }
+            ).create();
           } else {
             alert('You can not add the same feature twice.');
           }
@@ -479,7 +488,8 @@ var AVMView = Backbone.View.extend({
 
 });
 
-var PairView = Backbone.View.extend({
+
+Input.View.PairView = Backbone.View.extend({
 
   className: 'pair',
 
@@ -521,8 +531,10 @@ var PairView = Backbone.View.extend({
 
   _renderSubstructure: function() {
     var value = $.div('value');
-    var avmView = new AVMView({ collection: this.model.get('value'),
-                                parentView: this });
+    var avmView = new Input.View.AVMView({
+      collection: this.model.get('value'),
+      parentView: this
+    });
     value.append(avmView.render().$el);
     this.$el.append(value);
     this.listenTo(avmView,
@@ -579,11 +591,11 @@ $(document).ready(function() {
 
   var featureItems = $('.feature-item');
 
-  var featureList = new FeatureList(
+  var featureList = new Input.Collection.FeatureList(
     _.map(featureItems, function(i) {
       var item = $(i);
       var name = item.data('name');
-      return new Feature({
+      return new Input.Model.Feature({
         id: name,
         name: name,
         type: item.data('type'),
@@ -594,7 +606,7 @@ $(document).ready(function() {
     { comparator: 'name' }
   );
 
-  var featureListView = new FeatureListView({
+  var featureListView = new Input.View.FeatureListView({
     el: '#feature-list',
     collection: featureList,
   });
@@ -611,16 +623,18 @@ $(document).ready(function() {
   var description = $('#rule-description').text();
   var lhsJSON = $('#rule-lhs').data('json');
 
-  var lhs = new AVM(null, { ruleName: name, json: lhsJSON });
+  var lhs = new Input.Collection.AVM(
+    null, { ruleName: name, json: lhsJSON }
+  );
 
-  var rule = new Rule({
+  var rule = new Input.Model.Rule({
     id: name,
     name: name,
     description: description,
     lhs: lhs,
   });
 
-  var ruleView = new RuleView({
+  var ruleView = new Input.View.RuleView({
     model: rule,
     el: '#interaction-block',
   });

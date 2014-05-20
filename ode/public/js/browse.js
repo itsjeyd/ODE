@@ -378,24 +378,28 @@ Browse.View.RuleListView = Backbone.View.extend({
 
   _showControls: function(e) {
     var item = $(e.currentTarget);
-    var controls = $('<span>').addClass('pull-right controls');
-    controls.append($.similarButton(item.attr('id'))
-                    .tooltip({ placement: 'top',
-                               title: 'View similar rules' }));
-    controls.append($.editInputButton(item.attr('id'))
-                    .tooltip({ placement: 'top',
-                               title: 'Edit input' }));
-    controls.append($.editOutputButton(item.attr('id'))
-                    .tooltip({ placement: 'top',
-                               title: 'Edit output' }));
-    controls.append($.removeButton(item.attr('id'))
-                    .tooltip({ placement: 'top',
-                               title: 'Delete rule' }));
-    item.find('h2').append(controls);
+    if (!item.find('.controls').exists()) {
+      var controls = $('<span>').addClass('pull-right controls');
+      controls.append($.similarButton(item.attr('id'))
+                      .tooltip({ placement: 'top',
+                                 title: 'View similar rules' }));
+      controls.append($.editInputButton(item.attr('id'))
+                      .tooltip({ placement: 'top',
+                                 title: 'Edit input' }));
+      controls.append($.editOutputButton(item.attr('id'))
+                      .tooltip({ placement: 'top',
+                                 title: 'Edit output' }));
+      controls.append($.removeButton(item.attr('id'))
+                      .tooltip({ placement: 'top',
+                                 title: 'Delete rule' }));
+      item.find('h2').append(controls);
+    } else {
+      item.find('.controls').show();
+    }
   },
 
   _hideControls: function(e) {
-    $(e.currentTarget).find('.controls').remove() },
+    $(e.currentTarget).find('.controls').hide() },
 
   _goSimilar: function(e) {
     e.stopPropagation();

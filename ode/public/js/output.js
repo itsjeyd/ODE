@@ -1,6 +1,13 @@
+var Output = {};
+
+Output.Model = {};
+Output.Collection = {};
+Output.View = {};
+
+
 // Rules
 
-var Rule = Backbone.Model.extend({
+Output.Model.Rule = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules';
@@ -32,7 +39,8 @@ var Rule = Backbone.Model.extend({
 
 });
 
-var RuleView = Backbone.View.extend({
+
+Output.View.RuleView = Backbone.View.extend({
 
   initialize: function() {
     this.model.on({
@@ -86,8 +94,10 @@ var RuleView = Backbone.View.extend({
   },
 
   _renderRHS: function() {
-    var rhsView = new RHSView({ model: this.model.get('rhs'),
-                                el: this.$('#rule-rhs') });
+    var rhsView = new Output.View.RHSView({
+      model: this.model.get('rhs'),
+      el: this.$('#rule-rhs')
+    });
     rhsView.render();
   },
 
@@ -172,14 +182,18 @@ var RuleView = Backbone.View.extend({
 
 });
 
+
+
 // Input: Models
 
-var AbbreviatedLHS = Backbone.Model.extend({
+Output.Model.AbbreviatedLHS = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     var pairs = [];
     _.each(options.json.pairs, function(p) {
-      var pair = new AbbreviatedPair({ attribute: p.attribute.name });
+      var pair = new Output.Model.AbbreviatedPair({
+        attribute: p.attribute.name
+      });
       if (p.attribute.type === 'atomic') {
         pair.set('value', p.value);
       } else {
@@ -192,12 +206,13 @@ var AbbreviatedLHS = Backbone.Model.extend({
 
 });
 
-var AbbreviatedPair = Backbone.Model.extend({});
+Output.Model.AbbreviatedPair = Backbone.Model.extend({});
+
 
 
 // Input: Views
 
-var AbbreviatedLHSView = Backbone.View.extend({
+Output.View.AbbreviatedLHSView = Backbone.View.extend({
 
   initialize: function() {
     this.on({
@@ -219,7 +234,8 @@ var AbbreviatedLHSView = Backbone.View.extend({
   },
 
   _renderPair: function(pair) {
-    return new AbbreviatedPairView({ model: pair }).render().$el;
+    return new Output.View.AbbreviatedPairView({ model: pair })
+      .render().$el;
   },
 
   _renderBrackets: function() {
@@ -238,7 +254,8 @@ var AbbreviatedLHSView = Backbone.View.extend({
 
 });
 
-var AbbreviatedPairView = Backbone.View.extend({
+
+Output.View.AbbreviatedPairView = Backbone.View.extend({
 
   render: function() {
     this._renderAttr();
@@ -259,17 +276,20 @@ var AbbreviatedPairView = Backbone.View.extend({
 });
 
 
+
 // Output: Models
 
-var RHS = Backbone.Model.extend({
+Output.Model.RHS = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     var groups = [];
     _.each(options.json.groups, function(g) {
-      var group = new CombinationGroup({ id: g.uuid,
-                                         position: g.position,
-                                         ruleID: this.get('ruleID') },
-                                       { json: g });
+      var group = new Output.Model.CombinationGroup(
+        { id: g.uuid,
+          position: g.position,
+          ruleID: this.get('ruleID') },
+        { json: g }
+      );
       groups.push(group);
     }, this);
     this.set('groups', new Backbone.Collection(groups,
@@ -304,7 +324,8 @@ var RHS = Backbone.Model.extend({
 
 });
 
-var Part = Backbone.Model.extend({
+
+Output.Model.Part = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
@@ -313,13 +334,15 @@ var Part = Backbone.Model.extend({
 
 });
 
-var PartsInventory = Backbone.Collection.extend({
 
-  model: Part,
+Output.Collection.PartsInventory = Backbone.Collection.extend({
+
+  model: Output.Model.Part,
 
 });
 
-var OutputString = Backbone.Model.extend({
+
+Output.Model.OutputString = Backbone.Model.extend({
 
   defaults: { tokens: [] },
 
@@ -335,41 +358,50 @@ var OutputString = Backbone.Model.extend({
 
 });
 
-var CombinationGroup = Backbone.Model.extend({
+
+Output.Model.CombinationGroup = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
     this.urlRoot = '/rules/' + this.get('ruleID') + '/groups';
     if (options.json) {
       var outputStrings = _.map(options.json.outputStrings, function(os) {
-        return new OutputString({ id: os.uuid,
-                                  tokens: os.tokens,
-                                  content: os.content,
-                                  ruleID: this.get('ruleID'),
-                                  groupID: this.id });
+        return new Output.Model.OutputString({
+          id: os.uuid,
+          tokens: os.tokens,
+          content: os.content,
+          ruleID: this.get('ruleID'),
+          groupID: this.id
+        });
       }, this);
       this.set('outputStrings', new Backbone.Collection(outputStrings));
       var slots = _.map(options.json.partsTable.slots, function(s) {
         var parts = _.map(s.parts, function(p) {
-          return new Part({ id: p.uuid,
-                            content: p.content,
-                            ruleID: this.get('ruleID'),
-                            groupID: this.id,
-                            slotID: s.uuid });
+          return new Output.Model.Part({
+            id: p.uuid,
+            content: p.content,
+            ruleID: this.get('ruleID'),
+            groupID: this.id,
+            slotID: s.uuid
+          });
         }, this);
         var refs = _.map(s.refs, function(r) {
-          return new CrossRef({ id: r,
-                                ruleID: this.get('ruleID'),
-                                groupID: this.id,
-                                slotID: s.uuid });
+          return new Output.Model.CrossRef({
+            id: r,
+            ruleID: this.get('ruleID'),
+            groupID: this.id,
+            slotID: s.uuid
+          });
         }, this);
-        return new Slot({ id: s.uuid,
-                          position: s.position,
-                          parts: new Backbone.Collection(parts),
-                          refs: new Backbone.Collection(refs),
-                          ruleID: this.get('ruleID'),
-                          groupID: this.id });
+        return new Output.Model.Slot({
+          id: s.uuid,
+          position: s.position,
+          parts: new Backbone.Collection(parts),
+          refs: new Backbone.Collection(refs),
+          ruleID: this.get('ruleID'),
+          groupID: this.id
+        });
       }, this);
-      this.set('partsTable', new PartsTable({
+      this.set('partsTable', new Output.Model.PartsTable({
         slots: new Backbone.Collection(slots, { comparator: 'position' }),
         ruleID: this.get('ruleID'),
         groupID: this.id,
@@ -396,11 +428,12 @@ var CombinationGroup = Backbone.Model.extend({
   addStrings: function(strings) {
     var group = this;
     strings.each(function(os) {
-      var string = new OutputString({ tokens: os.get('tokens'),
-                                      content: os.get('tokens').join(' '),
-                                      ruleID: group.get('ruleID'),
-                                      groupID: group.id,
-                                    });
+      var string = new Output.Model.OutputString({
+        tokens: os.get('tokens'),
+        content: os.get('tokens').join(' '),
+        ruleID: group.get('ruleID'),
+        groupID: group.id,
+      });
       string.save(null, { wait: true,
                           success: function(model, response, options) {
                             group.get('outputStrings').add(model);
@@ -411,22 +444,24 @@ var CombinationGroup = Backbone.Model.extend({
 
   addPartsTable: function(partsTable) {
     var group = this;
-    var partsTableCopy = new PartsTable({
+    var partsTableCopy = new Output.Model.PartsTable({
       slots: new Backbone.Collection([], { comparator: 'position' }),
       ruleID: group.get('ruleID'),
       groupID: group.id,
     });
     partsTable.get('slots').each(function(s) {
-      var slot = new Slot({ position: s.get('position'),
-                            parts: new Backbone.Collection([]),
-                            refs: new Backbone.Collection([]),
-                            ruleID: group.get('ruleID'),
-                            groupID: group.id });
+      var slot = new Output.Model.Slot({
+        position: s.get('position'),
+        parts: new Backbone.Collection([]),
+        refs: new Backbone.Collection([]),
+        ruleID: group.get('ruleID'),
+        groupID: group.id
+      });
       slot.save(null, { wait: true,
                         success: function(model, response, options) {
                           partsTableCopy.get('slots').add(model);
                           s.get('parts').each(function(p) {
-                            var part = new Part({
+                            var part = new Output.Model.Part({
                               content: p.get('content'),
                               ruleID: group.get('ruleID'),
                               groupID: group.id,
@@ -453,7 +488,8 @@ var CombinationGroup = Backbone.Model.extend({
 
 });
 
-var PartsTable = Backbone.Model.extend({
+
+Output.Model.PartsTable = Backbone.Model.extend({
 
   initialize: function() {
     this.get('slots').on({
@@ -477,12 +513,13 @@ var PartsTable = Backbone.Model.extend({
   },
 
   _makeSlot: function(position, tokens) {
-    var slot = new Slot({ position: position,
-                          parts: new Backbone.Collection([]),
-                          refs: new Backbone.Collection([]),
-                          ruleID: this.get('ruleID'),
-                          groupID: this.get('groupID'),
-                        });
+    var slot = new Output.Model.Slot({
+      position: position,
+      parts: new Backbone.Collection([]),
+      refs: new Backbone.Collection([]),
+      ruleID: this.get('ruleID'),
+      groupID: this.get('groupID'),
+    });
     var partsTable = this;
     return slot.save(null,
                      { wait: true,
@@ -521,7 +558,7 @@ var PartsTable = Backbone.Model.extend({
   },
 
   _makePart: function(content, slot) {
-    return new Part({
+    return new Output.Model.Part({
       content: content,
       ruleID: this.get('ruleID'),
       groupID: this.get('groupID'),
@@ -591,7 +628,8 @@ var PartsTable = Backbone.Model.extend({
 
 });
 
-var Slot = Backbone.Model.extend({
+
+Output.Model.Slot = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
@@ -613,7 +651,8 @@ var Slot = Backbone.Model.extend({
 
 });
 
-var CrossRef = Backbone.Model.extend({
+
+Output.Model.CrossRef = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/rules/' + this.get('ruleID') + '/groups/' +
@@ -623,9 +662,10 @@ var CrossRef = Backbone.Model.extend({
 });
 
 
+
 // Output: Views
 
-var RHSView = Backbone.View.extend({
+Output.View.RHSView = Backbone.View.extend({
 
   initialize: function() {
     this.model.get('groups').on({
@@ -639,7 +679,9 @@ var RHSView = Backbone.View.extend({
         });
       },
       'add': function(newGroup) {
-        var groupView = new CombinationGroupView({ model: newGroup });
+        var groupView = new Output.View.CombinationGroupView({
+          model: newGroup
+        });
         var prevPos = newGroup.get('position') - 1;
         groupView.render().$el
           .insertAfter(this.$('[data-position="' + prevPos + '"]'));
@@ -656,7 +698,7 @@ var RHSView = Backbone.View.extend({
 
   _renderGroups: function() {
     this.model.get('groups').each(function(group) {
-      var groupView = new CombinationGroupView({ model: group });
+      var groupView = new Output.View.CombinationGroupView({ model: group });
       this.$el.append(groupView.render().$el);
       this.listenTo(groupView, 'added', this._addGroup);
       this.listenTo(groupView, 'copied', this._copyGroup);
@@ -701,7 +743,8 @@ var RHSView = Backbone.View.extend({
 
 });
 
-var OutputStringView = Backbone.View.extend({
+
+Output.View.OutputStringView = Backbone.View.extend({
 
   className: 'output-string',
 
@@ -796,7 +839,8 @@ var OutputStringView = Backbone.View.extend({
 
 });
 
-var CombinationGroupView = Backbone.View.extend({
+
+Output.View.CombinationGroupView = Backbone.View.extend({
 
   className: 'combination-group',
 
@@ -854,7 +898,7 @@ var CombinationGroupView = Backbone.View.extend({
   },
 
   _renderPartsTable: function() {
-    this.$el.append(new PartsTableView({
+    this.$el.append(new Output.View.PartsTableView({
       model: this.model.get('partsTable')
     }).render().$el);
   },
@@ -862,7 +906,9 @@ var CombinationGroupView = Backbone.View.extend({
   _renderOutputStrings: function() {
     var list = $.div('output-strings');
     this.model.get('outputStrings').each(function(os) {
-      list.append(new OutputStringView({ model: os }).render().$el);
+      list.append(new Output.View.OutputStringView({
+        model: os
+      }).render().$el);
     });
     this.$el.append(list);
   },
@@ -879,7 +925,7 @@ var CombinationGroupView = Backbone.View.extend({
       drop: function(e, ui) {
         var content = $(ui.helper).text()
         var tokens = content.split(' ');
-        var outputString = new OutputString({
+        var outputString = new Output.Model.OutputString({
           tokens: tokens,
           content: content,
           ruleID: group.get('ruleID'),
@@ -890,7 +936,7 @@ var CombinationGroupView = Backbone.View.extend({
           { success: function(model, response, options) {
             group.addOutputString(outputString);
             var outputStringView =
-              new OutputStringView({ model: outputString });
+              new Output.View.OutputStringView({ model: outputString });
             outputStringView.render().$el.insertBefore(placeholder);
             groupView._resetPlaceholder();
           }});
@@ -903,7 +949,7 @@ var CombinationGroupView = Backbone.View.extend({
     'click .plus-button': function(e) {
       var json = { outputStrings: [],
                    partsTable: { slots: [] } }
-      var emptyGroup = new CombinationGroup(
+      var emptyGroup = new Output.Model.CombinationGroup(
         { position: this.model.get('position') + 1,
           ruleID: this.model.get('ruleID') },
         { json: json });
@@ -912,7 +958,7 @@ var CombinationGroupView = Backbone.View.extend({
     'click .copy-button': function(e) {
       var json = { outputStrings: [],
                    partsTable: { slots: [] } }
-      var groupCopy = new CombinationGroup(
+      var groupCopy = new Output.Model.CombinationGroup(
         { position: this.model.get('position') + 1,
           ruleID: this.model.get('ruleID') },
         { json: json });
@@ -946,7 +992,7 @@ var CombinationGroupView = Backbone.View.extend({
     'click .placeholder + button': function(e) {
       var placeholder = $(e.currentTarget).prev('.placeholder');
       var tokens = placeholder.text().split(' ');
-      var outputString = new OutputString({
+      var outputString = new Output.Model.OutputString({
         content: placeholder.text(),
         tokens: tokens,
         ruleID: this.model.get('ruleID'),
@@ -960,7 +1006,7 @@ var CombinationGroupView = Backbone.View.extend({
           success: function(model, response, options) {
             group.addOutputString(outputString);
             var outputStringView =
-              new OutputStringView({ model: outputString });
+              new Output.View.OutputStringView({ model: outputString });
             outputStringView.render().$el.insertBefore(placeholder);
             groupView._resetPlaceholder();
           }});
@@ -981,7 +1027,8 @@ var CombinationGroupView = Backbone.View.extend({
 
 });
 
-var PartsTableView = Backbone.View.extend({
+
+Output.View.PartsTableView = Backbone.View.extend({
 
   className: 'parts-table',
 
@@ -999,7 +1046,7 @@ var PartsTableView = Backbone.View.extend({
       'add': function(slot) {
         this.$('.controls').remove();
         var slots = this.$('.slots');
-        var slotView = new SlotView({ model: slot });
+        var slotView = new Output.View.SlotView({ model: slot });
         slots.append(slotView.render().$el);
         this._renderControls();
         slots.show();
@@ -1016,7 +1063,7 @@ var PartsTableView = Backbone.View.extend({
   _renderSlots: function() {
     var slots = $.div('slots');
     this.model.get('slots').each(function(slot) {
-      slots.append(new SlotView({ model: slot }).render().$el);
+      slots.append(new Output.View.SlotView({ model: slot }).render().$el);
     });
     this.$el.append(slots);
     if (this.model.get('slots').size() === 0) {
@@ -1048,12 +1095,13 @@ var PartsTableView = Backbone.View.extend({
 
   _addSlot: function() {
     var position = this.model.get('slots').size() + 1;
-    var slot = new Slot({ position: position,
-                          parts: new Backbone.Collection([]),
-                          refs: new Backbone.Collection([]),
-                          ruleID: this.model.get('ruleID'),
-                          groupID: this.model.get('groupID'),
-                        });
+    var slot = new Output.Model.Slot({
+      position: position,
+      parts: new Backbone.Collection([]),
+      refs: new Backbone.Collection([]),
+      ruleID: this.model.get('ruleID'),
+      groupID: this.model.get('groupID'),
+    });
     var partsTable = this.model;
     slot.save(null,
               { wait: true,
@@ -1064,7 +1112,8 @@ var PartsTableView = Backbone.View.extend({
 
 });
 
-var SlotView = Backbone.View.extend({
+
+Output.View.SlotView = Backbone.View.extend({
 
   className: 'slot',
 
@@ -1136,11 +1185,12 @@ var SlotView = Backbone.View.extend({
       accept: '.part',
       tolerance: 'pointer',
       drop: function(e, ui) {
-        var part = new Part({ content: $(ui.helper).text(),
-                              ruleID: view.model.get('ruleID'),
-                              groupID: view.model.get('groupID'),
-                              slotID: view.model.id,
-                            });
+        var part = new Output.Model.Part({
+          content: $(ui.helper).text(),
+          ruleID: view.model.get('ruleID'),
+          groupID: view.model.get('groupID'),
+          slotID: view.model.id,
+        });
         part.save(null,
                   { success: function(model, response, options) {
                     view.model.add(part);
@@ -1198,7 +1248,7 @@ var SlotView = Backbone.View.extend({
         var slot = this.model;
         var text = $(e.currentTarget).text();
         if (text.charAt(0) === '@') {
-          var crossRef = new CrossRef({
+          var crossRef = new Output.Model.CrossRef({
             ruleName: text.substring(1),
             ruleID: slot.get('ruleID'),
             groupID: slot.get('groupID'),
@@ -1214,7 +1264,7 @@ var SlotView = Backbone.View.extend({
                                   alert(response.message);
                                 }});
         } else {
-          var part = new Part({
+          var part = new Output.Model.Part({
             content: text,
             ruleID: slot.get('ruleID'),
             groupID: slot.get('groupID'),
@@ -1266,7 +1316,8 @@ var SlotView = Backbone.View.extend({
 
 });
 
-var PartsInventoryView = Backbone.View.extend({
+
+Output.View.PartsInventoryView = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on({
@@ -1283,7 +1334,7 @@ var PartsInventoryView = Backbone.View.extend({
   },
 
   _renderPart: function(part) {
-    var partItemView = new PartItemView({ model: part });
+    var partItemView = new Output.View.PartItemView({ model: part });
     this.$el.append(partItemView.render().$el);
   },
 
@@ -1299,7 +1350,8 @@ var PartsInventoryView = Backbone.View.extend({
 
 });
 
-var PartItemView = Backbone.View.extend({
+
+Output.View.PartItemView = Backbone.View.extend({
 
   className: 'part draggable',
 
@@ -1327,6 +1379,7 @@ var PartItemView = Backbone.View.extend({
 });
 
 
+
 // Application
 
 $(document).ready(function() {
@@ -1335,14 +1388,14 @@ $(document).ready(function() {
 
   var parts = $('.part');
 
-  var partsInventory = new PartsInventory(
+  var partsInventory = new Output.Collection.PartsInventory(
     _.map(parts, function(p) {
-      return new Part({ content: $(p).data('content') });
+      return new Output.Model.Part({ content: $(p).data('content') });
     }),
     { comparator: 'content' }
   );
 
-  var partsInventoryView = new PartsInventoryView({
+  var partsInventoryView = new Output.View.PartsInventoryView({
     el: '#parts-list',
     collection: partsInventory,
   });
@@ -1356,8 +1409,8 @@ $(document).ready(function() {
   // Output Builder
 
   var lhsJSON = $('#rule-lhs').data('json');
-  var lhs = new AbbreviatedLHS(null, { json: lhsJSON });
-  var lhsView = new AbbreviatedLHSView({
+  var lhs = new Output.Model.AbbreviatedLHS(null, { json: lhsJSON });
+  var lhsView = new Output.View.AbbreviatedLHSView({
     model: lhs,
     el: '#rule-lhs',
   });
@@ -1368,16 +1421,16 @@ $(document).ready(function() {
   var description = $('#rule-description').text();
   var rhsJSON = $('#rule-rhs').data('json');
 
-  var rhs = new RHS({ ruleID: name }, { json: rhsJSON });
+  var rhs = new Output.Model.RHS({ ruleID: name }, { json: rhsJSON });
 
-  var rule = new Rule({
+  var rule = new Output.Model.Rule({
     id: name,
     name: name,
     description: description,
     rhs: rhs,
   });
 
-  var ruleView = new RuleView({
+  var ruleView = new Output.View.RuleView({
     model: rule,
     el: '#interaction-block',
   });

@@ -1,4 +1,9 @@
-var NewRule = Backbone.Model.extend({
+var Header = {};
+
+Header.Model = {};
+
+
+Header.Model.NewRule = Backbone.Model.extend({
 
   defaults: {
     description: '...',
@@ -9,6 +14,10 @@ var NewRule = Backbone.Model.extend({
   },
 
 });
+
+
+
+// Application
 
 $(document).ready(function() {
 
@@ -30,7 +39,7 @@ $(document).ready(function() {
       nameField.parents('.form-group').addClass('has-error');
       nameField.next('.help-block').text('This field can not be empty.');
     } else {
-      var newRule = new NewRule({ name: name });
+      var newRule = new Header.Model.NewRule({ name: name });
       var description = $('#new-rule-description').val();
       if (description) {
         newRule.set('description', description);

@@ -1,6 +1,13 @@
+var Features = {};
+
+Features.Model = {};
+Features.Collection = {};
+Features.View = {};
+
+
 // Models
 
-var Feature = Backbone.Model.extend({
+Features.Model.Feature = Backbone.Model.extend({
 
   defaults: {
     targets: [],
@@ -114,7 +121,7 @@ var Feature = Backbone.Model.extend({
 });
 
 
-var Value = Backbone.Model.extend({
+Features.Model.Value = Backbone.Model.extend({
 
   initialize: function() {
     this.urlRoot = '/values'
@@ -141,9 +148,9 @@ var Value = Backbone.Model.extend({
 
 // Collections
 
-var FeatureList = Backbone.Collection.extend({
+Features.Collection.FeatureList = Backbone.Collection.extend({
 
-  model: Feature,
+  model: Features.Model.Feature,
 
   initialize: function() {
     this.on({
@@ -171,9 +178,10 @@ var FeatureList = Backbone.Collection.extend({
 
 });
 
-var ValueList = Backbone.Collection.extend({
 
-  model: Value,
+Features.Collection.ValueList = Backbone.Collection.extend({
+
+  model: Features.Model.Value,
 
   initialize: function() {
     this.on({
@@ -195,7 +203,7 @@ var ValueList = Backbone.Collection.extend({
       return v.get('name') === name;
     });
     if (!exists) {
-      this.add(new Value({ id: name, name: name }));
+      this.add(new Features.Model.Value({ id: name, name: name }));
     }
   },
 
@@ -221,7 +229,7 @@ var ValueList = Backbone.Collection.extend({
 
 // Model views
 
-var FeatureFormView = Backbone.View.extend({
+Features.View.FeatureFormView = Backbone.View.extend({
 
   initialize: function() {
     this.on({
@@ -272,16 +280,18 @@ var FeatureFormView = Backbone.View.extend({
     var name = this.$('#fname').val();
     var description = this.$('#fdescription').val();
     var type = this.$('.ftype:checked').val();
-    var feature = new Feature({ name: name,
-                                description: description,
-                                type: type,
-                              });
+    var feature = new Features.Model.Feature({
+      name: name,
+      description: description,
+      type: type,
+    });
     feature.create(this);
   },
 
 });
 
-var FeatureView = Backbone.View.extend({
+
+Features.View.FeatureView = Backbone.View.extend({
 
   initialize: function() {
     this.model.on({
@@ -510,7 +520,7 @@ var FeatureView = Backbone.View.extend({
 });
 
 
-var ItemView = Backbone.View.extend({
+Features.View.ItemView = Backbone.View.extend({
 
   attributes: function() {
     return {
@@ -529,12 +539,12 @@ var ItemView = Backbone.View.extend({
 });
 
 
-var FeatureItemView = ItemView.extend({
+Features.View.FeatureItemView = Features.View.ItemView.extend({
 
   className: 'feature-item draggable',
 
   initialize: function() {
-    ItemView.prototype.initialize.apply(this);
+    Features.View.ItemView.prototype.initialize.apply(this);
   },
 
   render: function() {
@@ -560,12 +570,12 @@ var FeatureItemView = ItemView.extend({
 });
 
 
-var ValueItemView = ItemView.extend({
+Features.View.ValueItemView = Features.View.ItemView.extend({
 
   className: 'value-item draggable',
 
   initialize: function() {
-    ItemView.prototype.initialize.apply(this);
+    Features.View.ItemView.prototype.initialize.apply(this);
     this.model.on({
       'change': this.render,
       'update-error:name': function(msg) { this._renderAlert(msg); },
@@ -598,7 +608,7 @@ var ValueItemView = ItemView.extend({
 
 // Collection views
 
-var ListView = Backbone.View.extend({
+Features.View.ListView = Backbone.View.extend({
 
   filterItems: function(input) {
     this.collection.each(function(i) {
@@ -616,7 +626,7 @@ var ListView = Backbone.View.extend({
 
 });
 
-var FeatureListView = ListView.extend({
+Features.FeatureListView = Features.View.ListView.extend({
 
   initialize: function(options) {
     this.interactionBlock = options.interactionBlock;
@@ -637,7 +647,7 @@ var FeatureListView = ListView.extend({
   _renderWithSelection: function(itemToSelect) {
     this.$('.feature-item').remove();
     this.collection.each(function(f) {
-      var featureItemView = new FeatureItemView({ model: f });
+      var featureItemView = new Features.View.FeatureItemView({ model: f });
       if (f.get('name') === itemToSelect.get('name')) {
         featureItemView.$el.addClass('selected');
       }
@@ -652,7 +662,9 @@ var FeatureListView = ListView.extend({
   },
 
   _addFeatureItem: function(featureItem) {
-    var featureItemView = new FeatureItemView({ model: featureItem });
+    var featureItemView = new Features.View.FeatureItemView({
+      model: featureItem
+    });
     featureItemView.render().$el.insertBefore(this.$('button#new-feature'));
   },
 
@@ -693,7 +705,7 @@ var FeatureListView = ListView.extend({
   _showEditBlock: function(e) {
     var featureID = e.currentTarget.id;
     var feature = this.collection.get(featureID);
-    var featureView = new FeatureView({ model: feature });
+    var featureView = new Features.View.FeatureView({ model: feature });
     featureView.render();
     this.interactionBlock.html(featureView.$el);
   },
@@ -710,7 +722,9 @@ var FeatureListView = ListView.extend({
 
   _showForm: function() {
     this.$el.trigger('unselect');
-    var formView = new FeatureFormView({ collection: this.collection });
+    var formView = new Features.View.FeatureFormView({
+      collection: this.collection
+    });
     formView.render();
     this.interactionBlock.html(formView.$el);
   },
@@ -737,7 +751,7 @@ var FeatureListView = ListView.extend({
 });
 
 
-var ValueListView = ListView.extend({
+Features.View.ValueListView = Features.View.ListView.extend({
 
   initialize: function() {
     this.collection.on({
@@ -753,7 +767,7 @@ var ValueListView = ListView.extend({
   },
 
   _addValueItem: function(valueItem) {
-    var valueView = new ValueItemView({ model: valueItem });
+    var valueView = new Features.View.ValueItemView({ model: valueItem });
     this.$el.append(valueView.render().$el);
   },
 
@@ -808,11 +822,11 @@ $(document).ready(function() {
   var featureItems = $('.feature-item');
   var valueItems = $('.value-item');
 
-  var featureList = new FeatureList(
+  var featureList = new Features.Collection.FeatureList(
     _.map(featureItems, function(i) {
       var item = $(i);
       var name = item.data('name');
-      return new Feature({
+      return new Features.Model.Feature({
         id: name,
         name: name,
         type: item.data('type'),
@@ -822,11 +836,11 @@ $(document).ready(function() {
     }),
     { comparator: 'name' }
   );
-  var valueList = new ValueList(
+  var valueList = new Features.Collection.ValueList(
     _.map(valueItems, function(i) {
       var item = $(i);
       var name = item.data('name');
-      return new Value({ id: name, name: name, });
+      return new Features.Model.Value({ id: name, name: name, });
     }),
     { comparator: 'name' }
   );
@@ -834,14 +848,14 @@ $(document).ready(function() {
 
   // Instantiate views
 
-  var featureListView = new FeatureListView({
+  var featureListView = new Features.FeatureListView({
     el: '#feature-list',
     collection: featureList,
     interactionBlock: interactionBlock,
   });
   featureListView.render();
 
-  var valueListView = new ValueListView({
+  var valueListView = new Features.View.ValueListView({
     el: '#value-list',
     collection: valueList,
   });

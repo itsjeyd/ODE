@@ -79,13 +79,13 @@ Output.View.RuleView = Backbone.View.extend({
 
   _renderSimilarRulesButton: function() {
     var successButton = $.successButton('Similar rules')
-      .addClass('pull-right similar-button');
+      .addClass('pull-right').attr('id', 'similar-button');
     this.$('#rule-name').append(successButton);
   },
 
   _renderOutputButton: function() {
     var successButton = $.successButton('Show output')
-      .addClass('pull-right output-button');
+      .addClass('pull-right').attr('id', 'output-button');
     this.$('#rule-name').append(successButton);
   },
 
@@ -112,7 +112,6 @@ Output.View.RuleView = Backbone.View.extend({
   },
 
   events: {
-    'click .similar-button': '_goSimilar',
     'dblclick #rule-name': function(e) {
       this._renderEditControls('name')(e)
     },
@@ -125,7 +124,8 @@ Output.View.RuleView = Backbone.View.extend({
     'click button.description': function() {
       this._saveEdits('description')(this)
     },
-    'click .output-button': function() {
+    'click #similar-button': '_goSimilar',
+    'click #output-button': function() {
       var modal = $('#show-output-modal');
       var modalBody = modal.find('.modal-body')
       modalBody.empty();

@@ -2,6 +2,10 @@
     cursor: pointer;
 }
 
+#similar-button, #output-button {
+    margin-left: 5px;
+}
+
 .bracket {
     display: inline-block;
     width: 10px;

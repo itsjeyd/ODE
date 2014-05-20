@@ -4,6 +4,7 @@
 
 #similar-button, #edit-input-button, #edit-output-button {
     float: right;
+    margin-left: 5px;
 }
 
 .bracket {

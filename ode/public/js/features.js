@@ -190,12 +190,7 @@ Features.Collection.ValueList = Backbone.Collection.extend({
   },
 
   renameItem: function(oldName, newName) {
-    var nameTaken = this.findWhere({ name: newName });
-    if (!nameTaken) {
-      this.findWhere({ name: oldName }).updateName(newName);
-    } else {
-      nameTaken.trigger('update-error:name', 'Name already taken.');
-    }
+    this.findWhere({ name: oldName }).updateName(newName);
   },
 
   addItem: function(name) {
@@ -789,9 +784,9 @@ Features.View.ValueListView = Features.View.ListView.extend({
 
   _save: function(e) {
     var inputField = $(e.currentTarget).prev('input.vname');
+    var oldName = inputField.prev('.value-item').data('name');
     var newName = inputField.val();
-    if (newName) {
-      var oldName = inputField.prev('.value-item').data('name');
+    if (newName && newName !== oldName) {
       this.collection.renameItem(oldName, newName);
     } else {
       this.render();

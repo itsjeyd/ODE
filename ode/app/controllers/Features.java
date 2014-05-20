@@ -41,7 +41,7 @@ public class Features extends Controller {
         return ok(Routes.javascriptRouter(
                       "jsFeatureRoutes",
                       controllers.routes.javascript.Features
-                      .createFeature(),
+                      .create(),
                       controllers.routes.javascript.Features
                       .updateName(),
                       controllers.routes.javascript.Features
@@ -55,7 +55,7 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> list() {
+    public static Promise<Result> features() {
         Promise<List<Feature>> globalFeatureList = Feature.all();
         Promise<List<Value>> globalValueList = Value.all();
         Promise<Tuple<List<Feature>, List<Value>>> lists = globalFeatureList
@@ -70,7 +70,7 @@ public class Features extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> createFeature() {
+    public static Promise<Result> create() {
         JsonNode json = request().body().asJson();
         final String name = json.findPath("name").textValue();
         String description = json.findPath("description").textValue();

@@ -12,8 +12,8 @@ POST    /login                      controllers.Auth.authenticate()
 GET     /logout                     controllers.Application.logout()
 
 # Browsing
-GET     /rules                      controllers.Rules.rules()
-GET     /rules/:name                controllers.Rules.rule(name: String)
+GET     /rules                      controllers.Rules.browse()
+GET     /rules/:name                controllers.Rules.details(name: String)
 GET     /rules/:name/similar        controllers.Rules.similar(name: String)
 GET     /rules/:name/input          controllers.Rules.input(name: String)
 GET     /rules/:name/output         controllers.Rules.output(name: String)
@@ -49,14 +49,14 @@ GET     /search                         controllers.Search.search()
 POST    /search                         controllers.Search.doSearch()
 
 # Features
-GET     /features                       controllers.Features.list()
-POST    /features                       controllers.Features.createFeature()
+GET     /features                       controllers.Features.features()
+POST    /features                       controllers.Features.create()
 PUT     /features/:name/name            controllers.Features.updateName(name: String)
 PUT     /features/:name/description     controllers.Features.updateDescription(name: String)
 PUT     /features/:name/type            controllers.Features.updateType(name: String)
 PUT     /features/:name/targets         controllers.Features.updateTargets(name: String)
 DELETE  /features/:name                 controllers.Features.delete(name: String)
-PUT     /values/:name                   controllers.Values.renameValue(name: String)
+PUT     /values/:name                   controllers.Values.updateName(name: String)
 
 # Client-side routers
 GET     /assets/js/featureRoutes    controllers.Features.javascriptRoutes()

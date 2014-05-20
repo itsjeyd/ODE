@@ -25,32 +25,32 @@ import models.nodes.LHS;
 import models.nodes.RHS;
 import models.nodes.Rule;
 import models.nodes.Slot;
+import views.html.browse;
+import views.html.details;
 import views.html.input;
 import views.html.output;
-import views.html.rules;
-import views.html.rule;
 
 
 public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> rules() {
+    public static Promise<Result> browse() {
         Promise<List<Rule>> ruleList = Rule.all();
         return ruleList.map(
             new Function<List<Rule>, Result>() {
                 public Result apply(List<Rule> ruleList) {
-                    return ok(rules.render(ruleList));
+                    return ok(browse.render(ruleList));
                 }
             });
     }
 
     @Security.Authenticated(Secured.class)
-    public static Promise<Result> rule(String name) {
+    public static Promise<Result> details(String name) {
         Promise<Rule> requestedRule = new Rule(name).get();
         return requestedRule.map(
             new Function<Rule, Result>() {
                 public Result apply(Rule requestedRule) {
-                    return ok(rule.render(requestedRule));
+                    return ok(details.render(requestedRule));
                 }
             });
     }
@@ -63,7 +63,7 @@ public class Rules extends Controller {
         return ruleList.map(
             new Function<List<Rule>, Result>() {
                 public Result apply(List<Rule> ruleList) {
-                    return ok(rules.render(ruleList));
+                    return ok(browse.render(ruleList));
                 }
             });
     }

@@ -26,12 +26,12 @@ public class Values extends Controller {
         return ok(
             Routes.javascriptRouter(
                 "jsValueRoutes",
-                controllers.routes.javascript.Values.renameValue()));
+                controllers.routes.javascript.Values.updateName()));
     }
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> renameValue(final String name) {
+    public static Promise<Result> updateName(final String name) {
         JsonNode json = request().body().asJson();
         final String newName = json.findPath("name").textValue();
         Promise<List<Value>> values = Value.all();

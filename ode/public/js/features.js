@@ -323,7 +323,7 @@ Features.View.FeatureView = Backbone.View.extend({
     this._renderTypeForm();
     this._renderTargetListHeading();
     this._renderTargets();
-    this._renderTargetField();
+    this._renderTargetForm();
     this._activateTargetField();
     return this;
   },
@@ -373,7 +373,7 @@ Features.View.FeatureView = Backbone.View.extend({
     this.$el.append(node);
   },
 
-  _renderTargetField: function() {
+  _renderTargetForm: function() {
     var targetFormTemplate = _.template(
       '<div class="droppable">Drop <%= targetType %> here ...</div>');
     var node;
@@ -384,6 +384,8 @@ Features.View.FeatureView = Backbone.View.extend({
       node.makeEditable();
     }
     this.$el.append(node);
+    var addButton = $.addButton().addClass('ftarget').disable().hide();
+    this.$el.append(addButton);
   },
 
   _activateTargetField: function() {
@@ -393,16 +395,14 @@ Features.View.FeatureView = Backbone.View.extend({
     } else {
       targetType = '.value-item';
     }
-    var viewModel = this.model;
+    var view = this;
     this.$('.droppable').droppable({
       accept: targetType,
       drop: function(e, ui) {
         var targetName = $(ui.helper).text();
         var targetField = $(this);
-        targetField.next('button.ftarget').remove();
         targetField.text(targetName);
-        var addButton = $.addButton().addClass('ftarget');
-        addButton.insertAfter(targetField);
+        view.$('button.ftarget').enable().show();
       },
     });
   },
@@ -454,10 +454,8 @@ Features.View.FeatureView = Backbone.View.extend({
       var inputField = $(e.currentTarget);
       if (inputField.text() === 'Drop value here ...') {
         inputField.empty();
+        this.$('button.ftarget').show();
       }
-      inputField.next('button.ftarget').remove();
-      var addButton = $.addButton().addClass('ftarget').disable();
-      addButton.insertAfter(inputField);
     },
     'keyup .editable': function(e) {
       var inputField = $(e.currentTarget);
@@ -465,6 +463,13 @@ Features.View.FeatureView = Backbone.View.extend({
         this.$('button.ftarget').enable();
       } else {
         this.$('button.ftarget').disable();
+      }
+    },
+    'blur .editable': function(e) {
+      var inputField = $(e.currentTarget);
+      if (inputField.text() === '') {
+        inputField.text('Drop value here ...');
+        this.$('button.ftarget').hide();
       }
     },
   },

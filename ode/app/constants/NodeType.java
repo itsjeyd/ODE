@@ -2,7 +2,7 @@ package constants;
 
 public enum NodeType {
     USER, FEATURE, VALUE, RULE, AVM, RHS, PART, COMBINATION_GROUP,
-    OUTPUT_STRING, SLOT;
+    OUTPUT_STRING, SLOT, FOO;
 
     @Override
     public String toString() {

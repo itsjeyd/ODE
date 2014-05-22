@@ -19,6 +19,10 @@ public abstract class LabeledNodeWithProperties extends LabeledNode {
         this.jsonProperties = Json.newObject();
     }
 
+    public JsonNode getProperties() {
+        return this.jsonProperties;
+    }
+
     public Promise<Boolean> exists() {
         Promise<JsonNode> json = LabeledNodeWithPropertiesManager.get(this);
         return json.map(new ExistsFunction());

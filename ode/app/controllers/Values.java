@@ -34,7 +34,7 @@ public class Values extends Controller {
     public static Promise<Result> updateName(final String name) {
         JsonNode json = request().body().asJson();
         final String newName = json.findPath("name").textValue();
-        Promise<List<Value>> values = Value.all();
+        Promise<List<Value>> values = Value.nodes.all();
         Promise<Boolean> nameAlreadyTaken = values.map(
             new Function<List<Value>, Boolean>() {
                 public Boolean apply(List<Value> values) {

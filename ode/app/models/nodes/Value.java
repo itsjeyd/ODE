@@ -15,6 +15,9 @@ import managers.nodes.ValueManager;
 
 
 public class Value extends OntologyNode {
+
+    public static final ValueManager nodes = new ValueManager();
+
     private Value() {
         super(NodeType.VALUE);
     }
@@ -28,11 +31,6 @@ public class Value extends OntologyNode {
     public Promise<JsonNode> toJSON() {
         JsonNode node = new TextNode(this.name);
         return Promise.pure(node);
-    }
-
-    public static Promise<List<Value>> all() {
-        Promise<List<JsonNode>> json = ValueManager.staticAll();
-        return json.map(new AllFunction());
     }
 
     public Promise<Boolean> updateName(String newName) {
@@ -76,7 +74,7 @@ public class Value extends OntologyNode {
     }
 
     public static void deleteOrphans() {
-        Promise<List<Value>> values = Value.all();
+        Promise<List<Value>> values = Value.nodes.all();
         values.onRedeem(new Callback<List<Value>>() {
                 public void invoke(List<Value> values) {
                     for (Value value: values) {
@@ -106,20 +104,6 @@ public class Value extends OntologyNode {
             else {
                 return Promise.pure(false);
             }
-        }
-    }
-
-    private static class AllFunction
-        implements Function<List<JsonNode>, List<Value>> {
-        public List<Value> apply(List<JsonNode> dataNodes) {
-            List<Value> values = new ArrayList<Value>();
-            for (JsonNode dataNode: dataNodes) {
-                String name = dataNode.get("name").asText();
-                if (!name.equals("underspecified")) {
-                    values.add(new Value(name));
-                }
-            }
-            return values;
         }
     }
 

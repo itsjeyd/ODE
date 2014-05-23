@@ -1,5 +1,6 @@
 package managers.nodes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,9 +20,25 @@ import models.nodes.Part;
 
 public class PartManager extends LabeledNodeWithPropertiesManager {
 
-    public static Promise<List<JsonNode>> staticAll() {
-        return LabeledNodeManager.all(NodeType.PART);
+    public PartManager() {
+        this.label = "Part";
     }
+
+    public Promise<List<Part>> all() {
+        Promise<List<JsonNode>> json = all(this.label);
+        return json.map(
+            new Function<List<JsonNode>, List<Part>>() {
+                public List<Part> apply(List<JsonNode> json) {
+                    List<Part> parts = new ArrayList<Part>();
+                    for (JsonNode node: json) {
+                        String content = node.get("content").asText();
+                        parts.add(new Part(content));
+                    }
+                    return parts;
+                }
+            });
+    }
+
 
     private static Promise<JsonNode> getIncomingRelationships(Part part) {
         Promise<WS.Response> response = Neo4jService

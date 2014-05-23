@@ -56,10 +56,4 @@ public abstract class LabeledNodeManager extends NodeManager {
         return response.map(new SuccessFunction());
     }
 
-    protected static Promise<List<JsonNode>> all(NodeType type) {
-        Promise<WS.Response> response = Neo4jService.getNodesByLabel(
-            type.toString());
-        return response.map(new NodeListFunction());
-    }
-
 }

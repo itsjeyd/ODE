@@ -85,7 +85,7 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> output(final String name) {
-        Promise<List<Part>> globalPartsList = Part.all();
+        Promise<List<Part>> globalPartsList = Part.nodes.all();
         Promise<Rule> rule = new Rule(name).get();
         Promise<Tuple<List<Part>, Rule>> results = globalPartsList
             .zip(rule);

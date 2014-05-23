@@ -15,6 +15,9 @@ import models.relationships.HasPartRelationship;
 
 
 public class Part extends LabeledNodeWithProperties {
+
+    public static final PartManager nodes = new PartManager();
+
     public String content;
 
     private Part() {
@@ -26,7 +29,7 @@ public class Part extends LabeledNodeWithProperties {
         this.jsonProperties.put("uuid", uuid.toString());
     }
 
-    private Part(String content) {
+    public Part(String content) {
         this();
         this.content = content;
         this.jsonProperties.put("content", content);
@@ -69,12 +72,6 @@ public class Part extends LabeledNodeWithProperties {
                     return Promise.pure(UUID.randomUUID());
                 }
             });
-    }
-
-    public static Promise<List<Part>> all() {
-        Promise<List<JsonNode>> json = PartManager.staticAll();
-        Promise<List<Part>> parts = json.map(new AllFunction());
-        return parts;
     }
 
     public Promise<Boolean> create() {
@@ -132,18 +129,6 @@ public class Part extends LabeledNodeWithProperties {
                     return Promise.pure(true);
                 }
             });
-    }
-
-    private static class AllFunction
-        implements Function<List<JsonNode>, List<Part>> {
-        public List<Part> apply(List<JsonNode> dataNodes) {
-            List<Part> parts = new ArrayList<Part>();
-            for (JsonNode dataNode: dataNodes) {
-                String content = dataNode.get("content").asText();
-                parts.add(new Part(content));
-            }
-            return parts;
-        }
     }
 
 }

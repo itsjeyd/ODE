@@ -131,13 +131,6 @@ public class FeatureManager extends NamedNodeManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<Boolean> updateName(
-        Feature feature, String newName) {
-        feature.jsonProperties.put("type", feature.getType());
-        feature.jsonProperties.put("description", feature.getDescription());
-        return NamedNodeManager.updateName(feature, newName);
-    }
-
     public static Promise<Boolean> updateDescription(
         Feature feature, String newDescription) {
         feature.jsonProperties.put("type", feature.getType());

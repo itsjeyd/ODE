@@ -95,41 +95,32 @@ public class Features extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateName(final String name) {
-        JsonNode json = request().body().asJson();
-        final String newName = json.findPath("name").textValue();
-        Promise<Boolean> nameAlreadyTaken = new Feature(newName).exists();
-        return nameAlreadyTaken.flatMap(
-            new Function<Boolean, Promise<Result>>() {
-                ObjectNode result = Json.newObject();
-                public Promise<Result> apply(Boolean nameAlreadyTaken) {
-                    if (nameAlreadyTaken) {
-                        return Promise.promise(
-                            new Function0<Result>() {
-                                public Result apply() {
-                                    result.put(
-                                        "message", "Name already taken.");
-                                    return badRequest(result);
-                                }
-                            });
-                    } else {
-                        Promise<Boolean> nameUpdated = new Feature(
-                            name).updateName(newName);
-                        return nameUpdated.map(
-                            new Function<Boolean, Result>() {
-                                public Result apply(Boolean updated) {
-                                    if (updated) {
-                                        result.put("id", newName);
-                                        result.put(
-                                            "message",
-                                            "Name successfully updated.");
-                                        return ok(result);
-                                    }
-                                    result.put(
-                                        "message", "Name not updated.");
-                                    return badRequest(result);
-                                }
-                            });
+        final ObjectNode newProps = (ObjectNode) request().body().asJson();
+        Promise<Boolean> nameTaken =
+            Feature.nodes.exists(newProps.deepCopy().retain("name"));
+        Promise<Boolean> updated = nameTaken.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean nameTaken) {
+                    if (nameTaken) {
+                        return Promise.pure(false);
                     }
+                    ObjectNode oldProps = Json.newObject();
+                    oldProps.put("name", name);
+                    newProps.retain("name", "description", "type");
+                    return Feature.nodes.update(oldProps, newProps);
+                }
+            });
+        return updated.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean updated) {
+                    if (updated) {
+                        result.put("id", newProps.get("name").asText());
+                        result.put("message", "Name successfully updated.");
+                        return ok(result);
+                    }
+                    result.put("message", "Name not updated.");
+                    return badRequest(result);
                 }
             });
     }

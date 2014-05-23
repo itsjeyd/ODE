@@ -33,10 +33,6 @@ public class Value extends OntologyNode {
         return Promise.pure(node);
     }
 
-    public Promise<Boolean> updateName(String newName) {
-        return ValueManager.updateName(this, newName);
-    }
-
     @Override
     public Promise<Boolean> connectTo(final Feature feature) {
         Promise<Boolean> exists = this.exists();

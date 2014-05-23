@@ -31,6 +31,11 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
         return null;
     }
 
+    protected Promise<Boolean> disconnect(
+        JsonNode startNode, JsonNode endNode, String location) {
+        return null;
+    }
+
 
     public static Promise<JsonNode> get(LabeledNodeWithProperties node) {
         Promise<WS.Response> response = Neo4jService

@@ -102,12 +102,33 @@ public class RelationshipService extends Neo4j {
         return postCypherQuery(query);
     }
 
+    public static Promise<WS.Response> to(
+        LabeledNodeWithProperties endNode, String type) {
+        String query = String.format(
+            "MATCH ()-[r:%s]->(e:%s) WHERE %s RETURN r",
+            type, endNode.getLabel(),
+            buildConjunctiveConstraints("e", endNode.getProperties()));
+        return postCypherQuery(query);
+    }
+
     public static Promise<WS.Response> endNodes(
         LabeledNodeWithProperties startNode, String type) {
         String query = String.format(
             "MATCH (s:%s)-[r:%s]->(e) WHERE %s RETURN e",
             startNode.getLabel(), type,
             buildConjunctiveConstraints("s", startNode.getProperties()));
+        return postCypherQuery(query);
+    }
+
+    public static Promise<WS.Response> getRelationshipVariableLength(
+        LabeledNodeWithProperties startNode,
+        LabeledNodeWithProperties endNode, String type,
+        int minHops, int maxHops) {
+        String query = String.format(
+            "MATCH (s:%s)-[r:%s*%d..%d]->(e) WHERE %s AND %s RETURN r",
+            startNode.getLabel(), type, minHops, maxHops,
+            buildConjunctiveConstraints("s", startNode.getProperties()),
+            buildConjunctiveConstraints("e", endNode.getProperties()));
         return postCypherQuery(query);
     }
 

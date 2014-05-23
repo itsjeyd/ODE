@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.nodes.AtomicFeature;
 import models.nodes.ComplexFeature;
+import neo4play.RelationshipService;
 
 import play.libs.WS;
 import play.libs.F.Function;
@@ -121,14 +122,35 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return connected;
     }
 
+    protected Promise<Boolean> disconnect(
+        JsonNode feature, final JsonNode target, final String location) {
+        String fname = feature.get("name").asText();
+        String tname = target.get("name").asText();
+        Feature f = new Feature(fname);
+        if (feature.get("type").asText().equals("complex")) {
+            return Allows.relationships
+                .delete(f, new Feature(tname), location);
+        }
+        Value v = new Value(tname);
+        return Allows.relationships.delete(f, v, location);
 
-    public static Promise<Boolean> has(Feature feature, OntologyNode value) {
-        Promise<WS.Response> response = Neo4jService
-            .getTypedRelationshipVariableLength(
-                feature, value, RelationshipType.HAS, 1, 2);
+    }
+
+    public Promise<Boolean> has(JsonNode feature, JsonNode value) {
+        Feature f = new Feature(feature.get("name").asText());
+        OntologyNode v;
+        String vname = value.get("name").asText();
+        if (feature.get("type").asText().equals("complex")) {
+            v = new Feature(vname);
+        } else {
+            v = new Value(vname);
+        }
+        Promise<WS.Response> response = RelationshipService
+            .getRelationshipVariableLength(f, v, "HAS", 1, 2);
         Promise<JsonNode> json = response.map(new JsonFunction());
         return json.map(new ExistsFunction());
     }
+
 
     public static Promise<List<JsonNode>> getValues(Feature feature) {
         Promise<List<WS.Response>> responses = Neo4jService

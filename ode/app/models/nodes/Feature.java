@@ -121,10 +121,6 @@ public class Feature extends OntologyNode {
             });
     }
 
-    public Promise<Boolean> has(OntologyNode value) {
-        return FeatureManager.has(this, value);
-    }
-
     public Promise<Feature> get() {
         Promise<JsonNode> json = FeatureManager.get(this);
         return json.map(new GetFunction());

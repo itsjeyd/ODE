@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import models.relationships.Allows;
 
 import play.libs.WS;
 import play.libs.F.Function;
@@ -34,6 +35,17 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
                         }
                     }
                     return values;
+                }
+            });
+    }
+
+    public Promise<Boolean> orphaned(Value value) {
+        Promise<List<JsonNode>> incomingRelationships =
+            Allows.relationships.to(value);
+        return incomingRelationships.map(
+            new Function<List<JsonNode>, Boolean>() {
+                public Boolean apply(List<JsonNode> incomingRelationships) {
+                    return incomingRelationships.size() == 0;
                 }
             });
     }

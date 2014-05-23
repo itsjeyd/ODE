@@ -124,9 +124,9 @@ public abstract class RelManager extends BaseManager {
         return response.map(new SuccessFunction());
     }
 
-    private Promise<Boolean> delete(LabeledNodeWithProperties startNode,
-                                    LabeledNodeWithProperties endNode,
-                                    String location) {
+    public Promise<Boolean> delete(LabeledNodeWithProperties startNode,
+                                   LabeledNodeWithProperties endNode,
+                                   String location) {
         Promise<WS.Response> response =
             RelationshipService.deleteRelationship(
                 startNode, endNode, this.type, location);

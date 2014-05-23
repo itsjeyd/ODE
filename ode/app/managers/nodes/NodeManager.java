@@ -5,6 +5,8 @@ import java.util.List;
 import managers.BaseManager;
 import managers.functions.JsonFunction;
 import managers.functions.SuccessFunction;
+import managers.relationships.RelManager;
+import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Node;
 import neo4play.NodeService;
 import play.libs.F.Function;
@@ -110,6 +112,29 @@ public abstract class NodeManager extends BaseManager {
         return connected;
     }
 
+    public Promise<Boolean> disconnect(
+        final JsonNode startNode, final JsonNode endNode) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> disconnected = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> disconnected =
+                        disconnect(startNode, endNode, location);
+                    return disconnected.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(
+                                Boolean disconnected) {
+                                if (disconnected) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return disconnected;
+    }
+
     public abstract Promise<Boolean> exists(JsonNode properties);
 
     public abstract Promise<? extends List<? extends Node>> all();
@@ -126,6 +151,9 @@ public abstract class NodeManager extends BaseManager {
         JsonNode properties, String location);
 
     protected abstract Promise<Boolean> connect(
+        JsonNode startNode, JsonNode endNode, String location);
+
+    protected abstract Promise<Boolean> disconnect(
         JsonNode startNode, JsonNode endNode, String location);
 
 }

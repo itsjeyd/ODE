@@ -46,4 +46,9 @@ public class FooManager extends LabeledNodeManager {
         return null;
     }
 
+    protected Promise<Boolean> disconnect(
+        JsonNode startNode, JsonNode endNode, String location) {
+        return null;
+    }
+
 }

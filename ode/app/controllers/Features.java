@@ -12,19 +12,14 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import play.libs.Json;
-import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import constants.FeatureType;
-import models.nodes.AtomicFeature;
-import models.nodes.ComplexFeature;
 import models.nodes.Feature;
-import models.nodes.OntologyNode;
 import models.nodes.Value;
-import models.relationships.AllowsRelationship;
 
 import views.html.features;
 
@@ -196,47 +191,48 @@ public class Features extends Controller {
 
     @BodyParser.Of(BodyParser.Json.class)
     private static Promise<Result> removeTarget(String name, JsonNode json) {
-        Feature feature;
-        String featureType = json.findPath("type").textValue();
-        final OntologyNode target;
-        String targetName = json.findPath("target").textValue();
-        if (featureType.equals(FeatureType.COMPLEX.toString())) {
-            feature = new ComplexFeature(name);
-            target = new Feature(targetName);
-        } else {
-            feature = new AtomicFeature(name);
-            target = new Value(targetName);
-        }
-        final Feature allowingFeature = feature;
-        Promise<Boolean> hasTarget = feature.has(target);
-        Promise<Boolean> deleted = hasTarget.flatMap(
+        final ObjectNode feature = Json.newObject();
+        feature.put("name", name);
+        feature.put("type", json.get("type").asText());
+        final ObjectNode target = Json.newObject();
+        target.put("name", json.get("target").asText());
+        Promise<Boolean> hasValue = Feature.nodes.has(feature, target);
+        Promise<Boolean> disconnected = hasValue.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean hasTarget) {
-                    if (hasTarget) {
+                public Promise<Boolean> apply(Boolean hasValue) {
+                    if (hasValue) {
                         return Promise.pure(false);
                     }
-                    return new AllowsRelationship(allowingFeature, target)
-                        .delete();
+                    return Feature.nodes.disconnect(feature, target);
                 }
             });
-        if (target.isValue()) {
-            final Value value = (Value) target;
-            deleted.onRedeem(
-                new Callback<Boolean>() {
-                    public void invoke(Boolean deleted) {
-                        if (deleted && !value.name.equals("underspecified")) {
-                            value.deleteIfOrphaned();
-                        }
+        Promise<Boolean> deleted =  disconnected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean disconnected) {
+                    if (disconnected) {
+                        Value value = new Value(target.get("name").asText());
+                        Promise<Boolean> orphaned =
+                            Value.nodes.orphaned(value);
+                        return orphaned.flatMap(
+                            new Function<Boolean, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(
+                                    Boolean orphaned) {
+                                    if (orphaned) {
+                                        return Value.nodes.delete(target);
+                                    }
+                                    return Promise.pure(true);
+                                }
+                            });
                     }
-                });
-        }
+                    return Promise.pure(false);
+                }
+            });
         return deleted.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();
-                public Result apply(Boolean deleted) {
-                    if (deleted) {
-                        result.put("message",
-                                   "Target successfully removed.");
+                public Result apply(Boolean disconnected) {
+                    if (disconnected) {
+                        result.put("message", "Target successfully removed.");
                         return ok(result);
                     }
                     result.put("message", "Target not removed.");

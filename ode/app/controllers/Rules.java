@@ -71,7 +71,7 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> input(final String name) {
-        Promise<List<Feature>> globalFeatureList = Feature.all();
+        Promise<List<Feature>> globalFeatureList = Feature.nodes.all();
         Promise<Rule> rule = new Rule(name).get();
         Promise<Tuple<List<Feature>, Rule>> results = globalFeatureList
             .zip(rule);

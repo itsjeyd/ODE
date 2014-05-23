@@ -1,10 +1,13 @@
 package managers.nodes;
 
+import constants.FeatureType;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.nodes.AtomicFeature;
+import models.nodes.ComplexFeature;
 
 import play.libs.WS;
 import play.libs.F.Function;
@@ -22,9 +25,47 @@ import models.nodes.Value;
 
 public class FeatureManager extends NamedNodeManager {
 
-    public static Promise<List<JsonNode>> staticAll() {
-        return LabeledNodeManager.all(NodeType.FEATURE);
+    public FeatureManager() {
+        this.label = "Feature";
     }
+
+    public Promise<List<Feature>> all() {
+        Promise<List<JsonNode>> json = all(this.label);
+        Promise<List<Feature>> features = json.map(
+            new Function<List<JsonNode>, List<Feature>>() {
+                public List<Feature> apply(List<JsonNode> json) {
+                    List<Feature> features = new ArrayList<Feature>();
+                    for (JsonNode node: json) {
+                        String name = node.get("name").asText();
+                        String description = "";
+                        if (node.has("description")) {
+                            description = node.get("description").asText();
+                        }
+                        String type = node.get("type").asText();
+                        if (type.equals(FeatureType.COMPLEX.toString())) {
+                            features.add(
+                                new ComplexFeature(name, description));
+                        } else if (type.equals(FeatureType.ATOMIC.toString())) {
+                            features.add(
+                                new AtomicFeature(name, description));
+                        }
+                    }
+                    return features;
+                }
+            });
+        return features.flatMap(
+            new Function<List<Feature>, Promise<List<Feature>>>() {
+                public Promise<List<Feature>> apply(List<Feature> features) {
+                    List<Promise<? extends Feature>> all =
+                        new ArrayList<Promise<? extends Feature>>();
+                    for (Feature feature: features) {
+                        all.add(feature.setTargets());
+                    }
+                    return Promise.sequence(all);
+                }
+            });
+    }
+
 
     public static Promise<Boolean> has(Feature feature, OntologyNode value) {
         Promise<WS.Response> response = Neo4jService

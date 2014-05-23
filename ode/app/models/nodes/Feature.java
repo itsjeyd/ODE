@@ -24,6 +24,9 @@ import models.relationships.HasValueRelationship;
 
 
 public class Feature extends OntologyNode {
+
+    public static final FeatureManager nodes = new FeatureManager();
+
     protected FeatureType type;
     protected String description;
     public List<String> targets;
@@ -67,7 +70,7 @@ public class Feature extends OntologyNode {
         return this;
     }
 
-    protected Promise<Feature> setTargets() {
+    public Promise<Feature> setTargets() {
         Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
         Promise<List<String>> targets = nodes.map(new TargetsFunction());
         final Feature feature = this;
@@ -121,22 +124,6 @@ public class Feature extends OntologyNode {
 
     public Promise<Boolean> has(OntologyNode value) {
         return FeatureManager.has(this, value);
-    }
-
-    public static Promise<List<Feature>> all() {
-        Promise<List<JsonNode>> json = FeatureManager.staticAll();
-        Promise<List<Feature>> features = json.map(new AllFunction());
-        return features.flatMap(
-            new Function<List<Feature>, Promise<List<Feature>>>() {
-                public Promise<List<Feature>> apply(List<Feature> features) {
-                    List<Promise<? extends Feature>> all =
-                        new ArrayList<Promise<? extends Feature>>();
-                    for (Feature feature: features) {
-                        all.add(feature.setTargets());
-                    }
-                    return Promise.sequence(all);
-                }
-            });
     }
 
     public Promise<Feature> get() {
@@ -323,27 +310,6 @@ public class Feature extends OntologyNode {
             });
     }
 
-
-    private static class AllFunction
-        implements Function<List<JsonNode>, List<Feature>> {
-        public List<Feature> apply(List<JsonNode> dataNodes) {
-            List<Feature> features = new ArrayList<Feature>();
-            for (JsonNode dataNode: dataNodes) {
-                String name = dataNode.get("name").asText();
-                String description = "";
-                if (dataNode.has("description")) {
-                    description = dataNode.get("description").asText();
-                }
-                String type = dataNode.get("type").asText();
-                if (type.equals(FeatureType.COMPLEX.toString())) {
-                    features.add(new ComplexFeature(name, description));
-                } else if (type.equals(FeatureType.ATOMIC.toString())) {
-                    features.add(new AtomicFeature(name, description));
-                }
-            }
-            return features;
-        }
-    }
 
     private static class GetFunction implements Function<JsonNode, Feature> {
         public Feature apply(JsonNode json) {

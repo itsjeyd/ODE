@@ -56,7 +56,7 @@ public class Features extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> features() {
-        Promise<List<Feature>> globalFeatureList = Feature.all();
+        Promise<List<Feature>> globalFeatureList = Feature.nodes.all();
         Promise<List<Value>> globalValueList = Value.nodes.all();
         Promise<Tuple<List<Feature>, List<Value>>> lists = globalFeatureList
             .zip(globalValueList);

@@ -71,8 +71,7 @@ public class Feature extends OntologyNode {
     }
 
     public Promise<Feature> setTargets() {
-        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
-        Promise<List<String>> targets = nodes.map(new TargetsFunction());
+        Promise<List<String>> targets = this.getTargets();
         final Feature feature = this;
         return targets.map(
             new Function<List<String>, Feature>() {

@@ -1425,6 +1425,7 @@ $(document).ready(function() {
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();
+  var uuid = $('#rule-name').data('uuid');
   var rhsJSON = $('#rule-rhs').data('json');
 
   var rhs = new Output.Model.RHS({ ruleID: name }, { json: rhsJSON });
@@ -1433,6 +1434,7 @@ $(document).ready(function() {
     id: name,
     name: name,
     description: description,
+    uuid: uuid,
     rhs: rhs,
   });
 

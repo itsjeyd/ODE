@@ -115,11 +115,6 @@ public class RuleManager extends NamedNodeManager {
             });
     }
 
-    public static Promise<Boolean> updateName(Rule rule, String newName) {
-        rule.jsonProperties.put("description", rule.description);
-        return NamedNodeManager.updateName(rule, newName);
-    }
-
     public static Promise<Boolean> updateDescription(
         Rule rule, String newDescription) {
         ObjectNode newProps = rule.jsonProperties.deepCopy();

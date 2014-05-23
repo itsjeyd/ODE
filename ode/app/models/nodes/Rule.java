@@ -29,6 +29,7 @@ public class Rule extends UUIDNode {
     public String description;
     public LHS lhs;
     public RHS rhs;
+    public String uuid;
 
     private Rule() {
         super(NodeType.RULE);
@@ -292,16 +293,6 @@ public class Rule extends UUIDNode {
         return HasRefRelationship.delete(slot, this);
     }
 
-    public Promise<Boolean> updateName(final String newName) {
-        Promise<Rule> rule = this.get();
-        return rule.flatMap(
-            new Function<Rule, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Rule rule) {
-                    return RuleManager.updateName(rule, newName);
-                }
-            });
-    }
-
     public Promise<Boolean> updateDescription(final String newDescription) {
         Promise<Rule> rule = this.get();
         return rule.flatMap(
@@ -399,6 +390,7 @@ public class Rule extends UUIDNode {
             String description = json.findValue("description").asText();
             String uuid = json.findValue("uuid").asText();
             final Rule rule = new Rule(name, description);
+            rule.uuid = uuid;
             rule.jsonProperties.put("uuid", uuid);
             Promise<LHS> lhs = new LHS(rule).get();
             Promise<RHS> rhs = new RHS(rule).get();

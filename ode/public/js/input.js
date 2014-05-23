@@ -621,6 +621,7 @@ $(document).ready(function() {
 
   var name = $('#rule-name').text();
   var description = $('#rule-description').text();
+  var uuid = $('#rule-name').data('uuid');
   var lhsJSON = $('#rule-lhs').data('json');
 
   var lhs = new Input.Collection.AVM(
@@ -631,6 +632,7 @@ $(document).ready(function() {
     id: name,
     name: name,
     description: description,
+    uuid: uuid,
     lhs: lhs,
   });
 

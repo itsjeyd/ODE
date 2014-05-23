@@ -182,17 +182,6 @@ public class Feature extends OntologyNode {
         }
     }
 
-    public Promise<Boolean> updateDescription(final String newDescription) {
-        Promise<Feature> feature = this.get();
-        return feature.flatMap(
-            new Function<Feature, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Feature feature) {
-                    return FeatureManager.updateDescription(
-                        feature, newDescription);
-                }
-            });
-    }
-
     public Promise<Boolean> updateType(
         final String newType) {
         Promise<Boolean> isInUse = this.isInUse();

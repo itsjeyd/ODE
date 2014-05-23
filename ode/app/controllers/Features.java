@@ -128,12 +128,11 @@ public class Features extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateDescription(String name) {
-        JsonNode json = request().body().asJson();
-        final String newDescription = json.findPath("description")
-            .textValue();
-        Promise<Boolean> descriptionUpdated = new Feature(name)
-            .updateDescription(newDescription);
-        return descriptionUpdated.map(
+        ObjectNode newProps = (ObjectNode) request().body().asJson();
+        newProps.retain("name", "description", "type");
+        ObjectNode oldProps = newProps.deepCopy().retain("name");
+        Promise<Boolean> updated = Feature.nodes.update(oldProps, newProps);
+        return updated.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();
                 public Result apply(Boolean updated) {

@@ -31,7 +31,7 @@ public class Value extends OntologyNode {
     }
 
     public static Promise<List<Value>> all() {
-        Promise<List<JsonNode>> json = ValueManager.all();
+        Promise<List<JsonNode>> json = ValueManager.staticAll();
         return json.map(new AllFunction());
     }
 

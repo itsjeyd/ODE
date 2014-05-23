@@ -19,7 +19,7 @@ import models.nodes.Part;
 
 public class PartManager extends LabeledNodeWithPropertiesManager {
 
-    public static Promise<List<JsonNode>> all() {
+    public static Promise<List<JsonNode>> staticAll() {
         return LabeledNodeManager.all(NodeType.PART);
     }
 

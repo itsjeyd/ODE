@@ -21,7 +21,7 @@ import models.nodes.Rule;
 
 public class RuleManager extends NamedNodeManager {
 
-    public static Promise<List<JsonNode>> all() {
+    public static Promise<List<JsonNode>> staticAll() {
         return LabeledNodeManager.all(NodeType.RULE);
     }
 

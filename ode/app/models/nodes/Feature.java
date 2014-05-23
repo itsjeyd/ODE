@@ -124,7 +124,7 @@ public class Feature extends OntologyNode {
     }
 
     public static Promise<List<Feature>> all() {
-        Promise<List<JsonNode>> json = FeatureManager.all();
+        Promise<List<JsonNode>> json = FeatureManager.staticAll();
         Promise<List<Feature>> features = json.map(new AllFunction());
         return features.flatMap(
             new Function<List<Feature>, Promise<List<Feature>>>() {

@@ -78,7 +78,7 @@ public class Rule extends UUIDNode {
     }
 
     public static Promise<List<Rule>> all() {
-        Promise<List<JsonNode>> json = RuleManager.all();
+        Promise<List<JsonNode>> json = RuleManager.staticAll();
         return json.map(new AllFunction());
     }
 

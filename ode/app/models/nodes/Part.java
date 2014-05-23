@@ -72,7 +72,7 @@ public class Part extends LabeledNodeWithProperties {
     }
 
     public static Promise<List<Part>> all() {
-        Promise<List<JsonNode>> json = PartManager.all();
+        Promise<List<JsonNode>> json = PartManager.staticAll();
         Promise<List<Part>> parts = json.map(new AllFunction());
         return parts;
     }

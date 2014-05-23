@@ -16,7 +16,7 @@ import models.nodes.Value;
 
 public class ValueManager extends NamedNodeManager {
 
-    public static Promise<List<JsonNode>> all() {
+    public static Promise<List<JsonNode>> staticAll() {
         return LabeledNodeManager.all(NodeType.VALUE);
     }
 

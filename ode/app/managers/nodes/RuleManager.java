@@ -20,7 +20,7 @@ import models.functions.ExistsFunction;
 import models.nodes.Rule;
 
 
-public class RuleManager extends NamedNodeManager {
+public class RuleManager extends LabeledNodeWithPropertiesManager {
 
     public RuleManager() {
         this.label = "Rule";

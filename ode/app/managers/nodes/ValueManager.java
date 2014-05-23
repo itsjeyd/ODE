@@ -15,7 +15,7 @@ import managers.functions.JsonFunction;
 import models.nodes.Value;
 
 
-public class ValueManager extends NamedNodeManager {
+public class ValueManager extends LabeledNodeWithPropertiesManager {
 
     public ValueManager() {
         this.label = "Value";

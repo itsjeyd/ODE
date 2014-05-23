@@ -23,7 +23,7 @@ import models.nodes.Value;
 import models.relationships.Allows;
 
 
-public class FeatureManager extends NamedNodeManager {
+public class FeatureManager extends LabeledNodeWithPropertiesManager {
 
     public FeatureManager() {
         this.label = "Feature";

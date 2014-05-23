@@ -22,6 +22,9 @@ import models.relationships.RHSRelationship;
 
 
 public class Rule extends UUIDNode {
+
+    public static final RuleManager nodes = new RuleManager();
+
     public String name;
     public String description;
     public LHS lhs;
@@ -77,11 +80,6 @@ public class Rule extends UUIDNode {
         return rules;
     }
 
-    public static Promise<List<Rule>> all() {
-        Promise<List<JsonNode>> json = RuleManager.staticAll();
-        return json.map(new AllFunction());
-    }
-
     public Promise<List<Rule>> getSimilarRules() {
         LHS lhs = new LHS(this);
         Promise<List<Feature>> features = lhs.getAllFeatures();
@@ -125,7 +123,7 @@ public class Rule extends UUIDNode {
     }
 
     public static Promise<Set<Rule>> findMatching(final JsonNode strings) {
-        Promise<List<Rule>> ruleList = Rule.all();
+        Promise<List<Rule>> ruleList = Rule.nodes.all();
         Promise<Set<Rule>> rules = ruleList.map(
             new Function<List<Rule>, Set<Rule>>() {
                 public Set<Rule> apply(List<Rule> ruleList) {
@@ -412,19 +410,6 @@ public class Rule extends UUIDNode {
                         return rule;
                     }
                 });
-        }
-    }
-
-    private static class AllFunction implements
-                                  Function<List<JsonNode>, List<Rule>> {
-        public List<Rule> apply(List<JsonNode> dataNodes) {
-            List<Rule> rules = new ArrayList<Rule>();
-            for (JsonNode dataNode: dataNodes) {
-                String name = dataNode.get("name").asText();
-                String description = dataNode.get("description").asText();
-                rules.add(new Rule(name, description));
-            }
-            return rules;
         }
     }
 

@@ -1,5 +1,6 @@
 package managers.nodes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,9 +22,43 @@ import models.nodes.Rule;
 
 public class RuleManager extends NamedNodeManager {
 
-    public static Promise<List<JsonNode>> staticAll() {
-        return LabeledNodeManager.all(NodeType.RULE);
+    public RuleManager() {
+        this.label = "Rule";
     }
+
+    public Promise<List<Rule>> all() {
+        Promise<List<JsonNode>> json = all(this.label);
+        return json.map(
+            new Function<List<JsonNode>, List<Rule>>() {
+                public List<Rule> apply(List<JsonNode> json) {
+                    List<Rule> rules = new ArrayList<Rule>();
+                    for (JsonNode node: json) {
+                        String name = node.get("name").asText();
+                        String description = node.get("description")
+                            .asText();
+                        rules.add(new Rule(name, description));
+                    }
+                    return rules;
+
+                }
+            });
+    }
+
+    public Promise<Rule> get(JsonNode properties) {
+        Promise<JsonNode> json = get(this.label, properties);
+        return json.map(
+            new Function<JsonNode, Rule>() {
+                public Rule apply(JsonNode json) {
+                    String name = json.findValue("name").asText();
+                    String description = json.findValue("description")
+                        .asText();
+                    return new Rule(name, description);
+                }
+            });
+    }
+
+
+
 
     public static Promise<Boolean> create(Rule rule) {
         rule.jsonProperties.put("description", rule.description);

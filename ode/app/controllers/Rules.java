@@ -35,7 +35,7 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> browse() {
-        Promise<List<Rule>> ruleList = Rule.all();
+        Promise<List<Rule>> ruleList = Rule.nodes.all();
         return ruleList.map(
             new Function<List<Rule>, Result>() {
                 public Result apply(List<Rule> ruleList) {

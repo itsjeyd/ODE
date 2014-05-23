@@ -293,17 +293,6 @@ public class Rule extends UUIDNode {
         return HasRefRelationship.delete(slot, this);
     }
 
-    public Promise<Boolean> updateDescription(final String newDescription) {
-        Promise<Rule> rule = this.get();
-        return rule.flatMap(
-            new Function<Rule, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Rule rule) {
-                    return RuleManager.updateDescription(
-                        rule, newDescription);
-                }
-            });
-    }
-
     public Promise<Boolean> updateLHS(Feature feature) {
         LHS lhs = new LHS(this);
         return lhs.add(feature);

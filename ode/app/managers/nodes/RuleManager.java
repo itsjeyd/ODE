@@ -115,12 +115,4 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
-    public static Promise<Boolean> updateDescription(
-        Rule rule, String newDescription) {
-        ObjectNode newProps = rule.jsonProperties.deepCopy();
-        newProps.put("description", newDescription);
-        return LabeledNodeWithPropertiesManager
-            .updateProperties(rule, newProps);
-    }
-
 }

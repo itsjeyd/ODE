@@ -1,5 +1,7 @@
 package managers.nodes;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.WS;
@@ -10,10 +12,20 @@ import managers.functions.NodeCreatedFunction;
 import managers.functions.NodeDeletedFunction;
 import managers.functions.UpdatedFunction;
 import models.nodes.LabeledNodeWithProperties;
+import models.nodes.Node;
 import neo4play.Neo4jService;
 
 
 public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
+
+    public Promise<? extends List<? extends Node>> all() {
+        return null;
+    }
+
+    public Promise<? extends Node> get(JsonNode properties) {
+        return null;
+    }
+
 
     public static Promise<JsonNode> get(LabeledNodeWithProperties node) {
         Promise<WS.Response> response = Neo4jService

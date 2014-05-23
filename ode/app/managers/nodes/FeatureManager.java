@@ -13,7 +13,6 @@ import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import constants.NodeType;
 import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
@@ -21,6 +20,7 @@ import models.functions.ExistsFunction;
 import models.nodes.Feature;
 import models.nodes.OntologyNode;
 import models.nodes.Value;
+import models.relationships.Allows;
 
 
 public class FeatureManager extends NamedNodeManager {
@@ -66,6 +66,27 @@ public class FeatureManager extends NamedNodeManager {
             });
     }
 
+    @Override
+    protected Promise<Boolean> create(
+        final JsonNode properties, final String location) {
+        Promise<Boolean> created = super.create(properties, location, "name");
+        if (properties.get("type").asText().equals("complex")) {
+            return created;
+        }
+        return created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        String name = properties.get("name").asText();
+                        return Allows.relationships.create(
+                            new Feature(name), new Value("underspecified"),
+                            location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+    }
+
 
     public static Promise<Boolean> has(Feature feature, OntologyNode value) {
         Promise<WS.Response> response = Neo4jService
@@ -73,12 +94,6 @@ public class FeatureManager extends NamedNodeManager {
                 feature, value, RelationshipType.HAS, 1, 2);
         Promise<JsonNode> json = response.map(new JsonFunction());
         return json.map(new ExistsFunction());
-    }
-
-    public static Promise<Boolean> create(Feature feature) {
-        feature.jsonProperties.put("type", feature.getType());
-        feature.jsonProperties.put("description", feature.getDescription());
-        return LabeledNodeWithPropertiesManager.create(feature);
     }
 
     public static Promise<List<JsonNode>> getValues(Feature feature) {

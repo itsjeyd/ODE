@@ -71,21 +71,16 @@ public class Features extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> create() {
-        JsonNode json = request().body().asJson();
-        final String name = json.findPath("name").textValue();
-        String description = json.findPath("description").textValue();
-        String type = json.findPath("type").textValue();
-        Promise<Boolean> created = null;
-        if (type.equals(FeatureType.COMPLEX.toString())) {
-            created = new ComplexFeature(name, description).create();
-        } else if (type.equals(FeatureType.ATOMIC.toString())) {
-            created = new AtomicFeature(name, description).create();
-        }
+        final JsonNode json = request().body().asJson();
+        ObjectNode props = (ObjectNode) json.deepCopy();
+        props.remove("targets");
+        Promise<Boolean> created = Feature.nodes.create(props);
         return created.map(
             new Function<Boolean, Result>() {
                 ObjectNode jsonResult = Json.newObject();
                 public Result apply(Boolean created) {
                     if (created) {
+                        String name = json.get("name").asText();
                         jsonResult.put("id", name);
                         jsonResult.put("message",
                                        "Feature successfully created.");

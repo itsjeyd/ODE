@@ -105,7 +105,7 @@ public abstract class RelManager extends BaseManager {
         return deleted;
     };
 
-    private Promise<Boolean> create(
+    public Promise<Boolean> create(
         LabeledNodeWithProperties startNode,
         LabeledNodeWithProperties endNode, String location) {
         Promise<WS.Response> response =

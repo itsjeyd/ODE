@@ -38,7 +38,7 @@ public abstract class NodeManager extends BaseManager {
     protected Promise<JsonNode> get(String label, JsonNode properties) {
         Promise<WS.Response> response = NodeService
             .getNode(label, properties);
-        return response.map(new JsonFunction());
+        return response.map(new JsonFunction()); // JsonFunction should return(something like) json.get("data"), cf. `Function` for `all` above
     }
 
     public Promise<Boolean> create(final JsonNode properties) {
@@ -88,6 +88,28 @@ public abstract class NodeManager extends BaseManager {
         return deleted;
     };
 
+    public Promise<Boolean> connect(
+        final JsonNode startNode, final JsonNode endNode) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> connected = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> connected =
+                        connect(startNode, endNode, location);
+                    return connected.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean connected) {
+                                if (connected) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return connected;
+    }
+
     public abstract Promise<Boolean> exists(JsonNode properties);
 
     public abstract Promise<? extends List<? extends Node>> all();
@@ -102,5 +124,8 @@ public abstract class NodeManager extends BaseManager {
 
     protected abstract Promise<Boolean> delete(
         JsonNode properties, String location);
+
+    protected abstract Promise<Boolean> connect(
+        JsonNode startNode, JsonNode endNode, String location);
 
 }

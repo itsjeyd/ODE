@@ -41,4 +41,9 @@ public class FooManager extends LabeledNodeManager {
             });
     }
 
+    protected Promise<Boolean> connect(
+        JsonNode startNode, JsonNode endNode, String location) {
+        return null;
+    }
+
 }

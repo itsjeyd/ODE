@@ -247,18 +247,12 @@ public class Features extends Controller {
 
     @BodyParser.Of(BodyParser.Json.class)
     private static Promise<Result> addTarget(String name, JsonNode json) {
-        String featureType = json.findPath("type").textValue();
-        String targetName = json.findPath("target").textValue();
-        Promise<Boolean> connected = null;
-        if (featureType.equals(FeatureType.COMPLEX.toString())) {
-            Feature feature = new ComplexFeature(name);
-            Feature target = new Feature(targetName);
-            connected = target.connectTo(feature);
-        } else if (featureType.equals(FeatureType.ATOMIC.toString())) {
-            Feature feature = new AtomicFeature(name);
-            Value target = new Value(targetName);
-            connected = target.connectTo(feature);
-        }
+        ObjectNode feature = Json.newObject();
+        feature.put("name", name);
+        feature.put("type", json.get("type").asText());
+        ObjectNode target = Json.newObject();
+        target.put("name", json.get("target").asText());
+        Promise<Boolean> connected = Feature.nodes.connect(feature, target);
         return connected.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

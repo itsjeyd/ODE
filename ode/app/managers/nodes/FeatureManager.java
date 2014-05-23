@@ -87,6 +87,40 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    protected Promise<Boolean> connect(
+        JsonNode feature, final JsonNode target, final String location) {
+        String fname = feature.get("name").asText();
+        String tname = target.get("name").asText();
+        final Feature f = new Feature(fname);
+        if (feature.get("type").asText().equals("complex")) {
+            return Allows.relationships
+                .create(f, new Feature(tname), location);
+        }
+        final Value v = new Value(tname);
+        Promise<Boolean> exists = Value.nodes.exists(target);
+        Promise<Boolean> connected = exists.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean exists) {
+                    if (exists) {
+                        return Allows.relationships.create(f, v, location);
+                    }
+                    Promise<Boolean> created = Value.nodes
+                        .create(target, location);
+                    return created.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean created) {
+                                if (created) {
+                                    return Allows.relationships
+                                        .create(f, v, location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return connected;
+    }
+
 
     public static Promise<Boolean> has(Feature feature, OntologyNode value) {
         Promise<WS.Response> response = Neo4jService

@@ -2,11 +2,7 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import constants.NodeType;
-import java.util.List;
-import managers.functions.NodeListFunction;
 import managers.functions.SuccessFunction;
-import neo4play.Neo4jService;
 import neo4play.NodeService;
 import play.libs.F.Function;
 import play.libs.F.Promise;

@@ -5,8 +5,6 @@ import java.util.List;
 import managers.BaseManager;
 import managers.functions.JsonFunction;
 import managers.functions.SuccessFunction;
-import managers.relationships.RelManager;
-import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Node;
 import neo4play.NodeService;
 import play.libs.F.Function;

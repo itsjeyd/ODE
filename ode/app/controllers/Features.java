@@ -12,6 +12,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import play.libs.Json;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
@@ -206,28 +207,28 @@ public class Features extends Controller {
                     return Feature.nodes.disconnect(feature, target);
                 }
             });
-        Promise<Boolean> deleted =  disconnected.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean disconnected) {
-                    if (disconnected) {
-                        Value value = new Value(target.get("name").asText());
-                        Promise<Boolean> orphaned =
-                            Value.nodes.orphaned(value);
-                        return orphaned.flatMap(
-                            new Function<Boolean, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(
-                                    Boolean orphaned) {
-                                    if (orphaned) {
-                                        return Value.nodes.delete(target);
+        if (feature.get("type").asText().equals("atomic")) {
+            disconnected.onRedeem(
+                new Callback<Boolean>() {
+                    public void invoke(Boolean disconnected) {
+                        if (disconnected) {
+                            Value value =
+                                new Value(target.get("name").asText());
+                            Promise<Boolean> orphaned =
+                                Value.nodes.orphaned(value);
+                            orphaned.onRedeem(
+                                new Callback<Boolean>() {
+                                    public void invoke(Boolean orphaned) {
+                                        if (orphaned) {
+                                            Value.nodes.delete(target);
+                                        }
                                     }
-                                    return Promise.pure(true);
-                                }
-                            });
+                                });
+                        }
                     }
-                    return Promise.pure(false);
-                }
-            });
-        return deleted.map(
+                });
+        }
+        return disconnected.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();
                 public Result apply(Boolean disconnected) {

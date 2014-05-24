@@ -68,6 +68,14 @@ public abstract class NodeManager extends BaseManager {
         return response.map(new SuccessFunction());
     }
 
+    protected Promise<Boolean> update(
+        String label, JsonNode oldProperties, JsonNode newProperties,
+        String location) {
+        Promise<WS.Response> response = NodeService.updateNode(
+            label, oldProperties, newProperties, location);
+        return response.map(new SuccessFunction());
+    }
+
     public Promise<Boolean> delete(final JsonNode properties) {
         Promise<String> location = beginTransaction();
         Promise<Boolean> deleted = location.flatMap(

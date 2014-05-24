@@ -22,6 +22,7 @@ import models.nodes.Feature;
 import models.nodes.OntologyNode;
 import models.nodes.Value;
 import models.relationships.Allows;
+import models.relationships.Untyped;
 
 
 public class FeatureManager extends LabeledNodeWithPropertiesManager {
@@ -88,6 +89,66 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    public Promise<Boolean> setType(final JsonNode properties) {
+        final Feature feature = new Feature(properties.get("name").asText());
+        // 1. Establish transaction
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> updated = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    // 2. Delete all outgoing :ALLOWS relationships
+                    Promise<Boolean> deleted = Allows.relationships
+                        .delete(feature, location);
+                    // 3. Update type
+                    Promise<Boolean> updated = deleted.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean deleted) {
+                                if (deleted) {
+                                    ObjectNode oldProps =
+                                        (ObjectNode) properties.deepCopy();
+                                    oldProps.retain("name");
+                                    ObjectNode newProps =
+                                        (ObjectNode) properties.deepCopy();
+                                    newProps.retain(
+                                        "name", "description", "type");
+                                    return update(
+                                        oldProps, newProps, location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                    // 4. If new type == "atomic", connect to "underspecified"
+                    if (properties.get("type").asText().equals("atomic")) {
+                        updated = updated.flatMap(
+                            new Function<Boolean, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(
+                                    Boolean updated) {
+                                    if (updated) {
+                                        Value value =
+                                            new Value("underspecified");
+                                        return Allows.relationships
+                                            .create(feature, value, location);
+                                    }
+                                    return Promise.pure(false);
+                                }
+                            });
+                    }
+                    // 5. Finalize transaction
+                    updated = updated.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean updated) {
+                                if (updated) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                    return updated;
+                }
+            });
+        return updated;
+    }
+
     protected Promise<Boolean> connect(
         JsonNode feature, final JsonNode target, final String location) {
         String fname = feature.get("name").asText();
@@ -135,6 +196,12 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return Allows.relationships.delete(f, v, location);
 
     }
+
+    public Promise<Boolean> orphaned(JsonNode properties) {
+        Feature feature = new Feature(properties.get("name").asText());
+        return super.orphaned(feature, Untyped.relationships);
+    }
+
 
     public Promise<Boolean> has(JsonNode feature, JsonNode value) {
         Feature f = new Feature(feature.get("name").asText());

@@ -133,7 +133,7 @@ public abstract class RelManager extends BaseManager {
         return response.map(new SuccessFunction());
     }
 
-    protected Promise<Boolean> delete(
+    public Promise<Boolean> delete(
         LabeledNodeWithProperties startNode, String location) {
         Promise<WS.Response> response =
             RelationshipService.deleteRelationships(

@@ -46,6 +46,15 @@ public class NodeService extends Neo4j {
         return executeAndCommit(statements);
     }
 
+    public static Promise<WS.Response> updateNode(
+        String label, JsonNode oldProperties, JsonNode newProperties,
+        String location) {
+        String query = buildMatchQuery(label, oldProperties) +
+            " SET n = {props}";
+        JsonNode statements = buildStatements(query, newProperties);
+        return executeInTransaction(location, statements);
+    }
+
     public static Promise<WS.Response> deleteNode(
         String label, JsonNode properties, String location) {
         String query = buildMatchQuery(label, properties) + " DELETE n";

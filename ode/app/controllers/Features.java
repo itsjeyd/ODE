@@ -148,17 +148,36 @@ public class Features extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateType(String name) {
         JsonNode json = request().body().asJson();
-        final String newType = json.findPath("type").textValue();
-        Promise<Boolean> typeUpdated =
-            new Feature(name).updateType(newType);
-        return typeUpdated.map(
+        final ObjectNode props = (ObjectNode) json.deepCopy();
+        // 1. Check if feature is orphaned
+        Promise<Boolean> orphaned = Feature.nodes
+            .orphaned(props.deepCopy().retain("name"));
+        // 2. If it is, update its type
+        Promise<Boolean> updated = orphaned.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean orphaned) {
+                    if (orphaned) {
+                        return Feature.nodes.setType(props);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        // 3. If previous type == "atomic", delete orphans
+        if (props.get("type").asText().equals("complex")) {
+            updated.onRedeem(
+                new Callback<Boolean>() {
+                    public void invoke(Boolean updated) {
+                        if (updated) {
+                            Value.nodes.delete();
+                        }
+                    }
+                });
+        }
+        return updated.map(
             new Function<Boolean, Result>() {
                 ObjectNode jsonResult = Json.newObject();
-                public Result apply(Boolean typeUpdated) {
-                    if (typeUpdated) {
-                        if (newType.equals(FeatureType.COMPLEX.toString())) {
-                            Value.deleteOrphans();
-                        }
+                public Result apply(Boolean updated) {
+                    if (updated) {
                         jsonResult.put("message",
                                        "Type successfully updated.");
                         return ok(jsonResult);

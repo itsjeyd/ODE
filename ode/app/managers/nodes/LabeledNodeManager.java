@@ -49,6 +49,11 @@ public abstract class LabeledNodeManager extends NodeManager {
         return update(this.label, oldProperties, newProperties);
     }
 
+    public Promise<Boolean> update(
+        JsonNode oldProperties, JsonNode newProperties, String location) {
+        return update(this.label, oldProperties, newProperties, location);
+    }
+
     protected Promise<Boolean> delete(JsonNode properties, String location) {
         Promise<WS.Response> response =
             NodeService.deleteNode(this.label, properties, location);

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.relationships.Allows;
 
 import play.libs.WS;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -37,6 +38,29 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
                     return values;
                 }
             });
+    }
+
+    public Promise<Boolean> delete() {
+        Promise<List<Value>> values = all();
+        values.onRedeem(
+            new Callback<List<Value>>() {
+                public void invoke(List<Value> values) {
+                    for (Value value: values) {
+                        final JsonNode props = value.getProperties();
+                        Promise<Boolean> orphaned = orphaned(props);
+                        orphaned.onRedeem(
+                            new Callback<Boolean>() {
+                                public void invoke(Boolean orphaned) {
+                                    if (orphaned) {
+                                        delete(props);
+                                    }
+                                }
+                            });
+                    }
+
+                }
+            });
+        return null;
     }
 
     public Promise<Boolean> orphaned(JsonNode properties) {

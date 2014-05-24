@@ -16,8 +16,6 @@ import play.libs.F.Promise;
 import constants.FeatureType;
 import constants.NodeType;
 import managers.nodes.FeatureManager;
-import models.relationships.AllowsRelationship;
-import models.relationships.Relationship;
 import models.relationships.HasFeatureRelationship;
 import models.relationships.HasSubstructureRelationship;
 import models.relationships.HasValueRelationship;
@@ -50,10 +48,6 @@ public class Feature extends OntologyNode {
         Feature feature = new Feature(name);
         feature.setType(type);
         return feature;
-    }
-
-    private Promise<List<Relationship>> getIncomingRelationships() {
-        return Relationship.getAllTo(this);
     }
 
     protected Promise<List<String>> getTargets() {
@@ -107,23 +101,6 @@ public class Feature extends OntologyNode {
 
     public String getDescription() {
         return this.description;
-    }
-
-    public Promise<Boolean> isInUse() {
-        Promise<List<Relationship>> incomingRelationships =
-            this.getIncomingRelationships();
-        return incomingRelationships.map(
-            new Function<List<Relationship>, Boolean>() {
-                public Boolean apply(
-                    List<Relationship> incomingRelationships) {
-                    return !incomingRelationships.isEmpty();
-                }
-            });
-    }
-
-    public Promise<Feature> get() {
-        Promise<JsonNode> json = FeatureManager.get(this);
-        return json.map(new GetFunction());
     }
 
     public Promise<JsonNode> getValue(Rule rule, AVM avm) {
@@ -242,40 +219,6 @@ public class Feature extends OntologyNode {
             });
     }
 
-    public Promise<Boolean> delete() {
-        final Feature feature = this;
-        Promise<Boolean> allDeleted =
-            AllowsRelationship.deleteAllFrom(this);
-        return allDeleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean allDeleted) {
-                    if (allDeleted) {
-                        return FeatureManager.delete(feature);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
-
-    private static class GetFunction implements Function<JsonNode, Feature> {
-        public Feature apply(JsonNode json) {
-            String name = json.findValue("name").asText();
-            String description = "";
-            JsonNode descriptionNode = json.findValue("description");
-            if (descriptionNode != null) {
-                description = descriptionNode.asText();
-            }
-            String type = json.findValue("type").asText();
-            Feature feature = null;
-            if (type.equals(FeatureType.COMPLEX.toString())) {
-                feature = new ComplexFeature(name, description);
-            } else if (type.equals(FeatureType.ATOMIC.toString())) {
-                feature = new AtomicFeature(name, description);
-            }
-            return feature;
-        }
-    }
 
     private class TargetsFunction
         implements Function<List<JsonNode>, List<String>> {

@@ -6,14 +6,10 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.relationships.Allows;
 
-import play.libs.WS;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
-import constants.RelationshipType;
-import neo4play.Neo4jService;
-import managers.functions.JsonFunction;
 import models.nodes.Value;
 
 
@@ -66,15 +62,6 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
     public Promise<Boolean> orphaned(JsonNode properties) {
         Value value = new Value(properties.get("name").asText());
         return super.orphaned(value, Allows.relationships);
-    }
-
-
-    public static Promise<JsonNode> getIncomingRelationships(Value value) {
-        Promise<WS.Response> response = Neo4jService
-            .getIncomingRelationshipsByType(value.getLabel(),
-                                            value.jsonProperties,
-                                            RelationshipType.ALLOWS.name());
-        return response.map(new JsonFunction());
     }
 
 }

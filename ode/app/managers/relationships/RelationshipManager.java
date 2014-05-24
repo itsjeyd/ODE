@@ -14,14 +14,6 @@ import models.relationships.Relationship;
 
 public class RelationshipManager {
 
-    public static Promise<JsonNode> getAllTo(
-        LabeledNodeWithProperties endNode) {
-        Promise<WS.Response> response = Neo4jService
-            .getIncomingRelationships(endNode.getLabel(),
-                                      endNode.jsonProperties);
-        return response.map(new JsonFunction());
-    }
-
     public static Promise<Boolean> delete(Relationship relationship) {
         Promise<WS.Response> response = Neo4jService.deleteRelationship(
             relationship);

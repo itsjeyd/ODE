@@ -29,13 +29,4 @@ public class TypedRelationshipManager {
         return response.map(new RelationshipCreatedFunction());
     }
 
-    public static Promise<JsonNode> getAllFrom(
-        LabeledNodeWithProperties startNode, RelationshipType type) {
-        Promise<WS.Response> response = Neo4jService
-            .getOutgoingRelationshipsByType(startNode.getLabel(),
-                                            startNode.jsonProperties,
-                                            type.name());
-        return response.map(new JsonFunction());
-    }
-
 }

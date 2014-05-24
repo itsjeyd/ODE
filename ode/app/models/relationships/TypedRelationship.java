@@ -40,27 +40,4 @@ public class TypedRelationship extends Relationship {
         return json.map(new ExistsFunction());
     }
 
-    public static Promise<List<Relationship>> getAllFrom(
-        LabeledNodeWithProperties startNode, RelationshipType type) {
-        Promise<JsonNode> json = TypedRelationshipManager.getAllFrom(
-            startNode, type);
-        return json.map(new AllFromFunction());
-    }
-
-    private static class AllFromFunction
-        implements Function<JsonNode, List<Relationship>> {
-        public List<Relationship> apply(JsonNode json) {
-            List<Relationship> relationships = new ArrayList<Relationship>();
-            Iterator<JsonNode> relationshipIterator = json.elements();
-            while (relationshipIterator.hasNext()) {
-                JsonNode relationship = relationshipIterator.next();
-                String url = relationship.get("self").asText();
-                int ID = Integer.parseInt(
-                    url.substring(url.lastIndexOf("/") + 1));
-                relationships.add(new TypedRelationship(ID));
-            }
-            return relationships;
-        }
-    }
-
 }

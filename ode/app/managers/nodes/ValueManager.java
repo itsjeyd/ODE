@@ -39,15 +39,9 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
-    public Promise<Boolean> orphaned(Value value) {
-        Promise<List<JsonNode>> incomingRelationships =
-            Allows.relationships.to(value);
-        return incomingRelationships.map(
-            new Function<List<JsonNode>, Boolean>() {
-                public Boolean apply(List<JsonNode> incomingRelationships) {
-                    return incomingRelationships.size() == 0;
-                }
-            });
+    public Promise<Boolean> orphaned(JsonNode properties) {
+        Value value = new Value(properties.get("name").asText());
+        return super.orphaned(value, Allows.relationships);
     }
 
 

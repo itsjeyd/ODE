@@ -2,7 +2,10 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
 import managers.functions.SuccessFunction;
+import managers.relationships.RelManager;
+import models.nodes.LabeledNodeWithProperties;
 import neo4play.NodeService;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -50,6 +53,18 @@ public abstract class LabeledNodeManager extends NodeManager {
         Promise<WS.Response> response =
             NodeService.deleteNode(this.label, properties, location);
         return response.map(new SuccessFunction());
+    }
+
+    protected Promise<Boolean> orphaned(
+        LabeledNodeWithProperties node, RelManager relManager) {
+        Promise<List<JsonNode>> incomingRelationships =
+            relManager.to(node);
+        return incomingRelationships.map(
+            new Function<List<JsonNode>, Boolean>() {
+                public Boolean apply(List<JsonNode> incomingRelationships) {
+                    return incomingRelationships.size() == 0;
+                }
+            });
     }
 
 }

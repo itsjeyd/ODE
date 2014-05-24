@@ -212,10 +212,8 @@ public class Features extends Controller {
                 new Callback<Boolean>() {
                     public void invoke(Boolean disconnected) {
                         if (disconnected) {
-                            Value value =
-                                new Value(target.get("name").asText());
                             Promise<Boolean> orphaned =
-                                Value.nodes.orphaned(value);
+                                Value.nodes.orphaned(target);
                             orphaned.onRedeem(
                                 new Callback<Boolean>() {
                                     public void invoke(Boolean orphaned) {

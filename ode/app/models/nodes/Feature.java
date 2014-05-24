@@ -178,33 +178,6 @@ public class Feature extends OntologyNode {
         }
     }
 
-    public Promise<Boolean> updateType(
-        final String newType) {
-        Promise<Boolean> isInUse = this.isInUse();
-        return isInUse.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean isInUse) {
-                    if (isInUse) {
-                        return Promise.pure(false);
-                    }
-                    Promise<Feature> feature = Feature.this.get();
-                    return feature.flatMap(
-                        new Function<Feature, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(
-                                Feature feature) {
-                                if (feature.getType().equals(newType)) {
-                                    return Promise.pure(false);
-                                }
-                                Promise<Boolean> allDeleted =
-                                    AllowsRelationship.deleteAllFrom(feature);
-                                return allDeleted.flatMap(
-                                    new UpdateTypeFunction(feature, newType));
-                            }
-                        });
-                }
-            });
-    }
-
     public Promise<Boolean> addDefaultValue(Rule rule, AVM parent) {
         final Feature feature = this;
         if (this.type.equals(FeatureType.COMPLEX)) {
@@ -312,39 +285,6 @@ public class Feature extends OntologyNode {
                 targets.add(node.get("name").asText());
             }
             return targets;
-        }
-    }
-
-    private class UpdateTypeFunction
-        implements Function<Boolean, Promise<Boolean>> {
-        private Feature feature;
-        private String newType;
-        public UpdateTypeFunction(Feature feature, String newType) {
-            this.feature = feature;
-            this.newType = newType;
-        }
-        public Promise<Boolean> apply(Boolean allDeleted) {
-            if (allDeleted) {
-                Promise<Boolean> typeUpdated =
-                    FeatureManager.updateType(this.feature, this.newType);
-                final Feature f = this.feature;
-                final String t = this.newType;
-                return typeUpdated.flatMap(
-                    new Function<Boolean, Promise<Boolean>>() {
-                        public Promise<Boolean> apply(Boolean typeUpdated) {
-                            if (typeUpdated) {
-                                if (t.equals(FeatureType.ATOMIC.toString())) {
-                                    Value underspecified =
-                                        new Value("underspecified");
-                                    return underspecified.connectTo(f);
-                                }
-                                return Promise.pure(true);
-                            }
-                            return Promise.pure(false);
-                        }
-                    });
-            }
-            return Promise.pure(false);
         }
     }
 

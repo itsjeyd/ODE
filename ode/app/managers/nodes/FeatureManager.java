@@ -254,14 +254,4 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<Boolean> updateType(
-        Feature feature, String newType) {
-        feature.jsonProperties.put(
-            "description", feature.getDescription());
-        ObjectNode newProps = feature.jsonProperties.deepCopy();
-        newProps.put("type", newType);
-        return LabeledNodeWithPropertiesManager
-            .updateProperties(feature, newProps);
-    }
-
 }

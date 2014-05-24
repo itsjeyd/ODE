@@ -1,13 +1,10 @@
 package managers.nodes;
 
-import constants.FeatureType;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.nodes.AtomicFeature;
-import models.nodes.ComplexFeature;
 import neo4play.RelationshipService;
 
 import play.libs.WS;
@@ -44,13 +41,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                             description = node.get("description").asText();
                         }
                         String type = node.get("type").asText();
-                        if (type.equals(FeatureType.COMPLEX.toString())) {
-                            features.add(
-                                new ComplexFeature(name, description));
-                        } else if (type.equals(FeatureType.ATOMIC.toString())) {
-                            features.add(
-                                new AtomicFeature(name, description));
-                        }
+                        features.add(new Feature(name, description, type));
                     }
                     return features;
                 }
@@ -74,16 +65,12 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             new Function<JsonNode, Feature>() {
                 public Feature apply(JsonNode json) {
                     String name = json.findValue("name").asText();
-                    String description = json.has("description") ?
-                        json.findValue("description").asText() : "";
-                    String type = json.findValue("type").asText();
-                    Feature feature = null;
-                    if (type.equals(FeatureType.COMPLEX.toString())) {
-                        feature = new ComplexFeature(name, description);
-                    } else if (type.equals(FeatureType.ATOMIC.toString())) {
-                        feature = new AtomicFeature(name, description);
+                    String description = "";
+                    if (json.has("description")) {
+                        description = json.findValue("description").asText();
                     }
-                    return feature;
+                    String type = json.findValue("type").asText();
+                    return new Feature(name, description, type);
                 }
             });
     }

@@ -44,6 +44,11 @@ public class Feature extends OntologyNode {
         this.description = description;
     }
 
+    public Feature(String name, String description, String type) {
+        this(name, description);
+        this.setType(type);
+    }
+
     public static Feature of(String name, String type) {
         Feature feature = new Feature(name);
         feature.setType(type);

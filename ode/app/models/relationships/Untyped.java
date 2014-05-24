@@ -1,10 +1,11 @@
 package models.relationships;
 
-import managers.relationships.UntypedManager;
+import managers.relationships.UntypedRelManager;
 
 
 public class Untyped {
 
-    public static final UntypedManager relationships = new UntypedManager();
+    public static final UntypedRelManager relationships =
+        new UntypedRelManager();
 
 }

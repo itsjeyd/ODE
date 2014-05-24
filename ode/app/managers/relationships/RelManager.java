@@ -3,7 +3,6 @@ package managers.relationships;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import managers.BaseManager;
-import managers.BaseManager;
 import models.nodes.LabeledNodeWithProperties;
 import neo4play.RelationshipService;
 import play.libs.F.Function;

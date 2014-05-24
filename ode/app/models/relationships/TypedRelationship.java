@@ -1,12 +1,7 @@
 package models.relationships;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.RelationshipType;

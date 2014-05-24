@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.WS;
 import play.libs.F.Promise;
 
-import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.RelationshipCreatedFunction;
-import models.nodes.LabeledNodeWithProperties;
 import models.relationships.TypedRelationship;
 
 

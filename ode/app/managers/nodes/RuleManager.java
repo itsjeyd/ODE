@@ -1,10 +1,15 @@
 package managers.nodes;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import models.nodes.LHS;
+import models.nodes.RHS;
+import play.libs.Json;
 
 import play.libs.WS;
 import play.libs.F.Function;
@@ -56,7 +61,66 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
-
+    @Override
+    protected Promise<Boolean> create(
+        JsonNode properties, final String location) {
+        final Rule rule = new Rule(properties.get("name").asText());
+        // 1. Generate UUIDs for rule, LHS, and RHS
+        final String ruleUUID = UUID.randomUUID().toString();
+        byte[] bytes = ruleUUID.getBytes(Charset.forName("UTF-8"));
+        final String uuid = UUID.nameUUIDFromBytes(bytes).toString();
+        // 2. Create rule
+        ObjectNode props = (ObjectNode) properties.deepCopy();
+        props.put("uuid", ruleUUID);
+        Promise<Boolean> created = super.create(props, location, "name");
+        // 3. Create LHS
+        created = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        return LHS.nodes.create(
+                            Json.newObject().put("uuid", uuid), location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        // 4. Connect rule to LHS
+        created = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        LHS lhs = new LHS(rule, uuid);
+                        return models.relationships.LHS.relationships
+                            .create(rule, lhs, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        // 5. Create RHS
+        created = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean lhsCreated) {
+                    if (lhsCreated) {
+                        return RHS.nodes.create(
+                            Json.newObject().put("uuid", uuid), location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        // 6. Connect rule to RHS
+        created = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        RHS rhs = new RHS(rule, uuid);
+                        return models.relationships.RHS.relationships
+                            .create(rule, rhs, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return created;
+    }
 
 
     public static Promise<Boolean> create(Rule rule) {

@@ -10,6 +10,11 @@ import models.nodes.CombinationGroup;
 public class CombinationGroupManager extends
                                          LabeledNodeWithPropertiesManager {
 
+    public CombinationGroupManager() {
+        this.label = "CombinationGroup";
+    }
+
+
     public static Promise<Boolean> update(CombinationGroup group,
                                           int position) {
         ObjectNode newProps = group.jsonProperties.deepCopy();

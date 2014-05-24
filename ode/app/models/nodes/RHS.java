@@ -20,6 +20,9 @@ import models.relationships.RHSRelationship;
 
 
 public class RHS extends UUIDNode {
+
+    public static final RHSManager nodes = new RHSManager();
+
     public Rule rule;
     public JsonNode json;
 
@@ -30,6 +33,16 @@ public class RHS extends UUIDNode {
     public RHS(Rule rule) {
         this();
         this.rule = rule;
+    }
+
+    public RHS(String uuid) {
+        this();
+        this.jsonProperties.put("uuid", uuid);
+    }
+
+    public RHS(Rule rule, String uuid) {
+        this(rule);
+        this.jsonProperties.put("uuid", uuid);
     }
 
     public static RHS of(Rule rule) {
@@ -100,9 +113,7 @@ public class RHS extends UUIDNode {
     }
 
     public Promise<Boolean> create() {
-        Promise<UUID> ruleUUID = this.rule.getUUID();
-        Promise<Boolean> created = ruleUUID.flatMap(new CreateFunction(this));
-        return created.flatMap(new CreateGroupFunction(this));
+        return null;
     }
 
     public Promise<Boolean> connectTo(Rule embeddingRule) {
@@ -186,47 +197,6 @@ public class RHS extends UUIDNode {
             byte[] bytes = ruleUUID.toString()
                 .getBytes(Charset.forName("UTF-8"));
             return UUID.nameUUIDFromBytes(bytes);
-        }
-    }
-
-    protected static class CreateFunction
-        implements Function<UUID, Promise<Boolean>> {
-        private RHS rhs;
-        public CreateFunction(RHS rhs) {
-            this.rhs = rhs;
-        }
-        public Promise<Boolean> apply(UUID ruleUUID) {
-            byte[] bytes = ruleUUID.toString()
-                .getBytes(Charset.forName("UTF-8"));
-            UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            this.rhs.jsonProperties.put("uuid", uuid.toString());
-            return RHSManager.create(this.rhs);
-        }
-    }
-
-    private static class CreateGroupFunction
-        implements Function<Boolean, Promise<Boolean>> {
-        private RHS rhs;
-        public CreateGroupFunction(RHS rhs) {
-            this.rhs = rhs;
-        }
-        public Promise<Boolean> apply(Boolean created) {
-            if (created) {
-                final RHS rhs = this.rhs;
-                final CombinationGroup group =
-                    new CombinationGroup(UUID.randomUUID(), 1);
-                Promise<Boolean> groupCreated = group.create();
-                return groupCreated.flatMap(
-                    new Function<Boolean, Promise<Boolean>>() {
-                        public Promise<Boolean> apply(Boolean groupCreated) {
-                            if (groupCreated) {
-                                return group.connectTo(rhs);
-                            }
-                            return Promise.pure(false);
-                        }
-                    });
-            }
-            return Promise.pure(false);
         }
     }
 

@@ -25,6 +25,9 @@ import models.relationships.HasStringRelationship;
 
 public class CombinationGroup extends LabeledNodeWithProperties {
 
+    public static final CombinationGroupManager nodes =
+        new CombinationGroupManager();
+
     private CombinationGroup(UUID uuid) {
         super(NodeType.COMBINATION_GROUP);
         this.jsonProperties.put("uuid", uuid.toString());
@@ -34,6 +37,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         super(NodeType.COMBINATION_GROUP);
         this.jsonProperties.put("uuid", uuid.toString());
         this.jsonProperties.put("position", position);
+    }
+
+    public CombinationGroup(String uuid) {
+        this(UUID.fromString(uuid));
     }
 
     public static CombinationGroup of(String groupID) {

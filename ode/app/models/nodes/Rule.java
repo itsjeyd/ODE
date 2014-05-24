@@ -269,11 +269,7 @@ public class Rule extends UUIDNode {
     }
 
     public Promise<Boolean> create() {
-        Promise<Boolean> created = this.exists()
-            .flatMap(new CreateFunction(this));
-        Promise<Boolean> lhsCreated = created
-            .flatMap(new CreateLHSFunction(this));
-        return lhsCreated.flatMap(new CreateRHSFunction(this));
+        return null;
     }
 
     public Promise<Boolean> connectTo(final Slot slot) {
@@ -389,74 +385,6 @@ public class Rule extends UUIDNode {
                         rule.lhs = components._1;
                         rule.rhs = components._2;
                         return rule;
-                    }
-                });
-        }
-    }
-
-    private class CreateFunction implements
-                                     Function<Boolean, Promise<Boolean>> {
-        private Rule rule;
-        public CreateFunction(Rule rule) {
-            this.rule = rule;
-        }
-        public Promise<Boolean> apply(Boolean exists) {
-            if (exists) {
-                return Promise.pure(false);
-            }
-            this.rule.jsonProperties
-                .put("uuid", UUID.randomUUID().toString());
-            return RuleManager.create(rule);
-        }
-    }
-
-    private class CreateLHSFunction implements
-                                        Function<Boolean, Promise<Boolean>> {
-
-        private Rule rule;
-        public CreateLHSFunction(Rule rule) {
-            this.rule = rule;
-        }
-        public Promise<Boolean> apply(Boolean created) {
-            if (!created) {
-                return Promise.pure(false);
-            }
-            final LHS lhs = new LHS(this.rule);
-            Promise<Boolean> lhsCreated = lhs.create();
-            final Rule rule = this.rule;
-            return lhsCreated.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean created) {
-                        if (created) {
-                            return lhs.connectTo(rule);
-                        }
-                        return Promise.pure(false);
-                    }
-                });
-        }
-    }
-
-    private class CreateRHSFunction implements
-                                        Function<Boolean, Promise<Boolean>> {
-
-        private Rule rule;
-        public CreateRHSFunction(Rule rule) {
-            this.rule = rule;
-        }
-        public Promise<Boolean> apply(Boolean lhsCreated) {
-            if (!lhsCreated) {
-                return Promise.pure(false);
-            }
-            final RHS rhs = new RHS(this.rule);
-            Promise<Boolean> rhsCreated = rhs.create();
-            final Rule rule = this.rule;
-            return rhsCreated.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean created) {
-                        if (created) {
-                            return rhs.connectTo(rule);
-                        }
-                        return Promise.pure(false);
                     }
                 });
         }

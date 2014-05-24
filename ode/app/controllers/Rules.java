@@ -130,18 +130,18 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> create() {
-        JsonNode json = request().body().asJson();
-        final String name = json.findPath("name").textValue();
-        final String description = json.findPath("description").textValue();
-        Promise<Boolean> created = new Rule(name, description).create();
+        final JsonNode json = request().body().asJson();
+        Promise<Boolean> created = Rule.nodes.create(json);
         return created.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();
                 public Result apply(Boolean created) {
                     if (created) {
+                        String name = json.get("name").asText();
                         result.put("id", name);
                         result.put("name", name);
-                        result.put("description", description);
+                        result.put(
+                            "description", json.get("description").asText());
                         return ok(result);
                     }
                     return badRequest(result);

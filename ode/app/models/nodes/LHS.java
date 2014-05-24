@@ -15,11 +15,19 @@ import models.relationships.LHSRelationship;
 
 
 public class LHS extends AVM {
+
+    public static final AVMManager nodes = new AVMManager();
+
     public Rule parent;
 
     public LHS(Rule rule) {
         super(rule);
         this.parent = rule;
+    }
+
+    public LHS(Rule rule, String uuid) {
+        this(rule);
+        this.jsonProperties.put("uuid", uuid);
     }
 
     public Promise<UUID> getUUID() {
@@ -45,8 +53,7 @@ public class LHS extends AVM {
     }
 
     public Promise<Boolean> create() {
-        Promise<UUID> parentUUID = this.parent.getUUID();
-        return parentUUID.flatMap(new CreateFunction(this));
+        return null;
     }
 
     public Promise<Boolean> connectTo(Rule embeddingRule) {
@@ -138,21 +145,6 @@ public class LHS extends AVM {
             byte[] bytes = parentUUID.toString()
                 .getBytes(Charset.forName("UTF-8"));
             return UUID.nameUUIDFromBytes(bytes);
-        }
-    }
-
-    protected static class CreateFunction
-        implements Function<UUID, Promise<Boolean>> {
-        private LHS lhs;
-        public CreateFunction(LHS lhs) {
-            this.lhs = lhs;
-        }
-        public Promise<Boolean> apply(UUID parentUUID) {
-            byte[] bytes = parentUUID.toString()
-                .getBytes(Charset.forName("UTF-8"));
-            UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            this.lhs.jsonProperties.put("uuid", uuid.toString());
-            return AVMManager.create(this.lhs);
         }
     }
 

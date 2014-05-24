@@ -284,14 +284,41 @@ public class Features extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> delete(final String name) {
-        Promise<Boolean> isInUse = new Feature(name).isInUse();
-        Promise<Boolean> deleted = isInUse.flatMap(
+        final ObjectNode props = Json.newObject();
+        props.put("name", name);
+        // 1. Check if feature is orphaned
+        Promise<Boolean> orphaned = Feature.nodes.orphaned(props);
+        Promise<Boolean> deleted = orphaned.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean isInUse) {
-                    if (isInUse) {
-                        return Promise.pure(false);
+                public Promise<Boolean> apply(Boolean orphaned) {
+                    // 2. If it isn't, delete it
+                    if (orphaned) {
+                        Promise<Feature> feature = Feature.nodes.get(props);
+                        Promise<Boolean> deleted = feature.flatMap(
+                            new Function<Feature, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(
+                                    Feature feature) {
+                                    Promise<Boolean> deleted =
+                                        Feature.nodes.delete(props);
+                                    // 3. If type == "atomic", delete orphans
+                                    if (feature.getType().equals(
+                                            FeatureType.ATOMIC.toString())) {
+                                        deleted.onRedeem(
+                                            new Callback<Boolean>() {
+                                                public void invoke(
+                                                    Boolean deleted) {
+                                                    if (deleted) {
+                                                        Value.nodes.delete();
+                                                    }
+                                                }});
+                                    }
+                                    return deleted;
+                                }
+                            });
+                        return deleted;
+
                     }
-                    return new Feature(name).delete();
+                    return Promise.pure(false);
                 }
             });
         return deleted.map(
@@ -299,7 +326,6 @@ public class Features extends Controller {
                 ObjectNode result = Json.newObject();
                 public Result apply(Boolean deleted) {
                     if (deleted) {
-                        Value.deleteOrphans();
                         result.put("message",
                                    "Feature successfully deleted.");
                         return ok(result);

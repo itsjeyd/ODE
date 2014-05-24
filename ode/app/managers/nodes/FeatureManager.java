@@ -68,6 +68,26 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    public Promise<Feature> get(JsonNode properties) {
+        Promise<JsonNode> json = get(this.label, properties);
+        return json.map(
+            new Function<JsonNode, Feature>() {
+                public Feature apply(JsonNode json) {
+                    String name = json.findValue("name").asText();
+                    String description = json.has("description") ?
+                        json.findValue("description").asText() : "";
+                    String type = json.findValue("type").asText();
+                    Feature feature = null;
+                    if (type.equals(FeatureType.COMPLEX.toString())) {
+                        feature = new ComplexFeature(name, description);
+                    } else if (type.equals(FeatureType.ATOMIC.toString())) {
+                        feature = new AtomicFeature(name, description);
+                    }
+                    return feature;
+                }
+            });
+    }
+
     @Override
     protected Promise<Boolean> create(
         final JsonNode properties, final String location) {
@@ -147,6 +167,27 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                 }
             });
         return updated;
+    }
+
+    @Override
+    protected Promise<Boolean> delete(
+        final JsonNode properties, final String location) {
+        final Feature feature = new Feature(properties.get("name").asText());
+        // 1. Delete all outgoing :ALLOWS relationships
+        Promise<Boolean> deleted = Allows.relationships
+            .delete(feature, location);
+        deleted = deleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean deleted) {
+                    if (deleted) {
+                        // 2. Delete feature
+                        return FeatureManager.super
+                            .delete(properties, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return deleted;
     }
 
     protected Promise<Boolean> connect(

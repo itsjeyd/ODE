@@ -1,7 +1,6 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +21,7 @@ import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
 import models.functions.ExistsFunction;
 import models.nodes.Rule;
+import utils.UUIDGenerator;
 
 
 public class RuleManager extends LabeledNodeWithPropertiesManager {
@@ -66,9 +66,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         JsonNode properties, final String location) {
         final Rule rule = new Rule(properties.get("name").asText());
         // 1. Generate UUIDs for rule, LHS, and RHS
-        final String ruleUUID = UUID.randomUUID().toString();
-        byte[] bytes = ruleUUID.getBytes(Charset.forName("UTF-8"));
-        final String uuid = UUID.nameUUIDFromBytes(bytes).toString();
+        final String ruleUUID = UUIDGenerator.random();
+        final String uuid = UUIDGenerator.from(ruleUUID);
         // 2. Create rule
         ObjectNode props = (ObjectNode) properties.deepCopy();
         props.put("uuid", ruleUUID);

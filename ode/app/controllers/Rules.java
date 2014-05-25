@@ -249,13 +249,16 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateFeatureValue(String name) {
         JsonNode json = request().body().asJson();
-        Rule rule = new Rule(name);
-        LHS lhs = new LHS(rule);
-        final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());
-        final Feature feature =
-            new Feature(json.findPath("name").textValue());
-        Value newValue = new Value(json.findPath("newValue").textValue());
-        Promise<Boolean> updated = lhs.update(feature, uuid, newValue);
+        ObjectNode avm = (ObjectNode) json.deepCopy();
+        avm.retain("ruleUUID", "uuid");
+        ObjectNode feature = Json.newObject();
+        feature.put("name", json.findValue("name").asText());
+        ObjectNode value = Json.newObject();
+        value.put("name", json.findValue("value").asText());
+        ObjectNode newValue = Json.newObject();
+        newValue.put("name", json.findValue("newValue"));
+        Promise<Boolean> updated = Substructure.nodes
+            .setValue(avm, feature, value, newValue);
         return updated.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

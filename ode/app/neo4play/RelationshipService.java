@@ -32,6 +32,18 @@ public class RelationshipService extends Neo4j {
                     buildConjunctiveConstraints("e", endNodeProps));
     }
 
+    private static String buildMatchQuery(
+        String startNodeLabel, JsonNode startNodeProps,
+        String endNodeLabel, JsonNode endNodeProps, String type,
+        JsonNode relProps) {
+        return String
+            .format("MATCH (s:%s)-[r:%s]->(e:%s) WHERE %s AND %s AND %s",
+                    startNodeLabel, type, endNodeLabel,
+                    buildConjunctiveConstraints("s", startNodeProps),
+                    buildConjunctiveConstraints("e", endNodeProps),
+                    buildConjunctiveConstraints("r", relProps));
+    }
+
     private static JsonNode buildStatements(String query) {
         ObjectNode statement = Json.newObject();
         statement.put("statement", query);
@@ -80,6 +92,18 @@ public class RelationshipService extends Neo4j {
         String query = buildMatchQuery(
             startNode.getLabel(), startNode.getProperties(),
             endNode.getLabel(), endNode.getProperties(), type) + " DELETE r";
+        JsonNode statements = buildStatements(query);
+        return executeInTransaction(location, statements);
+    }
+
+    public static Promise<WS.Response> deleteRelationship(
+        LabeledNodeWithProperties startNode,
+        LabeledNodeWithProperties endNode, String type, JsonNode properties,
+        String location) {
+        String query = buildMatchQuery(
+            startNode.getLabel(), startNode.getProperties(),
+            endNode.getLabel(), endNode.getProperties(), type, properties) +
+            " DELETE r";
         JsonNode statements = buildStatements(query);
         return executeInTransaction(location, statements);
     }

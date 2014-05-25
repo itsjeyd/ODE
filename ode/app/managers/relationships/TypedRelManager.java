@@ -132,6 +132,16 @@ public abstract class TypedRelManager extends RelManager {
         return response.map(new SuccessFunction());
     }
 
+    public Promise<Boolean> delete(LabeledNodeWithProperties startNode,
+                                   LabeledNodeWithProperties endNode,
+                                   JsonNode properties,
+                                   String location) {
+        Promise<WS.Response> response =
+            RelationshipService.deleteRelationship(
+                startNode, endNode, this.type, properties, location);
+        return response.map(new SuccessFunction());
+    }
+
     public Promise<Boolean> delete(
         LabeledNodeWithProperties startNode, String location) {
         Promise<WS.Response> response =

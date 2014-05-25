@@ -337,7 +337,7 @@ Input.Model.Pair = Backbone.Model.extend({
   },
 
   updateValue: function(newValue) {
-    this.save({ uuid: this.parent.uuid,
+    this.save({ ruleUUID: this.parent.ruleUUID, uuid: this.parent.uuid,
                 newValue: newValue },
               { url: this.url(),
                 type: 'PUT',
@@ -571,6 +571,7 @@ Input.View.PairView = Backbone.View.extend({
   },
 
   _changeValue: function(e) {
+    e.stopPropagation();
     var newValue = $(e.currentTarget).val();
     this.model.updateValue(newValue);
   },

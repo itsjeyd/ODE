@@ -119,23 +119,6 @@ public class Feature extends OntologyNode {
         }
     }
 
-    public Promise<Boolean> setValue(
-        final Value newValue, final Rule rule, final AVM avm) {
-        final Feature feature = this;
-        Promise<Boolean> deleted = HasValueRelationship
-            .delete(this, rule, avm);
-        return deleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean deleted) {
-                    if (deleted) {
-                        return new HasValueRelationship(
-                            feature, newValue, rule, avm).create();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
     public Promise<Set<Rule>> getRules() {
         Promise<JsonNode> embeddingRules = FeatureManager.getRules(this);
         return embeddingRules.map(new RuleFactoryFunction());

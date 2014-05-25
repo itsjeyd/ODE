@@ -113,7 +113,7 @@ public abstract class TypedRelManager extends RelManager {
         return response.map(new SuccessFunction());
     }
 
-    private Promise<Boolean> create(
+    public Promise<Boolean> create(
         LabeledNodeWithProperties startNode,
         LabeledNodeWithProperties endNode, JsonNode properties,
         String location) {

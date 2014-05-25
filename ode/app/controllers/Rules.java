@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -12,7 +13,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.libs.F.Function;
-import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
@@ -25,6 +25,8 @@ import models.nodes.LHS;
 import models.nodes.RHS;
 import models.nodes.Rule;
 import models.nodes.Slot;
+import models.nodes.Substructure;
+import utils.UUIDGenerator;
 import views.html.browse;
 import views.html.details;
 import views.html.input;
@@ -209,37 +211,36 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addFeature(String name) {
         JsonNode json = request().body().asJson();
-        Rule rule = new Rule(name);
-        final LHS lhs = new LHS(rule);
-        final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());
-        final Feature feature = Feature.of(
-            json.findPath("name").textValue(),
-            json.findPath("type").textValue());
-        Promise<Boolean> added = lhs.add(feature, uuid);
-        return added.flatMap(
-            new Function<Boolean, Promise<Result>>() {
+        final ObjectNode avm = (ObjectNode) json.deepCopy();
+        avm.retain("ruleUUID", "uuid");
+        final ObjectNode feature = Json.newObject();
+        feature.put("name", json.findValue("name").asText());
+        feature.put("type", json.findValue("type").asText());
+        Promise<Boolean> added = Substructure.nodes.connect(avm, feature);
+        return added.map(
+            new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();
-                public Promise<Result> apply(Boolean added) {
+                public Result apply(Boolean added) {
                     if (added) {
-                        Promise<JsonNode> value = lhs
-                            .getValue(feature, uuid);
-                        return value.map(
-                            new Function<JsonNode, Result>() {
-                                public Result apply(JsonNode value) {
-                                    result.put("value", value);
-                                    result.put("message",
-                                               "Feature successfully added.");
-                                    return ok(result);
-                                }
-                            });
+                        String type = feature.get("type").asText();
+                        if (type.equals("complex")) {
+                            String parentUUID = avm.get("uuid").asText();
+                            String fname = feature.get("name").asText();
+                            String uuid = UUIDGenerator
+                                .from(parentUUID + fname);
+                            ObjectNode value = Json.newObject();
+                            value.put("uuid", uuid);
+                            value.putArray("pairs");
+                            result.put("value", value);
+                        } else {
+                            result.put(
+                                "value", new TextNode("underspecified"));
+                        }
+                        result.put("message", "Feature successfully added.");
+                        return ok(result);
                     }
                     result.put("message", "Feature not added.");
-                    return Promise.promise(
-                        new Function0<Result>() {
-                            public Result apply() {
-                                return badRequest(result);
-                            }
-                        });
+                    return badRequest(result);
                 }
             });
     }

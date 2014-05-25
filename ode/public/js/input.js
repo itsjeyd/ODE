@@ -261,6 +261,7 @@ Input.Collection.AVM = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.ruleName = options.ruleName;
+    this.ruleUUID = options.ruleUUID;
     this.uuid = options.json.uuid;
     this.accept = options.accept || '.feature-item';
     var avm = this;
@@ -312,6 +313,7 @@ Input.Model.Pair = Backbone.Model.extend({
       var accept = '#' + this.get('attribute').get('targets').join(', #');
       this.set('value', new Input.Collection.AVM(
         null, { ruleName: this.parent.ruleName,
+                ruleUUID: this.parent.ruleUUID,
                 accept: accept,
                 json: value }
       ));
@@ -328,7 +330,7 @@ Input.Model.Pair = Backbone.Model.extend({
       pair._setValue(model.get('value'));
       pair.parent.add(pair);
     };
-    this.save({ uuid: this.parent.uuid },
+    this.save({ ruleUUID: this.parent.ruleUUID, uuid: this.parent.uuid },
               { url: this.url(),
                 wait: true,
                 success: success });
@@ -625,7 +627,7 @@ $(document).ready(function() {
   var lhsJSON = $('#rule-lhs').data('json');
 
   var lhs = new Input.Collection.AVM(
-    null, { ruleName: name, json: lhsJSON }
+    null, { ruleName: name, ruleUUID: uuid, json: lhsJSON }
   );
 
   var rule = new Input.Model.Rule({

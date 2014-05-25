@@ -11,6 +11,9 @@ import models.relationships.HasSubstructureRelationship;
 
 
 public class Substructure extends AVM {
+
+    public static final AVMManager nodes = new AVMManager();
+
     public AVM parent;
     public Feature embeddingFeature;
 
@@ -23,6 +26,10 @@ public class Substructure extends AVM {
         super(rule);
         this.parent = parent;
         this.embeddingFeature = embeddingFeature;
+    }
+
+    public Substructure(String uuid) {
+        this.jsonProperties.put("uuid", uuid);
     }
 
     public Promise<UUID> getUUID() {

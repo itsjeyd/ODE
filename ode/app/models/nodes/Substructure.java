@@ -50,11 +50,6 @@ public class Substructure extends AVM {
         return parentUUID.flatMap(new CreateFunction(this));
     }
 
-    public Promise<Boolean> connectTo(Feature embeddingFeature) {
-        return new HasSubstructureRelationship(embeddingFeature, this)
-            .create();
-    }
-
     private static class UUIDFunction implements Function<UUID, UUID> {
         private Feature embeddingFeature;
         public UUIDFunction(Feature embeddingFeature) {

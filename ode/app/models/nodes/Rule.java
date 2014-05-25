@@ -289,11 +289,6 @@ public class Rule extends UUIDNode {
         return HasRefRelationship.delete(slot, this);
     }
 
-    public Promise<Boolean> updateLHS(Feature feature) {
-        LHS lhs = new LHS(this);
-        return lhs.add(feature);
-    }
-
     public Promise<Boolean> addGroup(CombinationGroup group) {
         return RHS.of(this).add(group);
     }

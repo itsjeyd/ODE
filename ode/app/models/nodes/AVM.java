@@ -81,21 +81,6 @@ public abstract class AVM extends UUIDNode {
             });
     }
 
-    public Promise<Boolean> add(final Feature feature) {
-        final AVM avm = this;
-        Promise<Boolean> connected =
-            new HasFeatureRelationship(avm, feature).create();
-        return connected.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean connected) {
-                    if (connected) {
-                        return feature.addDefaultValue(avm.rule, avm);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
     public Promise<Boolean> empty() {
         final AVM avm = this;
         Promise<List<Feature>> features = this.getFeatures();

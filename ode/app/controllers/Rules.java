@@ -278,13 +278,13 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeFeature(String name) {
         JsonNode json = request().body().asJson();
-        Rule rule = new Rule(name);
-        LHS lhs = new LHS(rule);
-        final UUID uuid = UUID.fromString(json.findPath("uuid").textValue());
-        final Feature feature =
-            Feature.of(json.findPath("name").textValue(),
-                       json.findPath("type").textValue());
-        Promise<Boolean> removed = lhs.remove(feature, uuid);
+        ObjectNode avm = (ObjectNode) json.deepCopy();
+        avm.retain("ruleUUID", "uuid");
+        ObjectNode feature = Json.newObject();
+        feature.put("name", json.findValue("name").asText());
+        feature.put("type", json.findValue("type").asText());
+        Promise<Boolean> removed = Substructure.nodes
+            .removeFeature(avm, feature);
         return removed.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

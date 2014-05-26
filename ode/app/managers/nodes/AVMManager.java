@@ -2,6 +2,7 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
 import models.nodes.Feature;
 import models.nodes.Substructure;
 import models.nodes.Value;
@@ -16,6 +17,61 @@ public class AVMManager extends UUIDNodeManager {
 
     public AVMManager() {
         this.label = "AVM";
+    }
+
+    @Override
+    protected Promise<Boolean> delete(
+        final JsonNode properties, final String location) {
+        // 1. Remove all features
+        Promise<Boolean> emptied = Substructure.nodes
+            .empty(properties, location);
+        // 2. Delete AVM
+        Promise<Boolean> deleted = emptied.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean emptied) {
+                    if (emptied) {
+                        ObjectNode props = (ObjectNode) properties.deepCopy();
+                        return AVMManager.super
+                            .delete(props.retain("uuid"), location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return deleted;
+    }
+
+    protected Promise<Boolean> empty(
+        final JsonNode properties, final String location) {
+        // 1. Get list of all features
+        Substructure avm = new Substructure(properties.get("uuid").asText());
+        Promise<List<JsonNode>> features = Has.relationships
+            .endNodes(avm, location);
+        // 2. Remove each one of them from the AVM
+        Promise<Boolean> emptied = features.flatMap(
+            new Function<List<JsonNode>, Promise<Boolean>>() {
+                public Promise<Boolean> apply(List<JsonNode> features) {
+                    return removeFeatures(properties, features, location);
+                }
+            });
+        return emptied;
+    }
+
+    private Promise<Boolean> removeFeatures(
+        final JsonNode properties, final List<JsonNode> features,
+        final String location) {
+        Promise<Boolean> removed = Promise.pure(true);
+        for (final JsonNode feature: features) {
+            removed = removed.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean removed) {
+                        if (removed) {
+                            return removeFeature(properties, feature, location);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        }
+        return removed;
     }
 
     protected Promise<Boolean> connect(
@@ -120,6 +176,78 @@ public class AVMManager extends UUIDNodeManager {
                 }
             });
         return updated;
+    }
+
+    public Promise<Boolean> removeFeature(
+        final JsonNode avm, final JsonNode feature) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> removed = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> removed =
+                        removeFeature(avm, feature, location);
+                    return removed.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean removed) {
+                                if (removed) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return removed;
+    }
+
+    protected Promise<Boolean> removeFeature(
+        final JsonNode avm, final JsonNode feature, final String location) {
+        final String uuid = avm.get("uuid").asText();
+        final Substructure a = new Substructure(uuid);
+        final String name = feature.get("name").asText();
+        final Feature f = new Feature(name);
+        // 1. Disconnect AVM from feature
+        Promise<Boolean> removed = Has.relationships
+            .delete(a, f, location);
+        // 2. Disconnect feature from value
+        removed = removed.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean removed) {
+                    if (removed) {
+                        final ObjectNode props = Json.newObject();
+                        props.put("rule", avm.get("ruleUUID").asText());
+                        if (feature.get("type").asText().equals("atomic")) {
+                            props.put("avm", uuid);
+                        }
+                        Promise<Boolean> r = Has.relationships
+                            .delete(f, props, location);
+                        // 3. If feature is complex, delete value
+                        if (feature.get("type").asText().equals("complex")) {
+                            final String subUUID =
+                                UUIDGenerator.from(uuid + name);
+                            r = r.flatMap(
+                                new Function<Boolean, Promise<Boolean>>() {
+                                    public Promise<Boolean> apply(Boolean r) {
+                                        if (r) {
+                                            ObjectNode properties =
+                                                Json.newObject();
+                                            properties.put("uuid", subUUID);
+                                            properties.put(
+                                                "ruleUUID",
+                                                avm.get("ruleUUID").asText());
+                                            return Substructure.nodes
+                                                .delete(properties, location);
+                                        }
+                                        return Promise.pure(false);
+                                    }
+                                });
+                        }
+                        return r;
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return removed;
     }
 
 }

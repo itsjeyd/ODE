@@ -345,7 +345,7 @@ Input.Model.Pair = Backbone.Model.extend({
   },
 
   remove: function() {
-    this.save({ uuid: this.parent.uuid, },
+    this.save({ ruleUUID: this.parent.ruleUUID, uuid: this.parent.uuid, },
               { url: this.url(),
                 type: 'DELETE',
                 wait: true,

@@ -1,6 +1,7 @@
 package managers.relationships;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.ArrayList;
 import java.util.List;
 import managers.functions.JsonFunction;
 import managers.functions.SuccessFunction;
@@ -150,6 +151,15 @@ public abstract class TypedRelManager extends RelManager {
         return response.map(new SuccessFunction());
     }
 
+    public Promise<Boolean> delete(
+        LabeledNodeWithProperties startNode, JsonNode properties,
+        String location) {
+        Promise<WS.Response> response =
+            RelationshipService.deleteRelationships(
+                startNode, this.type, properties, location);
+        return response.map(new SuccessFunction());
+    }
+
     @Override
     public Promise<List<JsonNode>> to(LabeledNodeWithProperties endNode) {
         Promise<WS.Response> response = RelationshipService
@@ -169,14 +179,20 @@ public abstract class TypedRelManager extends RelManager {
     // it doesn't make sense to force them to implement a method that
     // handles the conversion.
     public Promise<List<JsonNode>> endNodes(
-        LabeledNodeWithProperties startNode) {
+        LabeledNodeWithProperties startNode, String location) {
         Promise<WS.Response> response = RelationshipService
-            .endNodes(startNode, this.type);
+            .endNodes(startNode, this.type, location);
         return response.map(
             new Function<WS.Response, List<JsonNode>>() {
                 public List<JsonNode> apply(WS.Response response) {
                     JsonNode json = response.asJson();
-                    return json.get("data").findValues("data");
+                    List<JsonNode> nodes = new ArrayList<JsonNode>();
+                    List<JsonNode> rows = json.findValue("data")
+                        .findValues("row");
+                    for (JsonNode row : rows) {
+                        nodes.add(row.get(0));
+                    }
+                    return nodes;
                 }
             });
     }

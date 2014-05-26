@@ -118,6 +118,18 @@ public class RelationshipService extends Neo4j {
         return executeInTransaction(location, statements);
     }
 
+    public static Promise<WS.Response> deleteRelationships(
+        LabeledNodeWithProperties startNode, String type,
+        JsonNode properties, String location) {
+        String query = String.format(
+            "MATCH (s:%s)-[r:%s]->() WHERE %s AND %s DELETE r",
+            startNode.getLabel(), type,
+            buildConjunctiveConstraints("s", startNode.getProperties()),
+            buildConjunctiveConstraints("r", properties));
+        JsonNode statements = buildStatements(query);
+        return executeInTransaction(location, statements);
+    }
+
     public static Promise<WS.Response> to(LabeledNodeWithProperties endNode) {
         String query = String.format(
             "MATCH ()-[r]->(e:%s) WHERE %s RETURN r",
@@ -136,12 +148,13 @@ public class RelationshipService extends Neo4j {
     }
 
     public static Promise<WS.Response> endNodes(
-        LabeledNodeWithProperties startNode, String type) {
+        LabeledNodeWithProperties startNode, String type, String location) {
         String query = String.format(
             "MATCH (s:%s)-[r:%s]->(e) WHERE %s RETURN e",
             startNode.getLabel(), type,
             buildConjunctiveConstraints("s", startNode.getProperties()));
-        return postCypherQuery(query);
+        JsonNode statements = buildStatements(query);
+        return executeInTransaction(location, statements);
     }
 
     public static Promise<WS.Response> getRelationshipVariableLength(

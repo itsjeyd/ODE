@@ -97,51 +97,13 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
     }
 
     public Promise<Boolean> setType(final JsonNode properties) {
-        final Feature feature = new Feature(properties.get("name").asText());
-        // 1. Establish transaction
         Promise<String> location = beginTransaction();
         Promise<Boolean> updated = location.flatMap(
             new Function<String, Promise<Boolean>>() {
                 public Promise<Boolean> apply(final String location) {
-                    // 2. Delete all outgoing :ALLOWS relationships
-                    Promise<Boolean> deleted = Allows.relationships
-                        .delete(feature, location);
-                    // 3. Update type
-                    Promise<Boolean> updated = deleted.flatMap(
-                        new Function<Boolean, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(Boolean deleted) {
-                                if (deleted) {
-                                    ObjectNode oldProps =
-                                        (ObjectNode) properties.deepCopy();
-                                    oldProps.retain("name");
-                                    ObjectNode newProps =
-                                        (ObjectNode) properties.deepCopy();
-                                    newProps.retain(
-                                        "name", "description", "type");
-                                    return update(
-                                        oldProps, newProps, location);
-                                }
-                                return Promise.pure(false);
-                            }
-                        });
-                    // 4. If new type == "atomic", connect to "underspecified"
-                    if (properties.get("type").asText().equals("atomic")) {
-                        updated = updated.flatMap(
-                            new Function<Boolean, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(
-                                    Boolean updated) {
-                                    if (updated) {
-                                        Value value =
-                                            new Value("underspecified");
-                                        return Allows.relationships
-                                            .create(feature, value, location);
-                                    }
-                                    return Promise.pure(false);
-                                }
-                            });
-                    }
-                    // 5. Finalize transaction
-                    updated = updated.flatMap(
+                    Promise<Boolean> updated =
+                        setType(properties, location);
+                    return updated.flatMap(
                         new Function<Boolean, Promise<Boolean>>() {
                             public Promise<Boolean> apply(Boolean updated) {
                                 if (updated) {
@@ -150,9 +112,51 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                                 return Promise.pure(false);
                             }
                         });
-                    return updated;
                 }
             });
+        return updated;
+    }
+
+    private Promise<Boolean> setType(
+        final JsonNode properties, final String location) {
+        final Feature feature = new Feature(properties.get("name").asText());
+        // 1. Delete all outgoing :ALLOWS relationships
+        Promise<Boolean> deleted = Allows.relationships
+            .delete(feature, location);
+        // 2. Update type
+        Promise<Boolean> updated = deleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean deleted) {
+                    if (deleted) {
+                        ObjectNode oldProps =
+                        (ObjectNode) properties.deepCopy();
+                        oldProps.retain("name");
+                        ObjectNode newProps =
+                        (ObjectNode) properties.deepCopy();
+                        newProps.retain(
+                            "name", "description", "type");
+                        return update(
+                            oldProps, newProps, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        // 3. If new type == "atomic", connect to "underspecified"
+        if (properties.get("type").asText().equals("atomic")) {
+            updated = updated.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(
+                        Boolean updated) {
+                        if (updated) {
+                            Value value =
+                            new Value("underspecified");
+                            return Allows.relationships
+                            .create(feature, value, location);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        }
         return updated;
     }
 

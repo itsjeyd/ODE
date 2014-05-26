@@ -209,7 +209,7 @@ public class AVMManager extends UUIDNodeManager {
         final JsonNode avm, final JsonNode feature, final String location) {
         final String uuid = avm.get("uuid").asText();
         final Substructure a = new Substructure(uuid);
-        final String name = feature.get("name").asText();
+        String name = feature.get("name").asText();
         final Feature f = new Feature(name);
         // 1. Disconnect AVM from feature
         Promise<Boolean> removed = Has.relationships
@@ -224,34 +224,29 @@ public class AVMManager extends UUIDNodeManager {
                         if (feature.get("type").asText().equals("atomic")) {
                             props.put("avm", uuid);
                         }
-                        Promise<Boolean> r = Has.relationships
-                            .delete(f, props, location);
-                        // 3. If feature is complex, delete value
-                        if (feature.get("type").asText().equals("complex")) {
-                            final String subUUID =
-                                UUIDGenerator.from(uuid + name);
-                            r = r.flatMap(
-                                new Function<Boolean, Promise<Boolean>>() {
-                                    public Promise<Boolean> apply(Boolean r) {
-                                        if (r) {
-                                            ObjectNode properties =
-                                                Json.newObject();
-                                            properties.put("uuid", subUUID);
-                                            properties.put(
-                                                "ruleUUID",
-                                                avm.get("ruleUUID").asText());
-                                            return Substructure.nodes
-                                                .delete(properties, location);
-                                        }
-                                        return Promise.pure(false);
-                                    }
-                                });
-                        }
-                        return r;
+                        return Has.relationships.delete(f, props, location);
                     }
                     return Promise.pure(false);
                 }
             });
+        // 3. If feature is complex, delete value
+        if (feature.get("type").asText().equals("complex")) {
+            final String subUUID = UUIDGenerator.from(uuid + name);
+            removed = removed.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean removed) {
+                        if (removed) {
+                            ObjectNode properties = Json.newObject();
+                            properties.put("uuid", subUUID);
+                            properties.put(
+                                "ruleUUID", avm.get("ruleUUID").asText());
+                            return Substructure.nodes
+                                .delete(properties, location);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        }
         return removed;
     }
 

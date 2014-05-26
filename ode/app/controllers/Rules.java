@@ -303,22 +303,21 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addString(String name, String groupID) {
-        final ObjectNode result = Json.newObject();
-        final CombinationGroup group = CombinationGroup.of(groupID);
         JsonNode json = request().body().asJson();
-        final String content = json.findPath("content").textValue();
-        final OutputString string = OutputString.of(content);
-        Promise<UUID> uuid = string.getUUID();
-        Promise<Boolean> added = uuid.flatMap(
-            new Function<UUID, Promise<Boolean>>() {
-                public Promise<Boolean> apply(UUID uuid) {
-                    result.put("id", uuid.toString());
-                    string.jsonProperties.put("uuid", uuid.toString());
-                    return group.addString(string);
-                }
-            });
-        return added.map(new ResultFunction("String successfully added.",
-                                            "String not added", result));
+        ObjectNode group = Json.newObject();
+        group.put("uuid", groupID);
+        ObjectNode string = Json.newObject();
+        String uuid = UUIDGenerator.from(json.get("content").asText());
+        string.put("uuid", uuid);
+        string.put("content", json.get("content").asText());
+        Promise<Boolean> connected = CombinationGroup.nodes
+            .connect(group, string);
+        ObjectNode result = Json.newObject();
+        result.put("id", uuid);
+        return connected.map(new ResultFunction(
+                                 "String successfully added.",
+                                 "String not added.", result));
+
     }
 
     @Security.Authenticated(Secured.class)

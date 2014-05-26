@@ -16,6 +16,10 @@ import models.relationships.HasStringRelationship;
 
 
 public class OutputString extends LabeledNodeWithProperties {
+
+    public static final OutputStringManager nodes =
+        new OutputStringManager();
+
     private String content;
 
     private OutputString() {
@@ -36,6 +40,11 @@ public class OutputString extends LabeledNodeWithProperties {
     private OutputString(UUID uuid, String content) {
         this(content);
         this.jsonProperties.put("uuid", uuid.toString());
+    }
+
+    public OutputString(String uuid, String content) {
+        this(content);
+        this.jsonProperties.put("uuid", uuid);
     }
 
     public static OutputString of(UUID uuid) {

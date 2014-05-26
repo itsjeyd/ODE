@@ -1,5 +1,6 @@
 package managers.nodes;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,29 @@ import models.nodes.OutputString;
 
 
 public class OutputStringManager extends LabeledNodeWithPropertiesManager {
+
+    public OutputStringManager() {
+        this.label = "OutputString";
+    }
+
+    @Override
+    public Promise<Boolean> create(
+        final JsonNode properties, final String location) {
+        final ObjectNode props = (ObjectNode) properties.deepCopy();
+        Promise<Boolean> exists = exists(props.retain("uuid"));
+        Promise<Boolean> created = exists.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean exists) {
+                    if (exists) {
+                        return Promise.pure(true);
+                    }
+                    return OutputStringManager.super
+                        .create(properties, location);
+                }
+            });
+        return created;
+    }
+
 
     private static Promise<JsonNode> getIncomingRelationships(
         OutputString string) {

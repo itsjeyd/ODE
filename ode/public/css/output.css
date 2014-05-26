@@ -126,6 +126,10 @@ hr {
     margin-top: 5px;
 }
 
+.alert-msg {
+    padding-left: 10px;
+}
+
 .in-motion {
     border-radius: 5px;
     border: solid 1px #94D6EA;

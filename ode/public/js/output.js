@@ -929,7 +929,7 @@ Output.View.CombinationGroupView = Backbone.View.extend({
       accept: '.part',
       tolerance: 'pointer',
       drop: function(e, ui) {
-        var content = $(ui.helper).text()
+        var content = $(ui.helper).text();
         var tokens = content.split(' ');
         var outputString = new Output.Model.OutputString({
           tokens: tokens,
@@ -939,13 +939,15 @@ Output.View.CombinationGroupView = Backbone.View.extend({
         });
         outputString.save(
           null,
-          { success: function(model, response, options) {
-            group.addOutputString(outputString);
-            var outputStringView =
-              new Output.View.OutputStringView({ model: outputString });
-            outputStringView.render().$el.insertBefore(placeholder);
-            groupView._resetPlaceholder();
-          }});
+          { wait: true,
+            success: function(model, response, options) {
+              group.addOutputString(outputString);
+              var outputStringView =
+                new Output.View.OutputStringView({ model: outputString });
+              outputStringView.render().$el.insertBefore(placeholder);
+              groupView._resetPlaceholder();
+            },
+          });
       },
     });
     this.$el.append($.addButton().css('visibility', 'hidden'));
@@ -996,7 +998,9 @@ Output.View.CombinationGroupView = Backbone.View.extend({
       }
     },
     'click .placeholder + button': function(e) {
-      var placeholder = $(e.currentTarget).prev('.placeholder');
+      var button = $(e.currentTarget);
+      button.next('.alert-msg').remove();
+      var placeholder = button.prev('.placeholder');
       var tokens = placeholder.text().split(' ');
       var outputString = new Output.Model.OutputString({
         content: placeholder.text(),
@@ -1015,6 +1019,10 @@ Output.View.CombinationGroupView = Backbone.View.extend({
               new Output.View.OutputStringView({ model: outputString });
             outputStringView.render().$el.insertBefore(placeholder);
             groupView._resetPlaceholder();
+          },
+          error: function(model, xhr, options) {
+            var response = $.parseJSON(xhr.responseText);
+            $.alertMsg(response.message).insertAfter(button);
           }});
     },
     'blur .placeholder': function(e) {

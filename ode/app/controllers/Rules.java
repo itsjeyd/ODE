@@ -327,7 +327,7 @@ public class Rules extends Controller {
         final ObjectNode result = Json.newObject();
         final ObjectNode group = Json.newObject();
         group.put("uuid", groupID);
-        ObjectNode string = Json.newObject();
+        final ObjectNode string = Json.newObject();
         string.put("uuid", stringID);
         Promise<Boolean> updated = CombinationGroup.nodes
             .disconnect(group, string);
@@ -345,6 +345,14 @@ public class Rules extends Controller {
                         return CombinationGroup.nodes.connect(group, string);
                     }
                     return Promise.pure(false);
+                }
+            });
+        updated.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke(Boolean updated) {
+                    if (updated) {
+                        OutputString.nodes.delete(string);
+                    }
                 }
             });
         return updated.map(

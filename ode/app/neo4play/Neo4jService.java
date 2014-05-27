@@ -134,18 +134,6 @@ public class Neo4jService {
         return WS.url(fullURL).get();
     }
 
-    public static Promise<WS.Response> updateNodeProperties(
-        String label, JsonNode oldProps, final JsonNode newProps) {
-        Promise<String> nodeURL = getNodeURL(label, oldProps);
-        return nodeURL.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String nodeURL) {
-                    String fullURL = nodeURL + "/properties";
-                    return WS.url(fullURL).put(newProps);
-                }
-            });
-    }
-
     public static Promise<WS.Response> getIncomingRelationships(
         String endNodeLabel, JsonNode endNodeProps) {
         Promise<String> endNodeURL = getNodeURL(endNodeLabel, endNodeProps);

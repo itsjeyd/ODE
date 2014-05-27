@@ -58,11 +58,4 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
         return response.map(new NodeDeletedFunction());
     }
 
-    public static Promise<Boolean> updateProperties(
-        LabeledNodeWithProperties node, JsonNode newProps) {
-        Promise<WS.Response> response = Neo4jService.updateNodeProperties(
-            node.getLabel(), node.jsonProperties, newProps);
-        return response.map(new UpdatedFunction());
-    }
-
 }

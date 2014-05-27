@@ -246,10 +246,6 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         return null;
     }
 
-    public Promise<Boolean> update(int position) {
-        return CombinationGroupManager.update(this, position);
-    }
-
     public Promise<Boolean> removeFrom(RHS embeddingRHS) {
         Promise<Boolean> disconnected = GroupRelationship
             .delete(embeddingRHS, this);

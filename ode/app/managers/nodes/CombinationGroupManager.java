@@ -56,12 +56,4 @@ public class CombinationGroupManager extends
         return Has.relationships.delete(g, s, location);
     }
 
-    public static Promise<Boolean> update(CombinationGroup group,
-                                          int position) {
-        ObjectNode newProps = group.jsonProperties.deepCopy();
-        newProps.put("position", position);
-        return LabeledNodeWithPropertiesManager
-            .updateProperties(group, newProps);
-    }
-
 }

@@ -264,10 +264,6 @@ public class CombinationGroup extends LabeledNodeWithProperties {
             });
     }
 
-    public Promise<Boolean> addString(OutputString string) {
-        return string.connectTo(this);
-    }
-
     public Promise<Boolean> removeString(OutputString string) {
         return string.removeFrom(this);
     }

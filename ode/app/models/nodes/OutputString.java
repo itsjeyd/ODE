@@ -26,11 +26,6 @@ public class OutputString extends LabeledNodeWithProperties {
         super(NodeType.OUTPUT_STRING);
     }
 
-    private OutputString(UUID uuid) {
-        this();
-        this.jsonProperties.put("uuid", uuid.toString());
-    }
-
     private OutputString(UUID uuid, String content) {
         this();
         this.content = content;
@@ -48,17 +43,6 @@ public class OutputString extends LabeledNodeWithProperties {
         this.content = content;
         this.jsonProperties.put("content", content);
         this.jsonProperties.put("uuid", uuid);
-    }
-
-    public static OutputString of(UUID uuid) {
-        return new OutputString(uuid);
-    }
-
-    public static OutputString of(String content) {
-        OutputString string = new OutputString();
-        string.content = content;
-        string.jsonProperties.put("content", content);
-        return string;
     }
 
     public static OutputString of(UUID uuid, String content) {
@@ -94,30 +78,6 @@ public class OutputString extends LabeledNodeWithProperties {
 
     public Promise<Boolean> create() {
         return OutputStringManager.create(this);
-    }
-
-    public Promise<Boolean> connectTo(final CombinationGroup group) {
-        final OutputString outputString = new OutputString(this.content);
-        return outputString.exists().flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean exists) {
-                    if (exists) {
-                        return new HasStringRelationship(
-                            group, outputString).create();
-                    }
-                    Promise<Boolean> created = OutputString.this.create();
-                    return created.flatMap(
-                        new Function<Boolean, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(Boolean created) {
-                                if (created) {
-                                    return new HasStringRelationship(
-                                        group, OutputString.this).create();
-                                }
-                                return Promise.pure(false);
-                            }
-                        });
-                }
-            });
     }
 
     public Promise<Boolean> removeFrom(CombinationGroup group) {

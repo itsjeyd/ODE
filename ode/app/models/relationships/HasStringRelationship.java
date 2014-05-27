@@ -22,10 +22,6 @@ public class HasStringRelationship extends TypedRelationship {
         super(RelationshipType.HAS, startNode, endNode);
     }
 
-    public Promise<Boolean> create() {
-        return this.exists().flatMap(new CreateFunction());
-    }
-
     public static Promise<List<OutputString>> getEndNodes(
         final CombinationGroup startNode) {
         Promise<List<JsonNode>> endNodes = HasStringRelationshipManager
@@ -54,17 +50,6 @@ public class HasStringRelationship extends TypedRelationship {
     public static Promise<Boolean> delete(CombinationGroup startNode,
                                           OutputString endNode) {
         return HasStringRelationshipManager.delete(startNode, endNode);
-    }
-
-    private class CreateFunction implements
-                                     Function<Boolean, Promise<Boolean>> {
-        public Promise<Boolean> apply(Boolean exists) {
-            if (exists) {
-                return Promise.pure(false);
-            }
-            return HasStringRelationshipManager
-                .create(HasStringRelationship.this);
-        }
     }
 
 }

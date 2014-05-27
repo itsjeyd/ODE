@@ -100,21 +100,7 @@ public class Slot extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> create() {
-        return SlotManager.create(this);
-    }
-
-    public Promise<Boolean> connectTo(final CombinationGroup group) {
-        Promise<Boolean> created = this.create();
-        return created.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean created) {
-                    if (created) {
-                        return new HasSlotRelationship(group, Slot.this)
-                            .create();
-                    }
-                    return Promise.pure(false);
-                }
-            });
+        return null;
     }
 
     public Promise<Boolean> removeFrom(CombinationGroup group) {

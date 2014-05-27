@@ -43,6 +43,10 @@ public class CombinationGroup extends LabeledNodeWithProperties {
         this(UUID.fromString(uuid));
     }
 
+    public CombinationGroup(String uuid, int position) {
+        this(UUID.fromString(uuid), position);
+    }
+
     public static CombinationGroup of(String groupID) {
         return new CombinationGroup(UUID.fromString(groupID));
     }

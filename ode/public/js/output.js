@@ -282,12 +282,14 @@ Output.View.AbbreviatedPairView = Backbone.View.extend({
 Output.Model.RHS = Backbone.Model.extend({
 
   initialize: function(attrs, options) {
+    this.set('uuid', options.json.uuid);
     var groups = [];
     _.each(options.json.groups, function(g) {
       var group = new Output.Model.CombinationGroup(
         { id: g.uuid,
           position: g.position,
-          ruleID: this.get('ruleID') },
+          ruleID: this.get('ruleID'),
+          rhsID: this.get('uuid'), },
         { json: g }
       );
       groups.push(group);
@@ -961,7 +963,8 @@ Output.View.CombinationGroupView = Backbone.View.extend({
                    partsTable: { slots: [] } }
       var emptyGroup = new Output.Model.CombinationGroup(
         { position: this.model.get('position') + 1,
-          ruleID: this.model.get('ruleID') },
+          ruleID: this.model.get('ruleID'),
+          rhsID: this.model.get('rhsID'), },
         { json: json });
       this.trigger('added', emptyGroup);
     },
@@ -970,7 +973,8 @@ Output.View.CombinationGroupView = Backbone.View.extend({
                    partsTable: { slots: [] } }
       var groupCopy = new Output.Model.CombinationGroup(
         { position: this.model.get('position') + 1,
-          ruleID: this.model.get('ruleID') },
+          ruleID: this.model.get('ruleID'),
+          rhsID: this.model.get('rhsID'), },
         { json: json });
       this.trigger('copied', this.model, groupCopy);
     },

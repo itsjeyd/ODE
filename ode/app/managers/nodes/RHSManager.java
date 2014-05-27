@@ -54,4 +54,12 @@ public class RHSManager extends UUIDNodeManager {
         return created;
     }
 
+    protected Promise<Boolean> connect(
+        JsonNode rhs, JsonNode group, String location) {
+        RHS r = new RHS(rhs.get("uuid").asText());
+        CombinationGroup g = new CombinationGroup(
+            group.get("uuid").asText(), group.get("position").asInt());
+        return Has.relationships.create(r, g, location);
+    }
+
 }

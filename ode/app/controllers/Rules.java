@@ -378,12 +378,25 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addGroup(String name) {
         final ObjectNode result = Json.newObject();
-        JsonNode json = request().body().asJson();
-        final UUID uuid = UUID.randomUUID();
-        result.put("id", uuid.toString());
-        int position = json.findPath("position").intValue();
-        CombinationGroup group = new CombinationGroup(uuid, position);
-        Promise<Boolean> added = new Rule(name).addGroup(group);
+        final JsonNode json = request().body().asJson();
+        final ObjectNode group = Json.newObject();
+        final String uuid = UUIDGenerator.random();
+        group.put("uuid", uuid);
+        group.put("position", json.findValue("position").asInt());
+
+        Promise<Boolean> created = CombinationGroup.nodes.create(group);
+        Promise<Boolean> added = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        ObjectNode rhs = Json.newObject();
+                        rhs.put("uuid", json.findValue("rhsID").asText());
+                        result.put("id", uuid);
+                        return RHS.nodes.connect(rhs, group);
+                    }
+                    return Promise.pure(false);
+                }
+            });
         return added.map(new ResultFunction("Group successfully added.",
                                             "Group not added.", result));
     }

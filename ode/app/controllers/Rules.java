@@ -12,6 +12,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
@@ -20,7 +21,6 @@ import models.nodes.CombinationGroup;
 import models.nodes.Feature;
 import models.nodes.OutputString;
 import models.nodes.Part;
-import models.nodes.Value;
 import models.nodes.LHS;
 import models.nodes.RHS;
 import models.nodes.Rule;
@@ -360,9 +360,20 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeString(
         String name, String groupID, String stringID) {
-        OutputString string = OutputString.of(UUID.fromString(stringID));
-        Promise<Boolean> removed = CombinationGroup.of(groupID)
-            .removeString(string);
+        ObjectNode group = Json.newObject();
+        group.put("uuid", groupID);
+        final ObjectNode string = Json.newObject();
+        string.put("uuid", stringID);
+        Promise<Boolean> removed = CombinationGroup.nodes
+            .disconnect(group, string);
+        removed.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke(Boolean removed) {
+                    if (removed) {
+                        OutputString.nodes.delete(string);
+                    }
+                }
+            });
         return removed.map(new ResultFunction("String successfully removed.",
                                               "String not removed."));
     }

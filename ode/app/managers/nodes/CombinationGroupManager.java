@@ -49,6 +49,12 @@ public class CombinationGroupManager extends
         return connected;
     }
 
+    protected Promise<Boolean> disconnect(
+        JsonNode group, JsonNode string, String location) {
+        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
+        OutputString s = new OutputString(string.get("uuid").asText());
+        return Has.relationships.delete(g, s, location);
+    }
 
     public static Promise<Boolean> update(CombinationGroup group,
                                           int position) {

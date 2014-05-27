@@ -325,35 +325,31 @@ public class Rules extends Controller {
     public static Promise<Result> updateString(
         String name, String groupID, String stringID) {
         final ObjectNode result = Json.newObject();
-        OutputString oldString = OutputString.of(UUID.fromString(stringID));
-        final CombinationGroup group = CombinationGroup.of(groupID);
-        Promise<Boolean> removed = group.removeString(oldString);
-        Promise<Boolean> added = removed.flatMap(
+        final ObjectNode group = Json.newObject();
+        group.put("uuid", groupID);
+        ObjectNode string = Json.newObject();
+        string.put("uuid", stringID);
+        Promise<Boolean> updated = CombinationGroup.nodes
+            .disconnect(group, string);
+        updated = updated.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean removed) {
-                    if (removed) {
+                public Promise<Boolean> apply(Boolean updated) {
+                    if (updated) {
                         JsonNode json = request().body().asJson();
-                        final String content = json
-                            .findPath("content").textValue();
-                        final OutputString newString =
-                            OutputString.of(content);
-                        Promise<UUID> uuid = newString.getUUID();
-                        Promise<Boolean> added = uuid.flatMap(
-                            new Function<UUID, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(UUID uuid) {
-                                    result.put("id", uuid.toString());
-                                    newString.jsonProperties
-                                        .put("uuid", uuid.toString());
-                                    return group.addString(newString);
-                                }
-                            });
-                        return added;
+                        String content = json.findValue("content").asText();
+                        String uuid = UUIDGenerator.from(content);
+                        ObjectNode string = Json.newObject();
+                        string.put("content", content);
+                        string.put("uuid", uuid);
+                        result.put("id", uuid);
+                        return CombinationGroup.nodes.connect(group, string);
                     }
                     return Promise.pure(false);
                 }
             });
-        return added.map(new ResultFunction("String successfully updated.",
-                                            "String not updated.", result));
+        return updated.map(
+            new ResultFunction("String successfully updated.",
+                               "String not updated.", result));
     }
 
     @Security.Authenticated(Secured.class)

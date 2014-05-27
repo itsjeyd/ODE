@@ -831,9 +831,11 @@ Output.View.OutputStringView = Backbone.View.extend({
     var inputField = this.$('input');
     if (!inputField.isEmpty()) {
       var content = inputField.val();
-      this.model.set('tokens', content.split(' '));
-      this.model.set('content', content);
-      this.model.save(null, { wait: true });
+      if (content !== this.model.get('content')) {
+        this.model.set('tokens', content.split(' '));
+        this.model.set('content', content);
+        this.model.save(null, { wait: true });
+      }
     }
   },
 

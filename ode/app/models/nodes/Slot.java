@@ -39,6 +39,10 @@ public class Slot extends LabeledNodeWithProperties {
         this.jsonProperties.put("position", position);
     }
 
+    public Slot(String uuid) {
+        this(UUID.fromString(uuid));
+    }
+
     public Slot(String uuid, int position) {
         this(UUID.fromString(uuid));
         this.jsonProperties.put("position", position);

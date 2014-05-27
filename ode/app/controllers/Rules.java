@@ -465,22 +465,19 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addPart(
         String name, String groupID, String slotID) {
-        final ObjectNode result = Json.newObject();
-        final Slot slot = Slot.of(UUID.fromString(slotID));
         JsonNode json = request().body().asJson();
-        final String content = json.findPath("content").textValue();
-        final Part part = Part.of(content);
-        Promise<UUID> uuid = part.getUUID();
-        Promise<Boolean> added = uuid.flatMap(
-            new Function<UUID, Promise<Boolean>>() {
-                public Promise<Boolean> apply(UUID uuid) {
-                    result.put("id", uuid.toString());
-                    part.jsonProperties.put("uuid", uuid.toString());
-                    return slot.addPart(part);
-                }
-            });
-        return added.map(new ResultFunction("Part successfully added.",
-                                            "Part not added.", result));
+        ObjectNode slot = Json.newObject();
+        slot.put("uuid", slotID);
+        ObjectNode part = Json.newObject();
+        String content = json.findValue("content").asText();
+        String uuid = UUIDGenerator.from(content);
+        part.put("uuid", uuid);
+        part.put("content", content);
+        Promise<Boolean> connected = Slot.nodes.connect(slot, part);
+        ObjectNode result = Json.newObject();
+        result.put("id", uuid);
+        return connected.map(new ResultFunction("Part successfully added.",
+                                                "Part not added.", result));
     }
 
     @Security.Authenticated(Secured.class)

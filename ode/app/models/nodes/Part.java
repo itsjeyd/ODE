@@ -33,6 +33,10 @@ public class Part extends LabeledNodeWithProperties {
         this.jsonProperties.put("content", content);
     }
 
+    public Part(String uuid, String content) {
+        this(UUID.fromString(uuid), content);
+    }
+
     public static Part of(UUID uuid) {
         return new Part(uuid);
     }

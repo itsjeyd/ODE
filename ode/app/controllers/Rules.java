@@ -536,7 +536,7 @@ public class Rules extends Controller {
     public static Promise<Result> addRef(
         String name, String groupID, String slotID) {
         JsonNode json = request().body().asJson();
-        String ruleName = json.findPath("ruleName").textValue();
+        String ruleName = json.findValue("ruleName").asText();
         Promise<Boolean> added;
         if (name.equals(ruleName)) {
             added = Promise.pure(false);
@@ -546,8 +546,11 @@ public class Rules extends Controller {
         } else {
             ObjectNode result = Json.newObject();
             result.put("id", ruleName);
-            final Slot slot = Slot.of(UUID.fromString(slotID));
-            added = slot.addRef(new Rule(ruleName));
+            ObjectNode slot = Json.newObject();
+            slot.put("uuid", slotID);
+            ObjectNode rule = Json.newObject();
+            rule.put("name", ruleName);
+            added = Slot.nodes.connect(slot, rule);
             return added.map(new ResultFunction(
                                  "Cross-reference successfully added.",
                                  "Cross-reference not added.", result));

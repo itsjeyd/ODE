@@ -3,6 +3,7 @@ package managers.nodes;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.UUID;
 import models.nodes.Part;
+import models.nodes.Rule;
 import models.nodes.Slot;
 import models.relationships.Has;
 import play.libs.F.Function;
@@ -16,18 +17,34 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
     }
 
     protected Promise<Boolean> connect(
-        final JsonNode slot, final JsonNode part, final String location) {
-        Promise<Boolean> exists = Part.nodes.create(part, location);
+        JsonNode slot, JsonNode partOrRule, String location) {
+        if (partOrRule.has("name")) {
+            Rule rule = new Rule(partOrRule.get("name").asText());
+            return connect(slot, rule, location);
+        }
+        Part part = new Part(
+            partOrRule.get("uuid").asText(),
+            partOrRule.get("content").asText());
+        return connect(slot, part, location);
+    }
+
+    private Promise<Boolean> connect(
+        JsonNode slot, Rule rule, String location) {
+        Slot s = new Slot(slot.get("uuid").asText());
+        return Has.relationships.create(s, rule, location);
+    }
+
+    private Promise<Boolean> connect(
+        final JsonNode slot, final Part part, final String location) {
+        Promise<Boolean> exists = Part.nodes
+            .create(part.getProperties(), location);
         Promise<Boolean> connected = exists.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean exists) {
                     if (exists) {
                         final Slot s = new Slot(slot.get("uuid").asText());
-                        final Part p = new Part(
-                            part.get("uuid").asText(),
-                            part.get("content").asText());
                         Promise<Boolean> connected = Has.relationships
-                            .exists(s, p);
+                            .exists(s, part);
                         return connected.flatMap(
                             new Function<Boolean, Promise<Boolean>>() {
                                 public Promise<Boolean> apply(
@@ -36,7 +53,7 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
                                         return Promise.pure(false);
                                     }
                                     return Has.relationships
-                                        .create(s, p, location);
+                                        .create(s, part, location);
                                 }
                             });
                     }

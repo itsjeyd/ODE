@@ -495,7 +495,7 @@ public class Rules extends Controller {
         final ObjectNode result = Json.newObject();
         final ObjectNode slot = Json.newObject();
         slot.put("uuid", slotID);
-        ObjectNode part = Json.newObject();
+        final ObjectNode part = Json.newObject();
         part.put("uuid", partID);
         Promise<Boolean> updated = Slot.nodes.disconnect(slot, part);
         updated = updated.flatMap(
@@ -512,6 +512,14 @@ public class Rules extends Controller {
                         return Slot.nodes.connect(slot, part);
                     }
                     return Promise.pure(false);
+                }
+            });
+        updated.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke(Boolean updated) {
+                    if (updated) {
+                        Part.nodes.delete(part);
+                    }
                 }
             });
         return updated.map(new ResultFunction("Part successfully updated.",

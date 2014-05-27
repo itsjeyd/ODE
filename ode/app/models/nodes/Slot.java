@@ -125,10 +125,6 @@ public class Slot extends LabeledNodeWithProperties {
         return part.removeFrom(this);
     }
 
-    public Promise<Boolean> addRef(Rule rule) {
-        return rule.connectTo(this);
-    }
-
     public Promise<Boolean> removeRef(Rule rule) {
         return rule.removeFrom(this);
     }

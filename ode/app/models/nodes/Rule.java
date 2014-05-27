@@ -272,19 +272,6 @@ public class Rule extends UUIDNode {
         return null;
     }
 
-    public Promise<Boolean> connectTo(final Slot slot) {
-        return this.exists().flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean exists) {
-                    if (exists) {
-                        return new HasRefRelationship(
-                            slot, Rule.this).create();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
     public Promise<Boolean> removeFrom(Slot slot) {
         return HasRefRelationship.delete(slot, this);
     }

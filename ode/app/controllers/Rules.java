@@ -485,34 +485,29 @@ public class Rules extends Controller {
     public static Promise<Result> updatePart(
         String name, String groupID, String slotID, String partID) {
         final ObjectNode result = Json.newObject();
-        Part oldPart = Part.of(UUID.fromString(partID));
-        final Slot slot = Slot.of(UUID.fromString(slotID));
-        Promise<Boolean> removed = slot.removePart(oldPart);
-        Promise<Boolean> added = removed.flatMap(
+        final ObjectNode slot = Json.newObject();
+        slot.put("uuid", slotID);
+        ObjectNode part = Json.newObject();
+        part.put("uuid", partID);
+        Promise<Boolean> updated = Slot.nodes.disconnect(slot, part);
+        updated = updated.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean removed) {
-                    if (removed) {
+                public Promise<Boolean> apply(Boolean updated) {
+                    if (updated) {
                         JsonNode json = request().body().asJson();
-                        final String content = json
-                            .findPath("content").textValue();
-                        final Part newPart = Part.of(content);
-                        Promise<UUID> uuid = newPart.getUUID();
-                        Promise<Boolean> added = uuid.flatMap(
-                            new Function<UUID, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(UUID uuid) {
-                                    result.put("id", uuid.toString());
-                                    newPart.jsonProperties
-                                        .put("uuid", uuid.toString());
-                                    return slot.addPart(newPart);
-                                }
-                            });
-                        return added;
+                        String content = json.findValue("content").asText();
+                        String uuid = UUIDGenerator.from(content);
+                        ObjectNode part = Json.newObject();
+                        part.put("content", content);
+                        part.put("uuid", uuid);
+                        result.put("id", uuid);
+                        return Slot.nodes.connect(slot, part);
                     }
                     return Promise.pure(false);
                 }
             });
-        return added.map(new ResultFunction("Part successfully updated.",
-                                            "Part not updated.", result));
+        return updated.map(new ResultFunction("Part successfully updated.",
+                                              "Part not updated.", result));
     }
 
     @Security.Authenticated(Secured.class)

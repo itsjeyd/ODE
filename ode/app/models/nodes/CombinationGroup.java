@@ -243,15 +243,11 @@ public class CombinationGroup extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> create() {
-        return CombinationGroupManager.create(this);
+        return null;
     }
 
     public Promise<Boolean> update(int position) {
         return CombinationGroupManager.update(this, position);
-    }
-
-    public Promise<Boolean> connectTo(RHS embeddingRHS) {
-        return new GroupRelationship(embeddingRHS, this).create();
     }
 
     public Promise<Boolean> removeFrom(RHS embeddingRHS) {

@@ -20,10 +20,6 @@ public class GroupRelationship extends TypedRelationship {
         super(RelationshipType.HAS, startNode, endNode);
     }
 
-    public Promise<Boolean> create() {
-        return this.exists().flatMap(new CreateFunction(this));
-    }
-
     public static Promise<List<CombinationGroup>> getEndNodes(
         final RHS startNode) {
         Promise<List<JsonNode>> endNodes = GroupRelationshipManager
@@ -52,17 +48,4 @@ public class GroupRelationship extends TypedRelationship {
         return GroupRelationshipManager.delete(startNode, endNode);
     }
 
-    private class CreateFunction implements
-                                     Function<Boolean, Promise<Boolean>> {
-        private GroupRelationship relationship;
-        public CreateFunction(GroupRelationship relationship) {
-            this.relationship = relationship;
-        }
-        public Promise<Boolean> apply(Boolean exists) {
-            if (exists) {
-                return Promise.pure(false);
-            }
-            return GroupRelationshipManager.create(this.relationship);
-        }
-    }
 }

@@ -561,9 +561,11 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeRef(
         String name, String groupID, String slotID, String refID) {
-        Rule rule = new Rule(refID);
-        Promise<Boolean> removed = Slot.of(UUID.fromString(slotID))
-            .removeRef(rule);
+        ObjectNode slot = Json.newObject();
+        slot.put("uuid", slotID);
+        ObjectNode rule = Json.newObject();
+        rule.put("name", refID);
+        Promise<Boolean> removed = Slot.nodes.disconnect(slot, rule);
         return removed.map(new ResultFunction("Part successfully removed.",
                                               "Part not removed."));
     }

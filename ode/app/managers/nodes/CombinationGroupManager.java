@@ -1,9 +1,9 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.nodes.CombinationGroup;
 import models.nodes.OutputString;
+import models.nodes.Slot;
 import models.relationships.Has;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -17,19 +17,38 @@ public class CombinationGroupManager extends
     }
 
     protected Promise<Boolean> connect(
-        final JsonNode group, final JsonNode string, final String location) {
-        Promise<Boolean> exists = OutputString.nodes.create(string, location);
+        JsonNode group, JsonNode stringOrSlot, String location) {
+        if (stringOrSlot.has("position")) {
+            Slot slot = new Slot(
+                stringOrSlot.get("uuid").asText(),
+                stringOrSlot.get("position").asInt());
+            return connect(group, slot, location);
+        }
+        OutputString string = new OutputString(
+            stringOrSlot.get("uuid").asText(),
+            stringOrSlot.get("content").asText());
+        return connect(group, string, location);
+    }
+
+    private Promise<Boolean> connect(
+        JsonNode group, Slot slot, String location) {
+        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
+        return Has.relationships.create(g, slot, location);
+    }
+
+    private Promise<Boolean> connect(
+        final JsonNode group, final OutputString string,
+        final String location) {
+        Promise<Boolean> exists = OutputString.nodes
+            .create(string.getProperties(), location);
         Promise<Boolean> connected = exists.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean exists) {
                     if (exists) {
                         final CombinationGroup g =
                             new CombinationGroup(group.get("uuid").asText());
-                        final OutputString s = new OutputString(
-                            string.get("uuid").asText(),
-                            string.get("content").asText());
                         Promise<Boolean> connected = Has.relationships
-                            .exists(g, s);
+                            .exists(g, string);
                         return connected.flatMap(
                             new Function<Boolean, Promise<Boolean>>() {
                                 public Promise<Boolean> apply(
@@ -38,7 +57,7 @@ public class CombinationGroupManager extends
                                         return Promise.pure(false);
                                     }
                                     return Has.relationships
-                                        .create(g, s, location);
+                                        .create(g, string, location);
                                 }
                             });
 

@@ -383,7 +383,6 @@ public class Rules extends Controller {
         final String uuid = UUIDGenerator.random();
         group.put("uuid", uuid);
         group.put("position", json.findValue("position").asInt());
-
         Promise<Boolean> created = CombinationGroup.nodes.create(group);
         Promise<Boolean> added = created.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
@@ -426,14 +425,27 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> addSlot(String name, String groupID) {
-        ObjectNode result = Json.newObject();
+    public static Promise<Result> addSlot(String name, final String groupID) {
+        final ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
-        int position = json.findPath("position").intValue();
-        UUID uuid = UUID.randomUUID();
-        result.put("id", uuid.toString());
-        Slot slot = Slot.of(uuid, position);
-        Promise<Boolean> added = CombinationGroup.of(groupID).addSlot(slot);
+        final ObjectNode slot = Json.newObject();
+        final String uuid = UUIDGenerator.random();
+        int position = json.findValue("position").asInt();
+        slot.put("uuid", uuid);
+        slot.put("position", position);
+        Promise<Boolean> created = Slot.nodes.create(slot);
+        Promise<Boolean> added = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        result.put("id", uuid);
+                        ObjectNode group = Json.newObject();
+                        group.put("uuid", groupID);
+                        return CombinationGroup.nodes.connect(group, slot);
+                    }
+                    return Promise.pure(false);
+                }
+            });
         return added.map(new ResultFunction("Slot successfully added.",
                                             "Slot not added", result));
     }

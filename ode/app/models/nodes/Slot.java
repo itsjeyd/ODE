@@ -23,6 +23,8 @@ import models.relationships.HasSlotRelationship;
 
 public class Slot extends LabeledNodeWithProperties {
 
+    public static final SlotManager nodes = new SlotManager();
+
     private Slot() {
         super(NodeType.SLOT);
     }
@@ -34,6 +36,11 @@ public class Slot extends LabeledNodeWithProperties {
 
     private Slot(UUID uuid, int position) {
         this(uuid);
+        this.jsonProperties.put("position", position);
+    }
+
+    public Slot(String uuid, int position) {
+        this(UUID.fromString(uuid));
         this.jsonProperties.put("position", position);
     }
 

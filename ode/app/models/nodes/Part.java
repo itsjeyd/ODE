@@ -77,30 +77,7 @@ public class Part extends LabeledNodeWithProperties {
     }
 
     public Promise<Boolean> create() {
-        return PartManager.create(this);
-    }
-
-    public Promise<Boolean> connectTo(final Slot slot) {
-        final Part part = new Part(this.content);
-        return part.exists().flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean exists) {
-                    if (exists) {
-                        return new HasPartRelationship(slot, part).create();
-                    }
-                    Promise<Boolean> created = Part.this.create();
-                    return created.flatMap(
-                        new Function<Boolean, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(Boolean created) {
-                                if (created) {
-                                    return new HasPartRelationship(
-                                        slot, Part.this).create();
-                                }
-                                return Promise.pure(false);
-                            }
-                        });
-                }
-            });
+        return null;
     }
 
     public Promise<Boolean> removeFrom(Slot slot) {

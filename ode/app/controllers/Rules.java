@@ -519,9 +519,19 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removePart(
         String name, String groupID, String slotID, String partID) {
-        Part part = Part.of(UUID.fromString(partID));
-        Promise<Boolean> removed = Slot.of(UUID.fromString(slotID))
-            .removePart(part);
+        ObjectNode slot = Json.newObject();
+        slot.put("uuid", slotID);
+        final ObjectNode part = Json.newObject();
+        part.put("uuid", partID);
+        Promise<Boolean> removed = Slot.nodes.disconnect(slot, part);
+        removed.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke(Boolean removed) {
+                    if (removed) {
+                        Part.nodes.delete(part);
+                    }
+                }
+            });
         return removed.map(new ResultFunction("Part successfully removed.",
                                               "Part not removed."));
     }

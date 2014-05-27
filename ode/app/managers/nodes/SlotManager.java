@@ -1,6 +1,7 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.UUID;
 import models.nodes.Part;
 import models.nodes.Slot;
 import models.relationships.Has;
@@ -43,6 +44,13 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
                 }
             });
         return connected;
+    }
+
+    protected Promise<Boolean> disconnect(
+        JsonNode slot, JsonNode part, String location) {
+        Slot s = new Slot(slot.get("uuid").asText());
+        Part p = Part.of(UUID.fromString(part.get("uuid").asText()));
+        return Has.relationships.delete(s, p, location);
     }
 
 }

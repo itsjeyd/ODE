@@ -112,14 +112,6 @@ public class RHS extends UUIDNode {
         return GroupRelationship.getEndNodes(this);
     }
 
-    public Promise<Boolean> create() {
-        return null;
-    }
-
-    public Promise<Boolean> connectTo(Rule embeddingRule) {
-        return new RHSRelationship(embeddingRule, this).create();
-    }
-
     public Promise<Boolean> remove(final CombinationGroup group) {
         Promise<UUID> uuid = this.getUUID();
         return uuid.flatMap(

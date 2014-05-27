@@ -7,7 +7,6 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import managers.nodes.AVMManager;
-import models.relationships.HasSubstructureRelationship;
 
 
 public class Substructure extends AVM {
@@ -40,14 +39,6 @@ public class Substructure extends AVM {
         }
         Promise<UUID> parentUUID = this.parent.getUUID();
         return parentUUID.map(new UUIDFunction(this.embeddingFeature));
-    }
-
-    public Promise<Boolean> create() {
-        Promise<UUID> parentUUID =
-            Promise.pure(
-                UUID.fromString(this.parent.jsonProperties.findValue("uuid")
-                                .asText()));
-        return parentUUID.flatMap(new CreateFunction(this));
     }
 
     private static class UUIDFunction implements Function<UUID, UUID> {

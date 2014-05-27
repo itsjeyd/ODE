@@ -122,11 +122,6 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
     }
 
 
-    public static Promise<Boolean> create(Rule rule) {
-        rule.jsonProperties.put("description", rule.description);
-        return LabeledNodeWithPropertiesManager.create(rule);
-    }
-
     private static Promise<JsonNode> getIncomingRelationships(Rule rule) {
         Promise<WS.Response> response = Neo4jService
             .getIncomingRelationshipsByType(rule.getLabel(),

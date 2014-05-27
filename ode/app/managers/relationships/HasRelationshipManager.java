@@ -21,21 +21,4 @@ public class HasRelationshipManager {
         return null;
     }
 
-    public static Promise<Boolean> create(
-        final HasRelationship relationship) {
-        Promise<UUID> ruleUUID = relationship.rule.getUUID();
-        Promise<WS.Response> response = ruleUUID.flatMap(
-            new Function<UUID, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(UUID ruleUUID) {
-                    ObjectNode data = Json.newObject();
-                    data.put("rule", ruleUUID.toString());
-                    return Neo4jService
-                        .createTypedRelationshipWithProperties(
-                            relationship.startNode, relationship.endNode,
-                            relationship.type, data);
-                }
-            });
-        return response.map(new RelationshipCreatedFunction());
-    }
-
 }

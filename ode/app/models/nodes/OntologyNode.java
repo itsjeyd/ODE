@@ -12,10 +12,6 @@ public abstract class OntologyNode extends LabeledNodeWithProperties {
         super(label);
     }
 
-    public Promise<Boolean> create() {
-        return null;
-    }
-
     public Promise<Boolean> delete() {
         return null;
     }

@@ -103,10 +103,6 @@ public class Slot extends LabeledNodeWithProperties {
             });
     }
 
-    public Promise<Boolean> create() {
-        return null;
-    }
-
     public Promise<Boolean> removeFrom(CombinationGroup group) {
         Promise<Boolean> disconnected = HasSlotRelationship
             .delete(group, this);

@@ -76,10 +76,6 @@ public class OutputString extends LabeledNodeWithProperties {
             });
     }
 
-    public Promise<Boolean> create() {
-        return OutputStringManager.create(this);
-    }
-
     public Promise<Boolean> removeFrom(CombinationGroup group) {
         Promise<Boolean> disconnected = HasStringRelationship
             .delete(group, this);

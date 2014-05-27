@@ -11,7 +11,6 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import managers.nodes.AVMManager;
-import models.relationships.LHSRelationship;
 
 
 public class LHS extends AVM {
@@ -50,14 +49,6 @@ public class LHS extends AVM {
                     return features;
                 }
             });
-    }
-
-    public Promise<Boolean> create() {
-        return null;
-    }
-
-    public Promise<Boolean> connectTo(Rule embeddingRule) {
-        return new LHSRelationship(embeddingRule, this).create();
     }
 
     public Promise<LHS> get() {

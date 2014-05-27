@@ -268,10 +268,6 @@ public class Rule extends UUIDNode {
         return json.flatMap(new GetFunction());
     }
 
-    public Promise<Boolean> create() {
-        return null;
-    }
-
     public Promise<Boolean> removeFrom(Slot slot) {
         return HasRefRelationship.delete(slot, this);
     }

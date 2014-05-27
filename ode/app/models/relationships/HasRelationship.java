@@ -28,8 +28,4 @@ public class HasRelationship extends TypedRelationship {
         return json.map(new ExistsFunction());
     }
 
-    public Promise<Boolean> create() {
-        return HasRelationshipManager.create(this);
-    }
-
 }

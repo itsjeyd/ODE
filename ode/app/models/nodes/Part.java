@@ -76,10 +76,6 @@ public class Part extends LabeledNodeWithProperties {
             });
     }
 
-    public Promise<Boolean> create() {
-        return null;
-    }
-
     public Promise<Boolean> removeFrom(Slot slot) {
         Promise<Boolean> disconnected = HasPartRelationship
             .delete(slot, this);

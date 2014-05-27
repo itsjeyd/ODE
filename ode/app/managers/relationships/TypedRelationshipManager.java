@@ -19,12 +19,4 @@ public class TypedRelationshipManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<Boolean> create(TypedRelationship relationship) {
-        Promise<WS.Response> response = Neo4jService
-            .createTypedRelationship(
-                relationship.startNode, relationship.endNode,
-                relationship.type);
-        return response.map(new RelationshipCreatedFunction());
-    }
-
 }

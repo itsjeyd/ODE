@@ -245,52 +245,6 @@ public class Neo4jService {
         return postCypherQuery(query);
     }
 
-    public static Promise<WS.Response> createTypedRelationship(
-        LabeledNodeWithProperties startNode,
-        LabeledNodeWithProperties endNode, final RelationshipType type) {
-        Promise<String> startNodeURL = getNodeURL(
-            startNode.getLabel(), startNode.jsonProperties);
-        Promise<String> endNodeURL = getNodeURL(
-            endNode.getLabel(), endNode.jsonProperties);
-        Promise<Tuple<String, String>> urls = startNodeURL.zip(
-            endNodeURL);
-        return urls.flatMap(
-            new Function<Tuple<String, String>, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(
-                    Tuple<String, String> urls) {
-                    String fullURL = urls._1 + "/relationships";
-                    ObjectNode content = Json.newObject();
-                    content.put("to", urls._2);
-                    content.put("type", type.name());
-                    return WS.url(fullURL).post(content);
-                }
-            });
-    }
-
-    public static Promise<WS.Response> createTypedRelationshipWithProperties(
-        LabeledNodeWithProperties startNode,
-        LabeledNodeWithProperties endNode, final RelationshipType type,
-        final JsonNode data) {
-        Promise<String> startNodeURL = getNodeURL(
-            startNode.getLabel(), startNode.jsonProperties);
-        Promise<String> endNodeURL = getNodeURL(
-            endNode.getLabel(), endNode.jsonProperties);
-        Promise<Tuple<String, String>> urls = startNodeURL.zip(
-            endNodeURL);
-        return urls.flatMap(
-            new Function<Tuple<String, String>, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(
-                    Tuple<String, String> urls) {
-                    String fullURL = urls._1 + "/relationships";
-                    ObjectNode content = Json.newObject();
-                    content.put("to", urls._2);
-                    content.put("type", type.name());
-                    content.put("data", data);
-                    return WS.url(fullURL).post(content);
-                }
-            });
-    }
-
     public static Promise<WS.Response> deleteRelationship(
         Relationship relationship) {
         String fullURL = extendRootURL("/relationship/" + relationship.ID);

@@ -28,8 +28,6 @@ public abstract class LabeledNodeWithProperties extends LabeledNode {
         return json.map(new ExistsFunction());
     }
 
-    public abstract Promise<Boolean> create();
-
     public abstract Promise<Boolean> delete();
 
 }

@@ -156,6 +156,46 @@ public class CombinationGroupManager extends
         return disconnected;
     }
 
+    public Promise<Boolean> updateString(
+        final JsonNode group, final JsonNode oldString,
+        final JsonNode newString) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> updated = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> updated =
+                        updateString(group, oldString, newString, location);
+                    return updated.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean updated) {
+                                if (updated) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return updated;
+    }
+
+    private Promise<Boolean> updateString(
+        final JsonNode group, JsonNode oldString, final JsonNode newString,
+        final String location) {
+        // 1. Disconnect group from old string
+        Promise<Boolean> updated = disconnect(group, oldString, location);
+        // 2. Connect group to new string
+        updated = updated.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean updated) {
+                    if (updated) {
+                        return connect(group, newString, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return updated;
+    }
 
     public Promise<Boolean> removeSlot(
         final JsonNode group, final JsonNode slot) {

@@ -322,29 +322,20 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateString(
         String name, String groupID, String stringID) {
-        final ObjectNode result = Json.newObject();
+        JsonNode json = request().body().asJson();
         final ObjectNode group = Json.newObject();
         group.put("uuid", groupID);
-        final ObjectNode string = Json.newObject();
-        string.put("uuid", stringID);
+        final ObjectNode oldString = Json.newObject();
+        oldString.put("uuid", stringID);
+        ObjectNode newString = Json.newObject();
+        String content = json.findValue("content").asText();
+        String uuid = UUIDGenerator.from(content);
+        newString.put("content", content);
+        newString.put("uuid", uuid);
+        final ObjectNode result = Json.newObject();
+        result.put("id", uuid);
         Promise<Boolean> updated = CombinationGroup.nodes
-            .disconnect(group, string);
-        updated = updated.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean updated) {
-                    if (updated) {
-                        JsonNode json = request().body().asJson();
-                        String content = json.findValue("content").asText();
-                        String uuid = UUIDGenerator.from(content);
-                        ObjectNode string = Json.newObject();
-                        string.put("content", content);
-                        string.put("uuid", uuid);
-                        result.put("id", uuid);
-                        return CombinationGroup.nodes.connect(group, string);
-                    }
-                    return Promise.pure(false);
-                }
-            });
+            .updateString(group, oldString, newString);
         return updated.map(
             new ResultFunction("String successfully updated.",
                                "String not updated.", result));

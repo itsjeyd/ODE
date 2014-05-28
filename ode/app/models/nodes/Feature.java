@@ -37,16 +37,15 @@ public class Feature extends OntologyNode {
         this.jsonProperties.put("name", name);
     }
 
+    public Feature(String name, String type) {
+        this(name);
+        this.setType(type);
+    }
+
     public Feature(String name, String description, String type) {
         this(name);
         this.description = description;
         this.setType(type);
-    }
-
-    public static Feature of(String name, String type) {
-        Feature feature = new Feature(name);
-        feature.setType(type);
-        return feature;
     }
 
     protected Promise<List<String>> getTargets() {

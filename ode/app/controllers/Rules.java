@@ -517,14 +517,6 @@ public class Rules extends Controller {
                     return Promise.pure(false);
                 }
             });
-        updated.onRedeem(
-            new Callback<Boolean>() {
-                public void invoke(Boolean updated) {
-                    if (updated) {
-                        Part.nodes.delete(part);
-                    }
-                }
-            });
         return updated.map(new ResultFunction("Part successfully updated.",
                                               "Part not updated.", result));
     }
@@ -538,14 +530,6 @@ public class Rules extends Controller {
         final ObjectNode part = Json.newObject();
         part.put("uuid", partID);
         Promise<Boolean> removed = Slot.nodes.disconnect(slot, part);
-        removed.onRedeem(
-            new Callback<Boolean>() {
-                public void invoke(Boolean removed) {
-                    if (removed) {
-                        Part.nodes.delete(part);
-                    }
-                }
-            });
         return removed.map(new ResultFunction("Part successfully removed.",
                                               "Part not removed."));
     }

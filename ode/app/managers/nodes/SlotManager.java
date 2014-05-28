@@ -7,6 +7,7 @@ import models.nodes.Part;
 import models.nodes.Rule;
 import models.nodes.Slot;
 import models.relationships.Has;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -131,9 +132,19 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
     }
 
     private Promise<Boolean> disconnect(
-        JsonNode slot, Part part, String location) {
+        JsonNode slot, final Part part, String location) {
         Slot s = new Slot(slot.get("uuid").asText());
-        return Has.relationships.delete(s, part, location);
+        Promise<Boolean> disconnected = Has.relationships
+            .delete(s, part, location);
+        disconnected.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke (Boolean disconnected) {
+                    if (disconnected) {
+                        Part.nodes.delete(part.getProperties());
+                    }
+                }
+            });
+        return disconnected;
     }
 
 }

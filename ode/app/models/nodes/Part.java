@@ -21,7 +21,7 @@ public class Part extends LabeledNodeWithProperties {
         super(NodeType.PART);
     }
 
-    private Part(UUID uuid) {
+    public Part(UUID uuid) {
         this();
         this.jsonProperties.put("uuid", uuid.toString());
     }
@@ -33,26 +33,10 @@ public class Part extends LabeledNodeWithProperties {
     }
 
     public Part(String uuid, String content) {
-        this(UUID.fromString(uuid), content);
-    }
-
-    public static Part of(UUID uuid) {
-        return new Part(uuid);
-    }
-
-    public static Part of(String content) {
-        return new Part(content);
-    }
-
-    private Part(UUID uuid, String content) {
         this();
-        this.jsonProperties.put("uuid", uuid.toString());
+        this.jsonProperties.put("uuid", uuid);
         this.jsonProperties.put("content", content);
         this.content = content;
-    }
-
-    public static Part of(UUID uuid, String content) {
-        return new Part(uuid, content);
     }
 
     protected JsonNode toJSON() {

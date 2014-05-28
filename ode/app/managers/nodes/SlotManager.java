@@ -121,7 +121,8 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
             Rule rule = new Rule(partOrRule.get("name").asText());
             return disconnect(slot, rule, location);
         }
-        Part part = Part.of(UUID.fromString(partOrRule.get("uuid").asText()));
+        String uuid = partOrRule.get("uuid").asText();
+        Part part = new Part(UUID.fromString(uuid));
         return disconnect(slot, part, location);
     }
 

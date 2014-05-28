@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.UUID;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -33,8 +32,7 @@ public class HasPartRelationship extends TypedRelationship {
                             String uuid = partNode.findValue("uuid").asText();
                             String content = partNode
                                 .findValue("content").asText();
-                            Part part =
-                                Part.of(UUID.fromString(uuid), content);
+                            Part part = new Part(uuid, content);
                             parts.add(part);
                         }
                     }

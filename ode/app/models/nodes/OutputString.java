@@ -25,27 +25,15 @@ public class OutputString extends LabeledNodeWithProperties {
         super(NodeType.OUTPUT_STRING);
     }
 
-    private OutputString(UUID uuid, String content) {
-        this();
-        this.content = content;
-        this.jsonProperties.put("content", content);
-        this.jsonProperties.put("uuid", uuid.toString());
-    }
-
     public OutputString(String uuid) {
         this();
         this.jsonProperties.put("uuid", uuid);
     }
 
     public OutputString(String uuid, String content) {
-        this();
+        this(uuid);
         this.content = content;
         this.jsonProperties.put("content", content);
-        this.jsonProperties.put("uuid", uuid);
-    }
-
-    public static OutputString of(UUID uuid, String content) {
-        return new OutputString(uuid, content);
     }
 
     protected JsonNode toJSON() {

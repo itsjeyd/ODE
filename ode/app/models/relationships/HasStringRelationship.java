@@ -37,8 +37,8 @@ public class HasStringRelationship extends TypedRelationship {
                                 .findValue("uuid").asText();
                             String content = stringNode
                                 .findValue("content").asText();
-                            OutputString string = OutputString
-                                .of(UUID.fromString(uuid), content);
+                            OutputString string =
+                                new OutputString(uuid, content);
                             strings.add(string);
                         }
                     }

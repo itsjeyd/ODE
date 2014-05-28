@@ -28,31 +28,14 @@ public class Slot extends LabeledNodeWithProperties {
         super(NodeType.SLOT);
     }
 
-    private Slot(UUID uuid) {
-        this();
-        this.jsonProperties.put("uuid", uuid.toString());
-    }
-
-    private Slot(UUID uuid, int position) {
-        this(uuid);
-        this.jsonProperties.put("position", position);
-    }
-
     public Slot(String uuid) {
-        this(UUID.fromString(uuid));
+        this();
+        this.jsonProperties.put("uuid", uuid);
     }
 
     public Slot(String uuid, int position) {
-        this(UUID.fromString(uuid));
+        this(uuid);
         this.jsonProperties.put("position", position);
-    }
-
-    public static Slot of(UUID uuid) {
-        return new Slot(uuid);
-    }
-
-    public static Slot of(UUID uuid, int position) {
-        return new Slot(uuid, position);
     }
 
     protected Promise<List<Part>> getParts() {

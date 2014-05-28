@@ -177,7 +177,7 @@ public class Rule extends UUIDNode {
                         return Promise.pure(stringsNotFound);
                     }
                     Promise<List<CombinationGroup>> groups =
-                        RHS.of(Rule.this).getGroups();
+                        new RHS(Rule.this).getGroups();
                     return groups.flatMap(
                         new Function<List<CombinationGroup>,
                                      Promise<List<String>>>() {

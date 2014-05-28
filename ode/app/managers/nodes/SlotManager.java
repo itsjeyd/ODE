@@ -147,4 +147,44 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
         return disconnected;
     }
 
+    public Promise<Boolean> updatePart(
+        final JsonNode slot, final JsonNode oldPart, final JsonNode newPart) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> updated = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> updated =
+                        updatePart(slot, oldPart, newPart, location);
+                    return updated.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean updated) {
+                                if (updated) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return updated;
+    }
+
+    private Promise<Boolean> updatePart(
+        final JsonNode slot, JsonNode oldPart, final JsonNode newPart,
+        final String location) {
+        // 1. Disconnect slot from old part
+        Promise<Boolean> updated = disconnect(slot, oldPart, location);
+        // 2. Connect slot to new part
+        updated = updated.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean updated) {
+                    if (updated) {
+                        return connect(slot, newPart, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return updated;
+    }
+
 }

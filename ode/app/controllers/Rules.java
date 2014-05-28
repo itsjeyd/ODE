@@ -460,28 +460,20 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updatePart(
         String name, String groupID, String slotID, String partID) {
-        final ObjectNode result = Json.newObject();
+        JsonNode json = request().body().asJson();
         final ObjectNode slot = Json.newObject();
         slot.put("uuid", slotID);
-        final ObjectNode part = Json.newObject();
-        part.put("uuid", partID);
-        Promise<Boolean> updated = Slot.nodes.disconnect(slot, part);
-        updated = updated.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean updated) {
-                    if (updated) {
-                        JsonNode json = request().body().asJson();
-                        String content = json.findValue("content").asText();
-                        String uuid = UUIDGenerator.from(content);
-                        ObjectNode part = Json.newObject();
-                        part.put("content", content);
-                        part.put("uuid", uuid);
-                        result.put("id", uuid);
-                        return Slot.nodes.connect(slot, part);
-                    }
-                    return Promise.pure(false);
-                }
-            });
+        final ObjectNode oldPart = Json.newObject();
+        oldPart.put("uuid", partID);
+        ObjectNode newPart = Json.newObject();
+        String content = json.findValue("content").asText();
+        String uuid = UUIDGenerator.from(content);
+        newPart.put("content", content);
+        newPart.put("uuid", uuid);
+        final ObjectNode result = Json.newObject();
+        result.put("id", uuid);
+        Promise<Boolean> updated = Slot.nodes
+            .updatePart(slot, oldPart, newPart);
         return updated.map(new ResultFunction("Part successfully updated.",
                                               "Part not updated.", result));
     }

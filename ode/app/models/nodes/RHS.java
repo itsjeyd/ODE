@@ -16,7 +16,6 @@ import play.libs.F.Promise;
 import constants.NodeType;
 import managers.nodes.RHSManager;
 import models.relationships.GroupRelationship;
-import models.relationships.RHSRelationship;
 
 
 public class RHS extends UUIDNode {

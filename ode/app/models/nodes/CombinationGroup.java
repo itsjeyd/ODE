@@ -18,7 +18,6 @@ import play.libs.F.Tuple;
 
 import constants.NodeType;
 import managers.nodes.CombinationGroupManager;
-import models.relationships.GroupRelationship;
 import models.relationships.HasSlotRelationship;
 import models.relationships.HasStringRelationship;
 

@@ -10,16 +10,13 @@ import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
-import play.mvc.Http.Status;
 
 import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
-import managers.functions.RelationshipCreatedFunction;
 import models.nodes.AVM;
 import models.nodes.Feature;
 import models.nodes.Rule;
-import models.relationships.HasValueRelationship;
 
 
 public class HasValueRelationshipManager extends HasRelationshipManager {

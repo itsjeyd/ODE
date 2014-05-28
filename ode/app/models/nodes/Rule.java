@@ -16,9 +16,6 @@ import play.libs.F.Tuple;
 import constants.NodeType;
 import managers.nodes.RuleManager;
 import models.nodes.RHS;
-import models.relationships.HasRefRelationship;
-import models.relationships.LHSRelationship;
-import models.relationships.RHSRelationship;
 
 
 public class Rule extends UUIDNode {

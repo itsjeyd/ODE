@@ -9,7 +9,6 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.nodes.PartManager;
-import models.relationships.HasPartRelationship;
 
 
 public class Part extends LabeledNodeWithProperties {

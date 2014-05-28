@@ -12,7 +12,6 @@ import play.libs.F.Promise;
 
 import constants.NodeType;
 import managers.nodes.OutputStringManager;
-import models.relationships.HasStringRelationship;
 
 
 public class OutputString extends LabeledNodeWithProperties {

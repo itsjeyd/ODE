@@ -8,12 +8,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.mvc.Http.Status;
 
 import constants.RelationshipType;
 import neo4play.Neo4jService;
 import models.nodes.CombinationGroup;
-import models.nodes.OutputString;
 
 
 public class HasStringRelationshipManager extends TypedRelationshipManager {

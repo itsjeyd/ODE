@@ -11,12 +11,10 @@ import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.mvc.Http.Status;
 
 import constants.RelationshipType;
 import neo4play.Neo4jService;
 import models.nodes.AVM;
-import models.nodes.Feature;
 
 
 public class HasFeatureRelationshipManager extends HasRelationshipManager {

@@ -7,7 +7,6 @@ import play.libs.F.Promise;
 
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
-import managers.functions.RelationshipCreatedFunction;
 import models.relationships.TypedRelationship;
 
 

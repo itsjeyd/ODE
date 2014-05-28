@@ -12,12 +12,10 @@ import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.libs.F.Tuple;
 
 import constants.RelationshipType;
 import utils.StringUtils;
 import models.nodes.LabeledNodeWithProperties;
-import models.relationships.Relationship;
 
 
 public class Neo4jService {

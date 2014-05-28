@@ -15,7 +15,6 @@ import play.libs.F.Promise;
 import play.libs.F.Tuple;
 
 import constants.NodeType;
-import managers.nodes.AVMManager;
 import models.relationships.HasFeatureRelationship;
 
 

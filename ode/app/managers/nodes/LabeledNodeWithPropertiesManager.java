@@ -9,8 +9,6 @@ import play.libs.F.Promise;
 
 import managers.functions.JsonFunction;
 import managers.functions.NodeCreatedFunction;
-import managers.functions.NodeDeletedFunction;
-import managers.functions.UpdatedFunction;
 import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Node;
 import neo4play.Neo4jService;

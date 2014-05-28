@@ -16,8 +16,6 @@ import play.libs.F.Promise;
 import constants.FeatureType;
 import constants.NodeType;
 import managers.nodes.FeatureManager;
-import models.relationships.HasFeatureRelationship;
-import models.relationships.HasSubstructureRelationship;
 import models.relationships.HasValueRelationship;
 
 

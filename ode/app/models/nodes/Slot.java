@@ -18,7 +18,6 @@ import constants.NodeType;
 import managers.nodes.SlotManager;
 import models.relationships.HasPartRelationship;
 import models.relationships.HasRefRelationship;
-import models.relationships.HasSlotRelationship;
 
 
 public class Slot extends LabeledNodeWithProperties {

@@ -1,14 +1,8 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.List;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.libs.F.Function;
 import play.libs.F.Promise;
-import views.html.foo;
 
 
 public class Foo extends Controller {

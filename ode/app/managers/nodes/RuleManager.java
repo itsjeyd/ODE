@@ -16,7 +16,6 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 import constants.NodeType;
-import constants.RelationshipType;
 import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;

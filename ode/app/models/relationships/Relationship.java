@@ -1,9 +1,6 @@
 package models.relationships;
 
-import play.libs.F.Promise;
-
 import models.Model;
-import managers.relationships.RelationshipManager;
 import models.nodes.LabeledNodeWithProperties;
 
 

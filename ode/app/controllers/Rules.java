@@ -347,14 +347,6 @@ public class Rules extends Controller {
                     return Promise.pure(false);
                 }
             });
-        updated.onRedeem(
-            new Callback<Boolean>() {
-                public void invoke(Boolean updated) {
-                    if (updated) {
-                        OutputString.nodes.delete(string);
-                    }
-                }
-            });
         return updated.map(
             new ResultFunction("String successfully updated.",
                                "String not updated.", result));
@@ -370,14 +362,6 @@ public class Rules extends Controller {
         string.put("uuid", stringID);
         Promise<Boolean> removed = CombinationGroup.nodes
             .disconnect(group, string);
-        removed.onRedeem(
-            new Callback<Boolean>() {
-                public void invoke(Boolean removed) {
-                    if (removed) {
-                        OutputString.nodes.delete(string);
-                    }
-                }
-            });
         return removed.map(new ResultFunction("String successfully removed.",
                                               "String not removed."));
     }

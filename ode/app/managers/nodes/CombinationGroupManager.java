@@ -5,6 +5,7 @@ import models.nodes.CombinationGroup;
 import models.nodes.OutputString;
 import models.nodes.Slot;
 import models.relationships.Has;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -69,10 +70,20 @@ public class CombinationGroupManager extends
     }
 
     protected Promise<Boolean> disconnect(
-        JsonNode group, JsonNode string, String location) {
+        JsonNode group, final JsonNode string, String location) {
         CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
         OutputString s = new OutputString(string.get("uuid").asText());
-        return Has.relationships.delete(g, s, location);
+        Promise<Boolean> disconnected = Has.relationships
+            .delete(g, s, location);
+        disconnected.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke (Boolean disconnected) {
+                    if (disconnected) {
+                        OutputString.nodes.delete(string);
+                    }
+                }
+            });
+        return disconnected;
     }
 
 

@@ -90,9 +90,21 @@ public class CombinationGroupManager extends
     }
 
     private Promise<Boolean> connect(
-        JsonNode group, Slot slot, String location) {
-        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
-        return Has.relationships.create(g, slot, location);
+        final JsonNode group, final Slot slot, final String location) {
+        Promise<Boolean> created = Slot.nodes
+            .create(slot.getProperties(), location);
+        Promise<Boolean> connected = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        CombinationGroup g =
+                            new CombinationGroup(group.get("uuid").asText());
+                        return Has.relationships.create(g, slot, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return connected;
     }
 
     private Promise<Boolean> connect(

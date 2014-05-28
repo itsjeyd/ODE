@@ -418,26 +418,16 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addSlot(String name, final String groupID) {
-        final ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
+        ObjectNode group = Json.newObject();
+        group.put("uuid", groupID);
         final ObjectNode slot = Json.newObject();
         final String uuid = UUIDGenerator.random();
-        int position = json.findValue("position").asInt();
         slot.put("uuid", uuid);
-        slot.put("position", position);
-        Promise<Boolean> created = Slot.nodes.create(slot);
-        Promise<Boolean> added = created.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean created) {
-                    if (created) {
-                        result.put("id", uuid);
-                        ObjectNode group = Json.newObject();
-                        group.put("uuid", groupID);
-                        return CombinationGroup.nodes.connect(group, slot);
-                    }
-                    return Promise.pure(false);
-                }
-            });
+        slot.put("position", json.findValue("position").asInt());
+        final ObjectNode result = Json.newObject();
+        result.put("id", uuid);
+        Promise<Boolean> added = CombinationGroup.nodes.connect(group, slot);
         return added.map(new ResultFunction("Slot successfully added.",
                                             "Slot not added", result));
     }

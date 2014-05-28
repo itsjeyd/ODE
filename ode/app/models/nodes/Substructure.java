@@ -53,20 +53,4 @@ public class Substructure extends AVM {
         }
     }
 
-    protected static class CreateFunction
-        implements Function<UUID, Promise<Boolean>> {
-        private Substructure substructure;
-        public CreateFunction(Substructure substructure) {
-            this.substructure = substructure;
-        }
-        public Promise<Boolean> apply(UUID parentUUID) {
-            byte[] bytes = (parentUUID.toString() +
-                            substructure.embeddingFeature.name)
-                .getBytes(Charset.forName("UTF-8"));
-            UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            this.substructure.jsonProperties.put("uuid", uuid.toString());
-            return AVMManager.create(this.substructure);
-        }
-    }
-
 }

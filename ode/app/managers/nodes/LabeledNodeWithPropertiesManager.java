@@ -42,11 +42,4 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<Boolean> create(LabeledNodeWithProperties node) {
-        Promise<WS.Response> response = Neo4jService
-            .createLabeledNodeWithProperties(
-                node.getLabel(), node.jsonProperties);
-        return response.map(new NodeCreatedFunction());
-    }
-
 }

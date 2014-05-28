@@ -1,6 +1,8 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -26,9 +28,10 @@ public class Auth extends Controller {
             return Promise.promise(
                 new ErrorResult(home.render(registrationForm)));
         }
-        Promise<Boolean> created = new User(
-            registrationForm.get().email,
-            registrationForm.get().password).create();
+        ObjectNode user = Json.newObject();
+        user.put("username", registrationForm.get().email);
+        user.put("password", registrationForm.get().password);
+        Promise<Boolean> created = User.nodes.create(user);
         return created.map(
             new Function<Boolean, Result>() {
                 public Result apply(Boolean created) {

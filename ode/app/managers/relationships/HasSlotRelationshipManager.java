@@ -37,16 +37,4 @@ public class HasSlotRelationshipManager extends TypedRelationshipManager {
             });
     }
 
-    public static Promise<Boolean> delete(
-        final CombinationGroup startNode, final Slot endNode) {
-        Promise<WS.Response> response = Neo4jService.deleteTypedRelationship(
-            startNode, endNode, RelationshipType.HAS);
-        return response.map(
-            new Function<WS.Response, Boolean>() {
-                public Boolean apply(WS.Response response) {
-                    return response.getStatus() == Status.OK;
-                }
-            });
-    }
-
 }

@@ -16,9 +16,4 @@ public class HasSubstructureRelationship extends HasRelationship {
         super(startNode, endNode, endNode.rule);
     }
 
-    public static Promise<Boolean> delete(
-        Feature startNode, Substructure endNode) {
-        return HasSubstructureRelationshipManager.delete(startNode, endNode);
-    }
-
 }

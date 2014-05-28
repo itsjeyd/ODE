@@ -47,9 +47,4 @@ public class HasStringRelationship extends TypedRelationship {
             });
     }
 
-    public static Promise<Boolean> delete(CombinationGroup startNode,
-                                          OutputString endNode) {
-        return HasStringRelationshipManager.delete(startNode, endNode);
-    }
-
 }

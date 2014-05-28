@@ -43,8 +43,4 @@ public class HasPartRelationship extends TypedRelationship {
             });
     }
 
-    public static Promise<Boolean> delete(Slot startNode, Part endNode) {
-        return HasPartRelationshipManager.delete(startNode, endNode);
-    }
-
 }

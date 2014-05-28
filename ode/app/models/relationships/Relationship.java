@@ -16,8 +16,4 @@ public abstract class Relationship extends Model {
         this.ID = -1;
     }
 
-    public Promise<Boolean> delete() {
-        return RelationshipManager.delete(this);
-    };
-
 }

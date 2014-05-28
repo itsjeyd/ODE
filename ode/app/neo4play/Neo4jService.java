@@ -119,12 +119,6 @@ public class Neo4jService {
         return postCypherQueryWithParams(query, props);
     }
 
-    public static Promise<WS.Response> deleteLabeledNodeWithProperties(
-        String label, JsonNode props) {
-        String query = buildNodeQuery(label, props) + " DELETE n";
-        return postCypherQuery(query);
-    }
-
     public static Promise<WS.Response> getNodesByLabel(String label) {
         return get("/label/" + label + "/nodes");
     }
@@ -132,30 +126,6 @@ public class Neo4jService {
     public static Promise<WS.Response> getNodeProperties(String nodeURL) {
         String fullURL = nodeURL + "/properties";
         return WS.url(fullURL).get();
-    }
-
-    public static Promise<WS.Response> getIncomingRelationships(
-        String endNodeLabel, JsonNode endNodeProps) {
-        Promise<String> endNodeURL = getNodeURL(endNodeLabel, endNodeProps);
-        return endNodeURL.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String nodeURL) {
-                    String fullURL = nodeURL + "/relationships/in";
-                    return WS.url(fullURL).get();
-        }});
-    }
-
-    public static Promise<WS.Response> getIncomingRelationshipsByType(
-        String endNodeLabel, JsonNode endNodeProps,
-        final String relationshipType) {
-        Promise<String> endNodeURL = getNodeURL(endNodeLabel, endNodeProps);
-        return endNodeURL.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String nodeURL) {
-                    String fullURL = nodeURL + "/relationships/in/"
-                        + relationshipType;
-                    return WS.url(fullURL).get();
-        }});
     }
 
     public static Promise<WS.Response> getOutgoingRelationshipsByType(
@@ -242,38 +212,6 @@ public class Neo4jService {
             "MATCH (s:%s)-[r:%s*%d..%d]->(e) WHERE %s AND %s RETURN r",
             startNode.getLabel(), type.name(), minHops, maxHops,
             startNodeProps, endNodeProps);
-        return postCypherQuery(query);
-    }
-
-    public static Promise<WS.Response> deleteRelationship(
-        Relationship relationship) {
-        String fullURL = extendRootURL("/relationship/" + relationship.ID);
-        return delete(fullURL);
-    }
-
-    public static Promise<WS.Response> deleteTypedRelationship(
-        LabeledNodeWithProperties startNode,
-        LabeledNodeWithProperties endNode, RelationshipType type) {
-        String startNodeProps = buildConjunctiveConstraints(
-            "s", startNode.jsonProperties);
-        String endNodeProps = buildConjunctiveConstraints(
-            "e", endNode.jsonProperties);
-        String query = String.format(
-            "MATCH (s:%s)-[r:%s]-(e:%s) WHERE %s AND %s DELETE r",
-            startNode.getLabel(), type.name(), endNode.getLabel(),
-            startNodeProps, endNodeProps);
-        return postCypherQuery(query);
-    }
-
-    public static Promise<WS.Response> deleteTypedRelationshipWithProperties(
-        LabeledNodeWithProperties startNode, RelationshipType type,
-        JsonNode props) {
-        String startNodeProps = buildConjunctiveConstraints(
-            "s", startNode.jsonProperties);
-        String relProps = buildConjunctiveConstraints("r", props);
-        String query = String.format(
-            "MATCH (s:%s)-[r:%s]-() WHERE %s AND %s DELETE r",
-            startNode.getLabel(), type.name(), startNodeProps, relProps);
         return postCypherQuery(query);
     }
 

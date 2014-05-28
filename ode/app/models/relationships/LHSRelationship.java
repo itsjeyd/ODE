@@ -15,9 +15,4 @@ public class LHSRelationship extends TypedRelationship {
         super(RelationshipType.LHS, startNode, endNode);
     }
 
-    public static Promise<Boolean> delete(
-        Rule startNode, final LHS endNode) {
-        return LHSRelationshipManager.delete(startNode, endNode);
-    }
-
 }

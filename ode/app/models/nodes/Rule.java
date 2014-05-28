@@ -63,10 +63,6 @@ public class Rule extends UUIDNode {
         return result;
     }
 
-    public Promise<Boolean> isOrphan() {
-        return RuleManager.isOrphan(this);
-    }
-
     public Promise<UUID> getUUID() {
         return RuleManager.getUUID(this);
     }
@@ -266,76 +262,6 @@ public class Rule extends UUIDNode {
     public Promise<Rule> get() {
         Promise<JsonNode> json = RuleManager.get(this);
         return json.flatMap(new GetFunction());
-    }
-
-    public Promise<Boolean> removeFrom(Slot slot) {
-        return HasRefRelationship.delete(slot, this);
-    }
-
-    public Promise<Boolean> deleteIfOrphaned() {
-        return this.isOrphan().flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean isOrphan) {
-                    if (isOrphan) {
-                        return Rule.this.delete();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
-    public Promise<Boolean> delete() {
-        final Rule rule = this;
-        final LHS lhs = new LHS(rule);
-        final RHS rhs = new RHS(rule);
-        Promise<Boolean> emptied = lhs.empty();
-        Promise<Boolean> lhsRelationshipDeleted = emptied.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean emptied) {
-                    if (emptied) {
-                        return LHSRelationship.delete(rule, lhs);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        Promise<Boolean> lhsDeleted = lhsRelationshipDeleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(
-                    Boolean lhsRelationshipDeleted) {
-                    if (lhsRelationshipDeleted) {
-                        return lhs.delete();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        Promise<Boolean> rhsRelationshipDeleted = lhsDeleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean lhsDeleted) {
-                    if (lhsDeleted) {
-                        return RHSRelationship.delete(rule, rhs);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        Promise<Boolean> rhsDeleted = rhsRelationshipDeleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(
-                    Boolean rhsRelationshipDeleted) {
-                    if (rhsRelationshipDeleted) {
-                        return rhs.delete();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        return rhsDeleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean rhsDeleted) {
-                    if (rhsDeleted) {
-                        return RuleManager.delete(rule);
-                    }
-                    return Promise.pure(false);
-                }
-            });
     }
 
     private static class GetFunction implements

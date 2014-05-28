@@ -56,13 +56,6 @@ public class PartManager extends LabeledNodeWithPropertiesManager {
         return created;
     }
 
-    private static Promise<JsonNode> getIncomingRelationships(Part part) {
-        Promise<WS.Response> response = Neo4jService
-            .getIncomingRelationshipsByType(part.getLabel(),
-                                            part.jsonProperties,
-                                            RelationshipType.HAS.name());
-        return response.map(new JsonFunction());
-    }
 
     private static Promise<String> getProperty(Part part, String propName) {
         Promise<String> partURL = Neo4jService
@@ -75,17 +68,6 @@ public class PartManager extends LabeledNodeWithPropertiesManager {
             });
         Promise<JsonNode> json = response.map(new JsonFunction());
         return json.map(new PropertyFunction(propName));
-    }
-
-    public static Promise<Boolean> isOrphan(Part part) {
-        Promise<JsonNode> relationships = PartManager
-            .getIncomingRelationships(part);
-        return relationships.map(
-            new Function<JsonNode, Boolean>() {
-                public Boolean apply(JsonNode relationships) {
-                    return relationships.size() == 0;
-                }
-            });
     }
 
     public static Promise<UUID> getUUID(Part part) {

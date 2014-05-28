@@ -42,28 +42,4 @@ public class HasValueRelationshipManager extends HasRelationshipManager {
         return response.map(new JsonFunction());
     }
 
-    public static Promise<Boolean> delete(
-        final Feature startNode, Rule rule, AVM parent) {
-        Promise<UUID> ruleUUID = rule.getUUID();
-        Promise<UUID> avmUUID = parent.getUUID();
-        Promise<Tuple<UUID, UUID>> uuids = ruleUUID.zip(avmUUID);
-        Promise<WS.Response> response = uuids.flatMap(
-            new Function<Tuple<UUID, UUID>, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(Tuple<UUID, UUID> uuids) {
-                    ObjectNode data = Json.newObject();
-                    data.put("rule", uuids._1.toString());
-                    data.put("avm", uuids._2.toString());
-                    return Neo4jService
-                        .deleteTypedRelationshipWithProperties(
-                            startNode, RelationshipType.HAS, data);
-                }
-            });
-        return response.map(
-            new Function<WS.Response, Boolean>() {
-                public Boolean apply(WS.Response response) {
-                    return response.getStatus() == Status.OK;
-                }
-            });
-    }
-
 }

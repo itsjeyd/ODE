@@ -8,12 +8,4 @@ import managers.functions.RelationshipDeletedFunction;
 import models.relationships.Relationship;
 
 
-public class RelationshipManager {
-
-    public static Promise<Boolean> delete(Relationship relationship) {
-        Promise<WS.Response> response = Neo4jService.deleteRelationship(
-            relationship);
-        return response.map(new RelationshipDeletedFunction());
-    }
-
-}
+public class RelationshipManager {}

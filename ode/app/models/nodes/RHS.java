@@ -112,56 +112,6 @@ public class RHS extends UUIDNode {
         return GroupRelationship.getEndNodes(this);
     }
 
-    public Promise<Boolean> remove(final CombinationGroup group) {
-        Promise<UUID> uuid = this.getUUID();
-        return uuid.flatMap(
-            new Function<UUID, Promise<Boolean>>() {
-                public Promise<Boolean> apply(UUID uuid) {
-                    RHS.this.jsonProperties.put("uuid", uuid.toString());
-                    return group.removeFrom(RHS.this);
-                }
-            });
-    }
-
-    private Promise<Boolean> removeGroups() {
-        Promise<List<CombinationGroup>> groups = this.getGroups();
-        Promise<List<Boolean>> removed = groups.flatMap(
-            new Function<List<CombinationGroup>, Promise<List<Boolean>>>() {
-                public Promise<List<Boolean>> apply(
-                    List<CombinationGroup> groups) {
-                    List<Promise<? extends Boolean>> removed =
-                        new ArrayList<Promise<? extends Boolean>>();
-                    for (CombinationGroup group: groups) {
-                        removed.add(RHS.this.remove(group));
-                    }
-                    return Promise.sequence(removed);
-                }
-            });
-        return removed.map(
-            new Function<List<Boolean>, Boolean>() {
-                public Boolean apply(List<Boolean> removed) {
-                    for (Boolean r: removed) {
-                        if (!r) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            });
-    }
-
-    public Promise<Boolean> delete() {
-        Promise<Boolean> groupsRemoved = this.removeGroups();
-        return groupsRemoved.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean groupsRemoved) {
-                    if (groupsRemoved) {
-                        return RHSManager.delete(RHS.this);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
 
     private static class UUIDFunction implements Function<UUID, UUID> {
         public UUID apply(UUID ruleUUID) {

@@ -51,11 +51,4 @@ public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
         return response.map(new NodeCreatedFunction());
     }
 
-    public static Promise<Boolean> delete(LabeledNodeWithProperties node) {
-        Promise<WS.Response> response = Neo4jService
-            .deleteLabeledNodeWithProperties(node.getLabel(),
-                                             node.jsonProperties);
-        return response.map(new NodeDeletedFunction());
-    }
-
 }

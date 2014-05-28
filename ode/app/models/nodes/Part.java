@@ -60,10 +60,6 @@ public class Part extends LabeledNodeWithProperties {
         return this.jsonProperties.deepCopy();
     }
 
-    public Promise<Boolean> isOrphan() {
-        return PartManager.isOrphan(this);
-    }
-
     public Promise<UUID> getUUID() {
         return this.exists().flatMap(
             new Function<Boolean, Promise<UUID>>() {
@@ -72,36 +68,6 @@ public class Part extends LabeledNodeWithProperties {
                         return PartManager.getUUID(Part.this);
                     }
                     return Promise.pure(UUID.randomUUID());
-                }
-            });
-    }
-
-    public Promise<Boolean> removeFrom(Slot slot) {
-        Promise<Boolean> disconnected = HasPartRelationship
-            .delete(slot, this);
-        return disconnected.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean disconnected) {
-                    if (disconnected) {
-                        return Part.this.deleteIfOrphaned();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
-    public Promise<Boolean> delete() {
-        return PartManager.delete(this);
-    }
-
-    public Promise<Boolean> deleteIfOrphaned() {
-        return this.isOrphan().flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean isOrphan) {
-                    if (isOrphan) {
-                        return Part.this.delete();
-                    }
-                    return Promise.pure(true);
                 }
             });
     }

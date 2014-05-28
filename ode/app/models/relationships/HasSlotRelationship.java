@@ -45,9 +45,4 @@ public class HasSlotRelationship extends TypedRelationship {
             });
     }
 
-    public static Promise<Boolean> delete(CombinationGroup startNode,
-                                          Slot endNode) {
-        return HasSlotRelationshipManager.delete(startNode, endNode);
-    }
-
 }

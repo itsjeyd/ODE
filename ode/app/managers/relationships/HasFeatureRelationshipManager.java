@@ -47,23 +47,4 @@ public class HasFeatureRelationshipManager extends HasRelationshipManager {
             });
     }
 
-    public static Promise<Boolean> delete(
-        final AVM startNode, final Feature endNode) {
-        Promise<UUID> uuid = startNode.getUUID();
-        Promise<WS.Response> response = uuid.flatMap(
-            new Function<UUID, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(UUID uuid) {
-                    startNode.jsonProperties.put("uuid", uuid.toString());
-                    return Neo4jService.deleteTypedRelationship(
-                        startNode, endNode, RelationshipType.HAS);
-                }
-            });
-        return response.map(
-            new Function<WS.Response, Boolean>() {
-                public Boolean apply(WS.Response response) {
-                    return response.getStatus() == Status.OK;
-                }
-            });
-    }
-
 }

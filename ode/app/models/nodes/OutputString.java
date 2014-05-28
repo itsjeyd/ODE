@@ -60,10 +60,6 @@ public class OutputString extends LabeledNodeWithProperties {
         return json;
     }
 
-    public Promise<Boolean> isOrphan() {
-        return OutputStringManager.isOrphan(this);
-    }
-
     public Promise<UUID> getUUID() {
         return this.exists().flatMap(
             new Function<Boolean, Promise<UUID>>() {
@@ -72,36 +68,6 @@ public class OutputString extends LabeledNodeWithProperties {
                         return OutputStringManager.getUUID(OutputString.this);
                     }
                     return Promise.pure(UUID.randomUUID());
-                }
-            });
-    }
-
-    public Promise<Boolean> removeFrom(CombinationGroup group) {
-        Promise<Boolean> disconnected = HasStringRelationship
-            .delete(group, this);
-        return disconnected.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean disconnected) {
-                    if (disconnected) {
-                        return OutputString.this.deleteIfOrphaned();
-                    }
-                    return Promise.pure(false);
-                }
-            });
-    }
-
-    public Promise<Boolean> delete() {
-        return OutputStringManager.delete(this);
-    }
-
-    public Promise<Boolean> deleteIfOrphaned() {
-        return this.isOrphan().flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean isOrphan) {
-                    if (isOrphan) {
-                        return OutputString.this.delete();
-                    }
-                    return Promise.pure(true);
                 }
             });
     }

@@ -43,9 +43,4 @@ public class GroupRelationship extends TypedRelationship {
             });
     }
 
-    public static Promise<Boolean> delete(RHS startNode,
-                                          CombinationGroup endNode) {
-        return GroupRelationshipManager.delete(startNode, endNode);
-    }
-
 }

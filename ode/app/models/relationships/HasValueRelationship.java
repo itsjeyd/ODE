@@ -34,9 +34,4 @@ public class HasValueRelationship extends HasRelationship {
             });
     }
 
-    public static Promise<Boolean> delete(
-        Feature startNode, Rule rule, AVM parent) {
-        return HasValueRelationshipManager.delete(startNode, rule, parent);
-    }
-
 }

@@ -88,7 +88,7 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean created) {
                     if (created) {
-                        LHS lhs = new LHS(rule, uuid);
+                        LHS lhs = new LHS(uuid);
                         return models.relationships.LHS.relationships
                             .create(rule, lhs, location);
                     }

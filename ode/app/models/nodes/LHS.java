@@ -28,11 +28,6 @@ public class LHS extends AVM {
         this.parent = rule;
     }
 
-    public LHS(Rule rule, String uuid) {
-        this(rule);
-        this.jsonProperties.put("uuid", uuid);
-    }
-
     public Promise<UUID> getUUID() {
         Promise<UUID> parentUUID = this.parent.getUUID();
         return parentUUID.map(new UUIDFunction());

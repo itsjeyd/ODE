@@ -36,7 +36,7 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
-    public Promise<Boolean> delete() {
+    public void delete() {
         Promise<List<Value>> values = all();
         values.onRedeem(
             new Callback<List<Value>>() {
@@ -56,7 +56,6 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
 
                 }
             });
-        return null;
     }
 
     public Promise<Boolean> orphaned(JsonNode properties) {

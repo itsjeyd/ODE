@@ -19,6 +19,10 @@ public class LHS extends AVM {
 
     public Rule parent;
 
+    public LHS(String uuid) {
+        this.jsonProperties.put("uuid", uuid);
+    }
+
     public LHS(Rule rule) {
         super(rule);
         this.parent = rule;

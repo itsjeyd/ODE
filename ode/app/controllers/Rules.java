@@ -570,8 +570,27 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> delete(String name) {
-        Promise<Boolean> deleted = new Rule(name).deleteIfOrphaned();
+    public static Promise<Result> delete(final String name) {
+        final ObjectNode rule = Json.newObject();
+        rule.put("name", name);
+        Promise<Boolean> orphaned = Rule.nodes.orphaned(rule);
+        Promise<Boolean> deleted = orphaned.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean orphaned) {
+                    if (orphaned) {
+                        Promise<UUID> uuid = new Rule(name).getUUID();
+                        Promise<Boolean> deleted = uuid.flatMap(
+                            new Function<UUID, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(UUID uuid) {
+                                    rule.put("uuid", uuid.toString());
+                                    return Rule.nodes.delete(rule);
+                                }
+                            });
+                        return deleted;
+                    }
+                    return Promise.pure(false);
+                }
+            });
         return deleted.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

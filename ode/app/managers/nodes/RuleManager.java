@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.nodes.LHS;
 import models.nodes.RHS;
+import models.relationships.Has;
 import play.libs.Json;
 
 import play.libs.WS;
@@ -119,6 +120,93 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
                 }
             });
         return created;
+    }
+
+    @Override
+    protected Promise<Boolean> delete(
+        final JsonNode properties, final String location) {
+        // 1. Remove LHS
+        Promise<Boolean> deleted = removeLHS(properties, location);
+        // 2. Remove RHS
+        deleted = deleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean deleted) {
+                    if (deleted) {
+                        return RuleManager.this
+                            .removeRHS(properties, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        // 3. Delete rule
+        deleted = deleted.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean deleted) {
+                    if (deleted) {
+                        return RuleManager.super.delete(properties, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return deleted;
+    }
+
+    private Promise<Boolean> removeLHS(
+        JsonNode properties, final String location) {
+        final String ruleUUID = properties.get("uuid").asText();
+        String uuid = UUIDGenerator.from(ruleUUID);
+        final LHS lhs = new LHS(uuid);
+        Promise<Boolean> removed = disconnect(properties, lhs, location);
+        removed = removed.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean removed) {
+                    if (removed) {
+                        ObjectNode props = lhs.getProperties().deepCopy();
+                        props.put("ruleUUID", ruleUUID);
+                        return LHS.nodes.delete(props, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return removed;
+    }
+
+    private Promise<Boolean> removeRHS(
+        JsonNode properties, final String location) {
+        String ruleUUID = properties.get("uuid").asText();
+        String uuid = UUIDGenerator.from(ruleUUID);
+        final RHS rhs = new RHS(uuid);
+        Promise<Boolean> removed = disconnect(properties, rhs, location);
+        removed = removed.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean removed) {
+                    if (removed) {
+                        return RHS.nodes
+                            .delete(rhs.getProperties(), location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return removed;
+    }
+
+    private Promise<Boolean> disconnect(
+        JsonNode properties, LHS lhs, String location) {
+        Rule rule = new Rule(properties.get("name").asText());
+        return models.relationships
+            .LHS.relationships.delete(rule, lhs, location);
+    }
+
+    private Promise<Boolean> disconnect(
+        JsonNode properties, RHS rhs, String location) {
+        Rule rule = new Rule(properties.get("name").asText());
+        return models.relationships
+            .RHS.relationships.delete(rule, rhs, location);
+    }
+
+    public Promise<Boolean> orphaned(JsonNode properties) {
+        Rule rule = new Rule(properties.get("name").asText());
+        return super.orphaned(rule, Has.relationships);
     }
 
 

@@ -462,9 +462,12 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeSlot(
         String name, String groupID, String slotID) {
-        Slot slot = Slot.of(UUID.fromString(slotID));
-        Promise<Boolean> removed = CombinationGroup.of(groupID)
-            .removeSlot(slot);
+        ObjectNode group = Json.newObject();
+        group.put("uuid", groupID);
+        ObjectNode slot = Json.newObject();
+        slot.put("uuid", slotID);
+        Promise<Boolean> removed = CombinationGroup.nodes
+            .removeSlot(group, slot);
         return removed.map(new ResultFunction("Slot successfully removed.",
                                               "Slot not removed."));
     }

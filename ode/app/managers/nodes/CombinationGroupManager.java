@@ -75,4 +75,46 @@ public class CombinationGroupManager extends
         return Has.relationships.delete(g, s, location);
     }
 
+
+    public Promise<Boolean> removeSlot(
+        final JsonNode group, final JsonNode slot) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> removed = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> removed =
+                        removeSlot(group, slot, location);
+                    return removed.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean removed) {
+                                if (removed) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return removed;
+    }
+
+    protected Promise<Boolean> removeSlot(
+        JsonNode group, final JsonNode slot, final String location) {
+        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
+        Slot s = new Slot(slot.get("uuid").asText());
+        // 1. Disconnect group from slot
+        Promise<Boolean> removed = Has.relationships.delete(g, s, location);
+        // 2. Delete slot
+        removed = removed.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean removed) {
+                    if (removed) {
+                        return Slot.nodes.delete(slot, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return removed;
+    }
+
 }

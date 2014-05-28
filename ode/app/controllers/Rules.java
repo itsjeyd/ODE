@@ -367,25 +367,16 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> addGroup(String name) {
-        final ObjectNode result = Json.newObject();
         final JsonNode json = request().body().asJson();
+        ObjectNode rhs = Json.newObject();
+        rhs.put("uuid", json.findValue("rhsID").asText());
         final ObjectNode group = Json.newObject();
         final String uuid = UUIDGenerator.random();
         group.put("uuid", uuid);
         group.put("position", json.findValue("position").asInt());
-        Promise<Boolean> created = CombinationGroup.nodes.create(group);
-        Promise<Boolean> added = created.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean created) {
-                    if (created) {
-                        ObjectNode rhs = Json.newObject();
-                        rhs.put("uuid", json.findValue("rhsID").asText());
-                        result.put("id", uuid);
-                        return RHS.nodes.connect(rhs, group);
-                    }
-                    return Promise.pure(false);
-                }
-            });
+        final ObjectNode result = Json.newObject();
+        result.put("id", uuid);
+        Promise<Boolean> added = RHS.nodes.connect(rhs, group);
         return added.map(new ResultFunction("Group successfully added.",
                                             "Group not added.", result));
     }

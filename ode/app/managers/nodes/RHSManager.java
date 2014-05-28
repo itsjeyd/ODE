@@ -106,11 +106,23 @@ public class RHSManager extends UUIDNodeManager {
     }
 
     protected Promise<Boolean> connect(
-        JsonNode rhs, JsonNode group, String location) {
-        RHS r = new RHS(rhs.get("uuid").asText());
-        CombinationGroup g = new CombinationGroup(
-            group.get("uuid").asText(), group.get("position").asInt());
-        return Has.relationships.create(r, g, location);
+        final JsonNode rhs, final JsonNode group, final String location) {
+        Promise<Boolean> created = CombinationGroup.nodes
+            .create(group, location);
+        Promise<Boolean> connected = created.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean created) {
+                    if (created) {
+                        RHS r = new RHS(rhs.get("uuid").asText());
+                        CombinationGroup g = new CombinationGroup(
+                            group.get("uuid").asText(),
+                            group.get("position").asInt());
+                        return Has.relationships.create(r, g, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return connected;
     }
 
     protected Promise<Boolean> disconnect(

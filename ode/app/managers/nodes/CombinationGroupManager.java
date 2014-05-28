@@ -1,6 +1,7 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 import models.nodes.CombinationGroup;
 import models.nodes.OutputString;
 import models.nodes.Slot;
@@ -15,6 +16,63 @@ public class CombinationGroupManager extends
 
     public CombinationGroupManager() {
         this.label = "CombinationGroup";
+    }
+
+    @Override
+    protected Promise<Boolean> delete(
+        final JsonNode properties, final String location) {
+        // 1. Empty group
+        Promise<Boolean> emptied = empty(properties, location);
+        // 2. Delete group
+        Promise<Boolean> deleted = emptied.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean emptied) {
+                    if (emptied) {
+                        return CombinationGroupManager.super
+                            .delete(properties, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return deleted;
+    }
+
+    private Promise<Boolean> empty(
+        final JsonNode properties, final String location) {
+        CombinationGroup group =
+            new CombinationGroup(properties.get("uuid").asText());
+        Promise<List<JsonNode>> stringsAndSlots = Has.relationships
+            .endNodes(group, location);
+        Promise<Boolean> emptied = stringsAndSlots.flatMap(
+            new Function<List<JsonNode>, Promise<Boolean>>() {
+                public Promise<Boolean> apply(List<JsonNode> stringsAndSlots) {
+                    return disconnect(properties, stringsAndSlots, location);
+                }
+            });
+        return emptied;
+    }
+
+    private Promise<Boolean> disconnect(
+        final JsonNode properties, List<JsonNode> stringsAndSlots,
+        final String location) {
+        Promise<Boolean> removed = Promise.pure(true);
+        for (final JsonNode stringOrSlot : stringsAndSlots) {
+            removed = removed.flatMap(
+                new Function<Boolean, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Boolean removed) {
+                        if (removed) {
+                            if (stringOrSlot.has("position")) {
+                                return removeSlot(
+                                    properties, stringOrSlot, location);
+                            }
+                            return disconnect(
+                                properties, stringOrSlot, location);
+                        }
+                        return Promise.pure(false);
+                    }
+                });
+        }
+        return removed;
     }
 
     protected Promise<Boolean> connect(

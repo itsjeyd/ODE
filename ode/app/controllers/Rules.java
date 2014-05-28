@@ -408,9 +408,20 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
-    public static Promise<Result> removeGroup(String name, String groupID) {
-        CombinationGroup group = CombinationGroup.of(groupID);
-        Promise<Boolean> removed = new Rule(name).removeGroup(group);
+    public static Promise<Result> removeGroup(
+        String name, final String groupID) {
+        Promise<UUID> ruleUUID = new Rule(name).getUUID();
+        Promise<Boolean> removed = ruleUUID.flatMap(
+            new Function<UUID, Promise<Boolean>>() {
+                public Promise<Boolean> apply(UUID ruleUUID) {
+                    String uuid = UUIDGenerator.from(ruleUUID.toString());
+                    ObjectNode rhs = Json.newObject();
+                    rhs.put("uuid", uuid);
+                    ObjectNode group = Json.newObject();
+                    group.put("uuid", groupID);
+                    return RHS.nodes.disconnect(rhs, group);
+                }
+            });
         return removed.map(new ResultFunction("Group successfully removed.",
                                               "Group not removed."));
     }

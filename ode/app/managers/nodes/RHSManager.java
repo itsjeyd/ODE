@@ -62,4 +62,24 @@ public class RHSManager extends UUIDNodeManager {
         return Has.relationships.create(r, g, location);
     }
 
+    protected Promise<Boolean> disconnect(
+        JsonNode rhs, final JsonNode group, final String location) {
+        RHS r = new RHS(rhs.get("uuid").asText());
+        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
+        // 1. Disconnect RHS from group
+        Promise<Boolean> disconnected = Has.relationships
+            .delete(r, g, location);
+        // 2. Delete group
+        disconnected = disconnected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean disconnected) {
+                    if (disconnected) {
+                        return CombinationGroup.nodes.delete(group, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return disconnected;
+    }
+
 }

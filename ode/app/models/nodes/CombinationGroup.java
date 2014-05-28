@@ -27,31 +27,18 @@ public class CombinationGroup extends LabeledNodeWithProperties {
     public static final CombinationGroupManager nodes =
         new CombinationGroupManager();
 
-    private CombinationGroup(UUID uuid) {
+    public CombinationGroup() {
         super(NodeType.COMBINATION_GROUP);
-        this.jsonProperties.put("uuid", uuid.toString());
-    }
-
-    public CombinationGroup(UUID uuid, int position) {
-        super(NodeType.COMBINATION_GROUP);
-        this.jsonProperties.put("uuid", uuid.toString());
-        this.jsonProperties.put("position", position);
     }
 
     public CombinationGroup(String uuid) {
-        this(UUID.fromString(uuid));
+        this();
+        this.jsonProperties.put("uuid", uuid.toString());
     }
 
     public CombinationGroup(String uuid, int position) {
-        this(UUID.fromString(uuid), position);
-    }
-
-    public static CombinationGroup of(String groupID) {
-        return new CombinationGroup(UUID.fromString(groupID));
-    }
-
-    public static CombinationGroup of(String groupID, int position) {
-        return new CombinationGroup(UUID.fromString(groupID), position);
+        this(uuid);
+        this.jsonProperties.put("position", position);
     }
 
     private Promise<List<OutputString>> getStrings() {

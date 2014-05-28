@@ -35,7 +35,7 @@ public class GroupRelationship extends TypedRelationship {
                         int position =
                             groupNode.findValue("position").asInt();
                         CombinationGroup group =
-                            CombinationGroup.of(uuid, position);
+                            new CombinationGroup(uuid, position);
                         groups.add(group);
                     }
                     return groups;

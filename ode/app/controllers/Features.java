@@ -92,8 +92,8 @@ public class Features extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateName(final String name) {
         final ObjectNode newProps = (ObjectNode) request().body().asJson();
-        Promise<Boolean> nameTaken =
-            Feature.nodes.exists(newProps.deepCopy().retain("name"));
+        newProps.retain("name", "description", "type");
+        Promise<Boolean> nameTaken = Feature.nodes.exists(newProps);
         Promise<Boolean> updated = nameTaken.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean nameTaken) {
@@ -102,7 +102,6 @@ public class Features extends Controller {
                     }
                     ObjectNode oldProps = Json.newObject();
                     oldProps.put("name", name);
-                    newProps.retain("name", "description", "type");
                     return Feature.nodes.update(oldProps, newProps);
                 }
             });

@@ -20,6 +20,11 @@ public abstract class LabeledNodeManager extends NodeManager {
         return exists(this.label, properties);
     }
 
+    protected Promise<Boolean> exists(JsonNode properties, String idField) {
+        final ObjectNode props = (ObjectNode) properties.deepCopy();
+        return exists(this.label, props.retain(idField));
+    }
+
     protected Promise<Boolean> create(JsonNode properties, String location) {
         Promise<WS.Response> response =
             NodeService.createNode(this.label, properties, location);
@@ -28,8 +33,7 @@ public abstract class LabeledNodeManager extends NodeManager {
 
     protected Promise<Boolean> create(
         final JsonNode properties, final String location, String idField) {
-        final ObjectNode props = (ObjectNode) properties.deepCopy();
-        Promise<Boolean> exists = exists(props.retain(idField));
+        Promise<Boolean> exists = exists(properties, idField);
         Promise<Boolean> created = exists.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean exists) {

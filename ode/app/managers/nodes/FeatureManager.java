@@ -28,6 +28,11 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         this.label = "Feature";
     }
 
+    @Override
+    public Promise<Boolean> exists(JsonNode properties) {
+        return super.exists(properties, "name");
+    }
+
     public Promise<List<Feature>> all() {
         Promise<List<JsonNode>> json = all(this.label);
         Promise<List<Feature>> features = json.map(

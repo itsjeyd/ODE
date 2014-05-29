@@ -148,10 +148,9 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                     public Promise<Boolean> apply(
                         Boolean updated) {
                         if (updated) {
-                            Value value =
-                            new Value("underspecified");
+                            Value value = new Value("underspecified");
                             return Allows.relationships
-                            .create(feature, value, location);
+                                .create(feature, value, location);
                         }
                         return Promise.pure(false);
                     }

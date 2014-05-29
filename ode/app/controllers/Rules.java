@@ -281,7 +281,7 @@ public class Rules extends Controller {
         feature.put("name", json.findValue("name").asText());
         feature.put("type", json.findValue("type").asText());
         Promise<Boolean> removed = Substructure.nodes
-            .removeFeature(avm, feature);
+            .disconnect(avm, feature);
         return removed.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

@@ -50,13 +50,13 @@ public class AVMManager extends UUIDNodeManager {
         Promise<Boolean> emptied = features.flatMap(
             new Function<List<JsonNode>, Promise<Boolean>>() {
                 public Promise<Boolean> apply(List<JsonNode> features) {
-                    return removeFeatures(properties, features, location);
+                    return disconnect(properties, features, location);
                 }
             });
         return emptied;
     }
 
-    private Promise<Boolean> removeFeatures(
+    private Promise<Boolean> disconnect(
         final JsonNode properties, final List<JsonNode> features,
         final String location) {
         Promise<Boolean> removed = Promise.pure(true);
@@ -65,7 +65,7 @@ public class AVMManager extends UUIDNodeManager {
                 new Function<Boolean, Promise<Boolean>>() {
                     public Promise<Boolean> apply(Boolean removed) {
                         if (removed) {
-                            return removeFeature(properties, feature, location);
+                            return disconnect(properties, feature, location);
                         }
                         return Promise.pure(false);
                     }
@@ -183,29 +183,7 @@ public class AVMManager extends UUIDNodeManager {
         return updated;
     }
 
-    public Promise<Boolean> removeFeature(
-        final JsonNode avm, final JsonNode feature) {
-        Promise<String> location = beginTransaction();
-        Promise<Boolean> removed = location.flatMap(
-            new Function<String, Promise<Boolean>>() {
-                public Promise<Boolean> apply(final String location) {
-                    Promise<Boolean> removed =
-                        removeFeature(avm, feature, location);
-                    return removed.flatMap(
-                        new Function<Boolean, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(Boolean removed) {
-                                if (removed) {
-                                    return commitTransaction(location);
-                                }
-                                return Promise.pure(false);
-                            }
-                        });
-                }
-            });
-        return removed;
-    }
-
-    private Promise<Boolean> removeFeature(
+    protected Promise<Boolean> disconnect(
         final JsonNode avm, final JsonNode feature, final String location) {
         final String uuid = avm.get("uuid").asText();
         final Substructure a = new Substructure(uuid);

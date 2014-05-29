@@ -1,7 +1,6 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.List;
 import java.util.UUID;
 import models.nodes.Part;
 import models.nodes.Rule;
@@ -12,7 +11,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 
-public class SlotManager extends LabeledNodeWithPropertiesManager {
+public class SlotManager extends CollectionNodeManager {
 
     public SlotManager() {
         this.label = "Slot";
@@ -62,54 +61,9 @@ public class SlotManager extends LabeledNodeWithPropertiesManager {
 
     // DELETE
 
-    @Override
-    protected Promise<Boolean> delete(
-        final JsonNode properties, final String location) {
-        // 1. Empty slot
-        Promise<Boolean> emptied = empty(properties, location);
-        // 2. Delete slot
-        Promise<Boolean> deleted = emptied.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean emptied) {
-                    if (emptied) {
-                        return SlotManager.super.delete(properties, location);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        return deleted;
-    }
-
-    private Promise<Boolean> empty(
-        final JsonNode properties, final String location) {
+    protected Promise<Boolean> empty(JsonNode properties, String location) {
         Slot slot = new Slot(properties.get("uuid").asText());
-        Promise<List<JsonNode>> partsAndRefs = Has.relationships
-            .endNodes(slot, location);
-        Promise<Boolean> emptied = partsAndRefs.flatMap(
-            new Function<List<JsonNode>, Promise<Boolean>>() {
-                public Promise<Boolean> apply(List<JsonNode> partsAndRefs) {
-                    return disconnect(properties, partsAndRefs, location);
-                }
-            });
-        return emptied;
-    }
-
-    private Promise<Boolean> disconnect(
-        final JsonNode properties, List<JsonNode> partsAndRefs,
-        final String location) {
-        Promise<Boolean> removed = Promise.pure(true);
-        for (final JsonNode partOrRef: partsAndRefs) {
-            removed = removed.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean removed) {
-                        if (removed) {
-                            return disconnect(properties, partOrRef, location);
-                        }
-                        return Promise.pure(false);
-                    }
-                });
-        }
-        return removed;
+        return super.empty(slot, location);
     }
 
     // Connections to other nodes

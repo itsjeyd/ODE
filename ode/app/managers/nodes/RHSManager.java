@@ -2,7 +2,6 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.List;
 import java.util.UUID;
 import models.nodes.CombinationGroup;
 import models.nodes.RHS;
@@ -12,7 +11,7 @@ import play.libs.F.Promise;
 import play.libs.Json;
 
 
-public class RHSManager extends UUIDNodeManager {
+public class RHSManager extends CollectionNodeManager {
 
     public RHSManager() {
         this.label = "RHS";
@@ -59,54 +58,9 @@ public class RHSManager extends UUIDNodeManager {
 
     // DELETE
 
-    @Override
-    protected Promise<Boolean> delete(
-        final JsonNode properties, final String location) {
-        // 1. Empty RHS
-        Promise<Boolean> emptied = empty(properties, location);
-        // 2. Delete RHS
-        Promise<Boolean> deleted = emptied.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean emptied) {
-                    if (emptied) {
-                        return RHSManager.super.delete(properties, location);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        return deleted;
-    }
-
-    private Promise<Boolean> empty(
-        final JsonNode properties, final String location) {
+    protected Promise<Boolean> empty(JsonNode properties, String location) {
         RHS rhs = new RHS(properties.get("uuid").asText());
-        Promise<List<JsonNode>> groups = Has.relationships
-            .endNodes(rhs, location);
-        Promise<Boolean> emptied = groups.flatMap(
-            new Function<List<JsonNode>, Promise<Boolean>>() {
-                public Promise<Boolean> apply(List<JsonNode> groups) {
-                    return disconnect(properties, groups, location);
-                }
-            });
-        return emptied;
-    }
-
-    private Promise<Boolean> disconnect(
-        final JsonNode properties, List<JsonNode> groups,
-        final String location) {
-        Promise<Boolean> removed = Promise.pure(true);
-        for (final JsonNode group: groups) {
-            removed = removed.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean removed) {
-                        if (removed) {
-                            return disconnect(properties, group, location);
-                        }
-                        return Promise.pure(false);
-                    }
-                });
-        }
-        return removed;
+        return super.empty(rhs, location);
     }
 
     // Connections to other nodes

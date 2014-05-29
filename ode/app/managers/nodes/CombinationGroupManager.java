@@ -11,8 +11,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 
-public class CombinationGroupManager extends
-                                         LabeledNodeWithPropertiesManager {
+public class CombinationGroupManager extends CollectionNodeManager {
 
     public CombinationGroupManager() {
         this.label = "CombinationGroup";
@@ -63,41 +62,14 @@ public class CombinationGroupManager extends
 
     // DELETE
 
-    @Override
-    protected Promise<Boolean> delete(
-        final JsonNode properties, final String location) {
-        // 1. Empty group
-        Promise<Boolean> emptied = empty(properties, location);
-        // 2. Delete group
-        Promise<Boolean> deleted = emptied.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean emptied) {
-                    if (emptied) {
-                        return CombinationGroupManager.super
-                            .delete(properties, location);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        return deleted;
-    }
-
-    private Promise<Boolean> empty(
-        final JsonNode properties, final String location) {
+    protected Promise<Boolean> empty(JsonNode properties, String location) {
         CombinationGroup group =
             new CombinationGroup(properties.get("uuid").asText());
-        Promise<List<JsonNode>> stringsAndSlots = Has.relationships
-            .endNodes(group, location);
-        Promise<Boolean> emptied = stringsAndSlots.flatMap(
-            new Function<List<JsonNode>, Promise<Boolean>>() {
-                public Promise<Boolean> apply(List<JsonNode> stringsAndSlots) {
-                    return disconnect(properties, stringsAndSlots, location);
-                }
-            });
-        return emptied;
+        return super.empty(group, location);
     }
 
-    private Promise<Boolean> disconnect(
+    @Override
+    protected Promise<Boolean> disconnect(
         final JsonNode properties, List<JsonNode> stringsAndSlots,
         final String location) {
         Promise<Boolean> removed = Promise.pure(true);

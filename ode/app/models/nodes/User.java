@@ -1,13 +1,12 @@
 package models.nodes;
 
+import constants.NodeType;
+import managers.nodes.UserManager;
 import play.libs.F.Function;
 import play.libs.F.None;
 import play.libs.F.Option;
 import play.libs.F.Promise;
 import play.libs.F.Some;
-
-import constants.NodeType;
-import managers.nodes.UserManager;
 
 
 public class User extends LabeledNodeWithProperties {

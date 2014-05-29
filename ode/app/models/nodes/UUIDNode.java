@@ -1,10 +1,8 @@
 package models.nodes;
 
-import java.util.UUID;
-
-import play.libs.F.Promise;
-
 import constants.NodeType;
+import java.util.UUID;
+import play.libs.F.Promise;
 
 
 public abstract class UUIDNode extends LabeledNodeWithProperties {

@@ -2,11 +2,9 @@ package models.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-
-import play.libs.F.Promise;
-
 import constants.NodeType;
 import managers.nodes.ValueManager;
+import play.libs.F.Promise;
 
 
 public class Value extends OntologyNode {

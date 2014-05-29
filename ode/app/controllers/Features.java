@@ -1,27 +1,22 @@
 package controllers;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import constants.FeatureType;
+import java.util.List;
+import models.nodes.Feature;
+import models.nodes.Value;
 import play.Routes;
+import play.libs.F.Callback;
+import play.libs.F.Function0;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.F.Tuple;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-
-import play.libs.Json;
-import play.libs.F.Callback;
-import play.libs.F.Function;
-import play.libs.F.Function0;
-import play.libs.F.Promise;
-import play.libs.F.Tuple;
-
-import constants.FeatureType;
-import models.nodes.Feature;
-import models.nodes.Value;
-
 import views.html.features;
 
 

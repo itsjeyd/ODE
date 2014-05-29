@@ -1,22 +1,19 @@
 package models.nodes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.libs.Json;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
 import constants.FeatureType;
 import constants.NodeType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import managers.nodes.FeatureManager;
 import models.relationships.HasValueRelationship;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.Json;
 
 
 public class Feature extends OntologyNode {

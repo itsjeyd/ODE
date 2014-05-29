@@ -1,17 +1,15 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import models.nodes.Value;
 import play.Routes;
+import play.libs.F.Function;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
-import models.nodes.Value;
 
 
 public class Values extends Controller {

@@ -1,17 +1,14 @@
 package models.nodes;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import constants.NodeType;
+import java.util.UUID;
+import managers.nodes.OutputStringManager;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-
-import constants.NodeType;
-import managers.nodes.OutputStringManager;
 
 
 public class OutputString extends LabeledNodeWithProperties {

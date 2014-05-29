@@ -1,18 +1,17 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import controllers.Application.Login;
+import models.nodes.User;
 import play.data.Form;
+import play.libs.F.Function0;
+import play.libs.F.Function;
+import play.libs.F.Option;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Content;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.libs.F.Function;
-import play.libs.F.Function0;
-import play.libs.F.Option;
-import play.libs.F.Promise;
-
-import controllers.Application.Login;
-import models.nodes.User;
 import views.html.home;
 import views.html.login;
 

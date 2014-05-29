@@ -1,19 +1,10 @@
 package managers.nodes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import neo4play.RelationshipService;
-
-import play.libs.WS;
-import play.libs.F.Callback;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
 import constants.RelationshipType;
-import neo4play.Neo4jService;
+import java.util.ArrayList;
+import java.util.List;
 import managers.functions.JsonFunction;
 import models.functions.ExistsFunction;
 import models.nodes.Feature;
@@ -21,6 +12,12 @@ import models.nodes.OntologyNode;
 import models.nodes.Value;
 import models.relationships.Allows;
 import models.relationships.Untyped;
+import neo4play.Neo4jService;
+import neo4play.RelationshipService;
+import play.libs.F.Callback;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.WS;
 
 
 public class FeatureManager extends LabeledNodeWithPropertiesManager {

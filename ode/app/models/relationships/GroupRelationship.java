@@ -1,17 +1,14 @@
 package models.relationships;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import constants.RelationshipType;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
-import constants.RelationshipType;
 import managers.relationships.GroupRelationshipManager;
 import models.nodes.CombinationGroup;
 import models.nodes.RHS;
+import play.libs.F.Function;
+import play.libs.F.Promise;
 
 
 public class GroupRelationship extends TypedRelationship {

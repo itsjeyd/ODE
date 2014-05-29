@@ -1,21 +1,18 @@
 package models.nodes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.libs.Json;
+import constants.NodeType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import models.relationships.HasFeatureRelationship;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
-
-import constants.NodeType;
-import models.relationships.HasFeatureRelationship;
+import play.libs.Json;
 
 
 public abstract class AVM extends UUIDNode {

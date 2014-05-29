@@ -1,10 +1,8 @@
 package managers.relationships;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.F.Promise;
-
 import models.relationships.HasRelationship;
+import play.libs.F.Promise;
 
 
 public class HasRelationshipManager {

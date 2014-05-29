@@ -1,17 +1,14 @@
 package managers.nodes;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.WS;
-import play.libs.F.Promise;
-
+import java.util.List;
 import managers.functions.JsonFunction;
 import managers.functions.NodeCreatedFunction;
 import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Node;
 import neo4play.Neo4jService;
+import play.libs.F.Promise;
+import play.libs.WS;
 
 
 public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.nodes.LabeledNodeWithProperties;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.WS;
-import play.libs.F.Promise;
 
 
 public class RelationshipService extends Neo4j {

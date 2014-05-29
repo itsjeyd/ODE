@@ -2,20 +2,17 @@ package neo4play;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import constants.RelationshipType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import play.libs.Json;
-import play.libs.WS;
+import models.nodes.LabeledNodeWithProperties;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-
-import constants.RelationshipType;
+import play.libs.Json;
+import play.libs.WS;
 import utils.StringUtils;
-import models.nodes.LabeledNodeWithProperties;
 
 
 public class Neo4jService {

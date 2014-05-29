@@ -1,16 +1,13 @@
 package models.nodes;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.nio.charset.Charset;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
+import managers.nodes.AVMManager;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-
-import managers.nodes.AVMManager;
 
 
 public class LHS extends AVM {

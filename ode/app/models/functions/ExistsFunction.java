@@ -1,7 +1,6 @@
 package models.functions;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.F.Function;
 
 

@@ -1,17 +1,14 @@
 package managers.relationships;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import constants.RelationshipType;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.WS;
+import models.nodes.RHS;
+import neo4play.Neo4jService;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-
-import constants.RelationshipType;
-import neo4play.Neo4jService;
-import models.nodes.RHS;
+import play.libs.WS;
 
 
 public class GroupRelationshipManager extends TypedRelationshipManager {

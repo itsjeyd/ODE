@@ -2,13 +2,11 @@ package models.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.libs.Json;
-import play.libs.F.Promise;
-
 import constants.NodeType;
 import managers.nodes.LabeledNodeWithPropertiesManager;
 import models.functions.ExistsFunction;
+import play.libs.F.Promise;
+import play.libs.Json;
 
 
 public abstract class LabeledNodeWithProperties extends LabeledNode {

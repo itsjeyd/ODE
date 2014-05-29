@@ -1,21 +1,18 @@
 package models.nodes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.nio.charset.Charset;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
 import constants.NodeType;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import managers.nodes.RHSManager;
 import models.relationships.GroupRelationship;
+import play.libs.F.Function;
+import play.libs.F.Promise;
 
 
 public class RHS extends UUIDNode {

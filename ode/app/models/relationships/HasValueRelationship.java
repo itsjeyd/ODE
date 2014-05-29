@@ -1,15 +1,13 @@
 package models.relationships;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
+import managers.relationships.HasValueRelationshipManager;
 import models.nodes.AVM;
 import models.nodes.Feature;
 import models.nodes.Rule;
 import models.nodes.Value;
-import managers.relationships.HasValueRelationshipManager;
+import play.libs.F.Function;
+import play.libs.F.Promise;
 
 
 public class HasValueRelationship extends HasRelationship {

@@ -1,22 +1,19 @@
 package managers.relationships;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.libs.Json;
-import play.libs.WS;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-import play.libs.F.Tuple;
-
 import constants.RelationshipType;
-import neo4play.Neo4jService;
+import java.util.UUID;
 import managers.functions.JsonFunction;
 import models.nodes.AVM;
 import models.nodes.Feature;
 import models.nodes.Rule;
+import neo4play.Neo4jService;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.F.Tuple;
+import play.libs.Json;
+import play.libs.WS;
 
 
 public class HasValueRelationshipManager extends HasRelationshipManager {

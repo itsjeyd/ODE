@@ -1,26 +1,23 @@
 package managers.nodes;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import models.nodes.LHS;
-import models.nodes.RHS;
-import models.relationships.Has;
-import play.libs.Json;
-
-import play.libs.WS;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
-import constants.NodeType;
-import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
 import models.functions.ExistsFunction;
+import models.nodes.LHS;
+import models.nodes.RHS;
 import models.nodes.Rule;
+import models.relationships.Has;
+import neo4play.Neo4jService;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.Json;
+import play.libs.WS;
 import utils.UUIDGenerator;
 
 

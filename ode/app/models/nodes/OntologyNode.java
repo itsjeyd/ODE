@@ -1,8 +1,7 @@
 package models.nodes;
 
-import play.libs.F.Promise;
-
 import constants.NodeType;
+import play.libs.F.Promise;
 
 
 public abstract class OntologyNode extends LabeledNodeWithProperties {

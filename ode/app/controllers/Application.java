@@ -1,10 +1,9 @@
 package controllers;
 
+import controllers.Auth.RegistrationForm;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-
-import controllers.Auth.RegistrationForm;
 import views.html.*;
 
 import static play.data.Form.*;

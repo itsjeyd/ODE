@@ -1,20 +1,17 @@
 package managers.nodes;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.WS;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-
-import neo4play.Neo4jService;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
 import models.nodes.Part;
+import neo4play.Neo4jService;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.WS;
 
 
 public class PartManager extends LabeledNodeWithPropertiesManager {

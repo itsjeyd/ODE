@@ -1,29 +1,26 @@
 package controllers;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-
+import java.util.List;
+import java.util.UUID;
+import models.nodes.CombinationGroup;
+import models.nodes.Feature;
+import models.nodes.LHS;
+import models.nodes.Part;
+import models.nodes.RHS;
+import models.nodes.Rule;
+import models.nodes.Slot;
+import models.nodes.Substructure;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.F.Tuple;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-import play.libs.F.Tuple;
-
-import models.nodes.CombinationGroup;
-import models.nodes.Feature;
-import models.nodes.Part;
-import models.nodes.LHS;
-import models.nodes.RHS;
-import models.nodes.Rule;
-import models.nodes.Slot;
-import models.nodes.Substructure;
 import utils.UUIDGenerator;
 import views.html.browse;
 import views.html.details;

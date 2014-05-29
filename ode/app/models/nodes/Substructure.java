@@ -1,12 +1,10 @@
 package models.nodes;
 
-import java.util.UUID;
 import java.nio.charset.Charset;
-
+import java.util.UUID;
+import managers.nodes.AVMManager;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-
-import managers.nodes.AVMManager;
 
 
 public class Substructure extends AVM {

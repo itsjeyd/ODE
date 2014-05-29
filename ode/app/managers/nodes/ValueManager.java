@@ -1,16 +1,13 @@
 package managers.nodes;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import models.nodes.Value;
 import models.relationships.Allows;
-
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-
-import models.nodes.Value;
 
 
 public class ValueManager extends LabeledNodeWithPropertiesManager {

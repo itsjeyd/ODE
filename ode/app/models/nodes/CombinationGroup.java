@@ -1,25 +1,22 @@
 package models.nodes;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import play.libs.Json;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-import play.libs.F.Tuple;
-
-import constants.NodeType;
 import managers.nodes.CombinationGroupManager;
 import models.relationships.HasSlotRelationship;
 import models.relationships.HasStringRelationship;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.F.Tuple;
+import play.libs.Json;
 
 
 public class CombinationGroup extends LabeledNodeWithProperties {

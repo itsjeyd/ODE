@@ -1,14 +1,12 @@
 package models.relationships;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import play.libs.F.Promise;
-
-import managers.relationships.HasRelationshipManager;
 import constants.RelationshipType;
+import managers.relationships.HasRelationshipManager;
 import models.functions.ExistsFunction;
 import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Rule;
+import play.libs.F.Promise;
 
 
 public class HasRelationship extends TypedRelationship {

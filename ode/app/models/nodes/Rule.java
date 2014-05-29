@@ -1,21 +1,18 @@
 package models.nodes;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
+import managers.nodes.RuleManager;
+import models.nodes.RHS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
-
-import constants.NodeType;
-import managers.nodes.RuleManager;
-import models.nodes.RHS;
 
 
 public class Rule extends UUIDNode {

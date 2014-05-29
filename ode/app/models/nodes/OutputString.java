@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import constants.NodeType;
-import java.util.UUID;
 import managers.nodes.OutputStringManager;
-import play.libs.F.Function;
-import play.libs.F.Promise;
 
 
 public class OutputString extends LabeledNodeWithProperties {

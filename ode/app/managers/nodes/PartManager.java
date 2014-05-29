@@ -1,7 +1,6 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,13 +36,19 @@ public class PartManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    // READ
+
+    @Override
+    public Promise<Boolean> exists(JsonNode properties) {
+        return super.exists(properties, "uuid");
+    }
+
     // CREATE
 
     @Override
     public Promise<Boolean> create(
         final JsonNode properties, final String location) {
-        ObjectNode props = (ObjectNode) properties.deepCopy();
-        Promise<Boolean> exists = exists(props.retain("uuid"));
+        Promise<Boolean> exists = exists(properties);
         Promise<Boolean> created = exists.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean exists) {

@@ -19,6 +19,60 @@ public class AVMManager extends UUIDNodeManager {
         this.label = "AVM";
     }
 
+    // UPDATE
+
+    public Promise<Boolean> setValue(
+        final JsonNode avm, final JsonNode feature, final JsonNode value,
+        final JsonNode newValue) {
+        Promise<String> location = beginTransaction();
+        Promise<Boolean> updated = location.flatMap(
+            new Function<String, Promise<Boolean>>() {
+                public Promise<Boolean> apply(final String location) {
+                    Promise<Boolean> updated =
+                        setValue(avm, feature, value, newValue, location);
+                    return updated.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean updated) {
+                                if (updated) {
+                                    return commitTransaction(location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                }
+            });
+        return updated;
+    }
+
+    private Promise<Boolean> setValue(
+        JsonNode avm, JsonNode feature, JsonNode value,
+        final JsonNode newValue, final String location) {
+        final ObjectNode props = Json.newObject();
+        props.put("rule", avm.get("ruleUUID").asText());
+        props.put("avm", avm.get("uuid").asText());
+        final Feature f = new Feature(feature.get("name").asText());
+        final Value v = new Value(value.get("name").asText());
+        // 1. Delete :HAS relationship between feature and current value
+        Promise<Boolean> updated = Has.relationships
+            .delete(f, v, props, location);
+        // 2. Create :HAS relationship between feature and new value
+        updated = updated.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean updated) {
+                    if (updated) {
+                        Value n = new Value(
+                            newValue.get("name").asText());
+                        return Has.relationships
+                            .create(f, n, props, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return updated;
+    }
+
+    // DELETE
+
     @Override
     protected Promise<Boolean> delete(
         final JsonNode properties, final String location) {
@@ -72,6 +126,8 @@ public class AVMManager extends UUIDNodeManager {
         }
         return removed;
     }
+
+    // Connections to other nodes
 
     protected Promise<Boolean> connect(
         final JsonNode avm, final JsonNode feature, final String location) {
@@ -129,56 +185,6 @@ public class AVMManager extends UUIDNodeManager {
                 });
         }
         return connected;
-    }
-
-    public Promise<Boolean> setValue(
-        final JsonNode avm, final JsonNode feature, final JsonNode value,
-        final JsonNode newValue) {
-        Promise<String> location = beginTransaction();
-        Promise<Boolean> updated = location.flatMap(
-            new Function<String, Promise<Boolean>>() {
-                public Promise<Boolean> apply(final String location) {
-                    Promise<Boolean> updated =
-                        setValue(avm, feature, value, newValue, location);
-                    return updated.flatMap(
-                        new Function<Boolean, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(Boolean updated) {
-                                if (updated) {
-                                    return commitTransaction(location);
-                                }
-                                return Promise.pure(false);
-                            }
-                        });
-                }
-            });
-        return updated;
-    }
-
-    private Promise<Boolean> setValue(
-        JsonNode avm, JsonNode feature, JsonNode value,
-        final JsonNode newValue, final String location) {
-        final ObjectNode props = Json.newObject();
-        props.put("rule", avm.get("ruleUUID").asText());
-        props.put("avm", avm.get("uuid").asText());
-        final Feature f = new Feature(feature.get("name").asText());
-        final Value v = new Value(value.get("name").asText());
-        // 1. Delete :HAS relationship between feature and current value
-        Promise<Boolean> updated = Has.relationships
-            .delete(f, v, props, location);
-        // 2. Create :HAS relationship between feature and new value
-        updated = updated.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean updated) {
-                    if (updated) {
-                        Value n = new Value(
-                            newValue.get("name").asText());
-                        return Has.relationships
-                            .create(f, n, props, location);
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        return updated;
     }
 
     protected Promise<Boolean> disconnect(

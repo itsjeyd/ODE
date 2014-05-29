@@ -29,6 +29,8 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         this.label = "Feature";
     }
 
+    // READ
+
     @Override
     public Promise<Boolean> exists(JsonNode properties) {
         return super.exists(properties, "name");
@@ -81,6 +83,8 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
+    // CREATE
+
     @Override
     protected Promise<Boolean> create(
         final JsonNode properties, final String location) {
@@ -101,6 +105,8 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                 }
             });
     }
+
+    // UPDATE
 
     public Promise<Boolean> setType(final JsonNode properties) {
         Promise<String> location = beginTransaction();
@@ -172,6 +178,8 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return updated;
     }
 
+    // DELETE
+
     @Override
     protected Promise<Boolean> delete(
         final JsonNode properties, final String location) {
@@ -209,6 +217,8 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             });
         return deleted;
     }
+
+    // Connections to other nodes
 
     protected Promise<Boolean> connect(
         JsonNode feature, final JsonNode target, final String location) {
@@ -273,6 +283,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return super.orphaned(feature, Untyped.relationships);
     }
 
+    // Custom functionality
 
     public Promise<Boolean> has(JsonNode feature, JsonNode value) {
         Feature f = new Feature(feature.get("name").asText());

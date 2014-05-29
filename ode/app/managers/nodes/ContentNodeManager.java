@@ -5,8 +5,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 
-public abstract class ContentNodeManager
-    extends LabeledNodeWithPropertiesManager {
+abstract class ContentNodeManager extends LabeledNodeWithPropertiesManager {
 
     // READ
 

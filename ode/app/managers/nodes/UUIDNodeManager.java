@@ -1,4 +1,4 @@
 package managers.nodes;
 
 
-public class UUIDNodeManager extends LabeledNodeWithPropertiesManager {}
+abstract class UUIDNodeManager extends LabeledNodeWithPropertiesManager {}

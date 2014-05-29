@@ -12,7 +12,7 @@ import play.libs.F.Promise;
 import play.libs.WS;
 
 
-public abstract class NodeManager extends BaseManager {
+abstract class NodeManager extends BaseManager {
 
     // READ
 

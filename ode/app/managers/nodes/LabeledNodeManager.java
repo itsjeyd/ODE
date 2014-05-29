@@ -12,7 +12,7 @@ import play.libs.F.Promise;
 import play.libs.WS;
 
 
-public abstract class LabeledNodeManager extends NodeManager {
+abstract class LabeledNodeManager extends NodeManager {
 
     protected String label;
 

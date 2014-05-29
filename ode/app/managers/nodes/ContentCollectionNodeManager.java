@@ -5,8 +5,7 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 
-public abstract class ContentCollectionNodeManager
-    extends CollectionNodeManager {
+abstract class ContentCollectionNodeManager extends CollectionNodeManager {
 
     // UPDATE
 

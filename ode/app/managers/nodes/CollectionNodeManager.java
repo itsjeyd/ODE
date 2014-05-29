@@ -8,8 +8,8 @@ import play.libs.F.Function;
 import play.libs.F.Promise;
 
 
-public abstract class CollectionNodeManager
-    extends LabeledNodeWithPropertiesManager {
+abstract class CollectionNodeManager extends
+                                         LabeledNodeWithPropertiesManager {
 
     // DELETE
 

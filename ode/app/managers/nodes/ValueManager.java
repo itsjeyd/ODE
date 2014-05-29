@@ -58,7 +58,7 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
             });
     }
 
-    public Promise<Boolean> orphaned(JsonNode properties) {
+    private Promise<Boolean> orphaned(JsonNode properties) {
         Value value = new Value(properties.get("name").asText());
         return super.orphaned(value, Allows.relationships);
     }

@@ -214,25 +214,6 @@ public class Features extends Controller {
                     return Feature.nodes.disconnect(feature, target);
                 }
             });
-        if (feature.get("type").asText().equals("atomic")) {
-            disconnected.onRedeem(
-                new Callback<Boolean>() {
-                    public void invoke(Boolean disconnected) {
-                        if (disconnected) {
-                            Promise<Boolean> orphaned =
-                                Value.nodes.orphaned(target);
-                            orphaned.onRedeem(
-                                new Callback<Boolean>() {
-                                    public void invoke(Boolean orphaned) {
-                                        if (orphaned) {
-                                            Value.nodes.delete(target);
-                                        }
-                                    }
-                                });
-                        }
-                    }
-                });
-        }
         return disconnected.map(
             new Function<Boolean, Result>() {
                 ObjectNode result = Json.newObject();

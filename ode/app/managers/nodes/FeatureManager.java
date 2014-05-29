@@ -254,7 +254,17 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                 .delete(f, new Feature(tname), location);
         }
         Value v = new Value(tname);
-        return Allows.relationships.delete(f, v, location);
+        Promise<Boolean> disconnected = Allows.relationships
+            .delete(f, v, location);
+        disconnected.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke(Boolean disconnected) {
+                    if (disconnected) {
+                        Value.nodes.delete(target);
+                    }
+                }
+            });
+        return disconnected;
 
     }
 

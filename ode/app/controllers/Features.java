@@ -281,30 +281,7 @@ public class Features extends Controller {
                 public Promise<Boolean> apply(Boolean orphaned) {
                     // 2. If it isn't, delete it
                     if (orphaned) {
-                        Promise<Feature> feature = Feature.nodes.get(props);
-                        Promise<Boolean> deleted = feature.flatMap(
-                            new Function<Feature, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(
-                                    Feature feature) {
-                                    Promise<Boolean> deleted =
-                                        Feature.nodes.delete(props);
-                                    // 3. If type == "atomic", delete orphans
-                                    if (feature.getType().equals(
-                                            FeatureType.ATOMIC.toString())) {
-                                        deleted.onRedeem(
-                                            new Callback<Boolean>() {
-                                                public void invoke(
-                                                    Boolean deleted) {
-                                                    if (deleted) {
-                                                        Value.nodes.delete();
-                                                    }
-                                                }});
-                                    }
-                                    return deleted;
-                                }
-                            });
-                        return deleted;
-
+                        return Feature.nodes.delete(props);
                     }
                     return Promise.pure(false);
                 }

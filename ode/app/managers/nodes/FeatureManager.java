@@ -175,19 +175,36 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
     @Override
     protected Promise<Boolean> delete(
         final JsonNode properties, final String location) {
-        final Feature feature = new Feature(properties.get("name").asText());
-        // 1. Delete all outgoing :ALLOWS relationships
-        Promise<Boolean> deleted = Allows.relationships
-            .delete(feature, location);
-        deleted = deleted.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean deleted) {
-                    if (deleted) {
-                        // 2. Delete feature
-                        return FeatureManager.super
-                            .delete(properties, location);
+        Promise<Feature> feature = Feature.nodes.get(properties);
+        Promise<Boolean> deleted = feature.flatMap(
+            new Function<Feature, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Feature feature) {
+                    // 1. Delete all outgoing :ALLOWS relationships
+                    Promise<Boolean> deleted = Allows.relationships
+                        .delete(feature, location);
+                    // 2. Delete feature
+                    deleted = deleted.flatMap(
+                        new Function<Boolean, Promise<Boolean>>() {
+                            public Promise<Boolean> apply(Boolean deleted) {
+                                if (deleted) {
+                                    return FeatureManager.super.
+                                        delete(properties, location);
+                                }
+                                return Promise.pure(false);
+                            }
+                        });
+                    // 3. If type == "atomic", delete orphans
+                    if (feature.getType().equals("atomic")) {
+                        deleted.onRedeem(
+                            new Callback<Boolean>() {
+                                public void invoke(Boolean deleted) {
+                                    if (deleted) {
+                                        Value.nodes.delete();
+                                    }
+                                }
+                            });
                     }
-                    return Promise.pure(false);
+                    return deleted;
                 }
             });
         return deleted;

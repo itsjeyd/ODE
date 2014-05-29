@@ -30,6 +30,11 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         this.label = "Rule";
     }
 
+    @Override
+    public Promise<Boolean> exists(JsonNode properties) {
+        return super.exists(properties, "name");
+    }
+
     public Promise<List<Rule>> all() {
         Promise<List<JsonNode>> json = all(this.label);
         return json.map(

@@ -153,8 +153,8 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateName(final String name) {
         final ObjectNode newProps = (ObjectNode) request().body().asJson();
-        Promise<Boolean> nameTaken =
-            Rule.nodes.exists(newProps.deepCopy().retain("name"));
+        newProps.retain("uuid", "name", "description");
+        Promise<Boolean> nameTaken = Rule.nodes.exists(newProps);
         Promise<Boolean> updated = nameTaken.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean nameTaken) {
@@ -163,7 +163,6 @@ public class Rules extends Controller {
                     }
                     ObjectNode oldProps = Json.newObject();
                     oldProps.put("name", name);
-                    newProps.retain("uuid", "name", "description");
                     return Rule.nodes.update(oldProps, newProps);
                 }
             });

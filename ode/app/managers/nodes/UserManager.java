@@ -10,6 +10,8 @@ public class UserManager extends LabeledNodeWithPropertiesManager {
         this.label = "User";
     }
 
+    // CREATE
+
     @Override
     protected Promise<Boolean> create(JsonNode properties, String location) {
         return super.create(properties, location, "username");

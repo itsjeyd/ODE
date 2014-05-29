@@ -23,8 +23,7 @@ public class AVMManager extends UUIDNodeManager {
     protected Promise<Boolean> delete(
         final JsonNode properties, final String location) {
         // 1. Remove all features
-        Promise<Boolean> emptied = Substructure.nodes
-            .empty(properties, location);
+        Promise<Boolean> emptied = empty(properties, location);
         // 2. Delete AVM
         Promise<Boolean> deleted = emptied.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
@@ -112,8 +111,7 @@ public class AVMManager extends UUIDNodeManager {
                         if (connected) {
                             ObjectNode properties = Json.newObject();
                             properties.put("uuid", subUUID);
-                            return Substructure.nodes
-                                .create(properties, location);
+                            return create(properties, location);
                         }
                         return Promise.pure(false);
                     }
@@ -218,8 +216,7 @@ public class AVMManager extends UUIDNodeManager {
                             properties.put("uuid", subUUID);
                             properties.put(
                                 "ruleUUID", avm.get("ruleUUID").asText());
-                            return Substructure.nodes
-                                .delete(properties, location);
+                            return delete(properties, location);
                         }
                         return Promise.pure(false);
                     }

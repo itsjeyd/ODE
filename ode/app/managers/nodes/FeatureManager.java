@@ -183,7 +183,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
     @Override
     protected Promise<Boolean> delete(
         final JsonNode properties, final String location) {
-        Promise<Feature> feature = Feature.nodes.get(properties);
+        Promise<Feature> feature = get(properties);
         Promise<Boolean> deleted = feature.flatMap(
             new Function<Feature, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Feature feature) {

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import neo4play.RelationshipService;
 
 import play.libs.WS;
+import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
@@ -141,8 +142,9 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                     return Promise.pure(false);
                 }
             });
+        String type = properties.get("type").asText();
         // 3. If new type == "atomic", connect to "underspecified"
-        if (properties.get("type").asText().equals("atomic")) {
+        if (type.equals("atomic")) {
             updated = updated.flatMap(
                 new Function<Boolean, Promise<Boolean>>() {
                     public Promise<Boolean> apply(
@@ -153,6 +155,17 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                                 .create(feature, value, location);
                         }
                         return Promise.pure(false);
+                    }
+                });
+        }
+        // 4. If previous type == "atomic", delete orphans
+        if (type.equals("complex")) {
+            updated.onRedeem(
+                new Callback<Boolean>() {
+                    public void invoke(Boolean updated) {
+                        if (updated) {
+                            Value.nodes.delete();
+                        }
                     }
                 });
         }

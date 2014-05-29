@@ -161,17 +161,6 @@ public class Features extends Controller {
                     return Promise.pure(false);
                 }
             });
-        // 3. If previous type == "atomic", delete orphans
-        if (props.get("type").asText().equals("complex")) {
-            updated.onRedeem(
-                new Callback<Boolean>() {
-                    public void invoke(Boolean updated) {
-                        if (updated) {
-                            Value.nodes.delete();
-                        }
-                    }
-                });
-        }
         return updated.map(
             new Function<Boolean, Result>() {
                 ObjectNode jsonResult = Json.newObject();

@@ -106,12 +106,13 @@ public class CombinationGroupManager extends
                 new Function<Boolean, Promise<Boolean>>() {
                     public Promise<Boolean> apply(Boolean removed) {
                         if (removed) {
+                            String uuid = stringOrSlot.get("uuid").asText();
                             if (stringOrSlot.has("position")) {
-                                return removeSlot(
-                                    properties, stringOrSlot, location);
+                                Slot slot = new Slot(uuid);
+                                return disconnect(properties, slot, location);
                             }
-                            return disconnect(
-                                properties, stringOrSlot, location);
+                            OutputString string = new OutputString(uuid);
+                            return disconnect(properties, string, location);
                         }
                         return Promise.pure(false);
                     }
@@ -187,63 +188,51 @@ public class CombinationGroupManager extends
     }
 
     protected Promise<Boolean> disconnect(
-        JsonNode group, final JsonNode string, String location) {
-        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
-        OutputString s = new OutputString(string.get("uuid").asText());
-        Promise<Boolean> disconnected = Has.relationships
-            .delete(g, s, location);
-        disconnected.onRedeem(
-            new Callback<Boolean>() {
-                public void invoke (Boolean disconnected) {
-                    if (disconnected) {
-                        OutputString.nodes.delete(string);
-                    }
-                }
-            });
-        return disconnected;
+        JsonNode group, JsonNode stringOrSlot, String location) {
+        String nodeType = stringOrSlot.get("nodeType").asText();
+        if (nodeType.equals("slot")) {
+            Slot slot = new Slot(stringOrSlot.get("uuid").asText());
+            return disconnect(group, slot, location);
+        }
+        OutputString string =
+            new OutputString(stringOrSlot.get("uuid").asText());
+        return disconnect(group, string, location);
     }
 
-    // Custom functionality
-
-    public Promise<Boolean> removeSlot(
-        final JsonNode group, final JsonNode slot) {
-        Promise<String> location = beginTransaction();
-        Promise<Boolean> removed = location.flatMap(
-            new Function<String, Promise<Boolean>>() {
-                public Promise<Boolean> apply(final String location) {
-                    Promise<Boolean> removed =
-                        removeSlot(group, slot, location);
-                    return removed.flatMap(
-                        new Function<Boolean, Promise<Boolean>>() {
-                            public Promise<Boolean> apply(Boolean removed) {
-                                if (removed) {
-                                    return commitTransaction(location);
-                                }
-                                return Promise.pure(false);
-                            }
-                        });
-                }
-            });
-        return removed;
-    }
-
-    protected Promise<Boolean> removeSlot(
-        JsonNode group, final JsonNode slot, final String location) {
+    private Promise<Boolean> disconnect(
+        JsonNode group, final Slot slot, final String location) {
         CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
-        Slot s = new Slot(slot.get("uuid").asText());
         // 1. Disconnect group from slot
-        Promise<Boolean> removed = Has.relationships.delete(g, s, location);
+        Promise<Boolean> removed = Has.relationships
+            .delete(g, slot, location);
         // 2. Delete slot
         removed = removed.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean removed) {
                     if (removed) {
-                        return Slot.nodes.delete(slot, location);
+                        return Slot.nodes
+                            .delete(slot.getProperties(), location);
                     }
                     return Promise.pure(false);
                 }
             });
         return removed;
+    }
+
+    private Promise<Boolean> disconnect(
+        JsonNode group, final OutputString string, String location) {
+        CombinationGroup g = new CombinationGroup(group.get("uuid").asText());
+        Promise<Boolean> disconnected = Has.relationships
+            .delete(g, string, location);
+        disconnected.onRedeem(
+            new Callback<Boolean>() {
+                public void invoke (Boolean disconnected) {
+                    if (disconnected) {
+                        OutputString.nodes.delete(string.getProperties());
+                    }
+                }
+            });
+        return disconnected;
     }
 
 }

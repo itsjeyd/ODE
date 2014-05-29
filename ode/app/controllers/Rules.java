@@ -345,6 +345,7 @@ public class Rules extends Controller {
         group.put("uuid", groupID);
         final ObjectNode string = Json.newObject();
         string.put("uuid", stringID);
+        string.put("nodeType", "string");
         Promise<Boolean> removed = CombinationGroup.nodes
             .disconnect(group, string);
         return removed.map(new ResultFunction("String successfully removed.",
@@ -427,8 +428,9 @@ public class Rules extends Controller {
         group.put("uuid", groupID);
         ObjectNode slot = Json.newObject();
         slot.put("uuid", slotID);
+        slot.put("nodeType", "slot");
         Promise<Boolean> removed = CombinationGroup.nodes
-            .removeSlot(group, slot);
+            .disconnect(group, slot);
         return removed.map(new ResultFunction("Slot successfully removed.",
                                               "Slot not removed."));
     }

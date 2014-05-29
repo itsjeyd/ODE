@@ -175,7 +175,7 @@ public class AVMManager extends UUIDNodeManager {
                         Value n = new Value(
                             newValue.get("name").asText());
                         return Has.relationships
-                        .create(f, n, props, location);
+                            .create(f, n, props, location);
                     }
                     return Promise.pure(false);
                 }

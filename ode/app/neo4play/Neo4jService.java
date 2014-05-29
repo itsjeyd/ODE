@@ -111,12 +111,6 @@ public class Neo4jService {
         return postCypherQuery(query);
     }
 
-    public static Promise<WS.Response> createLabeledNodeWithProperties(
-        String label, JsonNode props) {
-        String query = "CREATE (n:" + label + " { props }) RETURN n";
-        return postCypherQueryWithParams(query, props);
-    }
-
     public static Promise<WS.Response> getNodesByLabel(String label) {
         return get("/label/" + label + "/nodes");
     }
@@ -195,29 +189,6 @@ public class Neo4jService {
             "MATCH (s:%s)-[r:%s]-(e:%s) WHERE %s AND %s RETURN r",
             startNode.getLabel(), type.name(), endNode.getLabel(),
             startNodeProps, endNodeProps);
-        return postCypherQuery(query);
-    }
-
-    public static Promise<WS.Response> getTypedRelationshipVariableLength(
-        LabeledNodeWithProperties startNode,
-        LabeledNodeWithProperties endNode, RelationshipType type,
-        int minHops, int maxHops) {
-        String startNodeProps = buildConjunctiveConstraints(
-            "s", startNode.jsonProperties);
-        String endNodeProps = buildConjunctiveConstraints(
-            "e", endNode.jsonProperties);
-        String query = String.format(
-            "MATCH (s:%s)-[r:%s*%d..%d]->(e) WHERE %s AND %s RETURN r",
-            startNode.getLabel(), type.name(), minHops, maxHops,
-            startNodeProps, endNodeProps);
-        return postCypherQuery(query);
-    }
-
-    public static Promise<WS.Response> getPath(
-        RelationshipType type, JsonNode relProps) {
-        String query = "MATCH p=()-[r:" + type.name() + "]->() WHERE " +
-            buildConjunctiveConstraints("r", relProps) +
-            " RETURN extract(n IN nodes(p) | n)";
         return postCypherQuery(query);
     }
 

@@ -180,8 +180,8 @@ public class Features extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateTargets(String name) {
         JsonNode json = request().body().asJson();
-        TargetAction action = TargetAction.valueOf(
-            json.findPath("action").textValue());
+        TargetAction action = TargetAction
+            .valueOf(json.findValue("action").asText());
         switch (action) {
             case ADD: return addTarget(name, json);
             case REMOVE: return removeTarget(name, json);

@@ -27,6 +27,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         this.label = "Rule";
     }
 
+    // READ
+
     @Override
     public Promise<Boolean> exists(JsonNode properties) {
         return super.exists(properties, "name");
@@ -62,6 +64,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
                 }
             });
     }
+
+    // CREATE
 
     @Override
     protected Promise<Boolean> create(
@@ -122,6 +126,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
             });
         return created;
     }
+
+    // DELETE
 
     @Override
     protected Promise<Boolean> delete(
@@ -204,6 +210,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         return models.relationships
             .RHS.relationships.delete(rule, rhs, location);
     }
+
+    // Connections to other nodes
 
     public Promise<Boolean> orphaned(JsonNode properties) {
         Rule rule = new Rule(properties.get("name").asText());

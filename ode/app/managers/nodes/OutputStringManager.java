@@ -18,6 +18,8 @@ public class OutputStringManager extends LabeledNodeWithPropertiesManager {
         this.label = "OutputString";
     }
 
+    // CREATE
+
     @Override
     public Promise<Boolean> create(
         final JsonNode properties, final String location) {

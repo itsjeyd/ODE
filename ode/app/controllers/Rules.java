@@ -531,7 +531,9 @@ public class Rules extends Controller {
     public static Promise<Result> delete(final String name) {
         final ObjectNode rule = Json.newObject();
         rule.put("name", name);
+        // 1. Check if rule is orphaned
         Promise<Boolean> orphaned = Rule.nodes.orphaned(rule);
+        // 2. If it is, delete it
         Promise<Boolean> deleted = orphaned.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean orphaned) {

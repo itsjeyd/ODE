@@ -331,7 +331,7 @@ public class Rules extends Controller {
         final ObjectNode result = Json.newObject();
         result.put("id", uuid);
         Promise<Boolean> updated = CombinationGroup.nodes
-            .updateString(group, oldString, newString);
+            .update(group, oldString, newString);
         return updated.map(
             new ResultFunction("String successfully updated.",
                                "String not updated.", result));
@@ -471,7 +471,7 @@ public class Rules extends Controller {
         final ObjectNode result = Json.newObject();
         result.put("id", uuid);
         Promise<Boolean> updated = Slot.nodes
-            .updatePart(slot, oldPart, newPart);
+            .update(slot, oldPart, newPart);
         return updated.map(new ResultFunction("Part successfully updated.",
                                               "Part not updated.", result));
     }

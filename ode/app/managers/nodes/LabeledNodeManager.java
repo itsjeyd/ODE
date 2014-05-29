@@ -16,6 +16,8 @@ public abstract class LabeledNodeManager extends NodeManager {
 
     protected String label;
 
+    // READ
+
     public Promise<Boolean> exists(JsonNode properties) {
         return exists(this.label, properties);
     }
@@ -24,6 +26,8 @@ public abstract class LabeledNodeManager extends NodeManager {
         final ObjectNode props = (ObjectNode) properties.deepCopy();
         return exists(this.label, props.retain(idField));
     }
+
+    // CREATE
 
     protected Promise<Boolean> create(JsonNode properties, String location) {
         Promise<WS.Response> response =
@@ -48,6 +52,8 @@ public abstract class LabeledNodeManager extends NodeManager {
         return created;
     }
 
+    // UPDATE
+
     public Promise<Boolean> update(
         JsonNode oldProperties, JsonNode newProperties) {
         return update(this.label, oldProperties, newProperties);
@@ -58,11 +64,15 @@ public abstract class LabeledNodeManager extends NodeManager {
         return update(this.label, oldProperties, newProperties, location);
     }
 
+    // DELETE
+
     protected Promise<Boolean> delete(JsonNode properties, String location) {
         Promise<WS.Response> response =
             NodeService.deleteNode(this.label, properties, location);
         return response.map(new SuccessFunction());
     }
+
+    // Connections to other nodes
 
     protected Promise<Boolean> orphaned(
         LabeledNodeWithProperties node, RelManager relManager) {

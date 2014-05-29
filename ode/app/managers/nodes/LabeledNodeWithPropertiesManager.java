@@ -10,7 +10,8 @@ import play.libs.F.Promise;
 import play.libs.WS;
 
 
-public class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
+public abstract class LabeledNodeWithPropertiesManager
+    extends LabeledNodeManager {
 
     public Promise<? extends List<? extends Node>> all() {
         return null;

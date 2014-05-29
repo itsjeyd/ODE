@@ -161,7 +161,10 @@ public class CombinationGroupManager extends CollectionNodeManager {
 
     protected Promise<Boolean> disconnect(
         JsonNode group, JsonNode stringOrSlot, String location) {
-        String nodeType = stringOrSlot.get("nodeType").asText();
+        String nodeType = "";
+        if (stringOrSlot.has("nodeType")) {
+            nodeType = stringOrSlot.get("nodeType").asText();
+        }
         if (nodeType.equals("slot")) {
             Slot slot = new Slot(stringOrSlot.get("uuid").asText());
             return disconnect(group, slot, location);

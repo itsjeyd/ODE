@@ -14,6 +14,8 @@ import play.libs.WS;
 
 public abstract class NodeManager extends BaseManager {
 
+    // READ
+
     protected Promise<Boolean> exists(String label, JsonNode properties) {
         Promise<JsonNode> json = get(label, properties);
         return json.map(
@@ -41,6 +43,8 @@ public abstract class NodeManager extends BaseManager {
         return response.map(new JsonFunction()); // JsonFunction should return(something like) json.get("data"), cf. `Function` for `all` above
     }
 
+    // CREATE
+
     public Promise<Boolean> create(final JsonNode properties) {
         Promise<String> location = beginTransaction();
         Promise<Boolean> created = location.flatMap(
@@ -61,6 +65,8 @@ public abstract class NodeManager extends BaseManager {
         return created;
     };
 
+    // UPDATE
+
     protected Promise<Boolean> update(
         String label, JsonNode oldProperties, JsonNode newProperties) {
         Promise<WS.Response> response = NodeService.updateNode(
@@ -75,6 +81,8 @@ public abstract class NodeManager extends BaseManager {
             label, oldProperties, newProperties, location);
         return response.map(new SuccessFunction());
     }
+
+    // DELETE
 
     public Promise<Boolean> delete(final JsonNode properties) {
         Promise<String> location = beginTransaction();
@@ -95,6 +103,8 @@ public abstract class NodeManager extends BaseManager {
             });
         return deleted;
     };
+
+    // Connections to other nodes
 
     public Promise<Boolean> connect(
         final JsonNode startNode, final JsonNode endNode) {
@@ -140,6 +150,7 @@ public abstract class NodeManager extends BaseManager {
             });
         return disconnected;
     }
+
 
     public abstract Promise<Boolean> exists(JsonNode properties);
 

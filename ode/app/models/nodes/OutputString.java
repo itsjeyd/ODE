@@ -44,16 +44,4 @@ public class OutputString extends LabeledNodeWithProperties {
         return json;
     }
 
-    public Promise<UUID> getUUID() {
-        return this.exists().flatMap(
-            new Function<Boolean, Promise<UUID>>() {
-                public Promise<UUID> apply(Boolean exists) {
-                    if (exists) {
-                        return OutputStringManager.getUUID(OutputString.this);
-                    }
-                    return Promise.pure(UUID.randomUUID());
-                }
-            });
-    }
-
 }

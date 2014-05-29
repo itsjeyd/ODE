@@ -11,36 +11,10 @@ import play.libs.F.Promise;
 import play.libs.WS;
 
 
-public class OutputStringManager extends LabeledNodeWithPropertiesManager {
+public class OutputStringManager extends ContentNodeManager {
 
     public OutputStringManager() {
         this.label = "OutputString";
-    }
-
-    // READ
-
-    @Override
-    public Promise<Boolean> exists(JsonNode properties) {
-        return super.exists(properties, "uuid");
-    }
-
-    // CREATE
-
-    @Override
-    public Promise<Boolean> create(
-        final JsonNode properties, final String location) {
-        Promise<Boolean> exists = exists(properties);
-        Promise<Boolean> created = exists.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean exists) {
-                    if (exists) {
-                        return Promise.pure(true);
-                    }
-                    return OutputStringManager.super
-                        .create(properties, location);
-                }
-            });
-        return created;
     }
 
 

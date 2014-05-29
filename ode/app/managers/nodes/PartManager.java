@@ -13,7 +13,7 @@ import play.libs.F.Promise;
 import play.libs.WS;
 
 
-public class PartManager extends LabeledNodeWithPropertiesManager {
+public class PartManager extends ContentNodeManager {
 
     public PartManager() {
         this.label = "Part";
@@ -34,31 +34,6 @@ public class PartManager extends LabeledNodeWithPropertiesManager {
                     return parts;
                 }
             });
-    }
-
-    // READ
-
-    @Override
-    public Promise<Boolean> exists(JsonNode properties) {
-        return super.exists(properties, "uuid");
-    }
-
-    // CREATE
-
-    @Override
-    public Promise<Boolean> create(
-        final JsonNode properties, final String location) {
-        Promise<Boolean> exists = exists(properties);
-        Promise<Boolean> created = exists.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean exists) {
-                    if (exists) {
-                        return Promise.pure(true);
-                    }
-                    return PartManager.super.create(properties, location);
-                }
-            });
-        return created;
     }
 
 

@@ -2,12 +2,10 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import constants.FeatureType;
 import java.util.List;
 import models.nodes.Feature;
 import models.nodes.Value;
 import play.Routes;
-import play.libs.F.Callback;
 import play.libs.F.Function0;
 import play.libs.F.Function;
 import play.libs.F.Promise;

@@ -3,7 +3,6 @@ package managers.nodes;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import managers.functions.JsonFunction;
-import managers.functions.NodeCreatedFunction;
 import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Node;
 import neo4play.Neo4jService;

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import managers.nodes.CombinationGroupManager;
 import models.relationships.HasSlotRelationship;
 import models.relationships.HasStringRelationship;

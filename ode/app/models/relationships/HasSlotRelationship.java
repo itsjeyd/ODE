@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import constants.RelationshipType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import managers.relationships.HasSlotRelationshipManager;
 import models.nodes.CombinationGroup;
 import models.nodes.Slot;

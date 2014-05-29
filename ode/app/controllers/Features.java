@@ -204,7 +204,9 @@ public class Features extends Controller {
         feature.put("type", json.get("type").asText());
         final ObjectNode target = Json.newObject();
         target.put("name", json.get("target").asText());
+        // 1. Check if feature :HAS this target in some rule
         Promise<Boolean> hasValue = Feature.nodes.has(feature, target);
+        // 2. If it doesn't, disconnect it from the target
         Promise<Boolean> disconnected = hasValue.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean hasValue) {

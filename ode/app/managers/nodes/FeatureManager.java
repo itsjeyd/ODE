@@ -134,14 +134,9 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                 public Promise<Boolean> apply(Boolean deleted) {
                     if (deleted) {
                         ObjectNode oldProps =
-                        (ObjectNode) properties.deepCopy();
+                            (ObjectNode) properties.deepCopy();
                         oldProps.retain("name");
-                        ObjectNode newProps =
-                        (ObjectNode) properties.deepCopy();
-                        newProps.retain(
-                            "name", "description", "type");
-                        return update(
-                            oldProps, newProps, location);
+                        return update(oldProps, properties, location);
                     }
                     return Promise.pure(false);
                 }

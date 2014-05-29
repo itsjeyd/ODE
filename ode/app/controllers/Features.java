@@ -148,9 +148,9 @@ public class Features extends Controller {
     public static Promise<Result> updateType(String name) {
         JsonNode json = request().body().asJson();
         final ObjectNode props = (ObjectNode) json.deepCopy();
+        props.retain("name", "description", "type");
         // 1. Check if feature is orphaned
-        Promise<Boolean> orphaned = Feature.nodes
-            .orphaned(props.deepCopy().retain("name"));
+        Promise<Boolean> orphaned = Feature.nodes.orphaned(props);
         // 2. If it is, update its type
         Promise<Boolean> updated = orphaned.flatMap(
             new Function<Boolean, Promise<Boolean>>() {

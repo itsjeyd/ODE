@@ -20,6 +20,8 @@ public class PartManager extends LabeledNodeWithPropertiesManager {
         this.label = "Part";
     }
 
+    // READ
+
     public Promise<List<Part>> all() {
         Promise<List<JsonNode>> json = all(this.label);
         return json.map(
@@ -34,6 +36,8 @@ public class PartManager extends LabeledNodeWithPropertiesManager {
                 }
             });
     }
+
+    // CREATE
 
     @Override
     public Promise<Boolean> create(

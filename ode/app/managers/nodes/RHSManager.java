@@ -18,6 +18,8 @@ public class RHSManager extends UUIDNodeManager {
         this.label = "RHS";
     }
 
+    // CREATE
+
     @Override
     protected Promise<Boolean> create(
         JsonNode properties, final String location) {
@@ -54,6 +56,8 @@ public class RHSManager extends UUIDNodeManager {
             });
         return created;
     }
+
+    // DELETE
 
     @Override
     protected Promise<Boolean> delete(
@@ -104,6 +108,8 @@ public class RHSManager extends UUIDNodeManager {
         }
         return removed;
     }
+
+    // Connections to other nodes
 
     protected Promise<Boolean> connect(
         final JsonNode rhs, final JsonNode group, final String location) {

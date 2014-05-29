@@ -40,7 +40,7 @@ public class AVMManager extends UUIDNodeManager {
         return deleted;
     }
 
-    protected Promise<Boolean> empty(
+    private Promise<Boolean> empty(
         final JsonNode properties, final String location) {
         // 1. Get list of all features
         Substructure avm = new Substructure(properties.get("uuid").asText());
@@ -205,7 +205,7 @@ public class AVMManager extends UUIDNodeManager {
         return removed;
     }
 
-    protected Promise<Boolean> removeFeature(
+    private Promise<Boolean> removeFeature(
         final JsonNode avm, final JsonNode feature, final String location) {
         final String uuid = avm.get("uuid").asText();
         final Substructure a = new Substructure(uuid);

@@ -21,8 +21,6 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.flash;
 import static play.test.Helpers.status;
 
-import models.nodes.AtomicFeature;
-import models.nodes.ComplexFeature;
 import models.nodes.Feature;
 
 
@@ -63,7 +61,7 @@ public class FeaturesTest extends WithApplication {
     @Test
     public void listTest() {
         Result result = callAction(
-            controllers.routes.ref.Features.list(),
+            controllers.routes.ref.Features.features(),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(result)).isEqualTo(Status.OK);
         assertThat(contentAsString(result).contains("ExistingFeature"));
@@ -71,9 +69,9 @@ public class FeaturesTest extends WithApplication {
 
     @Test
     public void createFeatureSuccess() {
-        Feature feature = new ComplexFeature("NonExistingFeature", "...");
+        Feature feature = new Feature("NonExistingFeature", "...");
         Result result = callAction(
-            controllers.routes.ref.Features.createFeature(),
+            controllers.routes.ref.Features.create(),
             fakeRequest()
                 .withSession("username", "user@example.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(
@@ -88,9 +86,9 @@ public class FeaturesTest extends WithApplication {
 
     @Test
     public void createFeatureExisting() {
-        Feature feature = new AtomicFeature("ExistingFeature", "...");
+        Feature feature = new Feature("ExistingFeature", "...");
         Result result = callAction(
-            controllers.routes.ref.Features.createFeature(),
+            controllers.routes.ref.Features.create(),
             fakeRequest()
                 .withSession("username", "user@example.com")
                 .withFormUrlEncodedBody(ImmutableMap.of(

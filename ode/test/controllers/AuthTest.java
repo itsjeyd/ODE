@@ -2,14 +2,15 @@ package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
+import models.nodes.User;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import play.libs.Json;
 import play.libs.WS;
-import play.mvc.Result;
 import play.mvc.Http.Status;
+import play.mvc.Result;
 import play.test.WithApplication;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -21,8 +22,6 @@ import static play.test.Helpers.flash;
 import static play.test.Helpers.header;
 import static play.test.Helpers.session;
 import static play.test.Helpers.status;
-
-import models.nodes.User;
 
 
 public class AuthTest extends WithApplication {
@@ -113,11 +112,11 @@ public class AuthTest extends WithApplication {
     @Test
     public void authenticated() {
         Result rulesResult = callAction(
-            controllers.routes.ref.Rules.rules(),
+            controllers.routes.ref.Rules.browse(),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(rulesResult)).isEqualTo(Status.OK);
         Result ruleResult = callAction(
-            controllers.routes.ref.Rules.rule("test"),
+            controllers.routes.ref.Rules.details("test"),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(ruleResult)).isEqualTo(Status.OK);
         Result searchResult = callAction(
@@ -125,7 +124,7 @@ public class AuthTest extends WithApplication {
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(searchResult)).isEqualTo(Status.OK);
         Result featuresResult = callAction(
-            controllers.routes.ref.Features.list(),
+            controllers.routes.ref.Features.features(),
             fakeRequest().withSession("username", "user@example.com"));
         assertThat(status(featuresResult)).isEqualTo(Status.OK);
         Result logoutResult = callAction(
@@ -139,13 +138,13 @@ public class AuthTest extends WithApplication {
     @Test
     public void notAuthenticated() {
         Result rulesResult = callAction(
-            controllers.routes.ref.Rules.rules(),
+            controllers.routes.ref.Rules.browse(),
             fakeRequest());
         assertThat(status(rulesResult)).isEqualTo(Status.SEE_OTHER);
         assertThat(header("Location", rulesResult)).isEqualTo(
             routes.Application.login().url());
         Result ruleResult = callAction(
-            controllers.routes.ref.Rules.rule("test"),
+            controllers.routes.ref.Rules.details("test"),
             fakeRequest());
         assertThat(status(ruleResult)).isEqualTo(Status.SEE_OTHER);
         assertThat(header("Location", ruleResult)).isEqualTo(
@@ -157,7 +156,7 @@ public class AuthTest extends WithApplication {
         assertThat(header("Location", searchResult)).isEqualTo(
                 routes.Application.login().url());
         Result featuresResult = callAction(
-            controllers.routes.ref.Features.list(),
+            controllers.routes.ref.Features.features(),
             fakeRequest());
         assertThat(status(featuresResult)).isEqualTo(Status.SEE_OTHER);
         assertThat(header("Location", featuresResult)).isEqualTo(

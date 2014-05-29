@@ -1,12 +1,10 @@
 package neo4play;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import play.libs.Json;
 import play.libs.WS;
 import play.mvc.Http.Status;
@@ -156,51 +154,11 @@ public class Neo4jServiceTest {
     }
 
     @Test
-    public void createLabeledNodeWithPropertiesTest() {
-        ObjectNode props = Json.newObject();
-        props.put("name", "node");
-        props.put("test", "createLabeledNodeWithProperties");
-        WS.Response labeledNodeResponse = Neo4jService
-            .createLabeledNodeWithProperties("TestNode", props)
-            .get(ASYNC_TIMEOUT);
-        assertThat(labeledNodeResponse.getStatus()).isEqualTo(Status.OK);
-        assertThat(labeledNodeResponse.asJson().get("data").size())
-            .isEqualTo(1);
-    }
-
-    @Test
-    public void deleteLabeledNodeWithPropertiesTest() {
-    }
-
-    @Test
     public void getNodesByLabelTest() {
         WS.Response nodesByLabelResponse = Neo4jService
             .getNodesByLabel("GenericTestNode").get(ASYNC_TIMEOUT);
         assertThat(nodesByLabelResponse.getStatus()).isEqualTo(Status.OK);
         assertThat(nodesByLabelResponse.asJson().size()).isEqualTo(2);
-    }
-
-    @Test
-    public void updateNodePropertiesTest() {
-        ObjectNode oldProps = Json.newObject();
-        oldProps.put("name", "node");
-        oldProps.put("test", "updateNodeProperties");
-        ObjectNode newProps = Json.newObject();
-        newProps.put("name", "updated");
-        newProps.put("test", "updated");
-        WS.Response updatedNodeResponse = Neo4jService
-            .updateNodeProperties("TestNode", oldProps, newProps)
-            .get(ASYNC_TIMEOUT);
-        assertThat(updatedNodeResponse.getStatus())
-            .isEqualTo(Status.NO_CONTENT);
-    }
-
-    @Test
-    public void getIncomingRelationshipsTest() {
-    }
-
-    @Test
-    public void getIncomingRelationshipsByTypeTest() {
     }
 
     @Test
@@ -223,14 +181,6 @@ public class Neo4jServiceTest {
 
     @Test
     public void getTypedRelationshipTest() {
-    }
-
-    @Test
-    public void createTypedRelationshipTest() {
-    }
-
-    @Test
-    public void deleteRelationshipTest() {
     }
 
 }

@@ -198,6 +198,28 @@ public class Features extends Controller {
     }
 
     @BodyParser.Of(BodyParser.Json.class)
+    private static Promise<Result> addTarget(String name, JsonNode json) {
+        ObjectNode feature = Json.newObject();
+        feature.put("name", name);
+        feature.put("type", json.get("type").asText());
+        ObjectNode target = Json.newObject();
+        target.put("name", json.get("target").asText());
+        Promise<Boolean> connected = Feature.nodes.connect(feature, target);
+        return connected.map(
+            new Function<Boolean, Result>() {
+                ObjectNode result = Json.newObject();
+                public Result apply(Boolean connected) {
+                    if (connected) {
+                        result.put("message", "Target successfully added.");
+                        return ok(result);
+                    }
+                    result.put("message", "Target not added.");
+                    return badRequest(result);
+                }
+            });
+    }
+
+    @BodyParser.Of(BodyParser.Json.class)
     private static Promise<Result> removeTarget(String name, JsonNode json) {
         final ObjectNode feature = Json.newObject();
         feature.put("name", name);
@@ -225,28 +247,6 @@ public class Features extends Controller {
                         return ok(result);
                     }
                     result.put("message", "Target not removed.");
-                    return badRequest(result);
-                }
-            });
-    }
-
-    @BodyParser.Of(BodyParser.Json.class)
-    private static Promise<Result> addTarget(String name, JsonNode json) {
-        ObjectNode feature = Json.newObject();
-        feature.put("name", name);
-        feature.put("type", json.get("type").asText());
-        ObjectNode target = Json.newObject();
-        target.put("name", json.get("target").asText());
-        Promise<Boolean> connected = Feature.nodes.connect(feature, target);
-        return connected.map(
-            new Function<Boolean, Result>() {
-                ObjectNode result = Json.newObject();
-                public Result apply(Boolean connected) {
-                    if (connected) {
-                        result.put("message", "Target successfully added.");
-                        return ok(result);
-                    }
-                    result.put("message", "Target not added.");
                     return badRequest(result);
                 }
             });

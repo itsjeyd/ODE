@@ -16,6 +16,8 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
         this.label = "Value";
     }
 
+    // READ
+
     public Promise<List<Value>> all() {
         Promise<List<JsonNode>> json = all(this.label);
         return json.map(
@@ -32,6 +34,8 @@ public class ValueManager extends LabeledNodeWithPropertiesManager {
                 }
             });
     }
+
+    // DELETE
 
     public void delete() {
         Promise<List<Value>> values = all();

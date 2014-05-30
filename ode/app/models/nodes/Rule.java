@@ -1,13 +1,11 @@
 package models.nodes;
 
 import constants.NodeType;
-import java.util.UUID;
 import managers.nodes.RuleManager;
 import models.nodes.RHS;
-import play.libs.F.Promise;
 
 
-public class Rule extends UUIDNode {
+public class Rule extends LabeledNodeWithProperties {
 
     public static final RuleManager nodes = new RuleManager();
 
@@ -56,10 +54,6 @@ public class Rule extends UUIDNode {
 
     public void setUUID(String uuid) {
         this.jsonProperties.put("uuid", uuid);
-    }
-
-    public Promise<UUID> getUUID() {
-        return RuleManager.getUUID(this);
     }
 
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import constants.NodeType;
 
 
-public abstract class AVM extends UUIDNode {
+public abstract class AVM extends LabeledNodeWithProperties {
     public Rule rule;
     public JsonNode json;
 

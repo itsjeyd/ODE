@@ -444,11 +444,13 @@ public class Rules extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeGroup(
         String name, final String groupID) {
-        Promise<UUID> ruleUUID = new Rule(name).getUUID();
-        Promise<Boolean> removed = ruleUUID.flatMap(
-            new Function<UUID, Promise<Boolean>>() {
-                public Promise<Boolean> apply(UUID ruleUUID) {
-                    String uuid = UUIDGenerator.from(ruleUUID.toString());
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<Rule> rule = Rule.nodes.get(properties);
+        Promise<Boolean> removed = rule.flatMap(
+            new Function<Rule, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Rule rule) {
+                    String uuid = UUIDGenerator.from(rule.uuid);
                     ObjectNode rhs = Json.newObject();
                     rhs.put("uuid", uuid);
                     ObjectNode group = Json.newObject();
@@ -597,11 +599,11 @@ public class Rules extends Controller {
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean orphaned) {
                     if (orphaned) {
-                        Promise<UUID> uuid = new Rule(name).getUUID();
-                        Promise<Boolean> deleted = uuid.flatMap(
-                            new Function<UUID, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(UUID uuid) {
-                                    rule.put("uuid", uuid.toString());
+                        Promise<Rule> r = Rule.nodes.get(rule);
+                        Promise<Boolean> deleted = r.flatMap(
+                            new Function<Rule, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(Rule r) {
+                                    rule.put("uuid", r.uuid);
                                     return Rule.nodes.delete(rule);
                                 }
                             });

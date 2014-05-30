@@ -22,17 +22,4 @@ public class LHS extends AVM {
         this.parent = rule;
     }
 
-    public Promise<UUID> getUUID() {
-        Promise<UUID> parentUUID = this.parent.getUUID();
-        return parentUUID.map(new UUIDFunction());
-    }
-
-    protected static class UUIDFunction implements Function<UUID, UUID> {
-        public UUID apply(UUID parentUUID) {
-            byte[] bytes = parentUUID.toString()
-                .getBytes(Charset.forName("UTF-8"));
-            return UUID.nameUUIDFromBytes(bytes);
-        }
-    }
-
 }

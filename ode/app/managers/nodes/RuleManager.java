@@ -6,20 +6,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import managers.functions.JsonFunction;
-import managers.functions.PropertyFunction;
 import models.nodes.Feature;
 import models.nodes.LHS;
 import models.nodes.RHS;
 import models.nodes.Rule;
 import models.relationships.Has;
-import neo4play.Neo4jService;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.F.Tuple;
 import play.libs.Json;
-import play.libs.WS;
 import utils.UUIDGenerator;
 
 
@@ -219,30 +214,6 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
     public Promise<Boolean> orphaned(JsonNode properties) {
         Rule rule = new Rule(properties.get("name").asText());
         return super.orphaned(rule, Has.relationships);
-    }
-
-
-    public static Promise<String> getProperty(Rule rule, String propName) {
-        Promise<String> ruleURL = Neo4jService
-            .getNodeURL(rule.getLabel(), rule.jsonProperties);
-        Promise<WS.Response> response = ruleURL.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String ruleURL) {
-                    return Neo4jService.getNodeProperties(ruleURL);
-                }
-            });
-        Promise<JsonNode> json = response.map(new JsonFunction());
-        return json.map(new PropertyFunction(propName));
-    }
-
-    public static Promise<UUID> getUUID(Rule rule) {
-        Promise<String> prop = getProperty(rule, "uuid");
-        return prop.map(
-            new Function<String, UUID>() {
-                public UUID apply(String prop) {
-                    return UUID.fromString(prop);
-                }
-            });
     }
 
     // Custom functionality

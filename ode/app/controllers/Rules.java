@@ -137,8 +137,25 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> lhs(String name) {
-        Rule rule = new Rule(name);
-        Promise<JsonNode> lhsJSON = new LHS(rule).toJSON();
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<Rule> rule = Rule.nodes.get(properties);
+        Promise<JsonNode> lhsJSON = rule.flatMap(
+            new Function<Rule, Promise<JsonNode>>() {
+                public Promise<JsonNode> apply(Rule rule) {
+                    ObjectNode properties = Json.newObject();
+                    String uuid = UUIDGenerator.from(rule.uuid);
+                    properties.put("uuid", uuid);
+                    properties.put("ruleUUID", rule.uuid);
+                    Promise<LHS> lhs = LHS.nodes.get(properties);
+                    return lhs.map(
+                        new Function<LHS, JsonNode>() {
+                            public JsonNode apply(LHS lhs) {
+                                return lhs.json;
+                            }
+                        });
+                }
+            });
         return lhsJSON.map(
             new Function<JsonNode, Result>() {
                 public Result apply(JsonNode lhsJSON) {
@@ -152,8 +169,24 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> rhs(String name) {
-        Rule rule = new Rule(name);
-        Promise<JsonNode> rhsJSON = new RHS(rule).toJSON();
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<Rule> rule = Rule.nodes.get(properties);
+        Promise<JsonNode> rhsJSON = rule.flatMap(
+            new Function<Rule, Promise<JsonNode>>() {
+                public Promise<JsonNode> apply(Rule rule) {
+                    ObjectNode properties = Json.newObject();
+                    String uuid = UUIDGenerator.from(rule.uuid);
+                    properties.put("uuid", uuid);
+                    Promise<RHS> rhs = RHS.nodes.get(properties);
+                    return rhs.map(
+                        new Function<RHS, JsonNode>() {
+                            public JsonNode apply(RHS rhs) {
+                                return rhs.json;
+                            }
+                        });
+                }
+            });
         return rhsJSON.map(
             new Function<JsonNode, Result>() {
                 public Result apply(JsonNode rhsJSON) {

@@ -30,14 +30,12 @@ public class Search extends Controller {
         List<Promise<? extends Set<Rule>>> ruleSets =
             new ArrayList<Promise<? extends Set<Rule>>>();
         while (features.hasNext()) {
-            JsonNode featureJSON = features.next();
-            Feature feature =
-                new Feature(featureJSON.get("name").textValue());
-            String value = featureJSON.get("value").textValue();
+            JsonNode feature = features.next();
+            String value = feature.get("value").asText();
             if (value.equals("")) {
-                ruleSets.add(feature.getRules());
+                ruleSets.add(Feature.nodes.rules(feature));
             } else {
-                ruleSets.add(feature.getRules(new Value(value)));
+                ruleSets.add(Feature.nodes.rules(feature, value));
             }
         }
         return Promise.sequence(ruleSets).map(new IntersectFunction());

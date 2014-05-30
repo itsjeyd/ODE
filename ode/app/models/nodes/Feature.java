@@ -113,26 +113,6 @@ public class Feature extends OntologyNode {
         }
     }
 
-    public Promise<Set<Rule>> getRules() {
-        Promise<JsonNode> embeddingRules = FeatureManager.getRules(this);
-        return embeddingRules.map(new RuleFactoryFunction());
-    }
-
-    public Promise<Set<Rule>> getRules(Value value) {
-        Promise<JsonNode> embeddingRules = FeatureManager
-            .getRules(this, value);
-        return embeddingRules.map(new RuleFactoryFunction());
-    }
-
-    private static class RuleFactoryFunction implements
-                                          Function<JsonNode, Set<Rule>> {
-        public Set<Rule> apply(JsonNode json) {
-            List<JsonNode> ruleNodes = json.findValue("data")
-                .findValues("data");
-            return Rule.makeRules(ruleNodes);
-        }
-    }
-
     private class TargetsFunction
         implements Function<List<JsonNode>, List<String>> {
         public List<String> apply(List<JsonNode> nodes) {

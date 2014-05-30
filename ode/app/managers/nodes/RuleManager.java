@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import constants.NodeType;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
@@ -276,6 +278,16 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
                 }
             });
         return rule;
+    }
+
+    public Set<Rule> from(List<JsonNode> ruleNodes) {
+        Set<Rule> rules = new HashSet<Rule>();
+        for (JsonNode ruleNode: ruleNodes) {
+            String name = ruleNode.findValue("name").asText();
+            String description = ruleNode.findValue("description").asText();
+            rules.add(new Rule(name, description));
+        }
+        return rules;
     }
 
 }

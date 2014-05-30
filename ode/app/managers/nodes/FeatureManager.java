@@ -5,13 +5,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import constants.RelationshipType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import managers.functions.JsonFunction;
 import models.functions.ExistsFunction;
 import models.nodes.Feature;
 import models.nodes.OntologyNode;
+import models.nodes.Rule;
 import models.nodes.Value;
 import models.relationships.Allows;
 import models.relationships.Untyped;
+import neo4play.Neo4j;
 import neo4play.Neo4jService;
 import neo4play.RelationshipService;
 import play.libs.F.Callback;
@@ -314,6 +317,41 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return targets;
     }
 
+    public Promise<Set<Rule>> rules(JsonNode properties) {
+        Feature feature = new Feature(properties.get("name").asText());
+        Promise<WS.Response> response = RelationshipService
+            .startNodes("Rule", feature);
+        Promise<Set<Rule>> rules = response.map(
+            new Function<WS.Response, Set<Rule>>() {
+                public Set<Rule> apply(WS.Response response) {
+                    JsonNode json = response.asJson();
+                    List<JsonNode> ruleNodes = json.findValue("data")
+                        .findValues("data");
+                    return Rule.nodes.from(ruleNodes);
+                }
+            });
+        return rules;
+    }
+
+    public Promise<Set<Rule>> rules(JsonNode properties, String value) {
+        String query = String.format(
+            "MATCH (s:Rule)-[:LHS]->()-[*]->(e:Feature)-[r:HAS]->(v:Value) " +
+            "WHERE e.name = '%s' AND v.name='%s' AND r.rule = s.uuid " +
+            "RETURN s",
+            properties.get("name").asText(), value);
+        Promise<WS.Response> response = Neo4j.executeCustomQuery(query);
+        Promise<Set<Rule>> rules = response.map(
+            new Function<WS.Response, Set<Rule>>() {
+                public Set<Rule> apply(WS.Response response) {
+                    JsonNode json = response.asJson();
+                    List<JsonNode> ruleNodes = json.findValue("data")
+                        .findValues("data");
+                    return Rule.nodes.from(ruleNodes);
+                }
+            });
+        return rules;
+    }
+
 
     public static Promise<List<JsonNode>> getValues(Feature feature) {
         Promise<List<WS.Response>> responses = Neo4jService
@@ -331,23 +369,6 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                     return nodes;
                 }
             });
-    }
-
-    public static Promise<JsonNode> getRules(Feature feature) {
-        Promise<WS.Response> response = Neo4jService
-            .findEmbeddingNodesAnyDepth(feature, "Rule");
-        return response.map(new JsonFunction());
-    }
-
-    public static Promise<JsonNode> getRules(Feature feature, Value value) {
-        String query = String.format(
-            "MATCH (e:Rule)-[:LHS]->()-[*]->(s:Feature)-[r:HAS]->(v:Value) " +
-            "WHERE s.name = '%s' AND v.name='%s' AND r.rule = e.uuid " +
-            "RETURN e",
-            feature.name, value.name);
-        Promise<WS.Response> response = Neo4jService
-            .executeCustomQuery(query);
-        return response.map(new JsonFunction());
     }
 
 }

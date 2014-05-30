@@ -65,16 +65,6 @@ public class Rule extends UUIDNode {
         return RuleManager.getUUID(this);
     }
 
-    public static Set<Rule> makeRules(List<JsonNode> ruleNodes) {
-        Set<Rule> rules = new HashSet<Rule>();
-        for (JsonNode ruleNode: ruleNodes) {
-            String name = ruleNode.findValue("name").asText();
-            String description = ruleNode.findValue("description").asText();
-            rules.add(new Rule(name, description));
-        }
-        return rules;
-    }
-
     public Promise<List<Rule>> getSimilarRules() {
         LHS lhs = new LHS(this);
         Promise<List<Feature>> features = lhs.getAllFeatures();
@@ -84,7 +74,8 @@ public class Rule extends UUIDNode {
                     List<Promise<? extends Set<Rule>>> ruleSets =
                         new ArrayList<Promise<? extends Set<Rule>>>();
                     for (Feature feature: features) {
-                        ruleSets.add(feature.getRules());
+                        JsonNode properties = feature.getProperties();
+                        ruleSets.add(Feature.nodes.rules(properties));
                     }
                     return Promise.sequence(ruleSets)
                         .map(new IntersectFunction());

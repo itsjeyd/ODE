@@ -189,4 +189,13 @@ public class RelationshipService extends Neo4j {
         return postCypherQuery(query);
     }
 
+    public static Promise<WS.Response> startNodes(
+        String label, LabeledNodeWithProperties endNode) {
+        String query = String.format(
+            "MATCH (s:%s)-[*]->(e:%s) WHERE %s RETURN s",
+            label, endNode.getLabel(),
+            buildConjunctiveConstraints("e", endNode.getProperties()));
+        return postCypherQuery(query);
+    }
+
 }

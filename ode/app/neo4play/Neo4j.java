@@ -80,4 +80,8 @@ public class Neo4j {
         return post(TRANSACTION_URL + "/commit", statements);
     }
 
+    public static Promise<WS.Response> executeCustomQuery(String query) {
+        return postCypherQuery(query);
+    }
+
 }

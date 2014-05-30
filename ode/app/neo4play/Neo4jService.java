@@ -91,10 +91,6 @@ public class Neo4jService {
 
     // API for external clients (managers)
 
-    public static Promise<WS.Response> executeCustomQuery(String query) {
-        return postCypherQuery(query);
-    }
-
     public static Promise<String> getNodeURL(
         String label, JsonNode props) {
         Promise<WS.Response> nodeResponse = getLabeledNodeWithProperties(
@@ -151,16 +147,6 @@ public class Neo4jService {
         Promise<List<String>> targetURLs = response.map(
             new TargetURLsFunction());
         return targetURLs.flatMap(new NodesByURLFunction());
-    }
-
-    public static Promise<WS.Response> findEmbeddingNodesAnyDepth(
-        LabeledNodeWithProperties node, String relatedNodesLabel) {
-        String nodeProps = buildConjunctiveConstraints(
-            "s", node.jsonProperties);
-        String query = String.format(
-            "MATCH (e:%s)-[*]->(s:%s) WHERE %s RETURN e",
-            relatedNodesLabel, node.getLabel(), nodeProps);
-        return postCypherQuery(query);
     }
 
     public static Promise<WS.Response> fuzzyFindTargetsAnyDepth(

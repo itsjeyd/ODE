@@ -33,6 +33,7 @@ public class Rule extends LabeledNodeWithProperties {
     public Rule(String name, String description, String uuid) {
         this(name, description);
         this.uuid = uuid;
+        this.jsonProperties.put("uuid", uuid);
     }
 
     @Override
@@ -50,10 +51,6 @@ public class Rule extends LabeledNodeWithProperties {
         int c = this.name == null ? 0 : this.name.hashCode();
         result = 31 * result + c;
         return result;
-    }
-
-    public void setUUID(String uuid) {
-        this.jsonProperties.put("uuid", uuid);
     }
 
 }

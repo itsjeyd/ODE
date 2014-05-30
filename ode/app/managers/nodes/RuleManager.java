@@ -247,9 +247,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         for (JsonNode ruleNode: ruleNodes) {
             String name = ruleNode.findValue("name").asText();
             String description = ruleNode.findValue("description").asText();
-            Rule rule = new Rule(name, description);
             String uuid = ruleNode.findValue("uuid").asText();
-            rule.setUUID(uuid);
+            Rule rule = new Rule(name, description, uuid);
             rules.add(rule);
         }
         return rules;

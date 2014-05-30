@@ -144,4 +144,9 @@ public class SlotManager extends ContentCollectionNodeManager {
         return json;
     }
 
+    protected Promise<List<JsonNode>> parts(JsonNode properties) {
+        Slot slot = new Slot(properties.get("uuid").asText());
+        return Has.relationships.endNodesByLabel(slot, "Part");
+    }
+
 }

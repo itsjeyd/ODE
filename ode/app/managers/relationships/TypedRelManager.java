@@ -223,4 +223,17 @@ public abstract class TypedRelManager extends RelManager {
             });
     }
 
+    public Promise<List<JsonNode>> endNodesByLabel(
+        LabeledNodeWithProperties startNode, String label) {
+        Promise<WS.Response> response = RelationshipService
+            .endNodesByLabel(startNode, this.type, label);
+        return response.map(
+            new Function<WS.Response, List<JsonNode>>() {
+                public List<JsonNode> apply(WS.Response response) {
+                    JsonNode json = response.asJson();
+                    return json.get("data").findValues("data");
+                }
+            });
+    }
+
 }

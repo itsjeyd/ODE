@@ -61,6 +61,10 @@ public class Rule extends UUIDNode {
         return result;
     }
 
+    public void setUUID(String uuid) {
+        this.jsonProperties.put("uuid", uuid);
+    }
+
     public Promise<UUID> getUUID() {
         return RuleManager.getUUID(this);
     }

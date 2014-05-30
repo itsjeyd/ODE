@@ -5,14 +5,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import models.nodes.CombinationGroup;
 import models.nodes.RHS;
 import models.relationships.Has;
+import neo4play.Neo4j;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.Json;
+import play.libs.WS;
 
 
 public class RHSManager extends CollectionNodeManager {
@@ -155,6 +158,118 @@ public class RHSManager extends CollectionNodeManager {
                 }
             });
         return disconnected;
+    }
+
+    // Custom functionality
+
+    protected Promise<Boolean> find(
+        final JsonNode properties, JsonNode strings) {
+        Promise<List<String>> stringsNotFound =
+            findInOutputStrings(properties, strings);
+        stringsNotFound = stringsNotFound.flatMap(
+            new Function<List<String>, Promise<List<String>>>() {
+                public Promise<List<String>> apply(
+                    final List<String> stringsNotFound) {
+                    if (stringsNotFound.isEmpty()) {
+                        return Promise.pure(stringsNotFound);
+                    }
+                    Promise<List<JsonNode>> groups = groups(properties);
+                    return groups.flatMap(
+                        new Function<List<JsonNode>, Promise<List<String>>>() {
+                            public Promise<List<String>> apply(
+                                List<JsonNode> groups) {
+                                return findInGroupTables(
+                                    groups, stringsNotFound);
+                            }
+                        });
+                }
+            });
+        return stringsNotFound.map(
+            new Function<List<String>, Boolean>() {
+                public Boolean apply(List<String> stringsNotFound) {
+                    if (stringsNotFound.isEmpty()) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+    }
+
+    private Promise<List<String>> findInOutputStrings(
+        JsonNode properties, JsonNode strings) {
+        List<Promise<? extends String>> stringsNotFound =
+            new ArrayList<Promise<? extends String>>();
+        Iterator<JsonNode> stringIter = strings.elements();
+        while (stringIter.hasNext()) {
+            final JsonNode string = stringIter.next();
+            Promise<Boolean> stringFound = has(properties, string);
+            stringsNotFound.add(
+                stringFound.map(
+                    new Function<Boolean, String>() {
+                        public String apply(Boolean stringFound) {
+                            if (stringFound) {
+                                return "";
+                            }
+                            return string.get("content").asText();
+                        }
+                    }));
+        }
+        return Promise.sequence(stringsNotFound).map(
+            new Function<List<String>, List<String>>() {
+                public List<String> apply(List<String> stringsNotFound) {
+                    List<String> strings = new ArrayList<String>();
+                    for (String str: stringsNotFound) {
+                        if (!str.equals("")) {
+                            strings.add(str);
+                        }
+                    }
+                    return strings;
+                }
+            });
+
+    }
+
+    private Promise<Boolean> has(JsonNode properties, JsonNode string) {
+        String uuid = properties.get("uuid").asText();
+        String content = string.get("content").asText();
+        String query = String.format(
+            "MATCH p=(s:RHS)-[*2]->(t:OutputString) " +
+            "WHERE s.uuid='%s' AND lower(t.content) =~ lower('.*%s.*') " +
+            "RETURN p",
+            uuid, content);
+        Promise<WS.Response> response = Neo4j.executeCustomQuery(query);
+        return response.map(
+            new Function<WS.Response, Boolean>() {
+                public Boolean apply(WS.Response response) {
+                    JsonNode json = response.asJson();
+                    return json.findValue("data").size() > 0;
+                }
+            });
+    }
+
+    private Promise<List<String>> findInGroupTables(
+        final List<JsonNode> groups, List<String> strings) {
+        if (groups.isEmpty()) {
+            return Promise.pure(strings);
+        }
+        JsonNode group = groups.get(0);
+        Promise<List<String>> stringsNotFound = CombinationGroup.nodes
+            .find(group, strings);
+        return stringsNotFound.flatMap(
+            new Function<List<String>, Promise<List<String>>>() {
+                public Promise<List<String>> apply(
+                    List<String> stringsNotFound) {
+                    if (stringsNotFound.isEmpty()) {
+                        return Promise.pure(stringsNotFound);
+                    }
+                    List<JsonNode> remainingGroups =
+                        groups.subList(1, groups.size());
+                    return findInGroupTables(
+                        remainingGroups, stringsNotFound);
+                }
+            });
+
     }
 
 }

@@ -44,7 +44,7 @@ public class Search extends Controller {
     private static Promise<Set<Rule>> getRulesMatchingStrings(
         JsonNode json) {
         JsonNode strings = json.findPath("strings");
-        return Rule.findMatching(strings);
+        return Rule.nodes.matching(strings);
     }
 
     private static class IntersectFunction
@@ -69,7 +69,6 @@ public class Search extends Controller {
         return ok(search.render());
     }
 
-    // TODO: Include feature *values* in the search (if specified) ...
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> doSearch() {
@@ -88,9 +87,9 @@ public class Search extends Controller {
                                 strings.size() == 0) {
                                 return Promise.pure(rulesMatchingFeatures);
                             } else {
-                                return Rule
-                                    .findMatching(rulesMatchingFeatures,
-                                                  json.findPath("strings"));
+                                return Rule.nodes
+                                    .matching(rulesMatchingFeatures,
+                                              json.findPath("strings"));
                             }
                         }
                     });

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import models.nodes.CombinationGroup;
 import models.nodes.OutputString;
@@ -13,7 +15,6 @@ import models.relationships.Has;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.libs.F.Tuple;
 import play.libs.Json;
 
 
@@ -223,6 +224,147 @@ public class CombinationGroupManager extends ContentCollectionNodeManager {
                 }
             });
         return json;
+    }
+
+    protected Promise<List<String>> find(
+        JsonNode properties, final List<String> strings) {
+        // 1. Get parts by slots
+        Promise<List<List<String>>> stringsBySlots =
+            getStringsBySlots(properties);
+        // 2. Combine
+        Promise<List<String>> fullStrings = stringsBySlots.map(
+            new Function<List<List<String>>, List<String>>() {
+                public List<String> apply(List<List<String>> stringsBySlots) {
+                    return cartesianProduct(stringsBySlots);
+                }
+            });
+        // 3. Check for search strings
+        Promise<List<String>> stringsNotFound = fullStrings.map(
+            new Function<List<String>, List<String>>() {
+                public List<String> apply(List<String> fullStrings) {
+                    List<String> stringsNotFound = new ArrayList<String>();
+                    for (String string: strings) {
+                        boolean found = false;
+                        for (String fullString: fullStrings) {
+                            if (fullString.toLowerCase()
+                                .contains(string.toLowerCase())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            stringsNotFound.add(string);
+                        }
+                    }
+                    return stringsNotFound;
+                }
+            });
+        return stringsNotFound;
+    }
+
+    private Promise<List<List<String>>> getStringsBySlots(
+        JsonNode properties) {
+        Promise<List<JsonNode>> slots = slots(properties);
+        Promise<List<List<JsonNode>>> partsBySlots = slots.flatMap(
+            new Function<List<JsonNode>, Promise<List<List<JsonNode>>>>() {
+                public Promise<List<List<JsonNode>>> apply(List<JsonNode> slots) {
+                    Collections.sort(
+                        slots, new Comparator<JsonNode>() {
+                            public int compare(JsonNode s1, JsonNode s2) {
+                                Integer pos1 = s1.get("position").asInt();
+                                Integer pos2 = s2.get("position").asInt();
+                                return pos1.compareTo(pos2);
+                            }
+                        });
+                    List<Promise<? extends List<JsonNode>>> partsBySlots =
+                        new ArrayList<Promise<? extends List<JsonNode>>>();
+                    for (JsonNode slot: slots) {
+                        partsBySlots.add(Slot.nodes.parts(slot));
+                    }
+                    return Promise.sequence(partsBySlots);
+                }
+            });
+        Promise<List<List<String>>> stringsBySlots = partsBySlots.map(
+            new Function<List<List<JsonNode>>, List<List<String>>>() {
+                public List<List<String>> apply(
+                    List<List<JsonNode>> partsBySlots) {
+                    List<List<String>> stringsBySlots =
+                        new ArrayList<List<String>>();
+                    for (List<JsonNode> partsBySlot: partsBySlots) {
+                        List<String> stringsBySlot = new ArrayList<String>();
+                        for (JsonNode part: partsBySlot) {
+                            stringsBySlot.add(part.get("content").asText());
+                        }
+                        stringsBySlots.add(stringsBySlot);
+                    }
+                    return stringsBySlots;
+                }
+            });
+        return stringsBySlots;
+    }
+
+    private Promise<List<JsonNode>> slots(JsonNode properties) {
+        CombinationGroup group =
+            new CombinationGroup(properties.get("uuid").asText());
+        return Has.relationships.endNodesByLabel(group, "Slot");
+    }
+
+    private List<String> cartesianProduct(List<List<String>> stringsBySlots) {
+        if (stringsBySlots.isEmpty()) {
+            return new ArrayList<String>();
+        } else if (stringsBySlots.size() == 1) {
+            return stringsBySlots.get(0);
+        } else if (stringsBySlots.size() == 2) {
+            return this
+                .combineSlots(stringsBySlots.get(0), stringsBySlots.get(1));
+        } else {
+            List<String> intermediateResult = this
+                .combineSlots(stringsBySlots.get(0), stringsBySlots.get(1));
+            List<List<String>> remainingSlots =
+                stringsBySlots.subList(2, stringsBySlots.size());
+            remainingSlots.add(0, intermediateResult);
+            return this.cartesianProduct(remainingSlots);
+        }
+    }
+
+    private List<String> combineSlots(
+        List<String> slot1, List<String> slot2) {
+        if (slot1.isEmpty() && slot2.isEmpty()) {
+            return new ArrayList<String>();
+        }
+        return this.combineSlots(slot1, slot2, new ArrayList<String>());
+    }
+
+    private List<String> combineSlots(
+        List<String> slot1, List<String> slot2, List<String> result) {
+        if (slot1.isEmpty()) {
+            return result;
+        }
+        List<String> intermediateResult = this
+            .combineStrings(slot1.get(0), slot2);
+        result.addAll(intermediateResult);
+        return this
+            .combineSlots(slot1.subList(1, slot1.size()), slot2, result);
+    }
+
+    private List<String> combineStrings(String string, List<String> slot) {
+        if (slot.isEmpty()) {
+            List<String> result = new ArrayList<String>();
+            result.add(string);
+            return result;
+        }
+        return this.combineStrings(string, slot, new ArrayList<String>());
+    }
+
+    private List<String> combineStrings(
+        String string, List<String> slot, List<String> result) {
+        if (slot.isEmpty()) {
+            return result;
+        }
+        String combinedString = string + " " + slot.get(0);
+        result.add(combinedString);
+        return this
+            .combineStrings(string, slot.subList(1, slot.size()), result);
     }
 
 }

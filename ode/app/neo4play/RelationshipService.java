@@ -150,7 +150,7 @@ public class RelationshipService extends Neo4j {
     public static Promise<WS.Response> endNodes(
         LabeledNodeWithProperties startNode, String type) {
         String query = String.format(
-            "MATCH (s:%s)-[r:%s]->(e) WHERE %s RETURN e",
+            "MATCH (s:%s)-[:%s]->(e) WHERE %s RETURN e",
             startNode.getLabel(), type,
             buildConjunctiveConstraints("s", startNode.getProperties()));
         return postCypherQuery(query);
@@ -170,7 +170,7 @@ public class RelationshipService extends Neo4j {
     public static Promise<WS.Response> endNodes(
         LabeledNodeWithProperties startNode, String type, String location) {
         String query = String.format(
-            "MATCH (s:%s)-[r:%s]->(e) WHERE %s RETURN e",
+            "MATCH (s:%s)-[:%s]->(e) WHERE %s RETURN e",
             startNode.getLabel(), type,
             buildConjunctiveConstraints("s", startNode.getProperties()));
         JsonNode statements = buildStatements(query);

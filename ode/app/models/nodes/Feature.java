@@ -1,19 +1,9 @@
 package models.nodes;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import constants.FeatureType;
 import constants.NodeType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import managers.nodes.FeatureManager;
-import models.relationships.HasValueRelationship;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-import play.libs.Json;
 
 
 public class Feature extends OntologyNode {
@@ -45,11 +35,6 @@ public class Feature extends OntologyNode {
         this.setType(type);
     }
 
-    protected Promise<List<String>> getTargets() {
-        Promise<List<JsonNode>> nodes = FeatureManager.getValues(this);
-        return nodes.map(new TargetsFunction());
-    }
-
     protected Feature setType(String type) {
         if (type.equals(FeatureType.COMPLEX.toString())) {
             this.type = FeatureType.COMPLEX;
@@ -59,69 +44,12 @@ public class Feature extends OntologyNode {
         return this;
     }
 
-    public Promise<Feature> setTargets() {
-        Promise<List<String>> targets = this.getTargets();
-        final Feature feature = this;
-        return targets.map(
-            new Function<List<String>, Feature>() {
-                public Feature apply(List<String> targets) {
-                    feature.targets = targets;
-                    return feature;
-                }
-            });
-    }
-
-    public Promise<JsonNode> toJSON() {
-        final ObjectNode json = Json.newObject();
-        json.put("name", this.name);
-        json.put("type", this.getType());
-        Promise<List<String>> targets = this.getTargets();
-        return targets.map(
-            new Function<List<String>, JsonNode>() {
-                public JsonNode apply(List<String> targets) {
-                    ArrayNode targetNodes =
-                        JsonNodeFactory.instance.arrayNode();
-                    for (String target: targets) {
-                        targetNodes.add(target);
-                    }
-                    json.put("targets", targetNodes);
-                    return json;
-                }
-            });
-    }
-
     public String getType() {
         return this.type.toString();
     }
 
     public String getDescription() {
         return this.description;
-    }
-
-    public Promise<JsonNode> getValue(Rule rule, AVM avm) {
-        if (this.type.equals(FeatureType.COMPLEX)) {
-            return new Substructure(rule, avm, this).toJSON();
-        } else {
-            Promise<Value> value =
-                HasValueRelationship.getEndNode(this, rule, avm);
-            return value.flatMap(
-                new Function<Value, Promise<JsonNode>>() {
-                    public Promise<JsonNode> apply(Value value) {
-                        return value.toJSON();
-                    }
-                });
-        }
-    }
-
-    private class TargetsFunction
-        implements Function<List<JsonNode>, List<String>> {
-        public List<String> apply(List<JsonNode> nodes) {
-            List<String> targets = new ArrayList<String>();
-            for (JsonNode node: nodes) {
-                targets.add(node.get("name").asText());
-            }
-            return targets;
-        }
     }
 
 }

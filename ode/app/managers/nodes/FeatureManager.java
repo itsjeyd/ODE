@@ -2,7 +2,6 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import constants.RelationshipType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +14,6 @@ import models.nodes.Value;
 import models.relationships.Allows;
 import models.relationships.Untyped;
 import neo4play.Neo4j;
-import neo4play.Neo4jService;
 import neo4play.RelationshipService;
 import play.libs.F.Callback;
 import play.libs.F.Function;
@@ -350,25 +348,6 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                 }
             });
         return rules;
-    }
-
-
-    public static Promise<List<JsonNode>> getValues(Feature feature) {
-        Promise<List<WS.Response>> responses = Neo4jService
-            .getRelationshipTargets(feature.getLabel(),
-                                    feature.jsonProperties,
-                                    RelationshipType.ALLOWS.toString());
-        return responses.map(
-            new Function<List<WS.Response>, List<JsonNode>>() {
-                public List<JsonNode> apply(List<WS.Response> responses) {
-                    List<JsonNode> nodes = new ArrayList<JsonNode>();
-                    for (WS.Response response: responses) {
-                        JsonNode json = response.asJson();
-                        nodes.add(json.findValue("data"));
-                    }
-                    return nodes;
-                }
-            });
     }
 
 }

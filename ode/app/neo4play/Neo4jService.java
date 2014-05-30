@@ -113,20 +113,6 @@ public class Neo4jService {
         return WS.url(fullURL).get();
     }
 
-    public static Promise<WS.Response> getOutgoingRelationshipsByType(
-        String startNodeLabel, JsonNode startNodeProps,
-        final String relationshipType) {
-        Promise<String> startNodeURL = getNodeURL(startNodeLabel,
-                                                  startNodeProps);
-        return startNodeURL.flatMap(
-            new Function<String, Promise<WS.Response>>() {
-                public Promise<WS.Response> apply(String nodeURL) {
-                    String fullURL = nodeURL + "/relationships/out/"
-                        + relationshipType;
-                    return WS.url(fullURL).get();
-        }});
-    }
-
     public static Promise<WS.Response> getRelationshipTarget(
         LabeledNodeWithProperties startNode, RelationshipType relType,
         JsonNode relationshipProperties) {
@@ -138,15 +124,6 @@ public class Neo4jService {
             "MATCH (s:%s)-[r:%s]-(e) WHERE %s AND %s RETURN e",
             startNode.getLabel(), relType.name(), startNodeProps, relProps);
         return postCypherQuery(query);
-    }
-
-    public static Promise<List<WS.Response>> getRelationshipTargets(
-        String nodeLabel, JsonNode nodeProps, String relationshipType) {
-        Promise<WS.Response> response = getOutgoingRelationshipsByType(
-            nodeLabel, nodeProps, relationshipType);
-        Promise<List<String>> targetURLs = response.map(
-            new TargetURLsFunction());
-        return targetURLs.flatMap(new NodesByURLFunction());
     }
 
     public static Promise<WS.Response> getTypedRelationship(
@@ -170,28 +147,6 @@ public class Neo4jService {
         public String apply(WS.Response response) {
             JsonNode json = response.asJson();
             return json.findValue("self").asText();
-        }
-    }
-
-    private static class NodesByURLFunction
-        implements Function<List<String>, Promise<List<WS.Response>>> {
-        public Promise<List<WS.Response>> apply(List<String> nodeURLs) {
-            List<Promise<? extends WS.Response>> responses =
-                new ArrayList<Promise<? extends WS.Response>>();
-            for (String nodeURL: nodeURLs) {
-                Promise<WS.Response> response = Neo4jService.getNodeByURL(
-                    nodeURL);
-                responses.add(response);
-            }
-            return Promise.sequence(responses);
-        }
-    }
-
-    private static class TargetURLsFunction implements
-        Function<WS.Response, List<String>> {
-        public List<String> apply(WS.Response response) {
-            JsonNode json = response.asJson();
-            return json.findValuesAsText("end");
         }
     }
 

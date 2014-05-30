@@ -1,18 +1,7 @@
 package models.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import constants.NodeType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import models.relationships.HasFeatureRelationship;
-import play.libs.F.Function;
-import play.libs.F.Promise;
-import play.libs.F.Tuple;
-import play.libs.Json;
 
 
 public abstract class AVM extends UUIDNode {
@@ -26,80 +15,6 @@ public abstract class AVM extends UUIDNode {
     public AVM(Rule rule) {
         this();
         this.rule = rule;
-    }
-
-    public Promise<List<Feature>> getFeatures() {
-        return HasFeatureRelationship.getEndNodes(this);
-    }
-
-    public Promise<List<Pair>> getPairs() {
-        final AVM avm = this;
-        Promise<List<Feature>> features = this.getFeatures();
-        return features.flatMap(
-            new Function<List<Feature>, Promise<List<Pair>>>() {
-                public Promise<List<Pair>> apply(List<Feature> features) {
-                    List<Promise<? extends Pair>> pairs =
-                        new ArrayList<Promise<? extends Pair>>();
-                    for (Feature feature: features) {
-                        Promise<JsonNode> attribute = feature.toJSON();
-                        Promise<JsonNode> value = feature
-                            .getValue(avm.rule, avm);
-                        Promise<Pair> pair = Pair.of(attribute, value);
-                        pairs.add(pair);
-                    }
-                    return Promise.sequence(pairs);
-                }
-            });
-    }
-
-    public Promise<JsonNode> toJSON() {
-        final AVM avm = this;
-        final ObjectNode json = Json.newObject();
-        Promise<UUID> uuid = this.getUUID();
-        return uuid.flatMap(
-            new Function<UUID, Promise<JsonNode>>() {
-                public Promise<JsonNode> apply(UUID uuid) {
-                    json.put("uuid", uuid.toString());
-                    Promise<List<Pair>> pairs = avm.getPairs();
-                    return pairs.map(
-                        new Function<List<Pair>, JsonNode>() {
-                            public JsonNode apply(List<Pair> pairs) {
-                                ArrayNode pairNodes =
-                                    JsonNodeFactory.instance.arrayNode();
-                                for (Pair pair: pairs) {
-                                    pairNodes.add(pair.toJSON());
-                                }
-                                json.put("pairs", pairNodes);
-                                return json;
-                            }
-                        });
-                }
-            });
-    }
-
-
-    private static class Pair {
-        public JsonNode attribute;
-        public JsonNode value;
-        private Pair(JsonNode attribute, JsonNode value) {
-            this.attribute = attribute;
-            this.value = value;
-        }
-        public static Promise<Pair> of(
-            Promise<JsonNode> attribute, Promise<JsonNode> value) {
-            return attribute.zip(value).map(
-                new Function<Tuple<JsonNode, JsonNode>, Pair>() {
-                    public Pair apply(Tuple<JsonNode, JsonNode> pair) {
-                        return new Pair(pair._1, pair._2);
-                    }
-                });
-        }
-        public JsonNode toJSON() {
-            ObjectNode json = Json.newObject();
-            json.put("attribute", this.attribute);
-            json.put("value", this.value);
-            return json;
-        }
     }
 
 }

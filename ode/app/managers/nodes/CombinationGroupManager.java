@@ -1,6 +1,10 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
 import java.util.List;
 import models.nodes.CombinationGroup;
 import models.nodes.OutputString;
@@ -9,6 +13,8 @@ import models.relationships.Has;
 import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
+import play.libs.Json;
 
 
 public class CombinationGroupManager extends ContentCollectionNodeManager {
@@ -165,6 +171,58 @@ public class CombinationGroupManager extends ContentCollectionNodeManager {
                 }
             });
         return disconnected;
+    }
+
+    // Custom functionality
+
+    protected Promise<JsonNode> toJSON(final JsonNode properties) {
+        CombinationGroup group =
+            new CombinationGroup(properties.get("uuid").asText());
+        Promise<List<JsonNode>> stringsAndSlots = Has.relationships
+            .endNodes(group);
+        Promise<JsonNode> json = stringsAndSlots.flatMap(
+            new Function<List<JsonNode>, Promise<JsonNode>>() {
+                public Promise<JsonNode> apply(
+                    List<JsonNode> stringsAndSlots) {
+                    final List<JsonNode> stringNodes =
+                        new ArrayList<JsonNode>();
+                    List<Promise<? extends JsonNode>> slots =
+                        new ArrayList<Promise<? extends JsonNode>>();
+                    for (JsonNode stringOrSlot: stringsAndSlots) {
+                        if (stringOrSlot.has("position")) {
+                            Promise<JsonNode> slot = Slot.nodes
+                                .toJSON(stringOrSlot);
+                            slots.add(slot);
+                        } else {
+                            JsonNode string = OutputString.nodes
+                                .toJSON(stringOrSlot);
+                            stringNodes.add(string);
+                        }
+                    }
+                    Promise<List<JsonNode>> slotNodes =
+                        Promise.sequence(slots);
+                    Promise<JsonNode> json = slotNodes.map(
+                        new Function<List<JsonNode>, JsonNode>() {
+                            public JsonNode apply(List<JsonNode> slotNodes) {
+                                ArrayNode strings =
+                                    JsonNodeFactory.instance.arrayNode();
+                                strings.addAll(stringNodes);
+                                ((ObjectNode) properties)
+                                    .put("outputStrings", strings);
+                                ArrayNode slots =
+                                    JsonNodeFactory.instance.arrayNode();
+                                slots.addAll(slotNodes);
+                                ObjectNode partsTable = Json.newObject();
+                                partsTable.put("slots", slots);
+                                ((ObjectNode) properties)
+                                    .put("partsTable", partsTable);
+                                return properties;
+                            }
+                        });
+                    return json;
+                }
+            });
+        return json;
     }
 
 }

@@ -1,6 +1,12 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import models.nodes.Part;
 import models.nodes.Rule;
@@ -104,6 +110,38 @@ public class SlotManager extends ContentCollectionNodeManager {
                 }
             });
         return disconnected;
+    }
+
+    // Custom functionality
+
+    protected Promise<JsonNode> toJSON(final JsonNode properties) {
+        Slot slot = new Slot(properties.get("uuid").asText());
+        Promise<List<JsonNode>> partsAndRefs = Has.relationships
+            .endNodes(slot);
+        Promise<JsonNode> json = partsAndRefs.map(
+            new Function<List<JsonNode>, JsonNode>() {
+                public JsonNode apply(List<JsonNode> partsAndRefs) {
+                    List<JsonNode> partNodes = new ArrayList<JsonNode>();
+                    List<JsonNode> refNodes = new ArrayList<JsonNode>();
+                    for (JsonNode partOrRef: partsAndRefs) {
+                        if (partOrRef.has("name")) {
+                            String name = partOrRef.get("name").asText();
+                            JsonNode ref = new TextNode(name);
+                            refNodes.add(ref);
+                        } else {
+                            partNodes.add(partOrRef);
+                        }
+                    }
+                    ArrayNode parts = JsonNodeFactory.instance.arrayNode();
+                    parts.addAll(partNodes);
+                    ((ObjectNode) properties).put("parts", parts);
+                    ArrayNode refs = JsonNodeFactory.instance.arrayNode();
+                    refs.addAll(refNodes);
+                    ((ObjectNode) properties).put("refs", refs);
+                    return properties;
+                }
+            });
+        return json;
     }
 
 }

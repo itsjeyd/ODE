@@ -1,7 +1,11 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import models.nodes.CombinationGroup;
 import models.nodes.RHS;
@@ -15,6 +19,54 @@ public class RHSManager extends CollectionNodeManager {
 
     public RHSManager() {
         this.label = "RHS";
+    }
+
+    // READ
+
+    public Promise<RHS> get(JsonNode properties) {
+        final RHS rhs = new RHS(properties.get("uuid").asText());
+        Promise<JsonNode> json = toJSON(properties);
+        return json.map(
+            new Function<JsonNode, RHS>() {
+                public RHS apply(JsonNode json) {
+                    rhs.json = json;
+                    return rhs;
+                }
+            });
+    }
+
+    private Promise<JsonNode> toJSON(final JsonNode properties) {
+        Promise<List<JsonNode>> groups = groups(properties);
+        Promise<JsonNode> json = groups.map(
+            new Function<List<JsonNode>, JsonNode>() {
+                public JsonNode apply(List<JsonNode> groups) {
+                    ArrayNode groupNodes =
+                        JsonNodeFactory.instance.arrayNode();
+                    groupNodes.addAll(groups);
+                    ((ObjectNode) properties).put("groups", groupNodes);
+                    return properties;
+                }
+            });
+        return json;
+    }
+
+    public Promise<List<JsonNode>> groups(JsonNode properties) {
+        RHS rhs = new RHS(properties.get("uuid").asText());
+        Promise<List<JsonNode>> nodes = Has.relationships.endNodes(rhs);
+        Promise<List<JsonNode>> groups = nodes.flatMap(
+            new Function<List<JsonNode>, Promise<List<JsonNode>>>() {
+                public Promise<List<JsonNode>> apply(List<JsonNode> nodes) {
+                    List<Promise<? extends JsonNode>> groups =
+                        new ArrayList<Promise<? extends JsonNode>>();
+                    for (JsonNode node: nodes) {
+                        Promise<JsonNode> group = CombinationGroup.nodes
+                            .toJSON(node);
+                        groups.add(group);
+                    }
+                    return Promise.sequence(groups);
+                }
+            });
+        return groups;
     }
 
     // CREATE

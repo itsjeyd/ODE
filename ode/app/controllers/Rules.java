@@ -102,7 +102,28 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     public static Promise<Result> output(final String name) {
         Promise<List<Part>> globalPartsList = Part.nodes.all();
-        Promise<Rule> rule = new Rule(name).get();
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<Rule> rule = Rule.nodes.get(properties);
+        rule = rule.flatMap(
+            new Function<Rule, Promise<Rule>>() {
+                public Promise<Rule> apply(final Rule rule) {
+                    ObjectNode properties = Json.newObject();
+                    String uuid = UUIDGenerator.from(rule.uuid);
+                    properties.put("uuid", uuid);
+                    Promise<RHS> rhs = RHS.nodes.get(properties);
+                    properties.put("ruleUUID", rule.uuid);
+                    Promise<LHS> lhs = LHS.nodes.get(properties);
+                    return lhs.zip(rhs).map(
+                        new Function<Tuple<LHS, RHS>, Rule>() {
+                            public Rule apply(Tuple<LHS, RHS> components) {
+                                rule.lhs = components._1;
+                                rule.rhs = components._2;
+                                return rule;
+                            }
+                        });
+                }
+            });
         Promise<Tuple<List<Part>, Rule>> results = globalPartsList
             .zip(rule);
         return results.map(

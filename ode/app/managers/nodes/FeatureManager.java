@@ -320,7 +320,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
     public Promise<Set<Rule>> rules(JsonNode properties) {
         Feature feature = new Feature(properties.get("name").asText());
         Promise<WS.Response> response = RelationshipService
-            .startNodes("Rule", feature);
+            .startNodes("Rule", "LHS|HAS", feature);
         Promise<Set<Rule>> rules = response.map(
             new Function<WS.Response, Set<Rule>>() {
                 public Set<Rule> apply(WS.Response response) {

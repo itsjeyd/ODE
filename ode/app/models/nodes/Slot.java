@@ -1,10 +1,7 @@
 package models.nodes;
 
 import constants.NodeType;
-import java.util.List;
 import managers.nodes.SlotManager;
-import models.relationships.HasPartRelationship;
-import play.libs.F.Promise;
 
 
 public class Slot extends LabeledNodeWithProperties {
@@ -23,10 +20,6 @@ public class Slot extends LabeledNodeWithProperties {
     public Slot(String uuid, int position) {
         this(uuid);
         this.jsonProperties.put("position", position);
-    }
-
-    protected Promise<List<Part>> getParts() {
-        return HasPartRelationship.getEndNodes(this);
     }
 
 }

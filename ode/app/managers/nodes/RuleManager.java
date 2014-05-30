@@ -236,14 +236,6 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         return json.map(new PropertyFunction(propName));
     }
 
-    public static Promise<Boolean> has(Rule rule, String string) {
-        Promise<WS.Response> response = Neo4jService
-            .fuzzyFindTargetsAnyDepth(
-                rule, NodeType.OUTPUT_STRING.toString(), "content", string);
-        Promise<JsonNode> json = response.map(new JsonFunction());
-        return json.map(new ExistsFunction());
-    }
-
     public static Promise<UUID> getUUID(Rule rule) {
         Promise<String> prop = getProperty(rule, "uuid");
         return prop.map(

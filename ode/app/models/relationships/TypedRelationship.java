@@ -28,9 +28,4 @@ public class TypedRelationship extends Relationship {
         this.endNode = endNode;
     }
 
-    public Promise<Boolean> exists() {
-        Promise<JsonNode> json = TypedRelationshipManager.get(this);
-        return json.map(new ExistsFunction());
-    }
-
 }

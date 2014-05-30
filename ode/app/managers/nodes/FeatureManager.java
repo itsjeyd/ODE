@@ -34,34 +34,35 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
     }
 
     public Promise<List<Feature>> all() {
-        Promise<List<JsonNode>> json = all(this.label);
-        Promise<List<Feature>> features = json.map(
-            new Function<List<JsonNode>, List<Feature>>() {
-                public List<Feature> apply(List<JsonNode> json) {
-                    List<Feature> features = new ArrayList<Feature>();
-                    for (JsonNode node: json) {
+        Promise<List<JsonNode>> nodes = all(this.label);
+        Promise<List<Feature>> features = nodes.flatMap(
+            new Function<List<JsonNode>, Promise<List<Feature>>>() {
+                public Promise<List<Feature>> apply(List<JsonNode> nodes) {
+                    List<Promise<? extends Feature>> features =
+                        new ArrayList<Promise<? extends Feature>>();
+                    for (JsonNode node: nodes) {
                         String name = node.get("name").asText();
                         String description = "";
                         if (node.has("description")) {
                             description = node.get("description").asText();
                         }
                         String type = node.get("type").asText();
-                        features.add(new Feature(name, description, type));
+                        final Feature f =
+                            new Feature(name, description, type);
+                        Promise<List<String>> targets = targets(node);
+                        Promise<Feature> feature = targets.map(
+                            new Function<List<String>, Feature>() {
+                                public Feature apply(List<String> targets) {
+                                    f.targets = targets;
+                                    return f;
+                                }
+                            });
+                        features.add(feature);
                     }
-                    return features;
+                    return Promise.sequence(features);
                 }
             });
-        return features.flatMap(
-            new Function<List<Feature>, Promise<List<Feature>>>() {
-                public Promise<List<Feature>> apply(List<Feature> features) {
-                    List<Promise<? extends Feature>> all =
-                        new ArrayList<Promise<? extends Feature>>();
-                    for (Feature feature: features) {
-                        all.add(feature.setTargets());
-                    }
-                    return Promise.sequence(all);
-                }
-            });
+        return features;
     }
 
     public Promise<Feature> get(JsonNode properties) {

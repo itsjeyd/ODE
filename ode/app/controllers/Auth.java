@@ -6,7 +6,6 @@ import models.nodes.User;
 import play.data.Form;
 import play.libs.F.Function0;
 import play.libs.F.Function;
-import play.libs.F.Option;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Content;
@@ -49,15 +48,16 @@ public class Auth extends Controller {
         if (loginForm.hasErrors()) {
             return Promise.promise(new ErrorResult(login.render(loginForm)));
         }
-        Promise<Option<User>> user = new User(
-            loginForm.get().email,
-            loginForm.get().password).get();
-        return user.map(
-            new Function<Option<User>, Result>() {
-                public Result apply(Option<User> user) {
-                    if (user.isDefined()) {
+        final ObjectNode user = Json.newObject();
+        user.put("username", loginForm.get().email);
+        user.put("password", loginForm.get().password);
+        Promise<Boolean> exists = User.nodes.exists(user);
+        return exists.map(
+            new Function<Boolean, Result>() {
+                public Result apply(Boolean exists) {
+                    if (exists) {
                         session().clear();
-                        session("username", user.get().username);
+                        session("username", user.get("username").asText());
                         flash("success", "Login successful.");
                         return redirect(routes.Application.home());
                     } else {

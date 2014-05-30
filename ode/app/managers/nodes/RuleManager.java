@@ -16,6 +16,7 @@ import models.relationships.Has;
 import neo4play.Neo4jService;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 import play.libs.Json;
 import play.libs.WS;
 import utils.UUIDGenerator;
@@ -249,6 +250,32 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
                     return UUID.fromString(prop);
                 }
             });
+    }
+
+    // Custom functionality
+
+    public Promise<Rule> full(JsonNode properties) {
+        Promise<Rule> rule = get(properties);
+        rule = rule.flatMap(
+            new Function<Rule, Promise<Rule>>() {
+                public Promise<Rule> apply(final Rule rule) {
+                    ObjectNode properties = Json.newObject();
+                    String uuid = UUIDGenerator.from(rule.uuid);
+                    properties.put("uuid", uuid);
+                    Promise<RHS> rhs = RHS.nodes.get(properties);
+                    properties.put("ruleUUID", rule.uuid);
+                    Promise<LHS> lhs = LHS.nodes.get(properties);
+                    return lhs.zip(rhs).map(
+                        new Function<Tuple<LHS, RHS>, Rule>() {
+                            public Rule apply(Tuple<LHS, RHS> components) {
+                                rule.lhs = components._1;
+                                rule.rhs = components._2;
+                                return rule;
+                            }
+                        });
+                }
+            });
+        return rule;
     }
 
 }

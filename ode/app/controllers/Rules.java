@@ -43,7 +43,9 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> details(String name) {
-        Promise<Rule> requestedRule = new Rule(name).get();
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<Rule> requestedRule = Rule.nodes.full(properties);
         return requestedRule.map(
             new Function<Rule, Result>() {
                 public Result apply(Rule requestedRule) {

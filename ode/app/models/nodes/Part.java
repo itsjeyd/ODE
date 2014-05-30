@@ -34,8 +34,4 @@ public class Part extends LabeledNodeWithProperties {
         this.content = content;
     }
 
-    protected JsonNode toJSON() {
-        return this.jsonProperties.deepCopy();
-    }
-
 }

@@ -12,7 +12,6 @@ import managers.nodes.RuleManager;
 import models.nodes.RHS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
-import play.libs.F.Tuple;
 
 
 public class Rule extends UUIDNode {
@@ -256,33 +255,6 @@ public class Rule extends UUIDNode {
                         stringsNotFound, groups.subList(1, groups.size()));
                 }
             });
-    }
-
-    public Promise<Rule> get() {
-        Promise<JsonNode> json = RuleManager.get(this);
-        return json.flatMap(new GetFunction());
-    }
-
-    private static class GetFunction implements
-                                         Function<JsonNode, Promise<Rule>> {
-        public Promise<Rule> apply(JsonNode json) {
-            String name = json.findValue("name").asText();
-            String description = json.findValue("description").asText();
-            String uuid = json.findValue("uuid").asText();
-            final Rule rule = new Rule(name, description);
-            rule.uuid = uuid;
-            rule.jsonProperties.put("uuid", uuid);
-            Promise<LHS> lhs = new LHS(rule).get();
-            Promise<RHS> rhs = new RHS(rule).get();
-            return lhs.zip(rhs).map(
-                new Function<Tuple<LHS, RHS>, Rule>() {
-                    public Rule apply(Tuple<LHS, RHS> components) {
-                        rule.lhs = components._1;
-                        rule.rhs = components._2;
-                        return rule;
-                    }
-                });
-        }
     }
 
 }

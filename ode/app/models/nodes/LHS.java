@@ -47,18 +47,6 @@ public class LHS extends AVM {
             });
     }
 
-    public Promise<LHS> get() {
-        Promise<JsonNode> json = this.toJSON();
-        final LHS lhs = this;
-        return json.map(
-            new Function<JsonNode, LHS>() {
-                public LHS apply(JsonNode json) {
-                    lhs.json = json;
-                    return lhs;
-                }
-            });
-    }
-
     protected static class UUIDFunction implements Function<UUID, UUID> {
         public UUID apply(UUID parentUUID) {
             byte[] bytes = parentUUID.toString()

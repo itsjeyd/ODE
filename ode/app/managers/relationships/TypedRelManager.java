@@ -179,6 +179,19 @@ public abstract class TypedRelManager extends RelManager {
     // it doesn't make sense to force them to implement a method that
     // handles the conversion.
     public Promise<List<JsonNode>> endNodes(
+        LabeledNodeWithProperties startNode) {
+        Promise<WS.Response> response = RelationshipService
+            .endNodes(startNode, this.type);
+        return response.map(
+            new Function<WS.Response, List<JsonNode>>() {
+                public List<JsonNode> apply(WS.Response response) {
+                    JsonNode json = response.asJson();
+                    return json.get("data").findValues("data");
+                }
+            });
+    }
+
+    public Promise<List<JsonNode>> endNodes(
         LabeledNodeWithProperties startNode, String location) {
         Promise<WS.Response> response = RelationshipService
             .endNodes(startNode, this.type, location);
@@ -193,6 +206,19 @@ public abstract class TypedRelManager extends RelManager {
                         nodes.add(row.get(0));
                     }
                     return nodes;
+                }
+            });
+    }
+
+    public Promise<JsonNode> endNode(
+        LabeledNodeWithProperties startNode, JsonNode properties) {
+        Promise<WS.Response> response = RelationshipService
+            .endNodes(startNode, this.type, properties);
+        return response.map(
+            new Function<WS.Response, JsonNode>() {
+                public JsonNode apply(WS.Response response) {
+                    JsonNode json = response.asJson();
+                    return json.get("data").findValue("data");
                 }
             });
     }

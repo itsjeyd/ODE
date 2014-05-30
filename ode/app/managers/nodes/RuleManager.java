@@ -60,7 +60,8 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
                     String name = json.findValue("name").asText();
                     String description = json.findValue("description")
                         .asText();
-                    return new Rule(name, description);
+                    String uuid = json.findValue("uuid").asText();
+                    return new Rule(name, description, uuid);
                 }
             });
     }

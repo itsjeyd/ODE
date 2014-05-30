@@ -5,14 +5,14 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import managers.nodes.AVMManager;
+import managers.nodes.LHSManager;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 
 
 public class LHS extends AVM {
 
-    public static final AVMManager nodes = new AVMManager();
+    public static final LHSManager nodes = new LHSManager();
 
     public Rule parent;
 

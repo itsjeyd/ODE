@@ -297,6 +297,22 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return json.map(new ExistsFunction());
     }
 
+    protected Promise<List<String>> targets(JsonNode feature) {
+        Feature f = new Feature(feature.get("name").asText());
+        Promise<List<JsonNode>> nodes = Allows.relationships.endNodes(f);
+        Promise<List<String>> targets = nodes.map(
+            new Function<List<JsonNode>, List<String>>() {
+                public List<String> apply(List<JsonNode> nodes) {
+                    List<String> targets = new ArrayList<String>();
+                    for (JsonNode node: nodes) {
+                        targets.add(node.get("name").asText());
+                    }
+                    return targets;
+                }
+            });
+        return targets;
+    }
+
 
     public static Promise<List<JsonNode>> getValues(Feature feature) {
         Promise<List<WS.Response>> responses = Neo4jService

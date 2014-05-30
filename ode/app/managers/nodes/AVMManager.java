@@ -1,7 +1,11 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import java.util.ArrayList;
 import java.util.List;
 import models.nodes.Feature;
 import models.nodes.Substructure;
@@ -9,6 +13,7 @@ import models.nodes.Value;
 import models.relationships.Has;
 import play.libs.F.Function;
 import play.libs.F.Promise;
+import play.libs.F.Tuple;
 import play.libs.Json;
 import utils.UUIDGenerator;
 
@@ -229,6 +234,133 @@ public class AVMManager extends UUIDNodeManager {
                 });
         }
         return removed;
+    }
+
+    // Custom functionality
+
+    protected Promise<JsonNode> toJSON(final JsonNode properties) {
+        // 1. Get list of all pairs
+        Promise<List<Pair>> pairs = pairs(properties);
+        // 2. Convert pairs to JSON
+        Promise<JsonNode> json = pairs.map(
+            new Function<List<Pair>, JsonNode>() {
+                public JsonNode apply(List<Pair> pairs) {
+                    ArrayNode pairNodes =
+                        JsonNodeFactory.instance.arrayNode();
+                    for (Pair pair: pairs) {
+                        pairNodes.add(pair.toJSON());
+                    }
+                    ((ObjectNode) properties).put("pairs", pairNodes);
+                    return properties;
+                }
+            });
+        return json;
+    }
+
+    private Promise<List<Pair>> pairs(final JsonNode properties) {
+        Promise<List<JsonNode>> features = features(properties);
+        Promise<List<Pair>> pairs = features.flatMap(
+            new Function<List<JsonNode>, Promise<List<Pair>>>() {
+                public Promise<List<Pair>> apply(List<JsonNode> features) {
+                    List<Promise<? extends Pair>> pairs =
+                        new ArrayList<Promise<? extends Pair>>();
+                    for (JsonNode feature: features) {
+                        Promise<JsonNode> attribute = Promise.pure(feature);
+                        Promise<JsonNode> value =
+                            getValue(properties, feature);
+                        Promise<Pair> pair = Pair.of(attribute, value);
+                        pairs.add(pair);
+                    }
+                    return Promise.sequence(pairs);
+                }
+            });
+        return pairs;
+    }
+
+    private Promise<List<JsonNode>> features(JsonNode properties) {
+        Substructure avm = new Substructure(properties.get("uuid").asText());
+        // 1. Get list of all features
+        Promise<List<JsonNode>> nodes = Has.relationships.endNodes(avm);
+        // 2. For each feature, collect targets
+        Promise<List<JsonNode>> features = nodes.flatMap(
+            new Function<List<JsonNode>, Promise<List<JsonNode>>>() {
+                public Promise<List<JsonNode>> apply(List<JsonNode> nodes) {
+                    List<Promise<? extends JsonNode>> features =
+                        new ArrayList<Promise<? extends JsonNode>>();
+                    for (final JsonNode node: nodes) {
+                        ((ObjectNode) node).retain("name", "type");
+                        Promise<List<String>> targets = Feature.nodes
+                            .targets(node);
+                        Promise<JsonNode> feature = targets.map(
+                            new Function<List<String>, JsonNode>() {
+                                public JsonNode apply(List<String> targets) {
+                                    ArrayNode targetNodes =
+                                    JsonNodeFactory.instance.arrayNode();
+                                    for (String target: targets) {
+                                        targetNodes.add(target);
+                                    }
+                                    ((ObjectNode) node)
+                                        .put("targets", targetNodes);
+                                    return node;
+                                }
+                            });
+                        features.add(feature);
+                    }
+                    return Promise.sequence(features);
+                }
+            });
+        return features;
+    }
+
+    private Promise<JsonNode> getValue(JsonNode avm, JsonNode feature) {
+        String uuid = avm.get("uuid").asText();
+        String ruleUUID = avm.get("ruleUUID").asText();
+        if (feature.get("type").asText().equals("complex")) {
+            String name = feature.get("name").asText();
+            String subUUID = UUIDGenerator.from(uuid + name);
+            ObjectNode substructure = Json.newObject();
+            substructure.put("uuid", subUUID);
+            substructure.put("ruleUUID", ruleUUID);
+            return toJSON(substructure);
+        }
+        Feature f = new Feature(feature.get("name").asText());
+        ObjectNode properties = Json.newObject();
+        properties.put("rule", ruleUUID);
+        properties.put("avm", uuid);
+        Promise<JsonNode> node = Has.relationships.endNode(f, properties);
+        node = node.map(
+            new Function<JsonNode, JsonNode>() {
+                public JsonNode apply(JsonNode node) {
+                    String name = node.get("name").asText();
+                    return new TextNode(name);
+                }
+            });
+        return node;
+    }
+
+
+    private static class Pair {
+        public JsonNode attribute;
+        public JsonNode value;
+        private Pair(JsonNode attribute, JsonNode value) {
+            this.attribute = attribute;
+            this.value = value;
+        }
+        public static Promise<Pair> of(
+            Promise<JsonNode> attribute, Promise<JsonNode> value) {
+            return attribute.zip(value).map(
+                new Function<Tuple<JsonNode, JsonNode>, Pair>() {
+                    public Pair apply(Tuple<JsonNode, JsonNode> pair) {
+                        return new Pair(pair._1, pair._2);
+                    }
+                });
+        }
+        public JsonNode toJSON() {
+            ObjectNode json = Json.newObject();
+            json.put("attribute", this.attribute);
+            json.put("value", this.value);
+            return json;
+        }
     }
 
 }

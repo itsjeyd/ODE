@@ -40,6 +40,11 @@ public class Rule extends UUIDNode {
         this.description = description;
     }
 
+    public Rule(String name, String description, String uuid) {
+        this(name, description);
+        this.uuid = uuid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Rule)) {

@@ -69,7 +69,26 @@ public class Rules extends Controller {
     @Security.Authenticated(Secured.class)
     public static Promise<Result> input(final String name) {
         Promise<List<Feature>> globalFeatureList = Feature.nodes.all();
-        Promise<Rule> rule = new Rule(name).get();
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<Rule> rule = Rule.nodes.get(properties);
+        rule = rule.flatMap(
+            new Function<Rule, Promise<Rule>>() {
+                public Promise<Rule> apply(final Rule rule) {
+                    ObjectNode properties = Json.newObject();
+                    String uuid = UUIDGenerator.from(rule.uuid);
+                    properties.put("uuid", uuid);
+                    properties.put("ruleUUID", rule.uuid);
+                    Promise<LHS> lhs = LHS.nodes.get(properties);
+                    return lhs.map(
+                        new Function<LHS, Rule>() {
+                            public Rule apply(LHS lhs) {
+                                rule.lhs = lhs;
+                                return rule;
+                            }
+                        });
+                }
+            });
         Promise<Tuple<List<Feature>, Rule>> results = globalFeatureList
             .zip(rule);
         return results.map(

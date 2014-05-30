@@ -57,8 +57,9 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Promise<Result> similar(String name) {
-        Rule rule = new Rule(name);
-        Promise<List<Rule>> ruleList = rule.getSimilarRules();
+        ObjectNode properties = Json.newObject();
+        properties.put("name", name);
+        Promise<List<Rule>> ruleList = Rule.nodes.similar(properties);
         return ruleList.map(
             new Function<List<Rule>, Result>() {
                 public Result apply(List<Rule> ruleList) {

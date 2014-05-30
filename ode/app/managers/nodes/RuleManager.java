@@ -2,7 +2,6 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import constants.NodeType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 import managers.functions.JsonFunction;
 import managers.functions.PropertyFunction;
-import models.functions.ExistsFunction;
+import models.nodes.Feature;
 import models.nodes.LHS;
 import models.nodes.RHS;
 import models.nodes.Rule;
@@ -356,6 +355,58 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
         ObjectNode props = Json.newObject();
         props.put("uuid", uuid);
         return RHS.nodes.find(props, strings);
+    }
+
+    public Promise<List<Rule>> similar(JsonNode properties) {
+        Promise<JsonNode> json = get(this.label, properties);
+        Promise<List<JsonNode>> features = json.flatMap(
+            new Function<JsonNode, Promise<List<JsonNode>>>() {
+                public Promise<List<JsonNode>> apply(JsonNode json) {
+                    String ruleUUID = json.findValue("uuid").asText();
+                    String uuid = UUIDGenerator.from(ruleUUID);
+                    ObjectNode props = Json.newObject();
+                    props.put("ruleUUID", ruleUUID);
+                    props.put("uuid", uuid);
+                    return LHS.nodes.features(props);
+                }
+            });
+        Promise<Set<Rule>> similarRules = features.flatMap(
+            new Function<List<JsonNode>, Promise<Set<Rule>>>() {
+                public Promise<Set<Rule>> apply(List<JsonNode> features) {
+                    List<Promise<? extends Set<Rule>>> ruleSets =
+                        new ArrayList<Promise<? extends Set<Rule>>>();
+                    for (JsonNode feature: features) {
+                        ruleSets.add(Feature.nodes.rules(feature));
+                    }
+                    return Promise.sequence(ruleSets)
+                        .map(new IntersectFunction());
+                }
+            });
+        return similarRules.map(
+            new Function<Set<Rule>, List<Rule>>() {
+                public List<Rule> apply(Set<Rule> similarRules) {
+                    List<Rule> rules = new ArrayList<Rule>();
+                    rules.addAll(similarRules);
+                    return rules;
+                }
+            });
+    }
+
+    private static class IntersectFunction
+        implements Function<List<Set<Rule>>, Set<Rule>> {
+        public Set<Rule> apply(List<Set<Rule>> ruleSets) {
+            Set<Rule> rules = new HashSet<Rule>();
+            boolean firstSet = true;
+            for (Set<Rule> ruleSet: ruleSets) {
+                if (firstSet) {
+                    rules.addAll(ruleSet);
+                    firstSet = false;
+                } else {
+                    rules.retainAll(ruleSet);
+                }
+            }
+            return rules;
+        }
     }
 
 }

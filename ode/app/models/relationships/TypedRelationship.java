@@ -1,11 +1,7 @@
 package models.relationships;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import constants.RelationshipType;
-import managers.relationships.TypedRelationshipManager;
-import models.functions.ExistsFunction;
 import models.nodes.LabeledNodeWithProperties;
-import play.libs.F.Promise;
 
 
 public class TypedRelationship extends Relationship {

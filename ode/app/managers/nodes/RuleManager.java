@@ -256,28 +256,10 @@ public class RuleManager extends LabeledNodeWithPropertiesManager {
     }
 
     public Promise<Set<Rule>> matching(final JsonNode strings) {
-        Promise<List<Rule>> ruleList = all(this.label).map(
-            new Function<List<JsonNode>, List<Rule>>() {
-                public List<Rule> apply(List<JsonNode> nodes) {
-                    List<Rule> rules = new ArrayList<Rule>();
-                    for (JsonNode node: nodes) {
-                        String name = node.get("name").asText();
-                        String description = node.get("description").asText();
-                        Rule rule = new Rule(name, description);
-                        String uuid = node.get("uuid").asText();
-                        rule.setUUID(uuid);
-                        rules.add(rule);
-                    }
-                    return rules;
-
-                }
-            });
-        Promise<Set<Rule>> rules = ruleList.map(
-            new Function<List<Rule>, Set<Rule>>() {
-                public Set<Rule> apply(List<Rule> ruleList) {
-                    Set<Rule> rules = new HashSet<Rule>();
-                    rules.addAll(ruleList);
-                    return rules;
+        Promise<Set<Rule>> rules = all(this.label).map(
+            new Function<List<JsonNode>, Set<Rule>>() {
+                public Set<Rule> apply(List<JsonNode> nodes) {
+                    return from(nodes);
                 }
             });
         return rules.flatMap(

@@ -36,6 +36,7 @@ POST    /rules/:name/groups                               controllers.Rules.addG
 PUT     /rules/:name/groups/:gid                          controllers.Rules.updateGroup(name: String, gid: String)
 DELETE  /rules/:name/groups/:gid                          controllers.Rules.removeGroup(name: String, gid: String)
 POST    /rules/:name/groups/:gid/slots                    controllers.Rules.addSlot(name: String, gid: String)
+PUT     /rules/:name/groups/:gid/slots/:slid              controllers.Rules.updateSlot(name: String, gid: String, slid: String)
 DELETE  /rules/:name/groups/:gid/slots/:slid              controllers.Rules.removeSlot(name: String, gid: String, slid: String)
 POST    /rules/:name/groups/:gid/slots/:slid/parts        controllers.Rules.addPart(name: String, gid: String, slid: String)
 PUT     /rules/:name/groups/:gid/slots/:slid/parts/:pid   controllers.Rules.updatePart(name: String, gid: String, slid: String, pid: String)

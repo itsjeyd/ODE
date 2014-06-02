@@ -1055,7 +1055,7 @@ Output.View.PartsTableView = Backbone.View.extend({
           return s.get('position') > slot.get('position');
         });
         _.each(slotsToUpdate, function(s) {
-          s.set('position', s.get('position')-1);
+          s.save({ position: s.get('position')-1 }, { wait: true });
         });
       },
       'add': function(slot) {

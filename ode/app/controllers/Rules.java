@@ -481,6 +481,20 @@ public class Rules extends Controller {
 
     @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
+    public static Promise<Result> updateSlot(
+        String name, String groupID, String slotID) {
+        JsonNode json = request().body().asJson();
+        ObjectNode oldProps = Json.newObject();
+        oldProps.put("uuid", slotID);
+        ObjectNode newProps = oldProps.deepCopy();
+        newProps.put("position", json.findValue("position").asInt());
+        Promise<Boolean> updated = Slot.nodes.update(oldProps, newProps);
+        return updated.map(new ResultFunction("Slot successfully updated.",
+                                              "Slot not updated."));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> removeSlot(
         String name, String groupID, String slotID) {
         ObjectNode group = Json.newObject();

@@ -154,8 +154,6 @@ abstract class NodeManager extends BaseManager {
 
     public abstract Promise<Boolean> exists(JsonNode properties);
 
-    public abstract Promise<? extends List<? extends Node>> all();
-
     public abstract Promise<? extends Node> get(JsonNode properties);
 
     protected abstract Promise<Boolean> create(

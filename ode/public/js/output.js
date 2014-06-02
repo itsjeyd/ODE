@@ -502,8 +502,11 @@ Output.Model.PartsTable = Backbone.Model.extend({
       var splitPoint = outputString.get('splitPoint');
       var leftTokens = tokens.slice(0, splitPoint).join(' ');
       var rightTokens = tokens.slice(splitPoint).join(' ');
-      this._makeSlot(1, leftTokens);
-      this._makeSlot(2, rightTokens);
+      var partsTable = this;
+      var firstSlotDone = this._makeSlot(1, leftTokens);
+      $.when(firstSlotDone).then(function() {
+        partsTable._makeSlot(2, rightTokens);
+      });
     } else {
       this._addParts(outputString);
     }

@@ -18,7 +18,7 @@ import play.libs.Json;
 import utils.UUIDGenerator;
 
 
-public class AVMManager extends UUIDNodeManager {
+public class AVMManager extends LabeledNodeWithPropertiesManager {
 
     public AVMManager() {
         this.label = "AVM";

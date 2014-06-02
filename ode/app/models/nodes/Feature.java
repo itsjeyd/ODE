@@ -1,6 +1,5 @@
 package models.nodes;
 
-import constants.FeatureType;
 import constants.NodeType;
 import java.util.List;
 import managers.nodes.FeatureManager;
@@ -10,8 +9,8 @@ public class Feature extends OntologyNode {
 
     public static final FeatureManager nodes = new FeatureManager();
 
-    protected FeatureType type;
     protected String description;
+    protected String type;
     public List<String> targets;
 
     private Feature() {
@@ -26,22 +25,13 @@ public class Feature extends OntologyNode {
 
     public Feature(String name, String type) {
         this(name);
-        this.setType(type);
+        this.type = type;
     }
 
     public Feature(String name, String description, String type) {
         this(name);
         this.description = description;
-        this.setType(type);
-    }
-
-    protected Feature setType(String type) {
-        if (type.equals(FeatureType.COMPLEX.toString())) {
-            this.type = FeatureType.COMPLEX;
-        } else {
-            this.type = FeatureType.ATOMIC;
-        }
-        return this;
+        this.type = type;
     }
 
     public String getType() {

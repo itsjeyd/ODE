@@ -672,7 +672,7 @@ Output.View.RHSView = Backbone.View.extend({
           return g.get('position') > position;
         });
         _.each(groupsToUpdate, function(g) {
-          g.save({ position: g.get('position') - 1}, { wait: true });
+          g.save({ position: g.get('position')-1 }, { wait: true });
         });
       },
       'add': function(newGroup) {

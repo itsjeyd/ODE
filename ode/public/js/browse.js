@@ -56,10 +56,21 @@ Browse.Model.Rule = Backbone.Model.extend({
     var nativeFormat = this.get('nativeFormat');
     var outputVar = nativeFormat.rhs ?
       '###' + this.get('name') + '_output' : '';
-    return nativeFormat.name + nativeFormat.desc +
-      ':dvp ^ ' + nativeFormat.lhs + '\n->\n' +
-      nativeFormat.crossRefs + nativeFormat.rhs +
-      '# ^ :canned ^ <stringOutput>' + outputVar + '.\n\n';
+    var commentStart = '';
+    var commentEnd = '';
+    if (!nativeFormat.lhs || !nativeFormat.rhs) {
+      commentStart = '/*\n';
+      commentEnd = '\n*/';
+    }
+    return nativeFormat.name +
+      nativeFormat.desc +
+      commentStart +
+      ':dvp ^ ' + nativeFormat.lhs +
+      '\n->\n' +
+      nativeFormat.crossRefs +
+      nativeFormat.rhs +
+      '# ^ :canned ^ <stringOutput>' + outputVar + '.' +
+      commentEnd + '\n\n\n';
   },
 
   _nativeFormatName: function() {

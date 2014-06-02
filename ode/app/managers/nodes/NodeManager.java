@@ -5,7 +5,6 @@ import java.util.List;
 import managers.BaseManager;
 import managers.functions.JsonFunction;
 import managers.functions.SuccessFunction;
-import models.nodes.Node;
 import neo4play.NodeService;
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -153,8 +152,6 @@ abstract class NodeManager extends BaseManager {
 
 
     public abstract Promise<Boolean> exists(JsonNode properties);
-
-    public abstract Promise<? extends Node> get(JsonNode properties);
 
     protected abstract Promise<Boolean> create(
         JsonNode properties, String location);

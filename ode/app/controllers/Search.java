@@ -24,12 +24,12 @@ import views.html.search;
 public class Search extends Controller {
 
     private static Promise<Set<Rule>> getRulesMatchingFeatures(
-        JsonNode json) {
-        Iterator<JsonNode> features = json.findPath("features").elements();
+        ArrayNode features) {
+        Iterator<JsonNode> iter = features.elements();
         List<Promise<? extends Set<Rule>>> ruleSets =
             new ArrayList<Promise<? extends Set<Rule>>>();
-        while (features.hasNext()) {
-            JsonNode feature = features.next();
+        while (iter.hasNext()) {
+            JsonNode feature = iter.next();
             String value = feature.get("value").asText();
             if (value.equals("")) {
                 ruleSets.add(Feature.nodes.rules(feature));
@@ -41,8 +41,7 @@ public class Search extends Controller {
     }
 
     private static Promise<Set<Rule>> getRulesMatchingStrings(
-        JsonNode json) {
-        JsonNode strings = json.findPath("strings");
+        ArrayNode strings) {
         return Rule.nodes.matching(strings);
     }
 
@@ -76,7 +75,7 @@ public class Search extends Controller {
         final ArrayNode strings = (ArrayNode) json.findPath("strings");
         if (features.size() > 0) {
             Promise<Set<Rule>> rulesMatchingFeatures =
-                getRulesMatchingFeatures(json);
+                getRulesMatchingFeatures(features);
             Promise<Set<Rule>> matchingRules =
                 rulesMatchingFeatures.flatMap(
                     new Function<Set<Rule>, Promise<Set<Rule>>>() {
@@ -86,16 +85,15 @@ public class Search extends Controller {
                                 strings.size() == 0) {
                                 return Promise.pure(rulesMatchingFeatures);
                             } else {
-                                return Rule.nodes
-                                    .matching(rulesMatchingFeatures,
-                                              json.findPath("strings"));
+                                return Rule.nodes.matching(
+                                    rulesMatchingFeatures, strings);
                             }
                         }
                     });
             return matchingRules.map(new ResultFunction());
         } else if (strings.size() > 0) {
             Promise<Set<Rule>> rulesMatchingStrings =
-                getRulesMatchingStrings(json);
+                getRulesMatchingStrings(strings);
             return rulesMatchingStrings.map(new ResultFunction());
         } else {
             Set<Rule> matchingRules = new HashSet<Rule>();

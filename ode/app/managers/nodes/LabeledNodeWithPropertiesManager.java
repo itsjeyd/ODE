@@ -8,12 +8,12 @@ abstract class LabeledNodeWithPropertiesManager extends LabeledNodeManager {
 
     protected Promise<Boolean> connect(
         JsonNode startNode, JsonNode endNode, String location) {
-        return null;
+        return Promise.pure(false);
     }
 
     protected Promise<Boolean> disconnect(
         JsonNode startNode, JsonNode endNode, String location) {
-        return null;
+        return Promise.pure(false);
     }
 
 }

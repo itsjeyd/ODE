@@ -116,7 +116,10 @@ Browse.Model.Feature = Backbone.Model.extend({
           value: p.value
         }).getNativeFormat();
       });
-      return '(' + embeddedFeatures.join(' ^ ') + ')';
+      if (embeddedFeatures.length > 0) {
+        return '(' + embeddedFeatures.join(' ^ ') + ')';
+      }
+      return '';
     }
   },
 

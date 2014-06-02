@@ -121,6 +121,7 @@ public class RHSManager extends CollectionNodeManager {
 
     // Connections to other nodes
 
+    @Override
     protected Promise<Boolean> connect(
         final JsonNode rhs, final JsonNode group, final String location) {
         Promise<Boolean> created = CombinationGroup.nodes
@@ -141,6 +142,7 @@ public class RHSManager extends CollectionNodeManager {
         return connected;
     }
 
+    @Override
     protected Promise<Boolean> disconnect(
         JsonNode rhs, final JsonNode group, final String location) {
         RHS r = new RHS(rhs.get("uuid").asText());

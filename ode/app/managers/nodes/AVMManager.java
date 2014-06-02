@@ -135,6 +135,7 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
 
     // Connections to other nodes
 
+    @Override
     protected Promise<Boolean> connect(
         final JsonNode avm, final JsonNode feature, final String location) {
         final String uuid = avm.get("uuid").asText();
@@ -193,6 +194,7 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
         return connected;
     }
 
+    @Override
     protected Promise<Boolean> disconnect(
         final JsonNode avm, final JsonNode feature, final String location) {
         final String uuid = avm.get("uuid").asText();

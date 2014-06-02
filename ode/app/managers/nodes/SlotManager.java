@@ -33,6 +33,7 @@ public class SlotManager extends ContentCollectionNodeManager {
 
     // Connections to other nodes
 
+    @Override
     protected Promise<Boolean> connect(
         JsonNode slot, JsonNode partOrRule, String location) {
         if (partOrRule.has("name")) {
@@ -80,6 +81,7 @@ public class SlotManager extends ContentCollectionNodeManager {
         return connected;
     }
 
+    @Override
     protected Promise<Boolean> disconnect(
         JsonNode slot, JsonNode partOrRule, String location) {
         if (partOrRule.has("name")) {

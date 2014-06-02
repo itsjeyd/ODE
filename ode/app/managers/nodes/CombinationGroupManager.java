@@ -60,6 +60,7 @@ public class CombinationGroupManager extends ContentCollectionNodeManager {
 
     // Connections to other nodes
 
+    @Override
     protected Promise<Boolean> connect(
         JsonNode group, JsonNode stringOrSlot, String location) {
         if (stringOrSlot.has("position")) {
@@ -124,6 +125,7 @@ public class CombinationGroupManager extends ContentCollectionNodeManager {
         return connected;
     }
 
+    @Override
     protected Promise<Boolean> disconnect(
         JsonNode group, JsonNode stringOrSlot, String location) {
         String nodeType = "";

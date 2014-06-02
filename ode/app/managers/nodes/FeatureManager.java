@@ -220,6 +220,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
 
     // Connections to other nodes
 
+    @Override
     protected Promise<Boolean> connect(
         JsonNode feature, final JsonNode target, final String location) {
         String fname = feature.get("name").asText();
@@ -254,6 +255,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
         return connected;
     }
 
+    @Override
     protected Promise<Boolean> disconnect(
         JsonNode feature, final JsonNode target, final String location) {
         String fname = feature.get("name").asText();

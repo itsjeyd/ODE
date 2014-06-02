@@ -158,7 +158,6 @@ Input.View.RuleView = Backbone.View.extend({
     this.$el.append($.p('').attr('id', 'rule-description'));
     this.$el.append($.div().attr('id', 'rule-lhs'));
     this._renderName();
-    this._renderSimilarRulesButton();
     this._renderDescription();
     this._renderLHS();
     return this;
@@ -166,6 +165,7 @@ Input.View.RuleView = Backbone.View.extend({
 
   _renderName: function() {
     this.$('#rule-name').text('@' + this.model.get('name'));
+    this._renderSimilarRulesButton();
   },
 
   _renderSimilarRulesButton: function() {
@@ -219,7 +219,7 @@ Input.View.RuleView = Backbone.View.extend({
   _renderEditControls: function(modelField) {
     return function(e) {
       var fieldToEdit = $(e.currentTarget);
-      var currentValue = fieldToEdit.text();
+      var currentValue = fieldToEdit.textOnly();
       if (modelField === 'name') {
         currentValue = currentValue.substring(1);
       }

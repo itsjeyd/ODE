@@ -61,9 +61,7 @@ Features.Model.Feature = Backbone.Model.extend({
   },
 
   updateName: function(newName) {
-    var success = function(model, response, options) {
-      model.id = newName;
-    };
+    var success = function(model, response, options) {};
     this._update('name', { name: newName }, success);
   },
 

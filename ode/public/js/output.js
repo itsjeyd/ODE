@@ -13,11 +13,10 @@ Output.Model.Rule = Backbone.Model.extend({
     this.urlRoot = '/rules';
   },
 
-  _update: function(field, attrs, success) {
+  _update: function(field, attrs) {
     this.save(attrs,
               { url: this.url() + '/' + field,
                 wait: true,
-                success: success,
                 error: function(model, xhr, options) {
                   var response = $.parseJSON(xhr.responseText);
                   model.trigger('update-error:' + field, response.message);
@@ -26,15 +25,11 @@ Output.Model.Rule = Backbone.Model.extend({
   },
 
   updateName: function(newName) {
-    var success = function(model, response, options) {
-      model.id = newName;
-    };
-    this._update('name', { name: newName }, success);
+    this._update('name', { name: newName });
   },
 
   updateDescription: function(newDescription) {
-    var success = function(model, response, options) {};
-    this._update('description', { description: newDescription }, success);
+    this._update('description', { description: newDescription });
   },
 
 });

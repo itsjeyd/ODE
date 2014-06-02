@@ -1,6 +1,7 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import models.nodes.Value;
@@ -13,7 +14,7 @@ import play.libs.F.Promise;
 public class ValueManager extends LabeledNodeWithPropertiesManager {
 
     public ValueManager() {
-        this.label = "Value";
+        this.label = NodeType.VALUE.toString();
     }
 
     // READ

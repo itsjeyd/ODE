@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 
 
 public class OutputStringManager extends ContentNodeManager {
 
     public OutputStringManager() {
-        this.label = "OutputString";
+        this.label = NodeType.OUTPUT_STRING.toString();
     }
 
     // Custom functionality

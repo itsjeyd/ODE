@@ -1,6 +1,7 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import models.nodes.Part;
@@ -11,7 +12,7 @@ import play.libs.F.Promise;
 public class PartManager extends ContentNodeManager {
 
     public PartManager() {
-        this.label = "Part";
+        this.label = NodeType.PART.toString();
     }
 
     // READ

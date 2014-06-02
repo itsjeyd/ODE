@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ import play.libs.WS;
 public class RHSManager extends CollectionNodeManager {
 
     public RHSManager() {
-        this.label = "RHS";
+        this.label = NodeType.RHS.toString();
     }
 
     // READ

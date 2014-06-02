@@ -2,6 +2,7 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +22,7 @@ import utils.UUIDGenerator;
 public class RuleManager extends LabeledNodeWithPropertiesManager {
 
     public RuleManager() {
-        this.label = "Rule";
+        this.label = NodeType.RULE.toString();
     }
 
     // READ

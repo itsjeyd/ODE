@@ -2,6 +2,7 @@ package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ import play.libs.WS;
 public class FeatureManager extends LabeledNodeWithPropertiesManager {
 
     public FeatureManager() {
-        this.label = "Feature";
+        this.label = NodeType.FEATURE.toString();
     }
 
     // READ

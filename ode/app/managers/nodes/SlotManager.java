@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,7 @@ import play.libs.F.Promise;
 public class SlotManager extends ContentCollectionNodeManager {
 
     public SlotManager() {
-        this.label = "Slot";
+        this.label = NodeType.SLOT.toString();
     }
 
     // DELETE

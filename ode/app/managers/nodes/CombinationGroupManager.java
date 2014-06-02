@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,7 +22,7 @@ import play.libs.Json;
 public class CombinationGroupManager extends ContentCollectionNodeManager {
 
     public CombinationGroupManager() {
-        this.label = "CombinationGroup";
+        this.label = NodeType.COMBINATION_GROUP.toString();
     }
 
     // DELETE

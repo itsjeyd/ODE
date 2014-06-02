@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import models.nodes.Feature;
@@ -21,7 +22,7 @@ import utils.UUIDGenerator;
 public class AVMManager extends LabeledNodeWithPropertiesManager {
 
     public AVMManager() {
-        this.label = "AVM";
+        this.label = NodeType.AVM.toString();
     }
 
     // UPDATE

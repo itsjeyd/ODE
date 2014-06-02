@@ -1,13 +1,14 @@
 package managers.nodes;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import constants.NodeType;
 import play.libs.F.Promise;
 
 
 public class UserManager extends LabeledNodeWithPropertiesManager {
 
     public UserManager() {
-        this.label = "User";
+        this.label = NodeType.USER.toString();
     }
 
     // CREATE

@@ -471,7 +471,10 @@ Input.View.AVMView = Backbone.View.extend({
   },
 
   _renderEmptyButton: function() {
-    this.$el.append($.emptyButton().css('visibility', 'hidden'));
+    this.$el.append(
+      $.emptyButton().css('visibility', 'hidden')
+        .tooltip({ placement: 'right',
+                   title: 'Empty AVM' }));
   },
 
   events: {

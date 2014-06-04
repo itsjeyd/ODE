@@ -390,6 +390,9 @@ Features.View.FeatureView = Backbone.View.extend({
     } else {
       node = ($(targetFormTemplate({ targetType: 'value' })));
       node.makeEditable();
+      node.tooltip({ placement: 'right',
+                     title: '... or click to enter new value',
+                     delay: { show: 250, hide: 0 }, });
     }
     this.$el.append(node);
     var addButton = $.addButton().addClass('ftarget').disable().hide();

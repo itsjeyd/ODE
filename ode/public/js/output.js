@@ -769,7 +769,11 @@ Output.View.OutputStringView = Backbone.View.extend({
     var tokens = this.model.get('tokens');
     _.each(_.initial(tokens), function(t) {
       this.$el.append($.span('token').text(t));
-      this.$el.append($.span('sep').data('ID', sepID++));
+      this.$el.append(
+        $.span('sep').data('ID', sepID++)
+          .tooltip({ placement: 'top',
+                     title: 'Click to split',
+                     delay: { show: 250, hide: 0 }, }));
     }, this);
     this.$el.append($.span('token').text(_.last(tokens)));
     this._renderPlaceholder();

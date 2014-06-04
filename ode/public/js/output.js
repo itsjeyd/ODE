@@ -1380,6 +1380,19 @@ Output.View.PartsInventoryView = Backbone.View.extend({
     });
   },
 
+  events: {
+    'mouseenter .part': '_highlight',
+    'mouseleave .part': '_unhighlight',
+  },
+
+  _highlight: function(e) {
+    $(e.currentTarget).addClass('highlighted');
+  },
+
+  _unhighlight: function(e) {
+    $(e.currentTarget).removeClass('highlighted');
+  },
+
 });
 
 

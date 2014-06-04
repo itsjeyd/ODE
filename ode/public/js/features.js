@@ -783,8 +783,18 @@ Features.View.ValueListView = Features.View.ListView.extend({
   },
 
   events: {
+    'mouseenter .value-item': '_highlight',
+    'mouseleave .value-item': '_unhighlight',
     'dblclick .value-item': '_edit',
     'click button.vname': '_save',
+  },
+
+  _highlight: function(e) {
+    $(e.currentTarget).addClass('highlighted');
+  },
+
+  _unhighlight: function(e) {
+    $(e.currentTarget).removeClass('highlighted');
   },
 
   _edit: function(e) {

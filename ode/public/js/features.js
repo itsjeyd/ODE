@@ -275,7 +275,7 @@ Features.View.FeatureFormView = Backbone.View.extend({
     var type = this.$('.ftype:checked').val();
     var feature = new Features.Model.Feature({
       name: name,
-      description: description,
+      description: description || '...',
       type: type,
     });
     feature.create(this);

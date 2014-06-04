@@ -34,13 +34,13 @@
         <ul class="nav navbar-nav navbar-right">
           @if(session().get("username")) {
             <li>
-              <a href="@routes.Rules.browse()">Browse</a>
+              <a href="@routes.Rules.browse()" id="browse">Browse</a>
             </li>
             <li>
-              <a href="@routes.Search.search()">Search</a>
+              <a href="@routes.Search.search()" id="search">Search</a>
             </li>
             <li>
-              <a href="@routes.Features.features()">Features</a>
+              <a href="@routes.Features.features()" id="features">Features</a>
             </li>
             <li>
               <a href="#" id="new">New</a>

@@ -334,6 +334,8 @@ Search.View.ResultView = Backbone.View.extend({
 
 $(document).ready(function() {
 
+  $('a#search').parent("li").addClass('active');
+
   var searchTarget = new Search.Model.SearchTarget();
 
   var searchTargetView = new Search.View.SearchTargetView({

@@ -835,6 +835,8 @@ Features.View.ValueListView = Features.View.ListView.extend({
 
 $(document).ready(function() {
 
+  $('a#features').parent("li").addClass('active');
+
   var interactionBlock = $('#interaction-block');
 
 

@@ -457,6 +457,8 @@ Browse.View.RuleListView = Backbone.View.extend({
 
 $(document).ready(function() {
 
+  $('a#browse').parent("li").addClass('active');
+
   var ruleItems = $('.rule-item');
 
   var ruleList = new Browse.Collection.RuleList(

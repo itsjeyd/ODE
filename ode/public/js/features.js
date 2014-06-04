@@ -329,6 +329,11 @@ Features.View.FeatureView = Backbone.View.extend({
   _renderName: function() {
     var nameTemplate = _.template('<h3><%= name %></h3>');
     var node = $(nameTemplate({ name: this.model.get('name') }));
+    node.tooltip({
+      placement: 'left',
+      title: 'Double-click to edit',
+      delay: { show: 250, hide: 0 },
+    });
     this.$el.append(node);
   },
 
@@ -337,6 +342,11 @@ Features.View.FeatureView = Backbone.View.extend({
     var node = $(descriptionTemplate({
       description: this.model.get('description')
     }));
+    node.tooltip({
+      placement: 'left',
+      title: 'Double-click to edit',
+      delay: { show: 250, hide: 0 },
+    });
     this.$el.append(node);
   },
 

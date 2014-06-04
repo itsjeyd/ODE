@@ -68,6 +68,11 @@ Output.View.RuleView = Backbone.View.extend({
 
   _renderName: function() {
     this.$('#rule-name').text('@' + this.model.get('name'));
+    this.$('#rule-name').tooltip({
+      title: 'Double-click to edit',
+      placement: 'left',
+      delay: { show: 250, hide: 0 },
+    });
     this._renderSimilarRulesButton();
     this._renderOutputButton();
   },
@@ -86,6 +91,11 @@ Output.View.RuleView = Backbone.View.extend({
 
   _renderDescription: function() {
     this.$('#rule-description').text(this.model.get('description'));
+    this.$('#rule-description').tooltip({
+      title: 'Double-click to edit',
+      placement: 'left',
+      delay: { show: 250, hide: 0 },
+    });
   },
 
   _renderRHS: function() {

@@ -50,23 +50,25 @@ input.description {
     margin-bottom: 7px;
 }
 
-.slot {
+.slot, .controls {
     display: inline-block;
-    vertical-align: top;
-    border: 2px solid rgba(51, 51, 51, .30); /* #333333 */
+    border-width: 2px;
     border-radius: 5px;
-    margin-right: 10px;
     padding-left: 3px;
     padding-right: 3px;
 }
 
+.slot {
+    vertical-align: top;
+    border-style: solid;
+    border-color: rgba(51, 51, 51, .30); /* #333333 */
+    margin-right: 10px;
+}
+
 .controls {
-    display: inline-block;
-    border: 2px dashed rgba(51, 51, 51, .15); /* #333333 */
-    border-radius: 5px;
-    padding-left: 3px;
-    padding-right: 3px;
-    color: rgba(51, 51, 51, .30); /* #333333 */
+    border-style: dashed;
+    border-color: rgba(51, 51, 51, .15); /*#333333 */
+    color: rgba(51, 51, 51, .30); /*#333333 */
     cursor: pointer;
 }
 

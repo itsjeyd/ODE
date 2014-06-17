@@ -630,7 +630,7 @@ Output.Model.PartsTable = Backbone.Model.extend({
       }
     }
     if (slot.length === 0) {
-      return [str];
+      return [string];
     } else {
       return acc(string, slot, []);
     }

@@ -62,6 +62,17 @@ input.description {
 
 .controls {
     display: inline-block;
+    border: 2px dashed rgba(51, 51, 51, .15); /* #333333 */
+    border-radius: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+    color: rgba(51, 51, 51, .30); /* #333333 */
+    cursor: pointer;
+}
+
+.controls:hover {
+    background-color: rgba(51, 51, 51, .03); /* #333333 */
+    border-color: rgba(51, 51, 51, .30); /* #333333 */
 }
 
 hr {

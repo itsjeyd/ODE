@@ -1105,12 +1105,18 @@ Output.View.PartsTableView = Backbone.View.extend({
 
   _renderControls: function() {
     var controls = $.div('controls');
-    controls.append($.infoButton('Add slot'));
+    controls.append($.h5('Add slot ...').css('visibility', 'hidden'));
     this.$('.slots').append(controls);
   },
 
   events: {
-    'click .btn': '_addSlot',
+    'mouseenter .controls': function(e) {
+      $(e.currentTarget).find('h5').css('visibility', 'visible');
+    },
+    'mouseleave .controls': function(e) {
+      $(e.currentTarget).find('h5').css('visibility', 'hidden');
+    },
+    'click .controls': '_addSlot',
     'mouseenter h5': function(e) {
       if (this.model.hasOptionalSlots()) {
         $(e.currentTarget).find('.remove-button')

@@ -914,7 +914,7 @@ Output.View.CombinationGroupView = Backbone.View.extend({
     small.append($.copyButton().tooltip({ placement: 'top',
                                           title: 'Copy group' }));
     small.append($.removeButton().tooltip({ placement: 'top',
-                                          title: 'Delete group' }));
+                                            title: 'Delete group' }));
     groupHeader.append(small);
     this.$el.append(groupHeader);
   },

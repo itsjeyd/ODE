@@ -9,10 +9,6 @@ Features.View = {};
 
 Features.Model.Feature = Backbone.Model.extend({
 
-  defaults: {
-    targets: [],
-  },
-
   initialize: function() {
     this.urlRoot = '/features'
   },
@@ -277,6 +273,7 @@ Features.View.FeatureFormView = Backbone.View.extend({
       name: name,
       description: description || '...',
       type: type,
+      targets: [],
     });
     feature.create(this);
   },

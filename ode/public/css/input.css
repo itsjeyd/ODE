@@ -4,6 +4,14 @@ input.description {
     margin-bottom: 10px; /* Equal to margin-top of Bootstrap <h3> */
 }
 
+button.name {
+    margin-bottom: 10px;
+}
+
+button.description {
+    margin-bottom: 15px;
+}
+
 .bracket {
     display: inline-block;
     width: 10px;

@@ -331,8 +331,13 @@ Browse.View.RuleItemView = Backbone.View.extend({
 
   render: function() {
     this.$el.attr('id', this.model.get('id'));
+    var desc = this.model.get('description');
+    var descLength = 75 - this.model.get("name").length;
+    var shortDescription = desc.length <= descLength ?
+      desc : desc.substring(0, descLength) + ' ...';
+    this.model.set('shortDescription', shortDescription);
     var template = _.template(
-      '<h2>@<%= name %> <small><%= description %></h2>');
+      '<h2>@<%= name %> <small><%= shortDescription %></h2>');
     var node = $(template(this.model.toJSON()));
     this.$el.append(node);
     return this;

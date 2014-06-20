@@ -2,6 +2,10 @@
     margin-bottom: 20px;
 }
 
+h4.description {
+    color: #999;
+}
+
 #similar-button, #edit-input-button, #edit-output-button {
     float: right;
     margin-left: 5px;

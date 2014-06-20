@@ -12,7 +12,6 @@
         <h2>
           @@@rule.name
           <small>
-            @rule.description
             <a href="@routes.Rules.similar(rule.name)"
                class="btn btn-success"
                id="similar-button">Similar rules</a>
@@ -24,6 +23,7 @@
                id="edit-input-button">Edit input</a>
           </small>
         </h2>
+        <h4 class="description">@rule.description</h4>
       </div>
     </div>
 

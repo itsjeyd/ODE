@@ -49,6 +49,11 @@ Input.View.FeatureItemView = Backbone.View.extend({
         return helper;
       },
     });
+    this.$el.tooltip({
+      placement: 'top',
+      title: this.model.get('description'),
+      delay: { show: 250, hide: 0 },
+    });
     return this;
   }
 

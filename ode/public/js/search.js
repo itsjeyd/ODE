@@ -288,7 +288,7 @@ Search.View.ResultView = Backbone.View.extend({
     var tbody = $.tbody();
     this.collection.each(function(r) {
       var tr = $.tr();
-      tr.append($.td().html($.a(r.url(), r.get('name'))));
+      tr.append($.td().html($.a(r.url(), '@' + r.get('name'))));
       tr.append($.td().text(r.get('description')));
       tbody.append(tr);
     });

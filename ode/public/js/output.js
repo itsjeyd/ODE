@@ -1015,6 +1015,13 @@ Output.View.CombinationGroupView = Backbone.View.extend({
         inputField.next('button').css('visibility', 'hidden');
       }
     },
+    'paste .placeholder': function(e) {
+      var inputField = $(e.currentTarget);
+      if (inputField.text() === 'Add more content ...') {
+        inputField.empty();
+      }
+      inputField.next('button').css('visibility', 'visible');
+    },
     'click .placeholder + button': function(e) {
       var button = $(e.currentTarget);
       button.next('.alert-msg').remove();

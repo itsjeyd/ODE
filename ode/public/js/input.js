@@ -320,7 +320,11 @@ Input.Model.Pair = Backbone.Model.extend({
     if (typeof value === 'string') {
       this.set('value', value);
     } else {
-      var accept = '#' + this.get('attribute').get('targets').join(', #');
+      var targets = this.get('attribute').get('targets');
+      var accept = function(feature) {
+        var name = feature.data('name');
+        return _.contains(targets, name);
+      };
       this.set('value', new Input.Collection.AVM(
         null, { ruleName: this.parent.ruleName,
                 ruleUUID: this.parent.ruleUUID,

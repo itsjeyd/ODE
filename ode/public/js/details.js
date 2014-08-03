@@ -117,7 +117,7 @@ Details.Collection.RHS = Backbone.Collection.extend({
       }
     }
     if (slot.length === 0) {
-      return [str];
+      return [string];
     } else {
       return acc(string, slot, []);
     }

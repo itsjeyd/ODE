@@ -176,13 +176,15 @@ public class RHSManager extends CollectionNodeManager {
                     if (stringsNotFound.isEmpty()) {
                         return Promise.pure(stringsNotFound);
                     }
-                    Promise<List<JsonNode>> groups = groups(properties);
-                    return groups.flatMap(
+                    RHS rhs = new RHS(properties.get("uuid").asText());
+                    Promise<List<JsonNode>> groupNodes =
+                        Has.relationships.endNodes(rhs);
+                    return groupNodes.flatMap(
                         new Function<List<JsonNode>, Promise<List<String>>>() {
                             public Promise<List<String>> apply(
-                                List<JsonNode> groups) {
+                                List<JsonNode> groupNodes) {
                                 return findInGroupTables(
-                                    groups, stringsNotFound);
+                                    groupNodes, stringsNotFound);
                             }
                         });
                 }

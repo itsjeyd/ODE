@@ -1,7 +1,6 @@
 package models.relationships;
 
 import managers.relationships.RHSManager;
-import models.Model;
 
 
 public class RHS extends Relationship {

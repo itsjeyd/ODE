@@ -1,13 +1,13 @@
-var cart = function(parts) {
-  if (parts.length === 0) {
+var cart = function(slots) {
+  if (slots.length === 0) {
     return [];
-  } else if (parts.length === 1) {
-    return parts.pop();
-  } else if (parts.length === 2) {
-    return combineSlots(parts[0], parts[1]);
+  } else if (slots.length === 1) {
+    return slots.pop();
+  } else if (slots.length === 2) {
+    return combineSlots(slots[0], slots[1]);
   } else {
-    var intermediateResult = combineSlots(parts[0], parts[1]);
-    var remainingSlots = parts.slice(2);
+    var intermediateResult = combineSlots(slots[0], slots[1]);
+    var remainingSlots = slots.slice(2);
     return cart([intermediateResult].concat(remainingSlots));
   }
 };

@@ -460,6 +460,9 @@ Browse.View.RuleListView = Backbone.View.extend({
 });
 
 
+
+// Application
+
 $(document).ready(function() {
 
   $('a#browse').parent("li").addClass('active');

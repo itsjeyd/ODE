@@ -43,6 +43,7 @@ Browse.Model.Rule = Backbone.Model.extend({
     var nativeFormat = {};
     nativeFormat.crossRefs = '';
     _.each(this.get('rhs').get('crossRefs'), function(r) {
+      nativeFormat.crossRefs += processed[r].get('nativeFormat').crossRefs;
       nativeFormat.crossRefs += processed[r].get('nativeFormat').rhs;
     });
     nativeFormat.name = this._nativeFormatName();

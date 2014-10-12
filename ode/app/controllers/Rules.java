@@ -267,17 +267,19 @@ public class Rules extends Controller {
         feature.put("name", json.findValue("name").asText());
         feature.put("type", json.findValue("type").asText());
         Promise<Boolean> added = Substructure.nodes.connect(avm, feature);
-        return added.map(
-            new Function<Boolean, Result>() {
+        Promise<Feature> feat = Feature.nodes.get(feature);
+        return added.zip(feat).map(
+            new Function<Tuple<Boolean, Feature>, Result>() {
                 ObjectNode result = Json.newObject();
-                public Result apply(Boolean added) {
+                public Result apply(Tuple<Boolean, Feature> t) {
+                    Boolean added = t._1;
                     if (added) {
-                        String type = feature.get("type").asText();
-                        if (type.equals("complex")) {
+                        Feature feat = t._2;
+                        if (feat.getType().equals("complex")) {
                             String parentUUID = avm.get("uuid").asText();
-                            String fname = feature.get("name").asText();
+                            String featureUUID = feat.getUUID();
                             String uuid = UUIDGenerator
-                                .from(parentUUID + fname);
+                                .from(parentUUID + featureUUID);
                             ObjectNode value = Json.newObject();
                             value.put("uuid", uuid);
                             value.putArray("pairs");

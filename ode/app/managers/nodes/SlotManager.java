@@ -47,9 +47,31 @@ public class SlotManager extends ContentCollectionNodeManager {
     }
 
     private Promise<Boolean> connect(
-        JsonNode slot, Rule rule, String location) {
-        Slot s = new Slot(slot.get("uuid").asText());
-        return Has.relationships.create(s, rule, location);
+        final JsonNode slot, final Rule rule, final String location) {
+        Promise<Boolean> exists = Rule.nodes.exists(rule.getProperties());
+        Promise<Boolean> connected = exists.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean exists) {
+                    if (exists) {
+                        final Slot s = new Slot(slot.get("uuid").asText());
+                        Promise<Boolean> connected = Has.relationships
+                            .exists(s, rule);
+                        return connected.flatMap(
+                            new Function<Boolean, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(
+                                    Boolean connected) {
+                                    if (connected) {
+                                        return Promise.pure(false);
+                                    }
+                                    return Has.relationships
+                                        .create(s, rule, location);
+                                }
+                            });
+                    }
+                    return Promise.pure(false);
+                }
+            });
+        return connected;
     }
 
     private Promise<Boolean> connect(

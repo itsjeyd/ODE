@@ -9,6 +9,7 @@ import constants.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import models.nodes.LabeledNodeWithProperties;
 import models.nodes.Part;
 import models.nodes.Rule;
 import models.nodes.Slot;
@@ -38,24 +39,27 @@ public class SlotManager extends ContentCollectionNodeManager {
         JsonNode slot, JsonNode partOrRule, String location) {
         if (partOrRule.has("name")) {
             Rule rule = new Rule(partOrRule.get("name").asText());
-            return connect(slot, rule, location);
+            Promise<Boolean> exists = Rule.nodes.exists(rule.getProperties());
+            return connect(slot, rule, exists, location);
         }
         Part part = new Part(
             partOrRule.get("uuid").asText(),
             partOrRule.get("content").asText());
-        return connect(slot, part, location);
+        Promise<Boolean> exists = Part.nodes.create(
+            part.getProperties(), location);
+        return connect(slot, part, exists, location);
     }
 
     private Promise<Boolean> connect(
-        final JsonNode slot, final Rule rule, final String location) {
-        Promise<Boolean> exists = Rule.nodes.exists(rule.getProperties());
+        final JsonNode slot, final LabeledNodeWithProperties target,
+        Promise<Boolean> exists, final String location) {
         Promise<Boolean> connected = exists.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean exists) {
                     if (exists) {
                         final Slot s = new Slot(slot.get("uuid").asText());
                         Promise<Boolean> connected = Has.relationships
-                            .exists(s, rule);
+                            .exists(s, target);
                         return connected.flatMap(
                             new Function<Boolean, Promise<Boolean>>() {
                                 public Promise<Boolean> apply(
@@ -64,36 +68,7 @@ public class SlotManager extends ContentCollectionNodeManager {
                                         return Promise.pure(false);
                                     }
                                     return Has.relationships
-                                        .create(s, rule, location);
-                                }
-                            });
-                    }
-                    return Promise.pure(false);
-                }
-            });
-        return connected;
-    }
-
-    private Promise<Boolean> connect(
-        final JsonNode slot, final Part part, final String location) {
-        Promise<Boolean> exists = Part.nodes
-            .create(part.getProperties(), location);
-        Promise<Boolean> connected = exists.flatMap(
-            new Function<Boolean, Promise<Boolean>>() {
-                public Promise<Boolean> apply(Boolean exists) {
-                    if (exists) {
-                        final Slot s = new Slot(slot.get("uuid").asText());
-                        Promise<Boolean> connected = Has.relationships
-                            .exists(s, part);
-                        return connected.flatMap(
-                            new Function<Boolean, Promise<Boolean>>() {
-                                public Promise<Boolean> apply(
-                                    Boolean connected) {
-                                    if (connected) {
-                                        return Promise.pure(false);
-                                    }
-                                    return Has.relationships
-                                        .create(s, part, location);
+                                        .create(s, target, location);
                                 }
                             });
                     }

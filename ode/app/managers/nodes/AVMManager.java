@@ -221,8 +221,7 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
         String name = feature.get("name").asText();
         final Feature f = new Feature(name);
         // 1. Disconnect AVM from feature
-        Promise<Boolean> removed = Has.relationships
-            .delete(a, f, location);
+        Promise<Boolean> removed = Has.relationships.delete(a, f, location);
         // 2. Disconnect feature from value
         removed = removed.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
@@ -240,11 +239,15 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
             });
         // 3. If feature is complex, delete value
         if (feature.get("type").asText().equals("complex")) {
-            final String subUUID = UUIDGenerator.from(uuid + name);
-            removed = removed.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean removed) {
+            Promise<Feature> feat = Feature.nodes.get(feature);
+            removed = removed.zip(feat).flatMap(
+                new Function<Tuple<Boolean, Feature>, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Tuple<Boolean, Feature> t) {
+                        Boolean removed = t._1;
                         if (removed) {
+                            Feature feat = t._2;
+                            String subUUID = UUIDGenerator
+                                .from(uuid + feat.getUUID());
                             ObjectNode properties = Json.newObject();
                             properties.put("uuid", subUUID);
                             properties.put(

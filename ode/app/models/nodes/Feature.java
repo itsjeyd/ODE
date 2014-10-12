@@ -50,4 +50,8 @@ public class Feature extends OntologyNode {
         return this.description;
     }
 
+    public String getUUID() {
+        return this.jsonProperties.get("uuid").asText();
+    }
+
 }

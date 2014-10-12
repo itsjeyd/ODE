@@ -137,16 +137,15 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
 
     @Override
     protected Promise<Boolean> connect(
-        final JsonNode avm, final JsonNode feature, final String location) {
-        final String uuid = avm.get("uuid").asText();
-        Substructure a = new Substructure(uuid);
-        final String name = feature.get("name").asText();
-        final Feature f = new Feature(name);
-        final ObjectNode props = Json.newObject();
-        props.put("rule", avm.get("ruleUUID"));
+        JsonNode parentAVM, JsonNode feature, String location) {
+        String parentUUID = parentAVM.get("uuid").asText();
         // 1. Connect AVM to feature
+        Substructure avm = new Substructure(parentUUID);
+        Feature feat = new Feature(feature.get("name").asText());
+        ObjectNode props = Json.newObject();
+        props.put("rule", parentAVM.get("ruleUUID"));
         Promise<Boolean> connected = Has.relationships
-            .create(a, f, props, location);
+            .create(avm, feat, props, location);
         // 2. If feature is
         //    - atomic, connect to default value ("underspecified")
         //    - complex,
@@ -154,57 +153,64 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
         //      b. connect feature to substructure
         String type = feature.get("type").asText();
         if (type.equals("atomic")) {
-            connected = connected.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean connected) {
-                        if (connected) {
-                            Value v = new Value("underspecified");
-                            props.put("avm", uuid);
-                            return Has.relationships
-                                .create(f, v, props, location);
-                        }
-                        return Promise.pure(false);
-                    }
-                });
+            connected =
+                connectToValue(feat, props, parentUUID, connected, location);
         } else if (type.equals("complex")) {
-            Promise<Feature> feat = Feature.nodes.get(feature);
-            Promise<String> subUUID = feat.map(
-                new Function<Feature, String>() {
-                    public String apply(Feature feat) {
-                        JsonNode properties = feat.getProperties();
-                        String featureUUID = properties.get("uuid").asText();
-                        return UUIDGenerator.from(uuid + featureUUID);
-                    }
-                });
-            connected = connected.zip(subUUID).flatMap(
-                new Function<Tuple<Boolean, String>, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Tuple<Boolean, String> t) {
-                        Boolean connected = t._1;
-                        final String subUUID = t._2;
-                        if (connected) {
-                            ObjectNode properties = Json.newObject();
-                            properties.put("uuid", subUUID);
-                            Promise<Boolean> created =
-                                create(properties, location);
-                            return created.flatMap(
-                                new Function<Boolean, Promise<Boolean>>() {
-                                    public Promise<Boolean> apply(
-                                        Boolean created) {
-                                        if (created) {
-                                            Substructure s =
-                                                new Substructure(subUUID);
-                                            return Has.relationships
-                                                .create(f, s, props, location);
-                                        }
-                                        return Promise.pure(false);
-                                    }
-                                });
-                        }
-                        return Promise.pure(false);
-                    }
-                });
+            connected =
+                connectToAVM(feature, props, parentUUID, connected, location);
         }
         return connected;
+    }
+
+    private Promise<Boolean> connectToValue(
+        final Feature feat, final ObjectNode props, final String parentUUID,
+        Promise<Boolean> connected, final String location) {
+        return connected.flatMap(
+            new Function<Boolean, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Boolean connected) {
+                    if (connected) {
+                        Value value = new Value("underspecified");
+                        props.put("avm", parentUUID);
+                        return Has.relationships
+                            .create(feat, value, props, location);
+                    }
+                    return Promise.pure(false);
+                }
+            });
+    }
+
+    private Promise<Boolean> connectToAVM(
+        final JsonNode feature, final JsonNode props, final String parentUUID,
+        Promise<Boolean> connected, final String location) {
+        Promise<Feature> feat = Feature.nodes.get(feature);
+        return connected.zip(feat).flatMap(
+            new Function<Tuple<Boolean, Feature>, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Tuple<Boolean, Feature> t) {
+                    Boolean connected = t._1;
+                    if (connected) {
+                        final Feature feat = t._2;
+                        final String subUUID = UUIDGenerator
+                            .from(parentUUID + feat.getUUID());
+                        ObjectNode properties = Json.newObject();
+                        properties.put("uuid", subUUID);
+                        Promise<Boolean> created =
+                            create(properties, location);
+                        return created.flatMap(
+                            new Function<Boolean, Promise<Boolean>>() {
+                                public Promise<Boolean> apply(Boolean created) {
+                                    if (created) {
+                                        Substructure avm =
+                                            new Substructure(subUUID);
+                                        return Has.relationships.create(
+                                            feat, avm, props, location);
+                                    }
+                                    return Promise.pure(false);
+                                }
+                            });
+                    }
+                    return Promise.pure(false);
+                }
+            });
     }
 
     @Override

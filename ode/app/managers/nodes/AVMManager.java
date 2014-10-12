@@ -167,25 +167,38 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
                     }
                 });
         } else if (type.equals("complex")) {
-            final String subUUID = UUIDGenerator.from(uuid + name);
-            connected = connected.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean connected) {
+            Promise<Feature> feat = Feature.nodes.get(feature);
+            Promise<String> subUUID = feat.map(
+                new Function<Feature, String>() {
+                    public String apply(Feature feat) {
+                        JsonNode properties = feat.getProperties();
+                        String featureUUID = properties.get("uuid").asText();
+                        return UUIDGenerator.from(uuid + featureUUID);
+                    }
+                });
+            connected = connected.zip(subUUID).flatMap(
+                new Function<Tuple<Boolean, String>, Promise<Boolean>>() {
+                    public Promise<Boolean> apply(Tuple<Boolean, String> t) {
+                        Boolean connected = t._1;
+                        final String subUUID = t._2;
                         if (connected) {
                             ObjectNode properties = Json.newObject();
                             properties.put("uuid", subUUID);
-                            return create(properties, location);
-                        }
-                        return Promise.pure(false);
-                    }
-                });
-            connected = connected.flatMap(
-                new Function<Boolean, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Boolean connected) {
-                        if (connected) {
-                            Substructure s = new Substructure(subUUID);
-                            return Has.relationships
-                                .create(f, s, props, location);
+                            Promise<Boolean> created =
+                                create(properties, location);
+                            return created.flatMap(
+                                new Function<Boolean, Promise<Boolean>>() {
+                                    public Promise<Boolean> apply(
+                                        Boolean created) {
+                                        if (created) {
+                                            Substructure s =
+                                                new Substructure(subUUID);
+                                            return Has.relationships
+                                                .create(f, s, props, location);
+                                        }
+                                        return Promise.pure(false);
+                                    }
+                                });
                         }
                         return Promise.pure(false);
                     }

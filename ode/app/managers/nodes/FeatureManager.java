@@ -20,6 +20,7 @@ import play.libs.F.Callback;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.libs.WS;
+import utils.UUIDGenerator;
 
 
 public class FeatureManager extends LabeledNodeWithPropertiesManager {
@@ -73,12 +74,13 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
             new Function<JsonNode, Feature>() {
                 public Feature apply(JsonNode json) {
                     String name = json.findValue("name").asText();
+                    String uuid = json.findValue("uuid").asText();
                     String description = "";
                     if (json.has("description")) {
                         description = json.findValue("description").asText();
                     }
                     String type = json.findValue("type").asText();
-                    return new Feature(name, description, type);
+                    return new Feature(name, description, type, uuid);
                 }
             });
     }
@@ -88,6 +90,8 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
     @Override
     protected Promise<Boolean> create(
         final JsonNode properties, final String location) {
+        final String featureUUID = UUIDGenerator.random();
+        ((ObjectNode) properties).put("uuid", featureUUID);
         Promise<Boolean> created = super.create(properties, location, "name");
         if (properties.get("type").asText().equals("complex")) {
             return created;

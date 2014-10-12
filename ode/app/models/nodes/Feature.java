@@ -34,6 +34,14 @@ public class Feature extends OntologyNode {
         this.type = type;
     }
 
+    public Feature(
+        String name, String description, String type, String uuid) {
+        this(name);
+        this.description = description;
+        this.type = type;
+        this.jsonProperties.put("uuid", uuid);
+    }
+
     public String getType() {
         return this.type.toString();
     }

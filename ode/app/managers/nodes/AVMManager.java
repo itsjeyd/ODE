@@ -376,14 +376,13 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
         properties.put("rule", ruleUUID);
         properties.put("avm", parentUUID);
         Promise<JsonNode> node = Has.relationships.endNode(f, properties);
-        node = node.map(
+        return node.map(
             new Function<JsonNode, JsonNode>() {
                 public JsonNode apply(JsonNode node) {
                     String name = node.get("name").asText();
                     return new TextNode(name);
                 }
             });
-        return node;
     }
 
 

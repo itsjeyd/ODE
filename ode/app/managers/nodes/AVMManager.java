@@ -352,21 +352,29 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
         return features;
     }
 
-    private Promise<JsonNode> getValue(JsonNode avm, JsonNode feature) {
-        String uuid = avm.get("uuid").asText();
-        String ruleUUID = avm.get("ruleUUID").asText();
+    private Promise<JsonNode> getValue(JsonNode parentAVM, JsonNode feature) {
+        final String parentUUID = parentAVM.get("uuid").asText();
+        final String ruleUUID = parentAVM.get("ruleUUID").asText();
         if (feature.get("type").asText().equals("complex")) {
-            String name = feature.get("name").asText();
-            String subUUID = UUIDGenerator.from(uuid + name);
-            ObjectNode substructure = Json.newObject();
-            substructure.put("uuid", subUUID);
-            substructure.put("ruleUUID", ruleUUID);
-            return toJSON(substructure);
+            ObjectNode props = ((ObjectNode) feature).deepCopy()
+                .retain("name");
+            Promise<Feature> feat = Feature.nodes.get(props);
+            return feat.flatMap(
+                new Function<Feature, Promise<JsonNode>>() {
+                    public Promise<JsonNode> apply(Feature feat) {
+                        String subUUID = UUIDGenerator
+                            .from(parentUUID + feat.getUUID());
+                        ObjectNode substructure = Json.newObject();
+                        substructure.put("uuid", subUUID);
+                        substructure.put("ruleUUID", ruleUUID);
+                        return toJSON(substructure);
+                    }
+                });
         }
         Feature f = new Feature(feature.get("name").asText());
         ObjectNode properties = Json.newObject();
         properties.put("rule", ruleUUID);
-        properties.put("avm", uuid);
+        properties.put("avm", parentUUID);
         Promise<JsonNode> node = Has.relationships.endNode(f, properties);
         node = node.map(
             new Function<JsonNode, JsonNode>() {

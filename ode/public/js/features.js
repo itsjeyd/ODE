@@ -57,7 +57,11 @@ Features.Model.Feature = Backbone.Model.extend({
   },
 
   updateName: function(newName) {
-    var success = function(model, response, options) {};
+    var target = this.get('name');
+    var success = function(model, response, options) {
+      var newName = model.get('name')
+      model.trigger('target-updated', target, newName);
+    };
     this._update('name', { name: newName }, success);
   },
 
@@ -152,6 +156,11 @@ Features.Collection.FeatureList = Backbone.Collection.extend({
         this.sort();
         this.trigger('update-success:name');
       },
+    }, this);
+    this.on({
+      'target-updated': function(target, newName) {
+        this.updateItems(target, newName);
+      }
     }, this);
   },
 

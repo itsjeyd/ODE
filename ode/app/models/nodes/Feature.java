@@ -42,6 +42,14 @@ public class Feature extends OntologyNode {
         this.jsonProperties.put("uuid", uuid);
     }
 
+    public Boolean isComplex() {
+        return this.getType().equals("complex");
+    }
+
+    public Boolean isAtomic() {
+        return this.getType().equals("atomic");
+    }
+
     public String getType() {
         return this.type.toString();
     }

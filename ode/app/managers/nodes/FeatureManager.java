@@ -206,7 +206,7 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
                             }
                         });
                     // 3. If type == "atomic", delete orphans
-                    if (feature.getType().equals("atomic")) {
+                    if (feature.isAtomic()) {
                         deleted.onRedeem(
                             new Callback<Boolean>() {
                                 public void invoke(Boolean deleted) {

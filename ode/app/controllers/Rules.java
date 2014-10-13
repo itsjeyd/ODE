@@ -275,7 +275,7 @@ public class Rules extends Controller {
                     Boolean added = t._1;
                     if (added) {
                         Feature feat = t._2;
-                        if (feat.getType().equals("complex")) {
+                        if (feat.isComplex()) {
                             String parentUUID = avm.get("uuid").asText();
                             String featureUUID = feat.getUUID();
                             String uuid = UUIDGenerator

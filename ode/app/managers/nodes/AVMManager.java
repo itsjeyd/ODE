@@ -227,7 +227,7 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
         // 2. Disconnect feature from value
         removed = disconnectFromValue(feat, parentAVM, removed, location);
         // 3. If feature is complex, delete value
-        if (feat.getType().equals("complex")) {
+        if (feat.isComplex()) {
             removed = removeValue(feature, parentAVM, removed, location);
         }
         return removed;
@@ -242,7 +242,7 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
                     if (removed) {
                         final ObjectNode props = Json.newObject();
                         props.put("rule", parentAVM.get("ruleUUID").asText());
-                        if (feat.getType().equals("atomic")) {
+                        if (feat.isAtomic()) {
                             props.put("avm", parentAVM.get("uuid").asText());
                         }
                         return Has.relationships

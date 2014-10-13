@@ -215,50 +215,65 @@ public class AVMManager extends LabeledNodeWithPropertiesManager {
 
     @Override
     protected Promise<Boolean> disconnect(
-        final JsonNode avm, final JsonNode feature, final String location) {
-        final String uuid = avm.get("uuid").asText();
-        final Substructure a = new Substructure(uuid);
-        String name = feature.get("name").asText();
-        final Feature f = new Feature(name);
+        final JsonNode parentAVM, final JsonNode feature,
+        final String location) {
+        final String parentUUID = parentAVM.get("uuid").asText();
+        final Substructure avm = new Substructure(parentUUID);
+        Feature feat = new Feature(
+            feature.get("name").asText(), feature.get("type").asText());
         // 1. Disconnect AVM from feature
-        Promise<Boolean> removed = Has.relationships.delete(a, f, location);
+        Promise<Boolean> removed = Has.relationships
+            .delete(avm, feat, location);
         // 2. Disconnect feature from value
-        removed = removed.flatMap(
+        removed = disconnectFromValue(feat, parentAVM, removed, location);
+        // 3. If feature is complex, delete value
+        if (feat.getType().equals("complex")) {
+            removed = removeValue(feature, parentAVM, removed, location);
+        }
+        return removed;
+    }
+
+    private Promise<Boolean> disconnectFromValue(
+        final Feature feat, final JsonNode parentAVM,
+        Promise<Boolean> removed, final String location) {
+        return removed.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean removed) {
                     if (removed) {
                         final ObjectNode props = Json.newObject();
-                        props.put("rule", avm.get("ruleUUID").asText());
-                        if (feature.get("type").asText().equals("atomic")) {
-                            props.put("avm", uuid);
+                        props.put("rule", parentAVM.get("ruleUUID").asText());
+                        if (feat.getType().equals("atomic")) {
+                            props.put("avm", parentAVM.get("uuid").asText());
                         }
-                        return Has.relationships.delete(f, props, location);
+                        return Has.relationships
+                            .delete(feat, props, location);
                     }
                     return Promise.pure(false);
                 }
             });
-        // 3. If feature is complex, delete value
-        if (feature.get("type").asText().equals("complex")) {
-            Promise<Feature> feat = Feature.nodes.get(feature);
-            removed = removed.zip(feat).flatMap(
-                new Function<Tuple<Boolean, Feature>, Promise<Boolean>>() {
-                    public Promise<Boolean> apply(Tuple<Boolean, Feature> t) {
-                        Boolean removed = t._1;
-                        if (removed) {
-                            Feature feat = t._2;
-                            String subUUID = UUIDGenerator
-                                .from(uuid + feat.getUUID());
-                            ObjectNode properties = Json.newObject();
-                            properties.put("uuid", subUUID);
-                            properties.put(
-                                "ruleUUID", avm.get("ruleUUID").asText());
-                            return delete(properties, location);
-                        }
-                        return Promise.pure(false);
+    }
+
+    private Promise<Boolean> removeValue(
+        JsonNode feature, final JsonNode parentAVM, Promise<Boolean> removed,
+        final String location) {
+        Promise<Feature> feat = Feature.nodes.get(feature);
+        return removed.zip(feat).flatMap(
+            new Function<Tuple<Boolean, Feature>, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Tuple<Boolean, Feature> t) {
+                    Boolean removed = t._1;
+                    if (removed) {
+                        Feature feat = t._2;
+                        String subUUID = UUIDGenerator.from(
+                            parentAVM.get("uuid").asText() + feat.getUUID());
+                        ObjectNode properties = Json.newObject();
+                        properties.put("uuid", subUUID);
+                        properties.put("ruleUUID",
+                                       parentAVM.get("ruleUUID").asText());
+                        return delete(properties, location);
                     }
-                });
-        }
-        return removed;
+                    return Promise.pure(false);
+                }
+            });
     }
 
     // Custom functionality

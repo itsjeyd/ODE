@@ -255,7 +255,7 @@ public class Features extends Controller {
         Promise<Boolean> deleted = orphaned.flatMap(
             new Function<Boolean, Promise<Boolean>>() {
                 public Promise<Boolean> apply(Boolean orphaned) {
-                    // 2. If it isn't, delete it
+                    // 2. If it is, delete it
                     if (orphaned) {
                         return Feature.nodes.delete(props);
                     }

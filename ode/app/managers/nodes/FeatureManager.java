@@ -112,6 +112,19 @@ public class FeatureManager extends LabeledNodeWithPropertiesManager {
 
     // UPDATE
 
+    @Override
+    public Promise<Boolean> update(
+        final JsonNode oldProps, final JsonNode newProps) {
+        Promise<Feature> feat = get(oldProps);
+        return feat.flatMap(
+            new Function<Feature, Promise<Boolean>>() {
+                public Promise<Boolean> apply(Feature feat) {
+                    ((ObjectNode) newProps).put("uuid", feat.getUUID());
+                    return FeatureManager.super.update(oldProps, newProps);
+                }
+            });
+    }
+
     public Promise<Boolean> setType(final JsonNode properties) {
         Promise<String> location = beginTransaction();
         Promise<Boolean> updated = location.flatMap(

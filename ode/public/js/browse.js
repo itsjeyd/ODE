@@ -332,13 +332,12 @@ Browse.View.RuleItemView = Backbone.View.extend({
 
   render: function() {
     this.$el.attr('id', this.model.get('id'));
-    var desc = this.model.get('description');
-    var descLength = 75 - this.model.get("name").length;
-    var shortDescription = desc.length <= descLength ?
-      desc : desc.substring(0, descLength) + ' ...';
-    this.model.set('shortDescription', shortDescription);
     var template = _.template(
-      '<h2>@<%= name %> <small><%= shortDescription %></h2>');
+      ['<div class="col-md-10 rule-info">',
+         '<span class="h2">',
+           '@<%= name %> <small><%= description %></small>',
+         '</span>',
+       '</div>'].join('\n'));
     var node = $(template(this.model.toJSON()));
     this.$el.append(node);
     return this;
@@ -381,30 +380,32 @@ Browse.View.RuleListView = Backbone.View.extend({
   _inactive: function(e) { this._unhighlight(e); this._hideControls(e); },
 
   _highlight: function(e) {
-    $(e.currentTarget).addClass('highlighted')
+    $(e.currentTarget).addClass('highlighted');
   },
 
   _unhighlight: function(e) {
-    $(e.currentTarget).removeClass('highlighted')
+    $(e.currentTarget).removeClass('highlighted');
   },
 
   _showControls: function(e) {
     var item = $(e.currentTarget);
     if (!item.find('.controls').exists()) {
-      var controls = $('<span>').addClass('pull-right controls');
-      controls.append($.similarButton(item.attr('id'))
-                      .tooltip({ placement: 'top',
-                                 title: 'View similar rules' }));
-      controls.append($.editInputButton(item.attr('id'))
-                      .tooltip({ placement: 'top',
-                                 title: 'Edit input' }));
-      controls.append($.editOutputButton(item.attr('id'))
-                      .tooltip({ placement: 'top',
-                                 title: 'Edit output' }));
-      controls.append($.removeButton(item.attr('id'))
-                      .tooltip({ placement: 'top',
-                                 title: 'Delete rule' }));
-      item.find('h2').append(controls);
+      var controls = $('<div>').addClass('col-md-2 controls');
+      var span = $('<span>').addClass('h2 pull-right');
+      span.append($.similarButton(item.attr('id'))
+                  .tooltip({ placement: 'top',
+                             title: 'View similar rules' }));
+      span.append($.editInputButton(item.attr('id'))
+                  .tooltip({ placement: 'top',
+                             title: 'Edit input' }));
+      span.append($.editOutputButton(item.attr('id'))
+                  .tooltip({ placement: 'top',
+                             title: 'Edit output' }));
+      span.append($.removeButton(item.attr('id'))
+                  .tooltip({ placement: 'top',
+                             title: 'Delete rule' }));
+      controls.append(span)
+      controls.insertAfter(item.find('.rule-info'));
     } else {
       item.find('.controls').show();
     }

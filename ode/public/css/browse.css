@@ -3,8 +3,30 @@
 }
 
 .rule-item {
-    padding: 0.2em;
+    margin-bottom: 3px;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
     border-radius: 10px;
+}
+
+.rule-item:before,
+.rule-item:after {
+    content: " ";
+    display: table;
+}
+
+.rule-item:after {
+    clear: both;
+}
+
+.rule-info {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.rule-info small {
+    font-size: 65%;
 }
 
 .highlighted {

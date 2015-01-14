@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.google.common.collect.ImmutableMap;
@@ -31,7 +32,8 @@ public class FeaturesTest extends WithApplication {
     public static void setUpClass() {
         postCypherQuery(
             "CREATE (n:Feature {name: 'ExistingFeature', " +
-            "type: 'atomic', description: '...'})");
+            "type: 'atomic', description: '...', " +
+            "uuid: '008da956-fcdb-4a62-adef-c96d8cea3f02'})");
     }
 
     @AfterClass
@@ -69,59 +71,55 @@ public class FeaturesTest extends WithApplication {
 
     @Test
     public void createFeatureSuccess() {
-        Feature feature = new Feature("NonExistingFeature", "...");
+        ObjectNode feature = Json.newObject();
+        feature.put("name", "NonExistingFeature");
+        feature.put("description", "...");
+        feature.put("type", "complex");
+        feature.put("uuid", "e9612ab6-0ed8-4bcc-8930-464a7745125d");
         Result result = callAction(
             controllers.routes.ref.Features.create(),
-            fakeRequest()
-                .withSession("username", "user@example.com")
-                .withFormUrlEncodedBody(ImmutableMap.of(
-                    "name", feature.name,
-                    "type", feature.getType(),
-                    "description", feature.getDescription())));
-        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
-        assertThat(flash(result).get("success")).isEqualTo(
-            "Feature successfully created.");
-        assert(feature.exists().get(ASYNC_TIMEOUT));
+            fakeRequest().withSession("username", "user@example.com")
+                         .withJsonBody(feature));
+        assertThat(status(result)).isEqualTo(Status.OK);
+        assert(Feature.nodes.exists(feature).get(ASYNC_TIMEOUT));
     }
 
     @Test
     public void createFeatureExisting() {
-        Feature feature = new Feature("ExistingFeature", "...");
+        ObjectNode feature = Json.newObject();
+        feature.put("name", "ExistingFeature");
+        feature.put("description", "...");
+        feature.put("type", "atomic");
+        feature.put("uuid", "008da956-fcdb-4a62-adef-c96d8cea3f02");
         Result result = callAction(
             controllers.routes.ref.Features.create(),
-            fakeRequest()
-                .withSession("username", "user@example.com")
-                .withFormUrlEncodedBody(ImmutableMap.of(
-                    "name", feature.name,
-                    "type", feature.getType(),
-                    "description", feature.getDescription())));
-        assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
-        assertThat(flash(result).get("error")).isEqualTo(
-            "Feature already exists.");
+            fakeRequest().withSession("username", "user@example.com")
+                         .withJsonBody(feature));
+        assertThat(status(result)).isEqualTo(Status.BAD_REQUEST);
     }
 
     @Test
-    public void updateFeatureNameTest() {
+    public void updateNameTest() {
     }
 
     @Test
-    public void updateFeatureDescriptionTest() {
+    public void updateDescriptionTest() {
     }
 
     @Test
-    public void updateFeatureTypeTest() {
+    public void updateTypeTest() {
     }
 
     @Test
-    public void addTargetsTest() {
+    public void addTargetTest() {
     }
 
     @Test
-    public void deleteTargetTest() {
+    public void removeTargetTest() {
     }
 
     @Test
-    public void deleteFeatureTest() {
+    public void deleteTest() {
     }
 
 }

@@ -25,25 +25,6 @@ public class Features extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result javascriptRoutes() {
-        response().setContentType("text/javascript");
-        return ok(Routes.javascriptRouter(
-                      "jsFeatureRoutes",
-                      controllers.routes.javascript.Features
-                      .create(),
-                      controllers.routes.javascript.Features
-                      .updateName(),
-                      controllers.routes.javascript.Features
-                      .updateDescription(),
-                      controllers.routes.javascript.Features
-                      .updateType(),
-                      controllers.routes.javascript.Features
-                      .updateTargets(),
-                      controllers.routes.javascript.Features
-                      .delete()));
-    }
-
-    @Security.Authenticated(Secured.class)
     public static Promise<Result> features() {
         Promise<List<Feature>> globalFeatureList = Feature.nodes.all();
         Promise<List<Value>> globalValueList = Value.nodes.all();

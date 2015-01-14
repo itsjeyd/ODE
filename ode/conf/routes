@@ -59,9 +59,5 @@ PUT     /features/:name/targets         controllers.Features.updateTargets(name:
 DELETE  /features/:name                 controllers.Features.delete(name: String)
 PUT     /values/:name                   controllers.Values.updateName(name: String)
 
-# Client-side routers
-GET     /assets/js/featureRoutes    controllers.Features.javascriptRoutes()
-GET     /assets/js/valueRoutes      controllers.Values.javascriptRoutes()
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -15,15 +15,6 @@ import play.mvc.Security;
 public class Values extends Controller {
 
     @Security.Authenticated(Secured.class)
-    public static Result javascriptRoutes() {
-        response().setContentType("text/javascript");
-        return ok(
-            Routes.javascriptRouter(
-                "jsValueRoutes",
-                controllers.routes.javascript.Values.updateName()));
-    }
-
-    @Security.Authenticated(Secured.class)
     @BodyParser.Of(BodyParser.Json.class)
     public static Promise<Result> updateName(final String name) {
         final ObjectNode newProps = (ObjectNode) request().body().asJson();

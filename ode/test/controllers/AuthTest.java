@@ -35,6 +35,9 @@ public class AuthTest extends WithApplication {
         postCypherQuery(
             "CREATE (n:User {username: 'existing@example.com', " +
             "password: 'password'})");
+        postCypherQuery(
+            "CREATE (n:Rule {name: 'test', description: '...', " +
+            "uuid: 'e9612ab6-0ed8-4bcc-8930-464a7745125d'})");
     }
 
     @AfterClass
@@ -48,6 +51,9 @@ public class AuthTest extends WithApplication {
         postCypherQuery(
             "MATCH (n:User {username: 'existing@example.com', " +
             "password: 'password'}) DELETE n");
+        postCypherQuery(
+            "MATCH (n:Rule {name: 'test', description: '...', " +
+            "uuid: 'e9612ab6-0ed8-4bcc-8930-464a7745125d'}) DELETE n");
     }
 
     private static WS.Response postCypherQuery(String query) {
@@ -66,14 +72,14 @@ public class AuthTest extends WithApplication {
 
     @Test
     public void authenticateSuccess() {
-        User user = new User("user@example.com", "password");
         Result result = callAction(
             controllers.routes.ref.Auth.authenticate(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
-                "email", user.username,
-                "password", user.password)));
+                "email", "user@example.com",
+                "password", "password")));
         assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
-        assertThat(session(result).get("username")).isEqualTo(user.username);
+        assertThat(session(result).get("username"))
+            .isEqualTo("user@example.com");
     }
 
     @Test
@@ -171,16 +177,20 @@ public class AuthTest extends WithApplication {
 
     @Test
     public void registerSuccess() {
-        User user = new User("new@example.com", "password");
+        String username = "new@example.com";
+        String password = "password";
         Result result = callAction(
             controllers.routes.ref.Auth.register(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
-                "email", user.username,
-                "password", user.password)));
+                "email", username,
+                "password", password)));
         assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("success")).isEqualTo(
             "Registration successful.");
-        assert(user.exists().get(ASYNC_TIMEOUT));
+        ObjectNode user = Json.newObject();
+        user.put("username", username);
+        user.put("password", password);
+        assert(User.nodes.exists(user).get(ASYNC_TIMEOUT));
     }
 
     @Test
@@ -195,15 +205,16 @@ public class AuthTest extends WithApplication {
 
     @Test
     public void registerExistingUser() {
-        User user = new User("existing@example.com", "password");
+        String username = "existing@example.com";
+        String password = "password";
         Result result = callAction(
             controllers.routes.ref.Auth.register(),
             fakeRequest().withFormUrlEncodedBody(ImmutableMap.of(
-                "email", user.username,
-                "password", user.password)));
+                "email", username,
+                "password", password)));
         assertThat(status(result)).isEqualTo(Status.SEE_OTHER);
         assertThat(flash(result).get("error")).isEqualTo(
-            "User already exists.");
+            "Registration failed.");
     }
 
 }

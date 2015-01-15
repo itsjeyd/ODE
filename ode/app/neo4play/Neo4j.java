@@ -44,7 +44,7 @@ public class Neo4j {
     }
 
     protected static JsonNode buildStatements(String query,
-                                            JsonNode properties) {
+                                              JsonNode properties) {
         ObjectNode statement = Json.newObject();
         statement.put("statement", query);
         ObjectNode parameters = Json.newObject();

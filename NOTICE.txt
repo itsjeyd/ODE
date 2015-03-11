@@ -1,0 +1,25 @@
+ODE
+Copyright (C) 2013-2015  Tim Krones
+
+ODE is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3
+(http://www.fsf.org/licensing/licenses/agpl-3.0.html) ("AGPL") to all
+third parties and that license is included in the LICENSE.txt file.
+
+ODE makes use of a number of third-party packages that are subject to
+different licenses. Some of these packages are included in this
+distribution of ODE. They are listed below, along with the
+corresponding licenses. Full license texts can be found in
+LICENSES.txt.
+
+Third-party licenses
+--------------------
+
+GNU GENERAL PUBLIC LICENSE Version 3
+  Neo4j (Community Edition)
+
+MIT License
+  Backbone.js
+  jQuery
+  jQuery UI
+  Twitter Bootstrap
+  Underscore.js

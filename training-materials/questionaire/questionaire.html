@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Questionaire</title>
+<!-- 2014-07-18 Fri 11:54 -->
+<meta  charset="utf-8">
+<meta  name="generator" content="Org-mode">
+<link rel='stylesheet' type='text/css' href='../css/lib/bootstrap.css' />
+<link rel='stylesheet' type='text/css' href='../css/styles.css' />
+</head>
+<body>
+<div id="content">
+<h1 class="title">Questionaire</h1>
+
+<script src="../js/lib/jquery-1.11.0.min.js"
+        type="text/javascript"></script>
+<script src="../js/questionaire.js" type="text/javascript"></script>
+
+<audio id="alert" src="../sounds/KDE-K3B-Finish-Success.ogg" preload="auto">
+</audio>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2" id="questionaire">
+      <form>
+
+<ol class="org-ol">
+<li>What is your highest level of education?
+
+<input id="education" name="education" type="text" class="form-control" placeholder="...">
+</li>
+
+<li>Are you currently a student?
+
+<ul class="org-ul">
+<li><input type="radio" name="student" value="yes">
+       yes, my major is:
+
+<input id="student-major" name="student-major" type="text" class="form-control" placeholder="...">
+</li>
+
+<li><input type="radio" name="student" value="no">
+       no
+</li>
+</ul>
+</li>
+
+<li>What is your native language?
+
+<input id="language" name="language" type="text" class="form-control" placeholder="...">
+</li>
+
+<li>Which of the following terms describes your knowledge about
+computers most accurately?
+
+<ul class="org-ul">
+<li><input type="radio" name="computer-literacy" value="casual">
+       casual user
+</li>
+<li><input type="radio" name="computer-literacy" value="power">
+       power user
+</li>
+<li><input type="radio" name="computer-literacy" value="programmer">
+       programmer
+</li>
+</ul>
+</li>
+
+<li>After completing the training phase, did you feel like you had a
+basic understanding of the tasks involved in creating rules?
+
+<ul class="org-ul">
+<li><input type="radio" name="basic-understanding" value="yes">
+       yes
+</li>
+<li><input type="radio" name="basic-understanding" value="no">
+       no
+</li>
+</ul>
+</li>
+
+<li>Was it difficult for you to finish the assignment within 45 minutes?
+
+<ul class="org-ul">
+<li><input type="radio" name="difficult" value="yes">
+       Yes
+
+<ul class="org-ul">
+<li><input type="radio" name="difficult-reasons" value="assignment">
+         &#x2026; because there were too many rules to create
+</li>
+<li><input type="radio" name="difficult-reasons" value="system">
+         &#x2026; because I was having problems with the system
+</li>
+<li><input type="radio" name="difficult-reasons" value="variations">
+         &#x2026; because I was having a hard time coming up with variations
+</li>
+<li><input type="radio" name="difficult-reasons" value="other">
+         &#x2026; because:
+<input id="difficult-reasons-other" name="difficult-reasons-other" type="text" class="form-control" placeholder="...">
+</li>
+</ul>
+</li>
+
+<li><input type="radio" name="difficult" value="no">
+       No
+</li>
+</ul>
+</li>
+
+<li>On average, did you spend more time working on LHS or RHS?
+
+<ul class="org-ul">
+<li><input type="radio" name="most-effort" value="lhs">
+       LHS
+</li>
+<li><input type="radio" name="most-effort" value="rhs">
+       RHS
+</li>
+<li><input type="radio" name="most-effort" value="equal">
+       I spent equal time on LHS and RHS
+</li>
+<li><input type="radio" name="most-effort" value="unknown">
+       I am not sure
+</li>
+</ul>
+</li>
+
+<li>Did you run into any errors during the assignment?
+
+<ul class="org-ul">
+<li><input type="radio" name="errors" value="yes">
+       yes
+</li>
+<li><input type="radio" name="errors" value="no">
+       no
+</li>
+</ul>
+<p>
+If you did, describe what you were trying to do when the error
+occurred:
+</p>
+
+<textarea id="error-causes" name="error-causes" class="form-control follow-up" rows="5"></textarea>
+</li>
+
+<li>Were you confused by the behavior of the system at any given point
+while completing the assignment?
+
+<ul class="org-ul">
+<li><input type="radio" name="confused" value="yes">
+       yes
+</li>
+<li><input type="radio" name="confused" value="no">
+       no
+</li>
+</ul>
+<p>
+If so, please describe the behavior(s) that confused you, and how
+you would have expected the system to behave:
+</p>
+
+<textarea id="confused-causes" name="confused-causes" class="form-control follow-up" rows="5"></textarea>
+</li>
+
+<li>Did you notice any behavior(s) that you felt were slowing you down
+during the assigment?
+
+<ul class="org-ul">
+<li><input type="radio" name="slow" value="yes">
+       yes
+</li>
+<li><input type="radio" name="slow" value="no">
+       no
+</li>
+</ul>
+<p>
+If so, please describe the behavior(s) and what you think could be
+done to improve them:
+</p>
+
+<textarea id="slow-causes" name="slow-causes" class="form-control follow-up" rows="5"></textarea>
+</li>
+
+<li>What additional features should be added to the system to make
+editing rules faster and/or more convenient?
+
+<textarea name="additional-features" class="form-control" rows="5"></textarea>
+</li>
+
+<li>Do you have any additional comments? (optional)
+
+<textarea name="comments" class="form-control" rows="5"></textarea>
+</li>
+</ol>
+
+<div class="controls">
+  <button class="btn btn-default btn-lg" id="reset">Reset</button>
+  <button class="btn btn-success btn-lg" id="submit" type="submit">Submit</button>
+  <h1 id="thanks"></h1>
+</div>
+
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

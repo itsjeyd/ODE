@@ -1,0 +1,32 @@
+* =@request02qsame= / =@requestPlayQuiz= (7)
+  | About       | play     |
+  | ChildGender | male     |
+  | ChildName   | Marco    |
+  | CurrentGame | quiz     |
+  | Familiarity | yes      |
+  | GameQuiz    | notfirst |
+  | SpeechAct   | request  |
+
+* =@apologize05aq= / =@answerNotUnderstood= (5)
+  | About       | answer    |
+  | ChildName   | Marco     |
+  | CurrentGame | quiz      |
+  | Familiarity | yes       |
+  | SpeechAct   | apologize |
+
+* =@request10= / =@requestAnswerRetry= (4)
+  | About       | answerRetry |
+  | ChildName   | Marco       |
+  | Familiarity | yes         |
+  | SpeechAct   | request     |
+
+* =@request08= / =@requestFeedbackQuiz= (4)
+  | About       | fun     |
+  | ChildName   | Marco   |
+  | Familiarity | yes     |
+  | SpeechAct   | request |
+
+* =@salutation02= / =@sayGoodbye= (3)
+  | ChildName   | Marco   |
+  | Familiarity | yes     |
+  | SpeechAct   | closing |

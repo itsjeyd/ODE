@@ -1,0 +1,233 @@
+% Created 2014-07-20 Sun 17:35
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\setlength{\parindent}{0cm}
+\date{\today}
+\title{ODE Reference}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.2.7b)}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Creating rules}
+\label{sec-1}
+You can create new rules by clicking the "New" button in the
+navigation bar at the top.
+
+\section{Adding features}
+\label{sec-2}
+You can add features to the LHS of rules by dragging them from the
+feature inventory on the left side of the screen and dropping them
+on the placeholder that reads "Drop feature here \ldots{}".
+
+To get more information about a feature you can hover over it with
+the mouse.
+
+\section{Setting values}
+\label{sec-3}
+After adding a feature to the LHS of a rule, the system displays a
+drop-down menu to the right of the feature that contains a list of
+all possible values that this feature can take. By default, feature
+values are set to \texttt{underspecified}.
+
+You can change the current value of a feature by expanding the
+drop-down menu and selecting the desired value from the list.
+
+\section{Removing features}
+\label{sec-4}
+You can remove features from the LHS of a rule by clicking the \texttt{x}
+button that appears when hovering over their names with the mouse.
+
+\section{Renaming rules}
+\label{sec-5}
+You can rename a rule by
+
+\begin{enumerate}
+\item double-clicking its name
+\item entering the new name into the text input field that appears
+\item clicking the "OK" button
+\end{enumerate}
+
+\section{Changing descriptions}
+\label{sec-6}
+You can change the description of a rule by
+
+\begin{enumerate}
+\item double-clicking it
+\item entering the new description into the text input field that
+appears
+\item clicking the "OK" button
+\end{enumerate}
+
+\section{Switching between LHS and RHS}
+\label{sec-7}
+To switch from the LHS of the current rule to the RHS you can click
+the "OutputBuilder" button in the navigation bar. Similarly, to
+switch from the RHS back to the LHS you can click the "InputBuilder"
+button in the navigation bar.
+
+\section{Adding output strings}
+\label{sec-8}
+You can add a new output string to a rule by
+
+\begin{enumerate}
+\item clicking the placeholder that reads "Add more content"
+\item entering the output string
+\item clicking the "Add" button
+\end{enumerate}
+
+\section{Modifying output strings}
+\label{sec-9}
+You can modify individual output strings by
+
+\begin{enumerate}
+\item double-clicking any word in the string
+\item modifying the contents of the text input field that appears
+\item clicking the "OK" button
+\end{enumerate}
+
+\section{Removing output strings}
+\label{sec-10}
+You can remove individual output strings from an RHS by clicking the
+\texttt{x} button that appears when hovering over them with the mouse.
+
+\section{Splitting output strings}
+\label{sec-11}
+To split an output string into two parts you can click the area
+\emph{between} the last word that belongs to the left part and the first
+word that belongs to the right part.
+
+The left part will be added to "Slot 1" and the right part will be
+added to "Slot 2". If "Slot 1" and "Slot 2" do not exist, they will
+be created first.
+
+\section{Adding parts}
+\label{sec-12}
+You can add parts to individual slots by
+
+\begin{enumerate}
+\item clicking the placeholder at the bottom of the slot
+\item entering the part
+\item pressing "Enter"
+\end{enumerate}
+
+\section{Showing output}
+\label{sec-13}
+To show all output strings belonging to a given rule you can click
+the "Show output" button.
+
+To dismiss the list of output strings, click the \texttt{x} button in the
+top right corner of the list.
+
+\section{Modifying parts}
+\label{sec-14}
+You can modify individual parts by
+
+\begin{enumerate}
+\item double-clicking them
+\item modifying the contents of the text input field that appears
+\item pressing "Enter"
+\end{enumerate}
+
+\section{Removing parts}
+\label{sec-15}
+You can remove individual parts from a given slot by clicking the
+\texttt{x} button that appears when hovering over them with the mouse.
+
+\section{Adding slots}
+\label{sec-16}
+You can create additional slots by clicking the "Add slot" button.
+
+\section{Removing slots}
+\label{sec-17}
+You can remove individual slots by clicking the \texttt{x} button that
+appears when hovering over their headers. The total number of slots
+must not drop below 2, so removing slots will only work if there are
+at least three slots.
+
+\section{Using the parts inventory}
+\label{sec-18}
+
+
+
+Every part that you create manually or by splitting an output string
+is added to the parts inventory automatically. The parts inventory
+is displayed on the left side of the screen in the OutputBuilder.
+
+You can reuse parts to create additional content for the RHS of a
+rule by dragging them from the inventory to one of the various
+placeholders:
+
+\begin{enumerate}
+\item To add a part as an output string you can drop it on the
+placeholder that reads "Add more content \ldots{}".
+
+\item To \emph{extend} an existing output string you can drop parts from
+the inventory on the placeholder displayed to the right of the
+string.
+
+\item To add a part to a specific slot you can drop it on the
+placeholder at the bottom of the slot.
+\end{enumerate}
+
+\section{Working with multiple groups}
+\label{sec-19}
+\subsection{Adding groups}
+\label{sec-19-1}
+You can add a new group to an RHS by clicking the \texttt{+} button in the
+header of any existing group.
+
+\subsection{Removing groups}
+\label{sec-19-2}
+You can remove a group from an RHS by clicking the \texttt{x} button in
+the group's header.
+
+\subsection{Copying groups}
+\label{sec-19-3}
+To use the contents of a given group as a starting point for
+creating more content in another group you can click the button
+between the \texttt{+} and \texttt{x} buttons in the header of the group you want
+to copy.
+
+\section{Browsing rules}
+\label{sec-20}
+To view a list of all existing rules you can click the "Browse"
+button in the navigation bar.
+
+From this interface you can
+
+\begin{itemize}
+\item click an entry to view a read-only version of the LHS and RHS of
+the corresponding rule
+\item use the controls that appear when hovering over a given entry to
+\begin{itemize}
+\item view a list of similar rules (i.e., rules whose LHS contain
+similar features)
+\item jump to the InputBuilder
+\item jump to the OutputBuilder
+\item delete the corresponding rule
+\end{itemize}
+\item use the "Filter \ldots{}" field to filter entries by name and
+description
+\end{itemize}
+% Emacs 24.3.1 (Org mode 8.2.7b)
+\end{document}

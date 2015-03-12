@@ -1,0 +1,1718 @@
+* =@request02qsame= / =@requestPlayQuiz= (410)
+  We already know this game. try to break your record now. are you ready to play again now, marco?
+  We already know this game. try to break your record now. are you ready to play again now?
+  We already know this game. try to break your record now. are you ready to play again?
+  We already know this game. try to break your record now. do you want to play again now, marco?
+  We already know this game. try to break your record now. do you want to play again now?
+  We already know this game. try to break your record now. do you want to play again with me now, marco?
+  We already know this game. try to break your record now. do you want to play again with me now?
+  We already know this game. try to break your record now. do you want to play again with me, marco?
+  We already know this game. try to break your record now. do you want to play again with me?
+  We already know this game. try to break your record now. do you want to play again, marco?
+  We already know this game. try to break your record now. do you want to play again?
+  We already know this game. try to break your record now. how about playing again now, marco?
+  We already know this game. try to break your record now. how about playing again now?
+  We already know this game. try to break your record now. how about playing again, marco?
+  We already know this game. try to break your record now. how about playing again?
+  We already know this game. try to break your record now. ready to play again with me now, marco?
+  We already know this game. try to break your record now. ready to play again with me now?
+  We already know this game. try to break your record now. ready to play again with me, marco?
+  We already know this game. try to break your record now. ready to play again with me?
+  We already know this game. try to break your record today. are you ready to play again now, marco?
+  We already know this game. try to break your record today. are you ready to play again now?
+  We already know this game. try to break your record today. are you ready to play again, marco?
+  We already know this game. try to break your record today. are you ready to play again?
+  We already know this game. try to break your record today. do you want to play again now?
+  We already know this game. try to break your record today. do you want to play again with me now?
+  We already know this game. try to break your record today. do you want to play again with me, marco?
+  We already know this game. try to break your record today. do you want to play again with me?
+  We already know this game. try to break your record today. do you want to play again, marco?
+  We already know this game. try to break your record today. do you want to play again?
+  We already know this game. try to break your record today. how about playing again now?
+  We already know this game. try to break your record today. how about playing again?
+  We already know this game. try to break your record today. ready to play again with me now?
+  We already know this game. try to break your record today. ready to play again with me, marco?
+  We already know this game. try to break your record today. ready to play again with me?
+  We already know this game. try to break your record. are you ready to play again now, marco?
+  We already know this game. try to break your record. are you ready to play again now?
+  We already know this game. try to break your record. are you ready to play again?
+  We already know this game. try to break your record. do you want to play again now, marco?
+  We already know this game. try to break your record. do you want to play again now?
+  We already know this game. try to break your record. do you want to play again with me now, marco?
+  We already know this game. try to break your record. do you want to play again with me now?
+  We already know this game. try to break your record. do you want to play again with me, marco?
+  We already know this game. try to break your record. do you want to play again with me?
+  We already know this game. try to break your record. do you want to play again, marco?
+  We already know this game. try to break your record. do you want to play again?
+  We already know this game. try to break your record. how about playing again now, marco?
+  We already know this game. try to break your record. how about playing again now?
+  We already know this game. try to break your record. how about playing again?
+  We already know this game. try to break your record. ready to play again with me now, marco?
+  We already know this game. try to break your record. ready to play again with me now?
+  We already know this game. try to break your record. ready to play again with me, marco?
+  We already know this game. try to break your record. ready to play again with me?
+  We already know this game. try to do your best now. are you ready to play again now, marco?
+  We already know this game. try to do your best now. are you ready to play again now?
+  We already know this game. try to do your best now. are you ready to play again?
+  We already know this game. try to do your best now. do you want to play again now, marco?
+  We already know this game. try to do your best now. do you want to play again now?
+  We already know this game. try to do your best now. do you want to play again with me now?
+  We already know this game. try to do your best now. do you want to play again with me, marco?
+  We already know this game. try to do your best now. do you want to play again with me?
+  We already know this game. try to do your best now. do you want to play again, marco?
+  We already know this game. try to do your best now. do you want to play again?
+  We already know this game. try to do your best now. how about playing again now?
+  We already know this game. try to do your best now. how about playing again?
+  We already know this game. try to do your best now. ready to play again with me now?
+  We already know this game. try to do your best now. ready to play again with me, marco?
+  We already know this game. try to do your best now. ready to play again with me?
+  We already know this game. try to do your best today. are you ready to play again now?
+  We already know this game. try to do your best today. are you ready to play again?
+  We already know this game. try to do your best today. do you want to play again now, marco?
+  We already know this game. try to do your best today. do you want to play again now?
+  We already know this game. try to do your best today. do you want to play again with me now, marco?
+  We already know this game. try to do your best today. do you want to play again with me now?
+  We already know this game. try to do your best today. do you want to play again with me?
+  We already know this game. try to do your best today. do you want to play again, marco?
+  We already know this game. try to do your best today. do you want to play again?
+  We already know this game. try to do your best today. how about playing again now?
+  We already know this game. try to do your best today. how about playing again?
+  We already know this game. try to do your best today. ready to play again with me now?
+  We already know this game. try to do your best today. ready to play again with me, marco?
+  We already know this game. try to do your best today. ready to play again with me?
+  We already know this game. try to do your best. are you ready to play again now, marco?
+  We already know this game. try to do your best. are you ready to play again now?
+  We already know this game. try to do your best. do you want to play again now?
+  We already know this game. try to do your best. do you want to play again with me now?
+  We already know this game. try to do your best. do you want to play again with me, marco?
+  We already know this game. try to do your best. do you want to play again with me?
+  We already know this game. try to do your best. do you want to play again, marco?
+  We already know this game. try to do your best. do you want to play again?
+  We already know this game. try to do your best. how about playing again now, marco?
+  We already know this game. try to do your best. how about playing again now?
+  We already know this game. try to do your best. how about playing again, marco?
+  We already know this game. try to do your best. how about playing again?
+  We already know this game. try to do your best. ready to play again with me now?
+  We already know this game. try to do your best. ready to play again with me?
+  We already know this game. try to set a record now. are you ready to play again now, marco?
+  We already know this game. try to set a record now. are you ready to play again now?
+  We already know this game. try to set a record now. are you ready to play again?
+  We already know this game. try to set a record now. do you want to play again now, marco?
+  We already know this game. try to set a record now. do you want to play again now?
+  We already know this game. try to set a record now. do you want to play again with me now, marco?
+  We already know this game. try to set a record now. do you want to play again with me now?
+  We already know this game. try to set a record now. do you want to play again with me, marco?
+  We already know this game. try to set a record now. do you want to play again with me?
+  We already know this game. try to set a record now. do you want to play again?
+  We already know this game. try to set a record now. how about playing again now, marco?
+  We already know this game. try to set a record now. how about playing again now?
+  We already know this game. try to set a record now. how about playing again, marco?
+  We already know this game. try to set a record now. how about playing again?
+  We already know this game. try to set a record now. ready to play again with me now?
+  We already know this game. try to set a record now. ready to play again with me, marco?
+  We already know this game. try to set a record now. ready to play again with me?
+  We already know this game. try to set a record today. are you ready to play again now, marco?
+  We already know this game. try to set a record today. are you ready to play again now?
+  We already know this game. try to set a record today. are you ready to play again, marco?
+  We already know this game. try to set a record today. are you ready to play again?
+  We already know this game. try to set a record today. do you want to play again now, marco?
+  We already know this game. try to set a record today. do you want to play again now?
+  We already know this game. try to set a record today. do you want to play again with me now, marco?
+  We already know this game. try to set a record today. do you want to play again with me now?
+  We already know this game. try to set a record today. do you want to play again with me?
+  We already know this game. try to set a record today. do you want to play again, marco?
+  We already know this game. try to set a record today. do you want to play again?
+  We already know this game. try to set a record today. how about playing again now?
+  We already know this game. try to set a record today. how about playing again?
+  We already know this game. try to set a record today. ready to play again with me now, marco?
+  We already know this game. try to set a record today. ready to play again with me now?
+  We already know this game. try to set a record today. ready to play again with me, marco?
+  We already know this game. try to set a record today. ready to play again with me?
+  We already know this game. try to set a record. are you ready to play again now?
+  We already know this game. try to set a record. are you ready to play again, marco?
+  We already know this game. try to set a record. are you ready to play again?
+  We already know this game. try to set a record. do you want to play again now?
+  We already know this game. try to set a record. do you want to play again with me now?
+  We already know this game. try to set a record. do you want to play again with me, marco?
+  We already know this game. try to set a record. do you want to play again with me?
+  We already know this game. try to set a record. do you want to play again, marco?
+  We already know this game. try to set a record. do you want to play again?
+  We already know this game. try to set a record. how about playing again now, marco?
+  We already know this game. try to set a record. how about playing again now?
+  We already know this game. try to set a record. how about playing again?
+  We already know this game. try to set a record. ready to play again with me now, marco?
+  We already know this game. try to set a record. ready to play again with me now?
+  We already know this game. try to set a record. ready to play again with me, marco?
+  We already know this game. try to set a record. ready to play again with me?
+  We have already played. try to break your record now. are you ready to play again now?
+  We have already played. try to break your record now. are you ready to play again, marco?
+  We have already played. try to break your record now. are you ready to play again?
+  We have already played. try to break your record now. do you want to play again now, marco?
+  We have already played. try to break your record now. do you want to play again now?
+  We have already played. try to break your record now. do you want to play again with me now, marco?
+  We have already played. try to break your record now. do you want to play again with me now?
+  We have already played. try to break your record now. do you want to play again with me, marco?
+  We have already played. try to break your record now. do you want to play again with me?
+  We have already played. try to break your record now. do you want to play again, marco?
+  We have already played. try to break your record now. do you want to play again?
+  We have already played. try to break your record now. how about playing again now?
+  We have already played. try to break your record now. how about playing again?
+  We have already played. try to break your record now. ready to play again with me now, marco?
+  We have already played. try to break your record now. ready to play again with me now?
+  We have already played. try to break your record now. ready to play again with me, marco?
+  We have already played. try to break your record now. ready to play again with me?
+  We have already played. try to break your record today. are you ready to play again now?
+  We have already played. try to break your record today. are you ready to play again, marco?
+  We have already played. try to break your record today. are you ready to play again?
+  We have already played. try to break your record today. do you want to play again now, marco?
+  We have already played. try to break your record today. do you want to play again now?
+  We have already played. try to break your record today. do you want to play again with me now?
+  We have already played. try to break your record today. do you want to play again with me, marco?
+  We have already played. try to break your record today. do you want to play again with me?
+  We have already played. try to break your record today. do you want to play again, marco?
+  We have already played. try to break your record today. do you want to play again?
+  We have already played. try to break your record today. how about playing again now, marco?
+  We have already played. try to break your record today. how about playing again now?
+  We have already played. try to break your record today. how about playing again, marco?
+  We have already played. try to break your record today. how about playing again?
+  We have already played. try to break your record today. ready to play again with me now?
+  We have already played. try to break your record today. ready to play again with me?
+  We have already played. try to break your record. are you ready to play again now?
+  We have already played. try to break your record. are you ready to play again, marco?
+  We have already played. try to break your record. are you ready to play again?
+  We have already played. try to break your record. do you want to play again now, marco?
+  We have already played. try to break your record. do you want to play again now?
+  We have already played. try to break your record. do you want to play again with me now?
+  We have already played. try to break your record. do you want to play again, marco?
+  We have already played. try to break your record. do you want to play again?
+  We have already played. try to break your record. how about playing again now, marco?
+  We have already played. try to break your record. how about playing again now?
+  We have already played. try to break your record. how about playing again, marco?
+  We have already played. try to break your record. how about playing again?
+  We have already played. try to break your record. ready to play again with me now, marco?
+  We have already played. try to break your record. ready to play again with me now?
+  We have already played. try to break your record. ready to play again with me?
+  We have already played. try to do your best now. are you ready to play again now?
+  We have already played. try to do your best now. are you ready to play again, marco?
+  We have already played. try to do your best now. are you ready to play again?
+  We have already played. try to do your best now. do you want to play again now, marco?
+  We have already played. try to do your best now. do you want to play again now?
+  We have already played. try to do your best now. do you want to play again with me now?
+  We have already played. try to do your best now. do you want to play again with me, marco?
+  We have already played. try to do your best now. do you want to play again with me?
+  We have already played. try to do your best now. do you want to play again, marco?
+  We have already played. try to do your best now. do you want to play again?
+  We have already played. try to do your best now. how about playing again now?
+  We have already played. try to do your best now. how about playing again, marco?
+  We have already played. try to do your best now. how about playing again?
+  We have already played. try to do your best now. ready to play again with me now?
+  We have already played. try to do your best now. ready to play again with me, marco?
+  We have already played. try to do your best now. ready to play again with me?
+  We have already played. try to do your best today. are you ready to play again now, marco?
+  We have already played. try to do your best today. are you ready to play again now?
+  We have already played. try to do your best today. are you ready to play again?
+  We have already played. try to do your best today. do you want to play again now, marco?
+  We have already played. try to do your best today. do you want to play again now?
+  We have already played. try to do your best today. do you want to play again with me now, marco?
+  We have already played. try to do your best today. do you want to play again with me now?
+  We have already played. try to do your best today. do you want to play again with me?
+  We have already played. try to do your best today. do you want to play again, marco?
+  We have already played. try to do your best today. do you want to play again?
+  We have already played. try to do your best today. how about playing again now, marco?
+  We have already played. try to do your best today. how about playing again now?
+  We have already played. try to do your best today. how about playing again?
+  We have already played. try to do your best today. ready to play again with me now, marco?
+  We have already played. try to do your best today. ready to play again with me now?
+  We have already played. try to do your best today. ready to play again with me?
+  We have already played. try to do your best. are you ready to play again now?
+  We have already played. try to do your best. are you ready to play again, marco?
+  We have already played. try to do your best. are you ready to play again?
+  We have already played. try to do your best. do you want to play again now?
+  We have already played. try to do your best. do you want to play again with me now?
+  We have already played. try to do your best. do you want to play again with me, marco?
+  We have already played. try to do your best. do you want to play again with me?
+  We have already played. try to do your best. do you want to play again, marco?
+  We have already played. try to do your best. do you want to play again?
+  We have already played. try to do your best. how about playing again now, marco?
+  We have already played. try to do your best. how about playing again now?
+  We have already played. try to do your best. how about playing again, marco?
+  We have already played. try to do your best. how about playing again?
+  We have already played. try to do your best. ready to play again with me now, marco?
+  We have already played. try to do your best. ready to play again with me now?
+  We have already played. try to do your best. ready to play again with me, marco?
+  We have already played. try to do your best. ready to play again with me?
+  We have already played. try to set a record now. are you ready to play again now?
+  We have already played. try to set a record now. are you ready to play again, marco?
+  We have already played. try to set a record now. are you ready to play again?
+  We have already played. try to set a record now. do you want to play again now?
+  We have already played. try to set a record now. do you want to play again with me now?
+  We have already played. try to set a record now. do you want to play again with me?
+  We have already played. try to set a record now. do you want to play again, marco?
+  We have already played. try to set a record now. do you want to play again?
+  We have already played. try to set a record now. how about playing again now?
+  We have already played. try to set a record now. how about playing again?
+  We have already played. try to set a record now. ready to play again with me now, marco?
+  We have already played. try to set a record now. ready to play again with me now?
+  We have already played. try to set a record now. ready to play again with me, marco?
+  We have already played. try to set a record now. ready to play again with me?
+  We have already played. try to set a record today. are you ready to play again now?
+  We have already played. try to set a record today. are you ready to play again?
+  We have already played. try to set a record today. do you want to play again now, marco?
+  We have already played. try to set a record today. do you want to play again now?
+  We have already played. try to set a record today. do you want to play again with me now?
+  We have already played. try to set a record today. do you want to play again with me, marco?
+  We have already played. try to set a record today. do you want to play again with me?
+  We have already played. try to set a record today. do you want to play again, marco?
+  We have already played. try to set a record today. do you want to play again?
+  We have already played. try to set a record today. how about playing again now, marco?
+  We have already played. try to set a record today. how about playing again now?
+  We have already played. try to set a record today. how about playing again?
+  We have already played. try to set a record today. ready to play again with me now?
+  We have already played. try to set a record today. ready to play again with me, marco?
+  We have already played. try to set a record today. ready to play again with me?
+  We have already played. try to set a record. are you ready to play again now, marco?
+  We have already played. try to set a record. are you ready to play again now?
+  We have already played. try to set a record. are you ready to play again?
+  We have already played. try to set a record. do you want to play again now, marco?
+  We have already played. try to set a record. do you want to play again now?
+  We have already played. try to set a record. do you want to play again with me now?
+  We have already played. try to set a record. do you want to play again with me, marco?
+  We have already played. try to set a record. do you want to play again with me?
+  We have already played. try to set a record. do you want to play again, marco?
+  We have already played. try to set a record. do you want to play again?
+  We have already played. try to set a record. how about playing again now?
+  We have already played. try to set a record. how about playing again, marco?
+  We have already played. try to set a record. how about playing again?
+  We have already played. try to set a record. ready to play again with me now?
+  We have already played. try to set a record. ready to play again with me, marco?
+  We have already played. try to set a record. ready to play again with me?
+  marco, We already know this game. try to break your record now. are you ready to play again now?
+  marco, We already know this game. try to break your record now. are you ready to play again?
+  marco, We already know this game. try to break your record now. do you want to play again now?
+  marco, We already know this game. try to break your record now. do you want to play again with me now?
+  marco, We already know this game. try to break your record now. do you want to play again with me?
+  marco, We already know this game. try to break your record now. how about playing again now?
+  marco, We already know this game. try to break your record now. how about playing again?
+  marco, We already know this game. try to break your record now. ready to play again with me now?
+  marco, We already know this game. try to break your record now. ready to play again with me?
+  marco, We already know this game. try to break your record today. are you ready to play again?
+  marco, We already know this game. try to break your record today. do you want to play again now?
+  marco, We already know this game. try to break your record today. do you want to play again with me now?
+  marco, We already know this game. try to break your record today. do you want to play again?
+  marco, We already know this game. try to break your record today. how about playing again?
+  marco, We already know this game. try to break your record today. ready to play again with me now?
+  marco, We already know this game. try to break your record today. ready to play again with me?
+  marco, We already know this game. try to break your record. do you want to play again now?
+  marco, We already know this game. try to break your record. do you want to play again with me?
+  marco, We already know this game. try to break your record. do you want to play again?
+  marco, We already know this game. try to break your record. how about playing again now?
+  marco, We already know this game. try to break your record. how about playing again?
+  marco, We already know this game. try to break your record. ready to play again with me now?
+  marco, We already know this game. try to break your record. ready to play again with me?
+  marco, We already know this game. try to do your best now. are you ready to play again now?
+  marco, We already know this game. try to do your best now. are you ready to play again?
+  marco, We already know this game. try to do your best now. do you want to play again now?
+  marco, We already know this game. try to do your best now. do you want to play again with me now?
+  marco, We already know this game. try to do your best now. do you want to play again with me?
+  marco, We already know this game. try to do your best now. do you want to play again?
+  marco, We already know this game. try to do your best today. are you ready to play again now?
+  marco, We already know this game. try to do your best today. are you ready to play again?
+  marco, We already know this game. try to do your best today. do you want to play again now?
+  marco, We already know this game. try to do your best today. do you want to play again with me now?
+  marco, We already know this game. try to do your best today. do you want to play again?
+  marco, We already know this game. try to do your best today. how about playing again now?
+  marco, We already know this game. try to do your best today. how about playing again?
+  marco, We already know this game. try to do your best today. ready to play again with me now?
+  marco, We already know this game. try to do your best today. ready to play again with me?
+  marco, We already know this game. try to do your best. are you ready to play again now?
+  marco, We already know this game. try to do your best. are you ready to play again?
+  marco, We already know this game. try to do your best. do you want to play again now?
+  marco, We already know this game. try to do your best. do you want to play again with me now?
+  marco, We already know this game. try to do your best. do you want to play again with me?
+  marco, We already know this game. try to do your best. do you want to play again?
+  marco, We already know this game. try to do your best. how about playing again?
+  marco, We already know this game. try to do your best. ready to play again with me now?
+  marco, We already know this game. try to set a record now. are you ready to play again now?
+  marco, We already know this game. try to set a record now. are you ready to play again?
+  marco, We already know this game. try to set a record now. do you want to play again now?
+  marco, We already know this game. try to set a record now. do you want to play again with me now?
+  marco, We already know this game. try to set a record now. do you want to play again?
+  marco, We already know this game. try to set a record now. how about playing again?
+  marco, We already know this game. try to set a record now. ready to play again with me now?
+  marco, We already know this game. try to set a record today. are you ready to play again now?
+  marco, We already know this game. try to set a record today. are you ready to play again?
+  marco, We already know this game. try to set a record today. do you want to play again now?
+  marco, We already know this game. try to set a record today. do you want to play again?
+  marco, We already know this game. try to set a record today. how about playing again?
+  marco, We already know this game. try to set a record today. ready to play again with me now?
+  marco, We already know this game. try to set a record today. ready to play again with me?
+  marco, We already know this game. try to set a record. do you want to play again now?
+  marco, We already know this game. try to set a record. do you want to play again?
+  marco, We already know this game. try to set a record. how about playing again?
+  marco, We already know this game. try to set a record. ready to play again with me now?
+  marco, We already know this game. try to set a record. ready to play again with me?
+  marco, We have already played. try to break your record now. are you ready to play again?
+  marco, We have already played. try to break your record now. do you want to play again now?
+  marco, We have already played. try to break your record now. do you want to play again?
+  marco, We have already played. try to break your record now. how about playing again now?
+  marco, We have already played. try to break your record now. how about playing again?
+  marco, We have already played. try to break your record now. ready to play again with me now?
+  marco, We have already played. try to break your record today. are you ready to play again?
+  marco, We have already played. try to break your record today. do you want to play again now?
+  marco, We have already played. try to break your record today. do you want to play again?
+  marco, We have already played. try to break your record today. how about playing again?
+  marco, We have already played. try to break your record today. ready to play again with me now?
+  marco, We have already played. try to break your record. are you ready to play again now?
+  marco, We have already played. try to break your record. do you want to play again now?
+  marco, We have already played. try to break your record. do you want to play again with me now?
+  marco, We have already played. try to break your record. do you want to play again with me?
+  marco, We have already played. try to break your record. do you want to play again?
+  marco, We have already played. try to break your record. how about playing again now?
+  marco, We have already played. try to break your record. how about playing again?
+  marco, We have already played. try to break your record. ready to play again with me?
+  marco, We have already played. try to do your best now. are you ready to play again now?
+  marco, We have already played. try to do your best now. are you ready to play again?
+  marco, We have already played. try to do your best now. do you want to play again now?
+  marco, We have already played. try to do your best now. do you want to play again with me?
+  marco, We have already played. try to do your best now. do you want to play again?
+  marco, We have already played. try to do your best now. how about playing again?
+  marco, We have already played. try to do your best now. ready to play again with me?
+  marco, We have already played. try to do your best today. are you ready to play again now?
+  marco, We have already played. try to do your best today. do you want to play again with me now?
+  marco, We have already played. try to do your best today. do you want to play again?
+  marco, We have already played. try to do your best today. ready to play again with me now?
+  marco, We have already played. try to do your best today. ready to play again with me?
+  marco, We have already played. try to do your best. are you ready to play again?
+  marco, We have already played. try to do your best. do you want to play again with me now?
+  marco, We have already played. try to do your best. do you want to play again with me?
+  marco, We have already played. try to do your best. do you want to play again?
+  marco, We have already played. try to do your best. how about playing again now?
+  marco, We have already played. try to do your best. how about playing again?
+  marco, We have already played. try to do your best. ready to play again with me now?
+  marco, We have already played. try to set a record now. are you ready to play again now?
+  marco, We have already played. try to set a record now. do you want to play again now?
+  marco, We have already played. try to set a record now. do you want to play again with me?
+  marco, We have already played. try to set a record now. do you want to play again?
+  marco, We have already played. try to set a record now. how about playing again now?
+  marco, We have already played. try to set a record now. how about playing again?
+  marco, We have already played. try to set a record now. ready to play again with me?
+  marco, We have already played. try to set a record today. are you ready to play again now?
+  marco, We have already played. try to set a record today. do you want to play again now?
+  marco, We have already played. try to set a record today. do you want to play again with me now?
+  marco, We have already played. try to set a record today. do you want to play again?
+  marco, We have already played. try to set a record today. how about playing again?
+  marco, We have already played. try to set a record today. ready to play again with me now?
+  marco, We have already played. try to set a record today. ready to play again with me?
+  marco, We have already played. try to set a record. are you ready to play again now?
+  marco, We have already played. try to set a record. do you want to play again now?
+  marco, We have already played. try to set a record. do you want to play again with me now?
+  marco, We have already played. try to set a record. do you want to play again?
+  marco, We have already played. try to set a record. ready to play again with me now?
+  marco, We have already played. try to set a record. ready to play again with me?
+
+* =@apologize05aq= / =@answerNotUnderstood= (1182)
+  I am sorry, I did not catch that. can you repeat it, please? what did you answer, marco?
+  I am sorry, I did not catch that. can you repeat it, please? what did you answer?
+  I am sorry, I did not catch that. can you repeat it, please? what did you choose, marco?
+  I am sorry, I did not catch that. can you repeat it, please? what did you choose?
+  I am sorry, I did not catch that. can you repeat it, please? what did you select?
+  I am sorry, I did not catch that. can you repeat it, please? which answer did you choose, marco?
+  I am sorry, I did not catch that. can you repeat it, please? which answer did you choose?
+  I am sorry, I did not catch that. can you repeat it, please? which answer did you select, marco?
+  I am sorry, I did not catch that. can you repeat it, please? which answer did you select?
+  I am sorry, I did not catch that. can you repeat it, please? which one did you choose?
+  I am sorry, I did not catch that. can you repeat it, please? which one did you select?
+  I am sorry, I did not catch that. can you repeat it, please? which option did you choose?
+  I am sorry, I did not catch that. can you repeat it, please? which option did you select?
+  I am sorry, I did not catch that. can you repeat it? what did you answer?
+  I am sorry, I did not catch that. can you repeat it? what did you choose?
+  I am sorry, I did not catch that. can you repeat it? what did you select, marco?
+  I am sorry, I did not catch that. can you repeat it? what did you select?
+  I am sorry, I did not catch that. can you repeat it? which answer did you choose?
+  I am sorry, I did not catch that. can you repeat it? which answer did you select, marco?
+  I am sorry, I did not catch that. can you repeat it? which answer did you select?
+  I am sorry, I did not catch that. can you repeat it? which one did you choose, marco?
+  I am sorry, I did not catch that. can you repeat it? which one did you choose?
+  I am sorry, I did not catch that. can you repeat it? which one did you select?
+  I am sorry, I did not catch that. can you repeat it? which option did you choose?
+  I am sorry, I did not catch that. can you repeat it? which option did you select, marco?
+  I am sorry, I did not catch that. can you repeat it? which option did you select?
+  I am sorry, I did not catch that. can you say it again, please? what did you answer, marco?
+  I am sorry, I did not catch that. can you say it again, please? what did you answer?
+  I am sorry, I did not catch that. can you say it again, please? what did you choose, marco?
+  I am sorry, I did not catch that. can you say it again, please? what did you choose?
+  I am sorry, I did not catch that. can you say it again, please? what did you select, marco?
+  I am sorry, I did not catch that. can you say it again, please? what did you select?
+  I am sorry, I did not catch that. can you say it again, please? which answer did you choose, marco?
+  I am sorry, I did not catch that. can you say it again, please? which answer did you choose?
+  I am sorry, I did not catch that. can you say it again, please? which answer did you select?
+  I am sorry, I did not catch that. can you say it again, please? which one did you choose, marco?
+  I am sorry, I did not catch that. can you say it again, please? which one did you choose?
+  I am sorry, I did not catch that. can you say it again, please? which one did you select?
+  I am sorry, I did not catch that. can you say it again, please? which option did you choose?
+  I am sorry, I did not catch that. can you say it again, please? which option did you select, marco?
+  I am sorry, I did not catch that. can you say it again, please? which option did you select?
+  I am sorry, I did not catch that. can you say it again? what did you answer, marco?
+  I am sorry, I did not catch that. can you say it again? what did you answer?
+  I am sorry, I did not catch that. can you say it again? what did you choose?
+  I am sorry, I did not catch that. can you say it again? what did you select?
+  I am sorry, I did not catch that. can you say it again? which answer did you choose?
+  I am sorry, I did not catch that. can you say it again? which answer did you select?
+  I am sorry, I did not catch that. can you say it again? which one did you choose?
+  I am sorry, I did not catch that. can you say it again? which one did you select?
+  I am sorry, I did not catch that. can you say it again? which option did you choose, marco?
+  I am sorry, I did not catch that. can you say it again? which option did you choose?
+  I am sorry, I did not catch that. can you say it again? which option did you select, marco?
+  I am sorry, I did not catch that. can you say it again? which option did you select?
+  I am sorry, I did not get that. can you repeat it, please? what did you answer, marco?
+  I am sorry, I did not get that. can you repeat it, please? what did you answer?
+  I am sorry, I did not get that. can you repeat it, please? what did you choose?
+  I am sorry, I did not get that. can you repeat it, please? what did you select?
+  I am sorry, I did not get that. can you repeat it, please? which answer did you choose?
+  I am sorry, I did not get that. can you repeat it, please? which answer did you select, marco?
+  I am sorry, I did not get that. can you repeat it, please? which answer did you select?
+  I am sorry, I did not get that. can you repeat it, please? which one did you choose, marco?
+  I am sorry, I did not get that. can you repeat it, please? which one did you choose?
+  I am sorry, I did not get that. can you repeat it, please? which one did you select, marco?
+  I am sorry, I did not get that. can you repeat it, please? which one did you select?
+  I am sorry, I did not get that. can you repeat it, please? which option did you choose?
+  I am sorry, I did not get that. can you repeat it, please? which option did you select?
+  I am sorry, I did not get that. can you repeat it? what did you answer?
+  I am sorry, I did not get that. can you repeat it? what did you choose, marco?
+  I am sorry, I did not get that. can you repeat it? what did you choose?
+  I am sorry, I did not get that. can you repeat it? what did you select, marco?
+  I am sorry, I did not get that. can you repeat it? what did you select?
+  I am sorry, I did not get that. can you repeat it? which answer did you choose?
+  I am sorry, I did not get that. can you repeat it? which answer did you select?
+  I am sorry, I did not get that. can you repeat it? which one did you choose?
+  I am sorry, I did not get that. can you repeat it? which one did you select, marco?
+  I am sorry, I did not get that. can you repeat it? which one did you select?
+  I am sorry, I did not get that. can you repeat it? which option did you choose?
+  I am sorry, I did not get that. can you repeat it? which option did you select?
+  I am sorry, I did not get that. can you say it again, please? what did you answer?
+  I am sorry, I did not get that. can you say it again, please? what did you choose?
+  I am sorry, I did not get that. can you say it again, please? what did you select?
+  I am sorry, I did not get that. can you say it again, please? which answer did you choose, marco?
+  I am sorry, I did not get that. can you say it again, please? which answer did you choose?
+  I am sorry, I did not get that. can you say it again, please? which answer did you select, marco?
+  I am sorry, I did not get that. can you say it again, please? which answer did you select?
+  I am sorry, I did not get that. can you say it again, please? which one did you choose?
+  I am sorry, I did not get that. can you say it again, please? which one did you select, marco?
+  I am sorry, I did not get that. can you say it again, please? which one did you select?
+  I am sorry, I did not get that. can you say it again, please? which option did you choose, marco?
+  I am sorry, I did not get that. can you say it again, please? which option did you choose?
+  I am sorry, I did not get that. can you say it again, please? which option did you select?
+  I am sorry, I did not get that. can you say it again? what did you answer, marco?
+  I am sorry, I did not get that. can you say it again? what did you answer?
+  I am sorry, I did not get that. can you say it again? what did you choose?
+  I am sorry, I did not get that. can you say it again? what did you select?
+  I am sorry, I did not get that. can you say it again? which answer did you choose?
+  I am sorry, I did not get that. can you say it again? which answer did you select, marco?
+  I am sorry, I did not get that. can you say it again? which answer did you select?
+  I am sorry, I did not get that. can you say it again? which one did you select, marco?
+  I am sorry, I did not get that. can you say it again? which one did you select?
+  I am sorry, I did not get that. can you say it again? which option did you choose, marco?
+  I am sorry, I did not get that. can you say it again? which option did you choose?
+  I am sorry, I did not get that. can you say it again? which option did you select, marco?
+  I am sorry, I did not get that. can you say it again? which option did you select?
+  I am sorry, I did not hear well. can you repeat it, please? what did you answer?
+  I am sorry, I did not hear well. can you repeat it, please? what did you choose, marco?
+  I am sorry, I did not hear well. can you repeat it, please? what did you choose?
+  I am sorry, I did not hear well. can you repeat it, please? what did you select, marco?
+  I am sorry, I did not hear well. can you repeat it, please? what did you select?
+  I am sorry, I did not hear well. can you repeat it, please? which answer did you choose?
+  I am sorry, I did not hear well. can you repeat it, please? which answer did you select, marco?
+  I am sorry, I did not hear well. can you repeat it, please? which answer did you select?
+  I am sorry, I did not hear well. can you repeat it, please? which one did you choose?
+  I am sorry, I did not hear well. can you repeat it, please? which one did you select?
+  I am sorry, I did not hear well. can you repeat it, please? which option did you choose?
+  I am sorry, I did not hear well. can you repeat it, please? which option did you select?
+  I am sorry, I did not hear well. can you repeat it? what did you answer?
+  I am sorry, I did not hear well. can you repeat it? what did you choose, marco?
+  I am sorry, I did not hear well. can you repeat it? what did you choose?
+  I am sorry, I did not hear well. can you repeat it? what did you select?
+  I am sorry, I did not hear well. can you repeat it? which answer did you choose, marco?
+  I am sorry, I did not hear well. can you repeat it? which answer did you choose?
+  I am sorry, I did not hear well. can you repeat it? which answer did you select, marco?
+  I am sorry, I did not hear well. can you repeat it? which answer did you select?
+  I am sorry, I did not hear well. can you repeat it? which one did you choose, marco?
+  I am sorry, I did not hear well. can you repeat it? which one did you choose?
+  I am sorry, I did not hear well. can you repeat it? which one did you select, marco?
+  I am sorry, I did not hear well. can you repeat it? which one did you select?
+  I am sorry, I did not hear well. can you repeat it? which option did you choose?
+  I am sorry, I did not hear well. can you repeat it? which option did you select, marco?
+  I am sorry, I did not hear well. can you repeat it? which option did you select?
+  I am sorry, I did not hear well. can you say it again, please? what did you answer, marco?
+  I am sorry, I did not hear well. can you say it again, please? what did you answer?
+  I am sorry, I did not hear well. can you say it again, please? what did you choose, marco?
+  I am sorry, I did not hear well. can you say it again, please? what did you choose?
+  I am sorry, I did not hear well. can you say it again, please? what did you select?
+  I am sorry, I did not hear well. can you say it again, please? which answer did you choose, marco?
+  I am sorry, I did not hear well. can you say it again, please? which answer did you choose?
+  I am sorry, I did not hear well. can you say it again, please? which answer did you select, marco?
+  I am sorry, I did not hear well. can you say it again, please? which answer did you select?
+  I am sorry, I did not hear well. can you say it again, please? which one did you choose, marco?
+  I am sorry, I did not hear well. can you say it again, please? which one did you choose?
+  I am sorry, I did not hear well. can you say it again, please? which one did you select, marco?
+  I am sorry, I did not hear well. can you say it again, please? which one did you select?
+  I am sorry, I did not hear well. can you say it again, please? which option did you choose?
+  I am sorry, I did not hear well. can you say it again, please? which option did you select?
+  I am sorry, I did not hear well. can you say it again? what did you answer, marco?
+  I am sorry, I did not hear well. can you say it again? what did you answer?
+  I am sorry, I did not hear well. can you say it again? what did you choose?
+  I am sorry, I did not hear well. can you say it again? what did you select?
+  I am sorry, I did not hear well. can you say it again? which answer did you choose, marco?
+  I am sorry, I did not hear well. can you say it again? which answer did you choose?
+  I am sorry, I did not hear well. can you say it again? which answer did you select?
+  I am sorry, I did not hear well. can you say it again? which one did you choose?
+  I am sorry, I did not hear well. can you say it again? which one did you select, marco?
+  I am sorry, I did not hear well. can you say it again? which one did you select?
+  I am sorry, I did not hear well. can you say it again? which option did you choose, marco?
+  I am sorry, I did not hear well. can you say it again? which option did you choose?
+  I am sorry, I did not hear well. can you say it again? which option did you select, marco?
+  I am sorry, I did not hear well. can you say it again? which option did you select?
+  I am sorry, I did not understand. can you repeat it, please? what did you answer, marco?
+  I am sorry, I did not understand. can you repeat it, please? what did you answer?
+  I am sorry, I did not understand. can you repeat it, please? what did you choose, marco?
+  I am sorry, I did not understand. can you repeat it, please? what did you choose?
+  I am sorry, I did not understand. can you repeat it, please? what did you select?
+  I am sorry, I did not understand. can you repeat it, please? which answer did you choose?
+  I am sorry, I did not understand. can you repeat it, please? which answer did you select?
+  I am sorry, I did not understand. can you repeat it, please? which one did you choose?
+  I am sorry, I did not understand. can you repeat it, please? which one did you select, marco?
+  I am sorry, I did not understand. can you repeat it, please? which one did you select?
+  I am sorry, I did not understand. can you repeat it, please? which option did you choose, marco?
+  I am sorry, I did not understand. can you repeat it, please? which option did you choose?
+  I am sorry, I did not understand. can you repeat it, please? which option did you select?
+  I am sorry, I did not understand. can you repeat it? what did you answer, marco?
+  I am sorry, I did not understand. can you repeat it? what did you answer?
+  I am sorry, I did not understand. can you repeat it? what did you choose, marco?
+  I am sorry, I did not understand. can you repeat it? what did you choose?
+  I am sorry, I did not understand. can you repeat it? what did you select, marco?
+  I am sorry, I did not understand. can you repeat it? what did you select?
+  I am sorry, I did not understand. can you repeat it? which answer did you choose?
+  I am sorry, I did not understand. can you repeat it? which answer did you select?
+  I am sorry, I did not understand. can you repeat it? which one did you choose?
+  I am sorry, I did not understand. can you repeat it? which one did you select?
+  I am sorry, I did not understand. can you repeat it? which option did you choose?
+  I am sorry, I did not understand. can you repeat it? which option did you select, marco?
+  I am sorry, I did not understand. can you repeat it? which option did you select?
+  I am sorry, I did not understand. can you say it again, please? what did you answer, marco?
+  I am sorry, I did not understand. can you say it again, please? what did you answer?
+  I am sorry, I did not understand. can you say it again, please? what did you choose?
+  I am sorry, I did not understand. can you say it again, please? what did you select, marco?
+  I am sorry, I did not understand. can you say it again, please? what did you select?
+  I am sorry, I did not understand. can you say it again, please? which answer did you choose?
+  I am sorry, I did not understand. can you say it again, please? which answer did you select, marco?
+  I am sorry, I did not understand. can you say it again, please? which answer did you select?
+  I am sorry, I did not understand. can you say it again, please? which one did you choose, marco?
+  I am sorry, I did not understand. can you say it again, please? which one did you choose?
+  I am sorry, I did not understand. can you say it again, please? which one did you select, marco?
+  I am sorry, I did not understand. can you say it again, please? which one did you select?
+  I am sorry, I did not understand. can you say it again, please? which option did you choose?
+  I am sorry, I did not understand. can you say it again, please? which option did you select?
+  I am sorry, I did not understand. can you say it again? what did you answer, marco?
+  I am sorry, I did not understand. can you say it again? what did you answer?
+  I am sorry, I did not understand. can you say it again? what did you choose?
+  I am sorry, I did not understand. can you say it again? what did you select, marco?
+  I am sorry, I did not understand. can you say it again? what did you select?
+  I am sorry, I did not understand. can you say it again? which answer did you choose, marco?
+  I am sorry, I did not understand. can you say it again? which answer did you choose?
+  I am sorry, I did not understand. can you say it again? which answer did you select, marco?
+  I am sorry, I did not understand. can you say it again? which answer did you select?
+  I am sorry, I did not understand. can you say it again? which one did you choose, marco?
+  I am sorry, I did not understand. can you say it again? which one did you choose?
+  I am sorry, I did not understand. can you say it again? which one did you select, marco?
+  I am sorry, I did not understand. can you say it again? which one did you select?
+  I am sorry, I did not understand. can you say it again? which option did you choose, marco?
+  I am sorry, I did not understand. can you say it again? which option did you choose?
+  I am sorry, I did not understand. can you say it again? which option did you select?
+  I am sorry, I missed that. can you repeat it, please? what did you answer?
+  I am sorry, I missed that. can you repeat it, please? what did you choose?
+  I am sorry, I missed that. can you repeat it, please? what did you select?
+  I am sorry, I missed that. can you repeat it, please? which answer did you choose, marco?
+  I am sorry, I missed that. can you repeat it, please? which answer did you choose?
+  I am sorry, I missed that. can you repeat it, please? which answer did you select?
+  I am sorry, I missed that. can you repeat it, please? which one did you choose, marco?
+  I am sorry, I missed that. can you repeat it, please? which one did you choose?
+  I am sorry, I missed that. can you repeat it, please? which one did you select?
+  I am sorry, I missed that. can you repeat it, please? which option did you choose?
+  I am sorry, I missed that. can you repeat it, please? which option did you select, marco?
+  I am sorry, I missed that. can you repeat it, please? which option did you select?
+  I am sorry, I missed that. can you repeat it? what did you answer?
+  I am sorry, I missed that. can you repeat it? what did you select?
+  I am sorry, I missed that. can you repeat it? which answer did you choose?
+  I am sorry, I missed that. can you repeat it? which answer did you select?
+  I am sorry, I missed that. can you repeat it? which one did you choose?
+  I am sorry, I missed that. can you repeat it? which one did you select?
+  I am sorry, I missed that. can you repeat it? which option did you choose?
+  I am sorry, I missed that. can you repeat it? which option did you select?
+  I am sorry, I missed that. can you say it again, please? what did you answer, marco?
+  I am sorry, I missed that. can you say it again, please? what did you answer?
+  I am sorry, I missed that. can you say it again, please? what did you choose?
+  I am sorry, I missed that. can you say it again, please? what did you select, marco?
+  I am sorry, I missed that. can you say it again, please? what did you select?
+  I am sorry, I missed that. can you say it again, please? which answer did you choose?
+  I am sorry, I missed that. can you say it again, please? which answer did you select, marco?
+  I am sorry, I missed that. can you say it again, please? which answer did you select?
+  I am sorry, I missed that. can you say it again, please? which one did you choose, marco?
+  I am sorry, I missed that. can you say it again, please? which one did you choose?
+  I am sorry, I missed that. can you say it again, please? which one did you select?
+  I am sorry, I missed that. can you say it again, please? which option did you choose?
+  I am sorry, I missed that. can you say it again, please? which option did you select, marco?
+  I am sorry, I missed that. can you say it again, please? which option did you select?
+  I am sorry, I missed that. can you say it again? what did you answer?
+  I am sorry, I missed that. can you say it again? what did you choose, marco?
+  I am sorry, I missed that. can you say it again? what did you choose?
+  I am sorry, I missed that. can you say it again? what did you select?
+  I am sorry, I missed that. can you say it again? which answer did you choose?
+  I am sorry, I missed that. can you say it again? which answer did you select?
+  I am sorry, I missed that. can you say it again? which one did you choose?
+  I am sorry, I missed that. can you say it again? which one did you select?
+  I am sorry, I missed that. can you say it again? which option did you choose?
+  I am sorry, I missed that. can you say it again? which option did you select, marco?
+  I am sorry, I missed that. can you say it again? which option did you select?
+  I am sorry, can you repeat it, please? what did you answer, marco?
+  I am sorry, can you repeat it, please? what did you answer?
+  I am sorry, can you repeat it, please? what did you choose, marco?
+  I am sorry, can you repeat it, please? what did you choose?
+  I am sorry, can you repeat it, please? what did you select, marco?
+  I am sorry, can you repeat it, please? what did you select?
+  I am sorry, can you repeat it, please? which answer did you choose?
+  I am sorry, can you repeat it, please? which answer did you select, marco?
+  I am sorry, can you repeat it, please? which answer did you select?
+  I am sorry, can you repeat it, please? which one did you choose, marco?
+  I am sorry, can you repeat it, please? which one did you choose?
+  I am sorry, can you repeat it, please? which one did you select?
+  I am sorry, can you repeat it, please? which option did you choose, marco?
+  I am sorry, can you repeat it, please? which option did you choose?
+  I am sorry, can you repeat it? what did you answer?
+  I am sorry, can you repeat it? what did you choose, marco?
+  I am sorry, can you repeat it? what did you choose?
+  I am sorry, can you repeat it? what did you select?
+  I am sorry, can you repeat it? which answer did you choose, marco?
+  I am sorry, can you repeat it? which answer did you choose?
+  I am sorry, can you repeat it? which answer did you select?
+  I am sorry, can you repeat it? which one did you choose?
+  I am sorry, can you repeat it? which one did you select, marco?
+  I am sorry, can you repeat it? which one did you select?
+  I am sorry, can you repeat it? which option did you choose?
+  I am sorry, can you repeat it? which option did you select, marco?
+  I am sorry, can you repeat it? which option did you select?
+  I am sorry, can you say it again, please? what did you answer?
+  I am sorry, can you say it again, please? what did you select, marco?
+  I am sorry, can you say it again, please? what did you select?
+  I am sorry, can you say it again, please? which answer did you choose, marco?
+  I am sorry, can you say it again, please? which answer did you choose?
+  I am sorry, can you say it again, please? which answer did you select, marco?
+  I am sorry, can you say it again, please? which answer did you select?
+  I am sorry, can you say it again, please? which one did you choose?
+  I am sorry, can you say it again, please? which one did you select?
+  I am sorry, can you say it again, please? which option did you choose?
+  I am sorry, can you say it again, please? which option did you select, marco?
+  I am sorry, can you say it again, please? which option did you select?
+  I am sorry, can you say it again? what did you answer?
+  I am sorry, can you say it again? what did you choose?
+  I am sorry, can you say it again? what did you select?
+  I am sorry, can you say it again? which answer did you choose, marco?
+  I am sorry, can you say it again? which answer did you choose?
+  I am sorry, can you say it again? which answer did you select?
+  I am sorry, can you say it again? which one did you choose, marco?
+  I am sorry, can you say it again? which one did you choose?
+  I am sorry, can you say it again? which one did you select?
+  I am sorry, can you say it again? which option did you choose?
+  I am sorry, can you say it again? which option did you select?
+  I did not catch that. can you repeat it, please? what did you answer?
+  I did not catch that. can you repeat it, please? what did you choose?
+  I did not catch that. can you repeat it, please? what did you select?
+  I did not catch that. can you repeat it, please? which answer did you choose?
+  I did not catch that. can you repeat it, please? which answer did you select?
+  I did not catch that. can you repeat it, please? which one did you choose, marco?
+  I did not catch that. can you repeat it, please? which one did you choose?
+  I did not catch that. can you repeat it, please? which one did you select?
+  I did not catch that. can you repeat it, please? which option did you choose?
+  I did not catch that. can you repeat it, please? which option did you select, marco?
+  I did not catch that. can you repeat it, please? which option did you select?
+  I did not catch that. can you repeat it? what did you answer, marco?
+  I did not catch that. can you repeat it? what did you answer?
+  I did not catch that. can you repeat it? what did you choose?
+  I did not catch that. can you repeat it? what did you select, marco?
+  I did not catch that. can you repeat it? what did you select?
+  I did not catch that. can you repeat it? which answer did you choose, marco?
+  I did not catch that. can you repeat it? which answer did you choose?
+  I did not catch that. can you repeat it? which answer did you select?
+  I did not catch that. can you repeat it? which one did you choose?
+  I did not catch that. can you repeat it? which one did you select?
+  I did not catch that. can you repeat it? which option did you select, marco?
+  I did not catch that. can you say it again, please? what did you answer?
+  I did not catch that. can you say it again, please? what did you choose, marco?
+  I did not catch that. can you say it again, please? what did you choose?
+  I did not catch that. can you say it again, please? what did you select, marco?
+  I did not catch that. can you say it again, please? what did you select?
+  I did not catch that. can you say it again, please? which answer did you choose?
+  I did not catch that. can you say it again, please? which answer did you select, marco?
+  I did not catch that. can you say it again, please? which answer did you select?
+  I did not catch that. can you say it again, please? which one did you choose, marco?
+  I did not catch that. can you say it again, please? which one did you choose?
+  I did not catch that. can you say it again, please? which one did you select?
+  I did not catch that. can you say it again, please? which option did you choose?
+  I did not catch that. can you say it again, please? which option did you select?
+  I did not catch that. can you say it again? what did you answer?
+  I did not catch that. can you say it again? what did you choose, marco?
+  I did not catch that. can you say it again? what did you choose?
+  I did not catch that. can you say it again? what did you select, marco?
+  I did not catch that. can you say it again? what did you select?
+  I did not catch that. can you say it again? which answer did you choose, marco?
+  I did not catch that. can you say it again? which answer did you choose?
+  I did not catch that. can you say it again? which answer did you select?
+  I did not catch that. can you say it again? which one did you choose, marco?
+  I did not catch that. can you say it again? which one did you choose?
+  I did not catch that. can you say it again? which one did you select, marco?
+  I did not catch that. can you say it again? which one did you select?
+  I did not catch that. can you say it again? which option did you choose, marco?
+  I did not catch that. can you say it again? which option did you choose?
+  I did not catch that. can you say it again? which option did you select, marco?
+  I did not catch that. can you say it again? which option did you select?
+  I did not get that. can you repeat it, please? what did you answer, marco?
+  I did not get that. can you repeat it, please? what did you choose, marco?
+  I did not get that. can you repeat it, please? what did you choose?
+  I did not get that. can you repeat it, please? what did you select?
+  I did not get that. can you repeat it, please? which answer did you choose, marco?
+  I did not get that. can you repeat it, please? which answer did you choose?
+  I did not get that. can you repeat it, please? which answer did you select?
+  I did not get that. can you repeat it, please? which one did you choose?
+  I did not get that. can you repeat it, please? which one did you select, marco?
+  I did not get that. can you repeat it, please? which one did you select?
+  I did not get that. can you repeat it, please? which option did you choose?
+  I did not get that. can you repeat it, please? which option did you select, marco?
+  I did not get that. can you repeat it, please? which option did you select?
+  I did not get that. can you repeat it? what did you answer, marco?
+  I did not get that. can you repeat it? what did you answer?
+  I did not get that. can you repeat it? what did you choose?
+  I did not get that. can you repeat it? what did you select?
+  I did not get that. can you repeat it? which answer did you choose, marco?
+  I did not get that. can you repeat it? which answer did you choose?
+  I did not get that. can you repeat it? which answer did you select?
+  I did not get that. can you repeat it? which one did you choose?
+  I did not get that. can you repeat it? which one did you select?
+  I did not get that. can you repeat it? which option did you choose?
+  I did not get that. can you repeat it? which option did you select?
+  I did not get that. can you say it again, please? what did you answer?
+  I did not get that. can you say it again, please? what did you choose, marco?
+  I did not get that. can you say it again, please? what did you choose?
+  I did not get that. can you say it again, please? what did you select?
+  I did not get that. can you say it again, please? which answer did you choose, marco?
+  I did not get that. can you say it again, please? which answer did you choose?
+  I did not get that. can you say it again, please? which answer did you select?
+  I did not get that. can you say it again, please? which one did you choose, marco?
+  I did not get that. can you say it again, please? which one did you choose?
+  I did not get that. can you say it again, please? which one did you select?
+  I did not get that. can you say it again, please? which option did you choose, marco?
+  I did not get that. can you say it again, please? which option did you choose?
+  I did not get that. can you say it again, please? which option did you select?
+  I did not get that. can you say it again? what did you answer, marco?
+  I did not get that. can you say it again? what did you answer?
+  I did not get that. can you say it again? what did you choose, marco?
+  I did not get that. can you say it again? what did you choose?
+  I did not get that. can you say it again? what did you select?
+  I did not get that. can you say it again? which answer did you choose?
+  I did not get that. can you say it again? which answer did you select, marco?
+  I did not get that. can you say it again? which answer did you select?
+  I did not get that. can you say it again? which one did you choose?
+  I did not get that. can you say it again? which one did you select, marco?
+  I did not get that. can you say it again? which one did you select?
+  I did not get that. can you say it again? which option did you choose?
+  I did not get that. can you say it again? which option did you select?
+  I did not hear well. can you repeat it, please? what did you answer?
+  I did not hear well. can you repeat it, please? what did you choose, marco?
+  I did not hear well. can you repeat it, please? what did you choose?
+  I did not hear well. can you repeat it, please? what did you select?
+  I did not hear well. can you repeat it, please? which answer did you choose, marco?
+  I did not hear well. can you repeat it, please? which answer did you choose?
+  I did not hear well. can you repeat it, please? which answer did you select, marco?
+  I did not hear well. can you repeat it, please? which answer did you select?
+  I did not hear well. can you repeat it, please? which one did you choose?
+  I did not hear well. can you repeat it, please? which one did you select, marco?
+  I did not hear well. can you repeat it, please? which one did you select?
+  I did not hear well. can you repeat it, please? which option did you choose, marco?
+  I did not hear well. can you repeat it, please? which option did you choose?
+  I did not hear well. can you repeat it, please? which option did you select, marco?
+  I did not hear well. can you repeat it, please? which option did you select?
+  I did not hear well. can you repeat it? what did you answer?
+  I did not hear well. can you repeat it? what did you choose, marco?
+  I did not hear well. can you repeat it? what did you choose?
+  I did not hear well. can you repeat it? what did you select?
+  I did not hear well. can you repeat it? which answer did you choose, marco?
+  I did not hear well. can you repeat it? which answer did you choose?
+  I did not hear well. can you repeat it? which answer did you select?
+  I did not hear well. can you repeat it? which one did you choose?
+  I did not hear well. can you repeat it? which one did you select?
+  I did not hear well. can you repeat it? which option did you choose, marco?
+  I did not hear well. can you repeat it? which option did you choose?
+  I did not hear well. can you repeat it? which option did you select?
+  I did not hear well. can you say it again, please? what did you answer?
+  I did not hear well. can you say it again, please? what did you choose, marco?
+  I did not hear well. can you say it again, please? what did you choose?
+  I did not hear well. can you say it again, please? what did you select, marco?
+  I did not hear well. can you say it again, please? what did you select?
+  I did not hear well. can you say it again, please? which answer did you choose?
+  I did not hear well. can you say it again, please? which answer did you select?
+  I did not hear well. can you say it again, please? which one did you choose?
+  I did not hear well. can you say it again, please? which one did you select, marco?
+  I did not hear well. can you say it again, please? which one did you select?
+  I did not hear well. can you say it again, please? which option did you choose, marco?
+  I did not hear well. can you say it again, please? which option did you choose?
+  I did not hear well. can you say it again, please? which option did you select?
+  I did not hear well. can you say it again? what did you answer, marco?
+  I did not hear well. can you say it again? what did you answer?
+  I did not hear well. can you say it again? what did you choose, marco?
+  I did not hear well. can you say it again? what did you choose?
+  I did not hear well. can you say it again? what did you select?
+  I did not hear well. can you say it again? which answer did you choose?
+  I did not hear well. can you say it again? which answer did you select?
+  I did not hear well. can you say it again? which one did you choose?
+  I did not hear well. can you say it again? which one did you select?
+  I did not hear well. can you say it again? which option did you choose, marco?
+  I did not hear well. can you say it again? which option did you choose?
+  I did not hear well. can you say it again? which option did you select?
+  I did not understand. can you repeat it, please? what did you answer?
+  I did not understand. can you repeat it, please? what did you choose?
+  I did not understand. can you repeat it, please? what did you select?
+  I did not understand. can you repeat it, please? which answer did you choose?
+  I did not understand. can you repeat it, please? which answer did you select, marco?
+  I did not understand. can you repeat it, please? which answer did you select?
+  I did not understand. can you repeat it, please? which one did you choose?
+  I did not understand. can you repeat it, please? which one did you select?
+  I did not understand. can you repeat it, please? which option did you choose, marco?
+  I did not understand. can you repeat it, please? which option did you choose?
+  I did not understand. can you repeat it, please? which option did you select, marco?
+  I did not understand. can you repeat it, please? which option did you select?
+  I did not understand. can you repeat it? what did you answer?
+  I did not understand. can you repeat it? what did you choose, marco?
+  I did not understand. can you repeat it? what did you choose?
+  I did not understand. can you repeat it? what did you select?
+  I did not understand. can you repeat it? which answer did you choose?
+  I did not understand. can you repeat it? which answer did you select, marco?
+  I did not understand. can you repeat it? which answer did you select?
+  I did not understand. can you repeat it? which one did you choose?
+  I did not understand. can you repeat it? which one did you select?
+  I did not understand. can you repeat it? which option did you choose, marco?
+  I did not understand. can you repeat it? which option did you choose?
+  I did not understand. can you repeat it? which option did you select?
+  I did not understand. can you say it again, please? what did you answer, marco?
+  I did not understand. can you say it again, please? what did you answer?
+  I did not understand. can you say it again, please? what did you choose?
+  I did not understand. can you say it again, please? what did you select?
+  I did not understand. can you say it again, please? which answer did you choose?
+  I did not understand. can you say it again, please? which answer did you select?
+  I did not understand. can you say it again, please? which one did you choose, marco?
+  I did not understand. can you say it again, please? which one did you choose?
+  I did not understand. can you say it again, please? which one did you select?
+  I did not understand. can you say it again, please? which option did you choose, marco?
+  I did not understand. can you say it again, please? which option did you choose?
+  I did not understand. can you say it again, please? which option did you select, marco?
+  I did not understand. can you say it again, please? which option did you select?
+  I did not understand. can you say it again? what did you answer?
+  I did not understand. can you say it again? what did you choose, marco?
+  I did not understand. can you say it again? what did you choose?
+  I did not understand. can you say it again? what did you select, marco?
+  I did not understand. can you say it again? what did you select?
+  I did not understand. can you say it again? which answer did you choose, marco?
+  I did not understand. can you say it again? which answer did you choose?
+  I did not understand. can you say it again? which answer did you select, marco?
+  I did not understand. can you say it again? which answer did you select?
+  I did not understand. can you say it again? which one did you choose?
+  I did not understand. can you say it again? which one did you select, marco?
+  I did not understand. can you say it again? which one did you select?
+  I did not understand. can you say it again? which option did you choose?
+  I did not understand. can you say it again? which option did you select, marco?
+  I did not understand. can you say it again? which option did you select?
+  I missed that. can you repeat it, please? what did you answer?
+  I missed that. can you repeat it, please? what did you choose, marco?
+  I missed that. can you repeat it, please? what did you choose?
+  I missed that. can you repeat it, please? what did you select?
+  I missed that. can you repeat it, please? which answer did you choose?
+  I missed that. can you repeat it, please? which answer did you select?
+  I missed that. can you repeat it, please? which one did you choose?
+  I missed that. can you repeat it, please? which one did you select, marco?
+  I missed that. can you repeat it, please? which one did you select?
+  I missed that. can you repeat it, please? which option did you choose?
+  I missed that. can you repeat it, please? which option did you select, marco?
+  I missed that. can you repeat it, please? which option did you select?
+  I missed that. can you repeat it? what did you answer?
+  I missed that. can you repeat it? what did you choose?
+  I missed that. can you repeat it? what did you select, marco?
+  I missed that. can you repeat it? what did you select?
+  I missed that. can you repeat it? which answer did you choose?
+  I missed that. can you repeat it? which answer did you select, marco?
+  I missed that. can you repeat it? which answer did you select?
+  I missed that. can you repeat it? which one did you choose?
+  I missed that. can you repeat it? which one did you select?
+  I missed that. can you repeat it? which option did you choose?
+  I missed that. can you repeat it? which option did you select, marco?
+  I missed that. can you repeat it? which option did you select?
+  I missed that. can you say it again, please? what did you answer, marco?
+  I missed that. can you say it again, please? what did you answer?
+  I missed that. can you say it again, please? what did you choose, marco?
+  I missed that. can you say it again, please? what did you choose?
+  I missed that. can you say it again, please? what did you select, marco?
+  I missed that. can you say it again, please? what did you select?
+  I missed that. can you say it again, please? which answer did you choose, marco?
+  I missed that. can you say it again, please? which answer did you choose?
+  I missed that. can you say it again, please? which answer did you select, marco?
+  I missed that. can you say it again, please? which answer did you select?
+  I missed that. can you say it again, please? which one did you choose, marco?
+  I missed that. can you say it again, please? which one did you choose?
+  I missed that. can you say it again, please? which one did you select, marco?
+  I missed that. can you say it again, please? which one did you select?
+  I missed that. can you say it again, please? which option did you choose?
+  I missed that. can you say it again, please? which option did you select, marco?
+  I missed that. can you say it again, please? which option did you select?
+  I missed that. can you say it again? what did you answer?
+  I missed that. can you say it again? what did you choose?
+  I missed that. can you say it again? what did you select, marco?
+  I missed that. can you say it again? what did you select?
+  I missed that. can you say it again? which answer did you choose?
+  I missed that. can you say it again? which answer did you select, marco?
+  I missed that. can you say it again? which answer did you select?
+  I missed that. can you say it again? which one did you choose, marco?
+  I missed that. can you say it again? which one did you choose?
+  I missed that. can you say it again? which one did you select?
+  I missed that. can you say it again? which option did you choose?
+  I missed that. can you say it again? which option did you select, marco?
+  I missed that. can you say it again? which option did you select?
+  can you repeat it, please? what did you answer?
+  can you repeat it, please? what did you choose, marco?
+  can you repeat it, please? what did you choose?
+  can you repeat it, please? what did you select?
+  can you repeat it, please? which answer did you choose, marco?
+  can you repeat it, please? which answer did you choose?
+  can you repeat it, please? which answer did you select?
+  can you repeat it, please? which one did you choose?
+  can you repeat it, please? which one did you select?
+  can you repeat it, please? which option did you choose?
+  can you repeat it, please? which option did you select, marco?
+  can you repeat it, please? which option did you select?
+  can you repeat it? what did you answer?
+  can you repeat it? what did you choose?
+  can you repeat it? what did you select, marco?
+  can you repeat it? what did you select?
+  can you repeat it? which answer did you choose?
+  can you repeat it? which answer did you select, marco?
+  can you repeat it? which answer did you select?
+  can you repeat it? which one did you choose, marco?
+  can you repeat it? which one did you choose?
+  can you repeat it? which one did you select?
+  can you repeat it? which option did you choose, marco?
+  can you repeat it? which option did you choose?
+  can you repeat it? which option did you select, marco?
+  can you repeat it? which option did you select?
+  can you say it again, please? what did you answer?
+  can you say it again, please? what did you choose?
+  can you say it again, please? what did you select?
+  can you say it again, please? which answer did you choose?
+  can you say it again, please? which answer did you select?
+  can you say it again, please? which one did you choose?
+  can you say it again, please? which one did you select, marco?
+  can you say it again, please? which one did you select?
+  can you say it again, please? which option did you choose?
+  can you say it again, please? which option did you select, marco?
+  can you say it again, please? which option did you select?
+  can you say it again? what did you answer?
+  can you say it again? what did you choose, marco?
+  can you say it again? what did you choose?
+  can you say it again? what did you select, marco?
+  can you say it again? what did you select?
+  can you say it again? which answer did you choose, marco?
+  can you say it again? which answer did you choose?
+  can you say it again? which answer did you select?
+  can you say it again? which one did you choose?
+  can you say it again? which one did you select?
+  can you say it again? which option did you choose, marco?
+  can you say it again? which option did you choose?
+  can you say it again? which option did you select?
+  marco, I am sorry, I did not catch that. can you repeat it, please? what did you select?
+  marco, I am sorry, I did not catch that. can you repeat it, please? which answer did you choose?
+  marco, I am sorry, I did not catch that. can you repeat it, please? which option did you choose?
+  marco, I am sorry, I did not catch that. can you repeat it? what did you select?
+  marco, I am sorry, I did not catch that. can you repeat it? which answer did you choose?
+  marco, I am sorry, I did not catch that. can you repeat it? which answer did you select?
+  marco, I am sorry, I did not catch that. can you repeat it? which one did you select?
+  marco, I am sorry, I did not catch that. can you repeat it? which option did you select?
+  marco, I am sorry, I did not catch that. can you say it again, please? what did you answer?
+  marco, I am sorry, I did not catch that. can you say it again, please? what did you select?
+  marco, I am sorry, I did not catch that. can you say it again, please? which answer did you choose?
+  marco, I am sorry, I did not catch that. can you say it again, please? which answer did you select?
+  marco, I am sorry, I did not catch that. can you say it again, please? which option did you choose?
+  marco, I am sorry, I did not catch that. can you say it again? which one did you choose?
+  marco, I am sorry, I did not catch that. can you say it again? which one did you select?
+  marco, I am sorry, I did not get that. can you repeat it, please? what did you select?
+  marco, I am sorry, I did not get that. can you repeat it, please? which answer did you select?
+  marco, I am sorry, I did not get that. can you repeat it, please? which one did you choose?
+  marco, I am sorry, I did not get that. can you repeat it, please? which one did you select?
+  marco, I am sorry, I did not get that. can you repeat it, please? which option did you choose?
+  marco, I am sorry, I did not get that. can you repeat it? what did you answer?
+  marco, I am sorry, I did not get that. can you repeat it? what did you choose?
+  marco, I am sorry, I did not get that. can you repeat it? which answer did you choose?
+  marco, I am sorry, I did not get that. can you repeat it? which one did you select?
+  marco, I am sorry, I did not get that. can you repeat it? which option did you select?
+  marco, I am sorry, I did not get that. can you say it again, please? which one did you select?
+  marco, I am sorry, I did not get that. can you say it again, please? which option did you select?
+  marco, I am sorry, I did not get that. can you say it again? which one did you choose?
+  marco, I am sorry, I did not get that. can you say it again? which option did you choose?
+  marco, I am sorry, I did not hear well. can you repeat it, please? which answer did you choose?
+  marco, I am sorry, I did not hear well. can you repeat it, please? which answer did you select?
+  marco, I am sorry, I did not hear well. can you repeat it, please? which one did you choose?
+  marco, I am sorry, I did not hear well. can you repeat it, please? which option did you select?
+  marco, I am sorry, I did not hear well. can you repeat it? what did you answer?
+  marco, I am sorry, I did not hear well. can you repeat it? what did you choose?
+  marco, I am sorry, I did not hear well. can you repeat it? what did you select?
+  marco, I am sorry, I did not hear well. can you repeat it? which answer did you choose?
+  marco, I am sorry, I did not hear well. can you repeat it? which answer did you select?
+  marco, I am sorry, I did not hear well. can you repeat it? which one did you choose?
+  marco, I am sorry, I did not hear well. can you repeat it? which one did you select?
+  marco, I am sorry, I did not hear well. can you say it again, please? what did you select?
+  marco, I am sorry, I did not hear well. can you say it again, please? which answer did you select?
+  marco, I am sorry, I did not hear well. can you say it again, please? which one did you choose?
+  marco, I am sorry, I did not hear well. can you say it again, please? which option did you select?
+  marco, I am sorry, I did not hear well. can you say it again? what did you choose?
+  marco, I am sorry, I did not hear well. can you say it again? which one did you select?
+  marco, I am sorry, I did not understand. can you repeat it, please? what did you choose?
+  marco, I am sorry, I did not understand. can you repeat it, please? what did you select?
+  marco, I am sorry, I did not understand. can you repeat it, please? which answer did you choose?
+  marco, I am sorry, I did not understand. can you repeat it, please? which one did you choose?
+  marco, I am sorry, I did not understand. can you repeat it, please? which option did you select?
+  marco, I am sorry, I did not understand. can you repeat it? which answer did you choose?
+  marco, I am sorry, I did not understand. can you repeat it? which one did you choose?
+  marco, I am sorry, I did not understand. can you repeat it? which option did you choose?
+  marco, I am sorry, I did not understand. can you repeat it? which option did you select?
+  marco, I am sorry, I did not understand. can you say it again, please? what did you select?
+  marco, I am sorry, I did not understand. can you say it again, please? which one did you select?
+  marco, I am sorry, I did not understand. can you say it again? which answer did you choose?
+  marco, I am sorry, I did not understand. can you say it again? which answer did you select?
+  marco, I am sorry, I did not understand. can you say it again? which option did you choose?
+  marco, I am sorry, I missed that. can you repeat it, please? what did you choose?
+  marco, I am sorry, I missed that. can you repeat it, please? what did you select?
+  marco, I am sorry, I missed that. can you repeat it, please? which one did you choose?
+  marco, I am sorry, I missed that. can you repeat it, please? which option did you choose?
+  marco, I am sorry, I missed that. can you repeat it? what did you answer?
+  marco, I am sorry, I missed that. can you repeat it? what did you choose?
+  marco, I am sorry, I missed that. can you repeat it? what did you select?
+  marco, I am sorry, I missed that. can you repeat it? which answer did you choose?
+  marco, I am sorry, I missed that. can you repeat it? which one did you choose?
+  marco, I am sorry, I missed that. can you repeat it? which one did you select?
+  marco, I am sorry, I missed that. can you repeat it? which option did you choose?
+  marco, I am sorry, I missed that. can you say it again, please? which answer did you choose?
+  marco, I am sorry, I missed that. can you say it again, please? which answer did you select?
+  marco, I am sorry, I missed that. can you say it again, please? which one did you choose?
+  marco, I am sorry, I missed that. can you say it again, please? which one did you select?
+  marco, I am sorry, I missed that. can you say it again, please? which option did you select?
+  marco, I am sorry, I missed that. can you say it again? what did you answer?
+  marco, I am sorry, I missed that. can you say it again? what did you select?
+  marco, I am sorry, I missed that. can you say it again? which one did you choose?
+  marco, I am sorry, I missed that. can you say it again? which one did you select?
+  marco, I am sorry, I missed that. can you say it again? which option did you choose?
+  marco, I am sorry, I missed that. can you say it again? which option did you select?
+  marco, I am sorry, can you repeat it, please? which one did you choose?
+  marco, I am sorry, can you repeat it, please? which option did you choose?
+  marco, I am sorry, can you repeat it? what did you select?
+  marco, I am sorry, can you repeat it? which answer did you choose?
+  marco, I am sorry, can you repeat it? which answer did you select?
+  marco, I am sorry, can you repeat it? which option did you choose?
+  marco, I am sorry, can you say it again, please? which one did you choose?
+  marco, I am sorry, can you say it again, please? which option did you select?
+  marco, I am sorry, can you say it again? what did you answer?
+  marco, I am sorry, can you say it again? what did you select?
+  marco, I am sorry, can you say it again? which answer did you select?
+  marco, I am sorry, can you say it again? which one did you choose?
+  marco, I am sorry, can you say it again? which one did you select?
+  marco, I am sorry, can you say it again? which option did you choose?
+  marco, I did not catch that. can you repeat it, please? what did you answer?
+  marco, I did not catch that. can you repeat it, please? what did you select?
+  marco, I did not catch that. can you repeat it, please? which answer did you choose?
+  marco, I did not catch that. can you repeat it? which answer did you choose?
+  marco, I did not catch that. can you say it again, please? what did you select?
+  marco, I did not catch that. can you say it again, please? which answer did you select?
+  marco, I did not catch that. can you say it again? which answer did you select?
+  marco, I did not catch that. can you say it again? which one did you choose?
+  marco, I did not catch that. can you say it again? which one did you select?
+  marco, I did not get that. can you repeat it, please? which answer did you choose?
+  marco, I did not get that. can you repeat it, please? which answer did you select?
+  marco, I did not get that. can you repeat it, please? which one did you choose?
+  marco, I did not get that. can you repeat it, please? which option did you select?
+  marco, I did not get that. can you repeat it? what did you answer?
+  marco, I did not get that. can you repeat it? which one did you choose?
+  marco, I did not get that. can you repeat it? which option did you choose?
+  marco, I did not get that. can you say it again, please? what did you answer?
+  marco, I did not get that. can you say it again, please? which one did you choose?
+  marco, I did not get that. can you say it again, please? which one did you select?
+  marco, I did not get that. can you say it again? what did you choose?
+  marco, I did not get that. can you say it again? which one did you choose?
+  marco, I did not get that. can you say it again? which option did you select?
+  marco, I did not hear well. can you repeat it, please? what did you select?
+  marco, I did not hear well. can you repeat it? what did you answer?
+  marco, I did not hear well. can you repeat it? which answer did you select?
+  marco, I did not hear well. can you repeat it? which option did you select?
+  marco, I did not hear well. can you say it again, please? what did you choose?
+  marco, I did not hear well. can you say it again, please? what did you select?
+  marco, I did not hear well. can you say it again, please? which answer did you select?
+  marco, I did not hear well. can you say it again, please? which option did you choose?
+  marco, I did not hear well. can you say it again, please? which option did you select?
+  marco, I did not hear well. can you say it again? what did you select?
+  marco, I did not hear well. can you say it again? which answer did you select?
+  marco, I did not hear well. can you say it again? which option did you choose?
+  marco, I did not understand. can you repeat it, please? what did you answer?
+  marco, I did not understand. can you repeat it, please? what did you choose?
+  marco, I did not understand. can you repeat it, please? what did you select?
+  marco, I did not understand. can you repeat it? what did you answer?
+  marco, I did not understand. can you repeat it? what did you select?
+  marco, I did not understand. can you repeat it? which answer did you choose?
+  marco, I did not understand. can you repeat it? which one did you choose?
+  marco, I did not understand. can you repeat it? which option did you choose?
+  marco, I did not understand. can you repeat it? which option did you select?
+  marco, I did not understand. can you say it again, please? which answer did you choose?
+  marco, I did not understand. can you say it again, please? which option did you choose?
+  marco, I did not understand. can you say it again, please? which option did you select?
+  marco, I did not understand. can you say it again? what did you choose?
+  marco, I did not understand. can you say it again? what did you select?
+  marco, I did not understand. can you say it again? which answer did you select?
+  marco, I did not understand. can you say it again? which one did you select?
+  marco, I missed that. can you repeat it, please? what did you select?
+  marco, I missed that. can you repeat it, please? which answer did you choose?
+  marco, I missed that. can you repeat it, please? which one did you select?
+  marco, I missed that. can you repeat it, please? which option did you choose?
+  marco, I missed that. can you repeat it? what did you answer?
+  marco, I missed that. can you repeat it? what did you select?
+  marco, I missed that. can you repeat it? which answer did you choose?
+  marco, I missed that. can you repeat it? which answer did you select?
+  marco, I missed that. can you repeat it? which one did you choose?
+  marco, I missed that. can you repeat it? which one did you select?
+  marco, I missed that. can you repeat it? which option did you select?
+  marco, I missed that. can you say it again, please? what did you answer?
+  marco, I missed that. can you say it again, please? what did you choose?
+  marco, I missed that. can you say it again, please? which answer did you select?
+  marco, I missed that. can you say it again, please? which one did you select?
+  marco, I missed that. can you say it again, please? which option did you choose?
+  marco, I missed that. can you say it again? what did you choose?
+  marco, I missed that. can you say it again? which answer did you select?
+  marco, I missed that. can you say it again? which option did you choose?
+  marco, I missed that. can you say it again? which option did you select?
+  marco, can you repeat it, please? what did you answer?
+  marco, can you repeat it, please? which one did you select?
+  marco, can you repeat it? what did you choose?
+  marco, can you repeat it? what did you select?
+  marco, can you repeat it? which answer did you choose?
+  marco, can you repeat it? which one did you choose?
+  marco, can you repeat it? which option did you choose?
+  marco, can you say it again, please? what did you answer?
+  marco, can you say it again, please? which answer did you choose?
+  marco, can you say it again, please? which one did you choose?
+  marco, can you say it again, please? which one did you select?
+  marco, can you say it again? what did you choose?
+  marco, sorry, I did not catch that. can you repeat it, please? what did you choose?
+  marco, sorry, I did not catch that. can you repeat it, please? what did you select?
+  marco, sorry, I did not catch that. can you repeat it, please? which answer did you choose?
+  marco, sorry, I did not catch that. can you repeat it, please? which one did you select?
+  marco, sorry, I did not catch that. can you repeat it? what did you choose?
+  marco, sorry, I did not catch that. can you repeat it? which one did you choose?
+  marco, sorry, I did not catch that. can you repeat it? which one did you select?
+  marco, sorry, I did not catch that. can you repeat it? which option did you select?
+  marco, sorry, I did not catch that. can you say it again, please? which answer did you choose?
+  marco, sorry, I did not catch that. can you say it again, please? which one did you choose?
+  marco, sorry, I did not catch that. can you say it again, please? which one did you select?
+  marco, sorry, I did not catch that. can you say it again? what did you select?
+  marco, sorry, I did not catch that. can you say it again? which option did you choose?
+  marco, sorry, I did not catch that. can you say it again? which option did you select?
+  marco, sorry, I did not get that. can you repeat it, please? which answer did you select?
+  marco, sorry, I did not get that. can you repeat it, please? which one did you choose?
+  marco, sorry, I did not get that. can you repeat it, please? which option did you choose?
+  marco, sorry, I did not get that. can you repeat it? which answer did you select?
+  marco, sorry, I did not get that. can you repeat it? which one did you choose?
+  marco, sorry, I did not get that. can you repeat it? which one did you select?
+  marco, sorry, I did not get that. can you say it again, please? what did you answer?
+  marco, sorry, I did not get that. can you say it again, please? which answer did you select?
+  marco, sorry, I did not get that. can you say it again, please? which one did you select?
+  marco, sorry, I did not get that. can you say it again, please? which option did you select?
+  marco, sorry, I did not get that. can you say it again? which answer did you select?
+  marco, sorry, I did not get that. can you say it again? which one did you select?
+  marco, sorry, I did not get that. can you say it again? which option did you choose?
+  marco, sorry, I did not hear well. can you repeat it, please? what did you answer?
+  marco, sorry, I did not hear well. can you repeat it, please? which answer did you choose?
+  marco, sorry, I did not hear well. can you repeat it, please? which answer did you select?
+  marco, sorry, I did not hear well. can you repeat it, please? which option did you choose?
+  marco, sorry, I did not hear well. can you repeat it? what did you select?
+  marco, sorry, I did not hear well. can you repeat it? which one did you choose?
+  marco, sorry, I did not hear well. can you repeat it? which option did you choose?
+  marco, sorry, I did not hear well. can you repeat it? which option did you select?
+  marco, sorry, I did not hear well. can you say it again, please? which option did you select?
+  marco, sorry, I did not hear well. can you say it again? what did you answer?
+  marco, sorry, I did not hear well. can you say it again? what did you select?
+  marco, sorry, I did not hear well. can you say it again? which answer did you select?
+  marco, sorry, I did not hear well. can you say it again? which one did you choose?
+  marco, sorry, I did not understand. can you repeat it, please? what did you answer?
+  marco, sorry, I did not understand. can you repeat it, please? which answer did you select?
+  marco, sorry, I did not understand. can you repeat it, please? which option did you choose?
+  marco, sorry, I did not understand. can you repeat it? what did you answer?
+  marco, sorry, I did not understand. can you repeat it? what did you choose?
+  marco, sorry, I did not understand. can you repeat it? what did you select?
+  marco, sorry, I did not understand. can you repeat it? which answer did you choose?
+  marco, sorry, I did not understand. can you repeat it? which one did you select?
+  marco, sorry, I did not understand. can you repeat it? which option did you select?
+  marco, sorry, I did not understand. can you say it again, please? what did you choose?
+  marco, sorry, I did not understand. can you say it again, please? which answer did you choose?
+  marco, sorry, I did not understand. can you say it again, please? which option did you select?
+  marco, sorry, I did not understand. can you say it again? what did you select?
+  marco, sorry, I did not understand. can you say it again? which one did you select?
+  marco, sorry, I did not understand. can you say it again? which option did you choose?
+  marco, sorry, I did not understand. can you say it again? which option did you select?
+  marco, sorry, I missed that. can you repeat it, please? what did you answer?
+  marco, sorry, I missed that. can you repeat it, please? which one did you choose?
+  marco, sorry, I missed that. can you repeat it, please? which one did you select?
+  marco, sorry, I missed that. can you repeat it? what did you answer?
+  marco, sorry, I missed that. can you repeat it? which answer did you select?
+  marco, sorry, I missed that. can you repeat it? which option did you select?
+  marco, sorry, I missed that. can you say it again, please? what did you select?
+  marco, sorry, I missed that. can you say it again, please? which answer did you select?
+  marco, sorry, I missed that. can you say it again? what did you select?
+  marco, sorry, I missed that. can you say it again? which answer did you choose?
+  marco, sorry, I missed that. can you say it again? which answer did you select?
+  marco, sorry, I missed that. can you say it again? which one did you choose?
+  marco, sorry, I missed that. can you say it again? which option did you choose?
+  marco, sorry, I missed that. can you say it again? which option did you select?
+  marco, sorry, can you repeat it, please? which answer did you select?
+  marco, sorry, can you repeat it, please? which one did you choose?
+  marco, sorry, can you repeat it, please? which option did you choose?
+  marco, sorry, can you repeat it? what did you answer?
+  marco, sorry, can you repeat it? which answer did you choose?
+  marco, sorry, can you repeat it? which one did you select?
+  marco, sorry, can you repeat it? which option did you choose?
+  marco, sorry, can you repeat it? which option did you select?
+  marco, sorry, can you say it again, please? which answer did you choose?
+  marco, sorry, can you say it again, please? which one did you choose?
+  marco, sorry, can you say it again, please? which option did you choose?
+  marco, sorry, can you say it again? what did you answer?
+  marco, sorry, can you say it again? which one did you select?
+  sorry, I did not catch that. can you repeat it, please? what did you answer, marco?
+  sorry, I did not catch that. can you repeat it, please? what did you answer?
+  sorry, I did not catch that. can you repeat it, please? what did you choose?
+  sorry, I did not catch that. can you repeat it, please? what did you select?
+  sorry, I did not catch that. can you repeat it, please? which answer did you choose, marco?
+  sorry, I did not catch that. can you repeat it, please? which answer did you choose?
+  sorry, I did not catch that. can you repeat it, please? which answer did you select, marco?
+  sorry, I did not catch that. can you repeat it, please? which answer did you select?
+  sorry, I did not catch that. can you repeat it, please? which one did you choose?
+  sorry, I did not catch that. can you repeat it, please? which one did you select, marco?
+  sorry, I did not catch that. can you repeat it, please? which one did you select?
+  sorry, I did not catch that. can you repeat it, please? which option did you choose, marco?
+  sorry, I did not catch that. can you repeat it, please? which option did you select, marco?
+  sorry, I did not catch that. can you repeat it, please? which option did you select?
+  sorry, I did not catch that. can you repeat it? what did you answer?
+  sorry, I did not catch that. can you repeat it? what did you choose?
+  sorry, I did not catch that. can you repeat it? what did you select, marco?
+  sorry, I did not catch that. can you repeat it? which answer did you choose?
+  sorry, I did not catch that. can you repeat it? which answer did you select?
+  sorry, I did not catch that. can you repeat it? which one did you choose?
+  sorry, I did not catch that. can you repeat it? which one did you select, marco?
+  sorry, I did not catch that. can you repeat it? which one did you select?
+  sorry, I did not catch that. can you repeat it? which option did you choose?
+  sorry, I did not catch that. can you repeat it? which option did you select, marco?
+  sorry, I did not catch that. can you say it again, please? what did you answer, marco?
+  sorry, I did not catch that. can you say it again, please? what did you answer?
+  sorry, I did not catch that. can you say it again, please? what did you choose?
+  sorry, I did not catch that. can you say it again, please? what did you select, marco?
+  sorry, I did not catch that. can you say it again, please? what did you select?
+  sorry, I did not catch that. can you say it again, please? which answer did you choose?
+  sorry, I did not catch that. can you say it again, please? which answer did you select?
+  sorry, I did not catch that. can you say it again, please? which one did you choose?
+  sorry, I did not catch that. can you say it again, please? which one did you select?
+  sorry, I did not catch that. can you say it again, please? which option did you choose, marco?
+  sorry, I did not catch that. can you say it again, please? which option did you choose?
+  sorry, I did not catch that. can you say it again, please? which option did you select?
+  sorry, I did not catch that. can you say it again? what did you answer, marco?
+  sorry, I did not catch that. can you say it again? what did you answer?
+  sorry, I did not catch that. can you say it again? what did you choose, marco?
+  sorry, I did not catch that. can you say it again? what did you choose?
+  sorry, I did not catch that. can you say it again? what did you select?
+  sorry, I did not catch that. can you say it again? which answer did you choose?
+  sorry, I did not catch that. can you say it again? which answer did you select, marco?
+  sorry, I did not catch that. can you say it again? which answer did you select?
+  sorry, I did not catch that. can you say it again? which one did you choose, marco?
+  sorry, I did not catch that. can you say it again? which one did you choose?
+  sorry, I did not catch that. can you say it again? which one did you select?
+  sorry, I did not catch that. can you say it again? which option did you choose?
+  sorry, I did not catch that. can you say it again? which option did you select, marco?
+  sorry, I did not catch that. can you say it again? which option did you select?
+  sorry, I did not get that. can you repeat it, please? what did you answer?
+  sorry, I did not get that. can you repeat it, please? what did you choose?
+  sorry, I did not get that. can you repeat it, please? what did you select?
+  sorry, I did not get that. can you repeat it, please? which answer did you choose, marco?
+  sorry, I did not get that. can you repeat it, please? which answer did you choose?
+  sorry, I did not get that. can you repeat it, please? which answer did you select, marco?
+  sorry, I did not get that. can you repeat it, please? which answer did you select?
+  sorry, I did not get that. can you repeat it, please? which one did you choose?
+  sorry, I did not get that. can you repeat it, please? which one did you select?
+  sorry, I did not get that. can you repeat it, please? which option did you choose?
+  sorry, I did not get that. can you repeat it, please? which option did you select, marco?
+  sorry, I did not get that. can you repeat it, please? which option did you select?
+  sorry, I did not get that. can you repeat it? what did you answer?
+  sorry, I did not get that. can you repeat it? what did you choose?
+  sorry, I did not get that. can you repeat it? what did you select?
+  sorry, I did not get that. can you repeat it? which answer did you choose, marco?
+  sorry, I did not get that. can you repeat it? which answer did you choose?
+  sorry, I did not get that. can you repeat it? which answer did you select?
+  sorry, I did not get that. can you repeat it? which one did you choose, marco?
+  sorry, I did not get that. can you repeat it? which one did you choose?
+  sorry, I did not get that. can you repeat it? which one did you select?
+  sorry, I did not get that. can you repeat it? which option did you choose?
+  sorry, I did not get that. can you repeat it? which option did you select?
+  sorry, I did not get that. can you say it again, please? what did you answer, marco?
+  sorry, I did not get that. can you say it again, please? what did you answer?
+  sorry, I did not get that. can you say it again, please? what did you choose?
+  sorry, I did not get that. can you say it again, please? what did you select?
+  sorry, I did not get that. can you say it again, please? which answer did you choose?
+  sorry, I did not get that. can you say it again, please? which answer did you select?
+  sorry, I did not get that. can you say it again, please? which one did you choose?
+  sorry, I did not get that. can you say it again, please? which one did you select, marco?
+  sorry, I did not get that. can you say it again, please? which one did you select?
+  sorry, I did not get that. can you say it again, please? which option did you choose?
+  sorry, I did not get that. can you say it again, please? which option did you select, marco?
+  sorry, I did not get that. can you say it again, please? which option did you select?
+  sorry, I did not get that. can you say it again? what did you answer, marco?
+  sorry, I did not get that. can you say it again? what did you answer?
+  sorry, I did not get that. can you say it again? what did you choose?
+  sorry, I did not get that. can you say it again? what did you select?
+  sorry, I did not get that. can you say it again? which answer did you choose, marco?
+  sorry, I did not get that. can you say it again? which answer did you choose?
+  sorry, I did not get that. can you say it again? which answer did you select?
+  sorry, I did not get that. can you say it again? which one did you choose, marco?
+  sorry, I did not get that. can you say it again? which one did you choose?
+  sorry, I did not get that. can you say it again? which one did you select?
+  sorry, I did not get that. can you say it again? which option did you choose, marco?
+  sorry, I did not get that. can you say it again? which option did you choose?
+  sorry, I did not get that. can you say it again? which option did you select, marco?
+  sorry, I did not get that. can you say it again? which option did you select?
+  sorry, I did not hear well. can you repeat it, please? what did you answer, marco?
+  sorry, I did not hear well. can you repeat it, please? what did you answer?
+  sorry, I did not hear well. can you repeat it, please? what did you choose, marco?
+  sorry, I did not hear well. can you repeat it, please? what did you choose?
+  sorry, I did not hear well. can you repeat it, please? what did you select?
+  sorry, I did not hear well. can you repeat it, please? which answer did you choose, marco?
+  sorry, I did not hear well. can you repeat it, please? which answer did you choose?
+  sorry, I did not hear well. can you repeat it, please? which one did you choose?
+  sorry, I did not hear well. can you repeat it, please? which one did you select, marco?
+  sorry, I did not hear well. can you repeat it, please? which one did you select?
+  sorry, I did not hear well. can you repeat it, please? which option did you choose?
+  sorry, I did not hear well. can you repeat it, please? which option did you select?
+  sorry, I did not hear well. can you repeat it? what did you answer, marco?
+  sorry, I did not hear well. can you repeat it? what did you answer?
+  sorry, I did not hear well. can you repeat it? what did you choose, marco?
+  sorry, I did not hear well. can you repeat it? what did you choose?
+  sorry, I did not hear well. can you repeat it? what did you select?
+  sorry, I did not hear well. can you repeat it? which answer did you choose, marco?
+  sorry, I did not hear well. can you repeat it? which answer did you choose?
+  sorry, I did not hear well. can you repeat it? which answer did you select, marco?
+  sorry, I did not hear well. can you repeat it? which answer did you select?
+  sorry, I did not hear well. can you repeat it? which one did you choose?
+  sorry, I did not hear well. can you repeat it? which one did you select?
+  sorry, I did not hear well. can you repeat it? which option did you choose?
+  sorry, I did not hear well. can you repeat it? which option did you select?
+  sorry, I did not hear well. can you say it again, please? what did you answer?
+  sorry, I did not hear well. can you say it again, please? what did you choose?
+  sorry, I did not hear well. can you say it again, please? what did you select?
+  sorry, I did not hear well. can you say it again, please? which answer did you choose, marco?
+  sorry, I did not hear well. can you say it again, please? which answer did you choose?
+  sorry, I did not hear well. can you say it again, please? which answer did you select, marco?
+  sorry, I did not hear well. can you say it again, please? which answer did you select?
+  sorry, I did not hear well. can you say it again, please? which one did you choose, marco?
+  sorry, I did not hear well. can you say it again, please? which one did you choose?
+  sorry, I did not hear well. can you say it again, please? which one did you select, marco?
+  sorry, I did not hear well. can you say it again, please? which one did you select?
+  sorry, I did not hear well. can you say it again, please? which option did you choose?
+  sorry, I did not hear well. can you say it again, please? which option did you select, marco?
+  sorry, I did not hear well. can you say it again, please? which option did you select?
+  sorry, I did not hear well. can you say it again? what did you answer, marco?
+  sorry, I did not hear well. can you say it again? what did you answer?
+  sorry, I did not hear well. can you say it again? what did you choose?
+  sorry, I did not hear well. can you say it again? what did you select?
+  sorry, I did not hear well. can you say it again? which answer did you choose?
+  sorry, I did not hear well. can you say it again? which answer did you select?
+  sorry, I did not hear well. can you say it again? which one did you choose?
+  sorry, I did not hear well. can you say it again? which one did you select, marco?
+  sorry, I did not hear well. can you say it again? which one did you select?
+  sorry, I did not hear well. can you say it again? which option did you choose?
+  sorry, I did not hear well. can you say it again? which option did you select, marco?
+  sorry, I did not hear well. can you say it again? which option did you select?
+  sorry, I did not understand. can you repeat it, please? what did you answer?
+  sorry, I did not understand. can you repeat it, please? what did you choose, marco?
+  sorry, I did not understand. can you repeat it, please? what did you choose?
+  sorry, I did not understand. can you repeat it, please? what did you select?
+  sorry, I did not understand. can you repeat it, please? which answer did you choose?
+  sorry, I did not understand. can you repeat it, please? which answer did you select?
+  sorry, I did not understand. can you repeat it, please? which one did you choose, marco?
+  sorry, I did not understand. can you repeat it, please? which one did you choose?
+  sorry, I did not understand. can you repeat it, please? which one did you select?
+  sorry, I did not understand. can you repeat it, please? which option did you choose, marco?
+  sorry, I did not understand. can you repeat it, please? which option did you choose?
+  sorry, I did not understand. can you repeat it, please? which option did you select, marco?
+  sorry, I did not understand. can you repeat it, please? which option did you select?
+  sorry, I did not understand. can you repeat it? what did you answer, marco?
+  sorry, I did not understand. can you repeat it? what did you answer?
+  sorry, I did not understand. can you repeat it? what did you choose?
+  sorry, I did not understand. can you repeat it? what did you select?
+  sorry, I did not understand. can you repeat it? which answer did you choose, marco?
+  sorry, I did not understand. can you repeat it? which answer did you choose?
+  sorry, I did not understand. can you repeat it? which answer did you select?
+  sorry, I did not understand. can you repeat it? which one did you choose?
+  sorry, I did not understand. can you repeat it? which one did you select, marco?
+  sorry, I did not understand. can you repeat it? which one did you select?
+  sorry, I did not understand. can you repeat it? which option did you choose?
+  sorry, I did not understand. can you repeat it? which option did you select, marco?
+  sorry, I did not understand. can you repeat it? which option did you select?
+  sorry, I did not understand. can you say it again, please? what did you answer?
+  sorry, I did not understand. can you say it again, please? what did you choose?
+  sorry, I did not understand. can you say it again, please? what did you select?
+  sorry, I did not understand. can you say it again, please? which answer did you choose, marco?
+  sorry, I did not understand. can you say it again, please? which answer did you choose?
+  sorry, I did not understand. can you say it again, please? which answer did you select, marco?
+  sorry, I did not understand. can you say it again, please? which answer did you select?
+  sorry, I did not understand. can you say it again, please? which one did you choose, marco?
+  sorry, I did not understand. can you say it again, please? which one did you choose?
+  sorry, I did not understand. can you say it again, please? which one did you select, marco?
+  sorry, I did not understand. can you say it again, please? which one did you select?
+  sorry, I did not understand. can you say it again, please? which option did you choose?
+  sorry, I did not understand. can you say it again, please? which option did you select?
+  sorry, I did not understand. can you say it again? what did you answer, marco?
+  sorry, I did not understand. can you say it again? what did you answer?
+  sorry, I did not understand. can you say it again? what did you choose, marco?
+  sorry, I did not understand. can you say it again? what did you choose?
+  sorry, I did not understand. can you say it again? what did you select, marco?
+  sorry, I did not understand. can you say it again? what did you select?
+  sorry, I did not understand. can you say it again? which answer did you choose?
+  sorry, I did not understand. can you say it again? which answer did you select, marco?
+  sorry, I did not understand. can you say it again? which answer did you select?
+  sorry, I did not understand. can you say it again? which one did you choose?
+  sorry, I did not understand. can you say it again? which one did you select?
+  sorry, I did not understand. can you say it again? which option did you choose, marco?
+  sorry, I did not understand. can you say it again? which option did you choose?
+  sorry, I did not understand. can you say it again? which option did you select?
+  sorry, I missed that. can you repeat it, please? what did you answer, marco?
+  sorry, I missed that. can you repeat it, please? what did you answer?
+  sorry, I missed that. can you repeat it, please? what did you choose, marco?
+  sorry, I missed that. can you repeat it, please? what did you choose?
+  sorry, I missed that. can you repeat it, please? what did you select?
+  sorry, I missed that. can you repeat it, please? which answer did you choose, marco?
+  sorry, I missed that. can you repeat it, please? which answer did you choose?
+  sorry, I missed that. can you repeat it, please? which answer did you select?
+  sorry, I missed that. can you repeat it, please? which one did you choose, marco?
+  sorry, I missed that. can you repeat it, please? which one did you choose?
+  sorry, I missed that. can you repeat it, please? which one did you select, marco?
+  sorry, I missed that. can you repeat it, please? which one did you select?
+  sorry, I missed that. can you repeat it, please? which option did you choose, marco?
+  sorry, I missed that. can you repeat it, please? which option did you choose?
+  sorry, I missed that. can you repeat it, please? which option did you select?
+  sorry, I missed that. can you repeat it? what did you answer?
+  sorry, I missed that. can you repeat it? what did you choose?
+  sorry, I missed that. can you repeat it? what did you select, marco?
+  sorry, I missed that. can you repeat it? what did you select?
+  sorry, I missed that. can you repeat it? which answer did you choose?
+  sorry, I missed that. can you repeat it? which answer did you select, marco?
+  sorry, I missed that. can you repeat it? which answer did you select?
+  sorry, I missed that. can you repeat it? which one did you choose?
+  sorry, I missed that. can you repeat it? which one did you select?
+  sorry, I missed that. can you repeat it? which option did you choose?
+  sorry, I missed that. can you repeat it? which option did you select, marco?
+  sorry, I missed that. can you repeat it? which option did you select?
+  sorry, I missed that. can you say it again, please? what did you answer?
+  sorry, I missed that. can you say it again, please? what did you choose, marco?
+  sorry, I missed that. can you say it again, please? what did you choose?
+  sorry, I missed that. can you say it again, please? what did you select, marco?
+  sorry, I missed that. can you say it again, please? what did you select?
+  sorry, I missed that. can you say it again, please? which answer did you choose, marco?
+  sorry, I missed that. can you say it again, please? which answer did you choose?
+  sorry, I missed that. can you say it again, please? which answer did you select, marco?
+  sorry, I missed that. can you say it again, please? which answer did you select?
+  sorry, I missed that. can you say it again, please? which one did you choose?
+  sorry, I missed that. can you say it again, please? which one did you select, marco?
+  sorry, I missed that. can you say it again, please? which one did you select?
+  sorry, I missed that. can you say it again, please? which option did you select?
+  sorry, I missed that. can you say it again? what did you answer?
+  sorry, I missed that. can you say it again? what did you choose, marco?
+  sorry, I missed that. can you say it again? what did you select?
+  sorry, I missed that. can you say it again? which answer did you choose?
+  sorry, I missed that. can you say it again? which answer did you select, marco?
+  sorry, I missed that. can you say it again? which answer did you select?
+  sorry, I missed that. can you say it again? which one did you choose?
+  sorry, I missed that. can you say it again? which one did you select?
+  sorry, I missed that. can you say it again? which option did you choose?
+  sorry, I missed that. can you say it again? which option did you select, marco?
+  sorry, I missed that. can you say it again? which option did you select?
+  sorry, can you repeat it, please? what did you answer, marco?
+  sorry, can you repeat it, please? what did you answer?
+  sorry, can you repeat it, please? what did you choose, marco?
+  sorry, can you repeat it, please? what did you choose?
+  sorry, can you repeat it, please? what did you select, marco?
+  sorry, can you repeat it, please? what did you select?
+  sorry, can you repeat it, please? which answer did you choose, marco?
+  sorry, can you repeat it, please? which answer did you choose?
+  sorry, can you repeat it, please? which answer did you select?
+  sorry, can you repeat it, please? which one did you choose?
+  sorry, can you repeat it, please? which one did you select?
+  sorry, can you repeat it, please? which option did you choose?
+  sorry, can you repeat it, please? which option did you select, marco?
+  sorry, can you repeat it, please? which option did you select?
+  sorry, can you repeat it? what did you answer, marco?
+  sorry, can you repeat it? what did you answer?
+  sorry, can you repeat it? what did you choose?
+  sorry, can you repeat it? what did you select?
+  sorry, can you repeat it? which answer did you choose, marco?
+  sorry, can you repeat it? which answer did you choose?
+  sorry, can you repeat it? which answer did you select?
+  sorry, can you repeat it? which one did you choose?
+  sorry, can you repeat it? which one did you select?
+  sorry, can you repeat it? which option did you choose, marco?
+  sorry, can you repeat it? which option did you choose?
+  sorry, can you repeat it? which option did you select?
+  sorry, can you say it again, please? what did you answer?
+  sorry, can you say it again, please? what did you choose?
+  sorry, can you say it again, please? what did you select, marco?
+  sorry, can you say it again, please? what did you select?
+  sorry, can you say it again, please? which answer did you choose?
+  sorry, can you say it again, please? which answer did you select, marco?
+  sorry, can you say it again, please? which answer did you select?
+  sorry, can you say it again, please? which one did you choose?
+  sorry, can you say it again, please? which one did you select, marco?
+  sorry, can you say it again, please? which one did you select?
+  sorry, can you say it again, please? which option did you choose?
+  sorry, can you say it again, please? which option did you select?
+  sorry, can you say it again? what did you answer?
+  sorry, can you say it again? what did you choose, marco?
+  sorry, can you say it again? what did you select?
+  sorry, can you say it again? which answer did you choose?
+  sorry, can you say it again? which answer did you select?
+  sorry, can you say it again? which one did you select, marco?
+  sorry, can you say it again? which one did you select?
+  sorry, can you say it again? which option did you choose?
+  sorry, can you say it again? which option did you select?
+
+* =@request10= / =@requestAnswerRetry= (9)
+  do you have another guess, marco
+  do you have another guess?
+  do you want to try again, marco
+  do you want to try again?
+  give it another try, please, marco
+  give it another try, please.
+  marco, do you have another guess?
+  marco, do you want to try again?
+  marco, give it another try, please.
+
+* =@request08= / =@requestFeedbackQuiz= (102)
+  did you enjoy playing the game together, marco?
+  did you enjoy playing the game together?
+  did you enjoy playing the game with me?
+  did you enjoy playing the game?
+  did you enjoy playing this game together?
+  did you enjoy playing this game with me, marco?
+  did you enjoy playing this game with me?
+  did you enjoy playing this game?
+  did you have a good time playing the game together, marco?
+  did you have a good time playing the game together?
+  did you have a good time playing the game with me, marco?
+  did you have a good time playing the game with me?
+  did you have a good time playing the game, marco?
+  did you have a good time playing the game?
+  did you have a good time playing this game together, marco?
+  did you have a good time playing this game together?
+  did you have a good time playing this game with me, marco?
+  did you have a good time playing this game with me?
+  did you have a good time playing this game?
+  did you have a nice time playing the game together, marco?
+  did you have a nice time playing the game together?
+  did you have a nice time playing the game with me, marco?
+  did you have a nice time playing the game with me?
+  did you have a nice time playing the game, marco?
+  did you have a nice time playing the game?
+  did you have a nice time playing this game together, marco?
+  did you have a nice time playing this game together?
+  did you have a nice time playing this game with me?
+  did you have a nice time playing this game?
+  did you have fun playing the game together, marco?
+  did you have fun playing the game together?
+  did you have fun playing the game with me, marco?
+  did you have fun playing the game with me?
+  did you have fun playing the game, marco?
+  did you have fun playing the game?
+  did you have fun playing this game together, marco?
+  did you have fun playing this game together?
+  did you have fun playing this game with me?
+  did you have fun playing this game?
+  did you like playing the game together?
+  did you like playing the game with me, marco?
+  did you like playing the game with me?
+  did you like playing the game?
+  did you like playing this game together?
+  did you like playing this game with me, marco?
+  did you like playing this game with me?
+  did you like playing this game?
+  how did you like playing the game together, marco?
+  how did you like playing the game together?
+  how did you like playing the game with me, marco?
+  how did you like playing the game with me?
+  how did you like playing the game?
+  how did you like playing this game together, marco?
+  how did you like playing this game together?
+  how did you like playing this game with me, marco?
+  how did you like playing this game with me?
+  how did you like playing this game, marco?
+  how did you like playing this game?
+  marco, did you enjoy playing the game together?
+  marco, did you enjoy playing the game with me?
+  marco, did you enjoy playing the game?
+  marco, did you have a good time playing the game with me?
+  marco, did you have a good time playing the game?
+  marco, did you have a good time playing this game together?
+  marco, did you have a good time playing this game with me?
+  marco, did you have a nice time playing the game together?
+  marco, did you have a nice time playing this game with me?
+  marco, did you have fun playing the game together?
+  marco, did you have fun playing the game with me?
+  marco, did you have fun playing this game?
+  marco, did you like playing the game together?
+  marco, did you like playing the game with me?
+  marco, did you like playing the game?
+  marco, did you like playing this game with me?
+  marco, did you like playing this game?
+  marco, how did you like playing the game with me?
+  marco, how did you like playing this game together?
+  marco, how did you like playing this game with me?
+  marco, how did you like playing this game?
+  marco, was it fun playing the game together?
+  marco, was it fun playing the game?
+  marco, was it fun playing this game with me?
+  marco, was it fun playing this game?
+  marco, was it nice playing the game together?
+  marco, was it nice playing the game with me?
+  marco, was it nice playing the game?
+  marco, was it nice playing this game together?
+  was it fun playing the game together?
+  was it fun playing the game with me?
+  was it fun playing the game?
+  was it fun playing this game together, marco?
+  was it fun playing this game together?
+  was it fun playing this game with me, marco?
+  was it fun playing this game with me?
+  was it fun playing this game, marco?
+  was it fun playing this game?
+  was it nice playing the game together?
+  was it nice playing the game with me?
+  was it nice playing the game?
+  was it nice playing this game together?
+  was it nice playing this game with me?
+  was it nice playing this game?
+
+* =@salutation02= / =@sayGoodbye= (6)
+  bye !
+  bye, marco!
+  marco, bye !
+  marco, see you !
+  see you !
+  see you, marco!

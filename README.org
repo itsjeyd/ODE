@@ -221,9 +221,9 @@
    #+END_EXAMPLE
 
    This folder contains documentation for server-side code in HTML
-   format. After extracting [[file:doxygen/html.tar.gz][=html.tar.gz=]], the entry point for viewing
-   the documentation is [[file:doxygen/html/index.html][=html/index.html=]]. A graphical representation
-   of the class hierarchy is available under [[file:doxygen/html/inherits.html][=html/inherits.html=]].
+   format. After extracting [[file:doxygen/html.tar.gz][html.tar.gz]], the entry point for viewing
+   the documentation is [[file:doxygen/html/index.html][html/index.html]]. A graphical representation of
+   the class hierarchy is available under [[file:doxygen/html/inherits.html][html/inherits.html]].
 
    To regenerate the documentation after modifying the source code,
    run the following commands:
@@ -280,18 +280,17 @@
      :END:
      Classes that implement *methods for handling user requests*. Each
      controller method is associated with a specific type of HTTP
-     request (=GET=, =POST=, =PUT=, =DELETE=) and URL (cf. Section
-     [[#struct-ode-conf]] below).
+     request (=GET=, =POST=, =PUT=, =DELETE=) and URL (cf. information
+     on [[https://github.com/itsjeyd/ODE#conf][conf]] directory below).
 
 **** =managers=:
-     Classes that *handle communication with the [[#struct-ode-app-neo4play][database access
-     layer]]*.
+     Classes that *handle communication with the [[https://github.com/itsjeyd/ODE#neo4play][database access layer]]*.
 
-     Each [[#struct-ode-app-models][model class]] has a static =nodes= field or a static
+     Each [[https://github.com/itsjeyd/ODE#models][model class]] has a static =nodes= field or a static
      =relationships= field that stores a reference to an appropriate
      Manager object. Managers *implement appropriate CRUD (Create,
      Read, Update, Delete) methods* for obtaining and operating on
-     model data. When handling user requests, [[#struct-ode-app-controllers][controllers]] call these
+     model data. When handling user requests, [[https://github.com/itsjeyd/ODE#controllers][controllers]] call these
      methods via the =nodes= and =relationships= fields of relevant
      model classes.
 
@@ -344,7 +343,7 @@
     this file very often during day-to-day development.
 
     =routes= defines mappings between pairs of the form =<HTTP-verb>
-    <URL>= and [[#struct-ode-app-controllers][controller methods]]:
+    <URL>= and [[https://github.com/itsjeyd/ODE#controllers][controller methods]]:
 
     #+BEGIN_EXAMPLE
     # Home page
@@ -383,7 +382,7 @@
     └── plugins.sbt
     #+END_EXAMPLE
 
-    play! applications are built using [[http://www.scala-sbt.org/][=sbt=]] (Scala Build Tool). This
+    play! applications are built using [[http://www.scala-sbt.org/][sbt]] (Scala Build Tool). This
     folder contains the =sbt= build definitions; =plugins.sbt= defines
     =sbt= plugins used by ODE, and =build.properties= contains the
     =sbt= version to use for building the application.
@@ -538,15 +537,15 @@
 
    This folder contains materials that can be used to train novice
    users to use ODE (and to gather feedback about the system). The
-   entry point for starting the training process is [[file:training-materials/overview.html][=overview.html=]].
+   entry point for starting the training process is [[file:training-materials/overview.html][overview.html]].
 
    Feedback submitted via the questionnaire will be stored in
-   [[file:training-materials/questionaire/answers/data.json][=data.json=]]. *Note* that in order for this to work,
+   [[file:training-materials/questionaire/answers/data.json][data.json]]. *Note* that in order for this to work,
 
-   1. a web server (such as Apache) has to serve the file
-      [[file:training-materials/questionaire/persist.php][=persist.php=]] at [[http://localhost/persist.php]]
+   1. a web server (such as Apache) has to serve the file [[file:training-materials/questionaire/persist.php][persist.php]]
+      at [[http://localhost/persist.php]]
    2. the user under which the web server is running must have write
-      access to [[file:training-materials/questionaire/answers/data.json][=data.json=]].
+      access to [[file:training-materials/questionaire/answers/data.json][data.json]].
 
    Additionally, as a preparatory step the string
    =/path/to/this/repo/= in line 8 of =persist.php= has to be
@@ -555,16 +554,16 @@
 *** Data
     In order to use the training materials /as is/, you'll need to
     prepopulate a fresh database instance (i.e., an instance that only
-    contains nodes listed in [[file:initial-data.cql][=initial-data.sql=]]) with the data shown
+    contains nodes listed in [[file:initial-data.cql][initial-data.sql]]) with the data shown
     below.
 
-    If you need to add this data to many different Neo4j instances, you
-    can create a =.cql= script (or simply extend [[file:initial-data.cql][=initial-data.sql=]])
-    and load it as described in Section [[#setup-initial]] above.
+    If you need to add this data to many different Neo4j instances,
+    you can create a =.cql= script (or simply extend [[file:initial-data.cql][initial-data.sql]])
+    and load it as described in [[https://github.com/itsjeyd/ODE#initial-setup][initial setup]] above.
 
 **** Features
      |-------------+--------------------------------------------------------------------+--------|
-     | =name=      | =description=                                                      | =type= |
+     | *name*      | *description*                                                      | *type* |
      |-------------+--------------------------------------------------------------------+--------|
      | About       | What is the current SpeechAct about?                               | atomic |
      | ChildGender | Stores the gender of the current user.                             | atomic |
@@ -580,7 +579,7 @@
 
 **** Values
      |----------------|
-     | =name=         |
+     | *name*         |
      |----------------|
      | Emilia         |
      | Marco          |
@@ -607,9 +606,9 @@
 
      Note that if you use ODE to populate the DB manually, you do
      /not/ need to create the =underspecified= value yourself:
-     [[file:initial-data.cql][=initial-data.sql=]] already contains an appropriate Cypher query
-     for adding this node. Just make sure you load it as described in
-     Section [[#setup-initial]] above /before/ creating any features.
+     [[file:initial-data.cql][initial-data.sql]] already contains an appropriate Cypher query for
+     adding this node. Just make sure you load it as described in
+     [[https://github.com/itsjeyd/ODE#initial-setup][initial setup]] above /before/ creating any features.
 
 **** Associations between features and values
      |-------------+-------------------------------------------------------|
@@ -633,7 +632,7 @@
 
 **** Rules
      |-----------------+-----------------------------------------+-------+-------|
-     | =name=          | =description=                           | *LHS* | *RHS* |
+     | *name*          | *description*                           | *LHS* | *RHS* |
      |-----------------+-----------------------------------------+-------+-------|
      | @firstEncounter | Agent meets someone for the first time. | (1)   | (2)   |
      |-----------------+-----------------------------------------+-------+-------|

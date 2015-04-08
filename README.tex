@@ -1,4 +1,4 @@
-% Created 2015-03-12 Thu 12:55
+% Created 2015-04-08 Wed 15:05
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -271,9 +271,9 @@ doxygen/
 \end{verbatim}
 
 This folder contains documentation for server-side code in HTML
-format. After extracting \href{doxygen/html.tar.gz}{\texttt{html.tar.gz}}, the entry point for viewing
-the documentation is \href{doxygen/html/index.html}{\texttt{html/index.html}}. A graphical representation
-of the class hierarchy is available under \href{doxygen/html/inherits.html}{\texttt{html/inherits.html}}.
+format. After extracting \href{doxygen/html.tar.gz}{html.tar.gz}, the entry point for viewing
+the documentation is \href{doxygen/html/index.html}{html/index.html}. A graphical representation of
+the class hierarchy is available under \href{doxygen/html/inherits.html}{html/inherits.html}.
 
 To regenerate the documentation after modifying the source code,
 run the following commands:
@@ -331,19 +331,18 @@ Enums that define \textbf{node and relationship types}.
 \label{sec-3-3-1-2}
 Classes that implement \textbf{methods for handling user requests}. Each
 controller method is associated with a specific type of HTTP
-request (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) and URL (cf. Section
-\ref{sec-3-3-2} below).
+request (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) and URL (cf. information
+on \href{https://github.com/itsjeyd/ODE#conf}{conf} directory below).
 
 \paragraph{\texttt{managers}:}
 \label{sec-3-3-1-3}
-Classes that \textbf{handle communication with the \hyperref[sec-3-3-1-5]{database access
-layer}}.
+Classes that \textbf{handle communication with the \href{https://github.com/itsjeyd/ODE#neo4play}{database access layer}}.
 
-Each \hyperref[sec-3-3-1-4]{model class} has a static \texttt{nodes} field or a static
+Each \href{https://github.com/itsjeyd/ODE#models}{model class} has a static \texttt{nodes} field or a static
 \texttt{relationships} field that stores a reference to an appropriate
 Manager object. Managers \textbf{implement appropriate CRUD (Create,
 Read, Update, Delete) methods} for obtaining and operating on
-model data. When handling user requests, \hyperref[sec-3-3-1-2]{controllers} call these
+model data. When handling user requests, \href{https://github.com/itsjeyd/ODE#controllers}{controllers} call these
 methods via the \texttt{nodes} and \texttt{relationships} fields of relevant
 model classes.
 
@@ -393,7 +392,7 @@ standard configuration parameters. You should not have to touch
 this file very often during day-to-day development.
 
 \texttt{routes} defines mappings between pairs of the form \texttt{<HTTP-verb>
-    <URL>} and \hyperref[sec-3-3-1-2]{controller methods}:
+    <URL>} and \href{https://github.com/itsjeyd/ODE#controllers}{controller methods}:
 
 \begin{verbatim}
 # Home page
@@ -434,7 +433,7 @@ ode/project/
 └── plugins.sbt
 \end{verbatim}
 
-play! applications are built using \href{http://www.scala-sbt.org/}{\texttt{sbt}} (Scala Build Tool). This
+play! applications are built using \href{http://www.scala-sbt.org/}{sbt} (Scala Build Tool). This
 folder contains the \texttt{sbt} build definitions; \texttt{plugins.sbt} defines
 \texttt{sbt} plugins used by ODE, and \texttt{build.properties} contains the
 \texttt{sbt} version to use for building the application.
@@ -599,16 +598,16 @@ training-materials/
 
 This folder contains materials that can be used to train novice
 users to use ODE (and to gather feedback about the system). The
-entry point for starting the training process is \href{training-materials/overview.html}{\texttt{overview.html}}.
+entry point for starting the training process is \href{training-materials/overview.html}{overview.html}.
 
 Feedback submitted via the questionnaire will be stored in
-\href{training-materials/questionaire/answers/data.json}{\texttt{data.json}}. \textbf{Note} that in order for this to work,
+\href{training-materials/questionaire/answers/data.json}{data.json}. \textbf{Note} that in order for this to work,
 
 \begin{enumerate}
-\item a web server (such as Apache) has to serve the file
-\href{training-materials/questionaire/persist.php}{\texttt{persist.php}} at \url{http://localhost/persist.php}
+\item a web server (such as Apache) has to serve the file \href{training-materials/questionaire/persist.php}{persist.php}
+      at \url{http://localhost/persist.php}
 \item the user under which the web server is running must have write
-access to \href{training-materials/questionaire/answers/data.json}{\texttt{data.json}}.
+access to \href{training-materials/questionaire/answers/data.json}{data.json}.
 \end{enumerate}
 
 Additionally, as a preparatory step the string
@@ -619,19 +618,19 @@ replaced with the absolute path of this repository.
 \label{sec-3-4-1}
 In order to use the training materials \emph{as is}, you'll need to
 prepopulate a fresh database instance (i.e., an instance that only
-contains nodes listed in \href{initial-data.cql}{\texttt{initial-data.sql}}) with the data shown
+contains nodes listed in \href{initial-data.cql}{initial-data.sql}) with the data shown
 below.
 
-If you need to add this data to many different Neo4j instances, you
-can create a \texttt{.cql} script (or simply extend \href{initial-data.cql}{\texttt{initial-data.sql}})
-and load it as described in Section \ref{sec-2-2} above.
+If you need to add this data to many different Neo4j instances,
+you can create a \texttt{.cql} script (or simply extend \href{initial-data.cql}{initial-data.sql})
+and load it as described in \href{https://github.com/itsjeyd/ODE#initial-setup}{initial setup} above.
 
 \paragraph{Features}
 \label{sec-3-4-1-1}
 \begin{center}
 \begin{tabular}{lll}
 \hline
-\texttt{name} & \texttt{description} & \texttt{type}\\
+\textbf{name} & \textbf{description} & \textbf{type}\\
 \hline
 About & What is the current SpeechAct about? & atomic\\
 ChildGender & Stores the gender of the current user. & atomic\\
@@ -652,7 +651,7 @@ SpeechAct & Type of utterance to perform (e.g. greeting, request) & atomic\\
 \begin{center}
 \begin{tabular}{l}
 \hline
-\texttt{name}\\
+\textbf{name}\\
 \hline
 Emilia\\
 Marco\\
@@ -681,9 +680,9 @@ yes\\
 
 Note that if you use ODE to populate the DB manually, you do
 \emph{not} need to create the \texttt{underspecified} value yourself:
-\href{initial-data.cql}{\texttt{initial-data.sql}} already contains an appropriate Cypher query
-for adding this node. Just make sure you load it as described in
-Section \ref{sec-2-2} above \emph{before} creating any features.
+\href{initial-data.cql}{initial-data.sql} already contains an appropriate Cypher query for
+adding this node. Just make sure you load it as described in
+\href{https://github.com/itsjeyd/ODE#initial-setup}{initial setup} above \emph{before} creating any features.
 
 \paragraph{Associations between features and values}
 \label{sec-3-4-1-3}
@@ -715,7 +714,7 @@ between the feature in question and the \texttt{underspecified} value.
 \begin{center}
 \begin{tabular}{llll}
 \hline
-\texttt{name} & \texttt{description} & \textbf{LHS} & \textbf{RHS}\\
+\textbf{name} & \textbf{description} & \textbf{LHS} & \textbf{RHS}\\
 \hline
 @firstEncounter & Agent meets someone for the first time. & (1) & (2)\\
 \hline
@@ -810,7 +809,7 @@ In addition to this README, you can consult the following resources
 for in-depth information about ODE:
 
 \begin{itemize}
-\item \href{thesis-krones.pdf}{``A System for Rapid Development of Large-Scale Rule Bases for Template-Based NLG for Conversational Agents''} (Krones 2014)
+\item \href{http://www.dfki.de/lt/publication_show.php?id=7689}{``A System for Rapid Development of Large-Scale Rule Bases for Template-Based NLG for Conversational Agents''} (Krones 2014) (\href{http://www.dfki.de/lt/bibtex.php?id=7689}{BibTeX}, \href{http://www.dfki.de/web/forschung/iwi/publikationen/renameFileForDownload?filename=thesis-krones-final.pdf&file_id=uploads_2404}{PDF})
 \begin{itemize}
 \item Part III (chapters 6-7): System Architecture + Technologies
 \item Part IV (chapters 9-10), Appendix A: Data Models

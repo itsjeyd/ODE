@@ -1,0 +1,727 @@
+#+TITLE: ODE README
+#+AUTHOR: Tim Krones
+#+OPTIONS: ':t H:5
+#+LATEX_HEADER: \usepackage[english]{babel}
+#+LATEX_HEADER: \usepackage[left=2.5cm,right=2.5cm,top=2.8cm,bottom=3cm]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \setlength{\parskip}{0.1cm}
+#+LATEX_HEADER: \usepackage{pmboxdraw}
+#+LATEX_HEADER: \DeclareUnicodeCharacter{00A0}{~}
+#+LATEX_HEADER: \DeclareUnicodeCharacter{251C}{\pmboxdrawuni{251C}}
+#+LATEX_HEADER: \renewcommand{\arraystretch}{1.2}
+
+* About
+  ODE (Output DEsigner) is a system for rapid development of
+  large-scale rule bases for template-based natural language
+  generation for conversational agents.
+
+  It was developed in the context of [[http://www.aliz-e.org/][ALIZ-E]], a [[http://www.dfki.de/lt/project.php?id=Project_576&l=en][project]] that was
+  carried out jointly by the German Research Center for Artificial
+  Intelligence ([[http://www.dfki.de/][DFKI]]) and a number of European partners.
+
+* Setting up
+** Dependencies
+   ODE requires:
+
+   - *Java SDK 7* (Oracle JDK 7 or OpenJDK 7).
+     It has not been tested with Java 8, although newer versions of
+     play! (the MVC framework on which ODE is built) [[https://github.com/playframework/playframework/issues/1220][seem to be Java 8-ready]].
+   - *play-2.2.1*
+   - *neo4j-community-2.1.2* (bundled with this distribution of ODE).
+   - *Twitter Bootstrap v3.0.2* ([[https://en.wikipedia.org/wiki/Minification_(programming)][minified]] version bundled with this
+     distribution of ODE).
+   - *jQuery v1.11.0* (minified version bundled with this distribution
+     of ODE).
+   - *jQuery UI v1.10.4* (minified version bundled with this
+     distribution of ODE).
+   - *Underscore.js v1.5.2* (minified version bundled with this
+     distribution of ODE).
+   - *Backbone.js v1.1.0* (minified version bundled with this
+     distribution of ODE).
+
+   |-------------------+-----------+----------------+------------------|
+   | *Dependency*      | *Version* | *Bundled*      | *Setup required* |
+   |-------------------+-----------+----------------+------------------|
+   | Java SDK          |         7 | no             | yes              |
+   | play!             |     2.2.1 | no             | yes              |
+   | Neo4j             |     2.1.2 | yes            | yes              |
+   | Twitter Bootstrap |     3.0.2 | yes (minified) | no               |
+   | jQuery            |    1.11.0 | yes (minified) | no               |
+   | jQuery UI         |    1.10.4 | yes (minified) | no               |
+   | Underscore.js     |     1.5.2 | yes (minified) | no               |
+   | Backbone.js       |     1.1.0 | yes (minified) | no               |
+   |-------------------+-----------+----------------+------------------|
+
+** Initial setup
+   :PROPERTIES:
+   :CUSTOM_ID: setup-initial
+   :END:
+   Follow these steps to prepare your environment for working on ODE:
+
+   1. Install *Java SDK 7*.
+
+   2. If you haven't done so already, clone the ODE repository from
+      GitHub:
+
+      #+BEGIN_SRC sh
+      git clone https://github.com/itsjeyd/ODE
+      #+END_SRC
+
+   3. Extract [[file:deps/neo4j-community-2.1.2-unix.tar.gz]].
+
+   4. Load initial data:
+
+      #+BEGIN_SRC sh
+      cd /path/to/neo4j-community-2.1.2/
+      bin/neo4j-shell -path data/graph.db/ -file /path/to/this/repo/initial-data.cql
+      #+END_SRC
+
+      The output of the second command should look like this:
+
+      #+BEGIN_EXAMPLE
+      +-----------------------------------------------------+
+      | n                                                   |
+      +-----------------------------------------------------+
+      | Node[0]{username:"dev@ode.com",password:"password"} |
+      +-----------------------------------------------------+
+      1 row
+      Nodes created: 1
+      Properties set: 2
+      Labels added: 1
+      1880 ms
+
+      +--------------------------------+
+      | n                              |
+      +--------------------------------+
+      | Node[1]{name:"underspecified"} |
+      +--------------------------------+
+      1 row
+      Nodes created: 1
+      Properties set: 1
+      Labels added: 1
+      36 ms
+      #+END_EXAMPLE
+
+   5. Download play! (Version 2.2.1) from [[http://downloads.typesafe.com/play/2.2.1/play-2.2.1.zip][here]] and extract it. Make
+      sure you choose a location to which you have both read and write
+      access.
+
+   6. Make sure that the =play= script is executable:
+
+      #+BEGIN_SRC sh
+      cd /path/to/play-2.2.1/
+      chmod a+x play
+      chmod a+x framework/build
+      #+END_SRC
+
+   7. Add directory of =play= executable to your =PATH=:
+
+      #+BEGIN_SRC sh
+      export PATH=$PATH:/path/to/play-2.2.1/
+      #+END_SRC
+
+      Add this code to your =.bashrc=, =.zshrc=, etc. to make the
+      modification permanent.
+
+** Daily workflow
+*** Before
+    1. Start Neo4j:
+
+       #+BEGIN_SRC sh
+       cd /path/to/neo4j-community-2.1.2/
+       bin/neo4j start-no-wait
+       #+END_SRC
+
+    2. Start play!:
+
+       #+BEGIN_SRC sh
+       cd /path/to/this/repo/ode/
+       play
+       #+END_SRC
+
+    3. Run application (from =play= console):
+
+       #+BEGIN_SRC sh
+       run
+       #+END_SRC
+
+    4. Access application by navigating to [[http://localhost:9000/]] in
+       your browser.
+
+       When you do this for the first time you will also need to perform
+       the following steps:
+
+       a. Click the "Login" button in the top-right corner
+
+       b. Enter credentials:
+          - Email: =dev@ode.com=
+          - Password: =password=
+
+       As you make changes to the code, refreshing the current page in
+       the browser will cause =play= to recompile the project.
+       Note that compilation will only be triggered after changes to
+       (server-side) code that actually /needs/ to be compiled.
+       Modifying client-side code will not trigger compilation.
+
+*** After
+    1. Stop application (from =play= console): =Ctrl-D=
+
+    2. Stop Neo4j:
+
+       #+BEGIN_SRC sh
+       cd /path/to/neo4j-community-2.1.2/
+       bin/neo4j stop
+       #+END_SRC
+
+*** Accessing Neo4j directly
+    You can access the graph database directly by navigating to
+    [[http://localhost:7474/browser/]] in your browser. This gives you a
+    graphical interface for entering Cypher commands to interact with
+    the database.
+
+    Neo4j also comes with a command line interface ("Neo4j Shell") for
+    interacting with databases. After stopping the database as
+    described above you can issue the following command to start the
+    shell:
+
+    #+BEGIN_SRC sh
+    bin/neo4j-shell -path data/graph.db/
+    #+END_SRC
+
+    More information about how to work with the Neo4j Shell can be
+    found [[http://neo4j.com/docs/2.1.2/shell.html][here]].
+
+* Project Structure
+  #+BEGIN_EXAMPLE
+  .
+  ├── .git
+  ├── deps
+  ├── doxygen
+  ├── ode
+  ├── training-materials
+  ├── initial-data.cql
+  ├── README.org
+  ├── README.pdf
+  └── README.tex
+  #+END_EXAMPLE
+
+** =deps=
+   #+BEGIN_EXAMPLE
+   deps/
+   └── neo4j-community-2.1.2-unix.tar.gz
+   #+END_EXAMPLE
+
+   This folder contains third-party software that ODE depends on.
+
+** =doxygen=
+   #+BEGIN_EXAMPLE
+   doxygen/
+   ├── Doxyfile
+   └── html.tar.gz
+   #+END_EXAMPLE
+
+   This folder contains documentation for server-side code in HTML
+   format. After extracting [[file:doxygen/html.tar.gz][=html.tar.gz=]], the entry point for viewing
+   the documentation is [[file:doxygen/html/index.html][=html/index.html=]]. A graphical representation
+   of the class hierarchy is available under [[file:doxygen/html/inherits.html][=html/inherits.html=]].
+
+   To regenerate the documentation after modifying the source code,
+   run the following commands:
+
+   #+BEGIN_SRC sh
+   cd /path/to/this/repo/doxygen
+   doxygen Doxyfile
+   #+END_SRC
+
+   Note that this will overwrite the contents of the =html= folder
+   that contains the documentation extracted from =html.tar.gz=.
+
+   On many Linux distributions, Doxygen can be installed from
+   official package repositories. It can also be built from source on
+   Unix and Windows as described [[http://www.stack.nl/~dimitri/doxygen/manual/install.html][here]]. The documentation bundled with
+   this distribution of ODE was generated using Doxygen 1.8.9.
+
+** =ode=
+   #+BEGIN_EXAMPLE
+   ode/
+   ├── app
+   ├── conf
+   ├── logs
+   ├── project
+   ├── public
+   ├── test
+   ├── build.sbt
+   └── README
+   #+END_EXAMPLE
+
+   This folder contains the complete source code of ODE. While
+   extending ODE you will mostly be working with files located in the
+   =app=, =public=, and =test= directories.
+
+*** =app=
+    #+BEGIN_EXAMPLE
+    ode/app/
+    ├── constants
+    ├── controllers
+    ├── managers
+    ├── models
+    ├── neo4play
+    ├── utils
+    ├── views
+    └── Global.java
+    #+END_EXAMPLE
+
+**** =constants=:
+     Enums that define *node and relationship types*.
+
+**** =controllers=:
+     :PROPERTIES:
+     :CUSTOM_ID: struct-ode-app-controllers
+     :END:
+     Classes that implement *methods for handling user requests*. Each
+     controller method is associated with a specific type of HTTP
+     request (=GET=, =POST=, =PUT=, =DELETE=) and URL (cf. Section
+     [[#struct-ode-conf]] below).
+
+**** =managers=:
+     Classes that *handle communication with the [[#struct-ode-app-neo4play][database access
+     layer]]*.
+
+     Each [[#struct-ode-app-models][model class]] has a static =nodes= field or a static
+     =relationships= field that stores a reference to an appropriate
+     Manager object. Managers *implement appropriate CRUD (Create,
+     Read, Update, Delete) methods* for obtaining and operating on
+     model data. When handling user requests, [[#struct-ode-app-controllers][controllers]] call these
+     methods via the =nodes= and =relationships= fields of relevant
+     model classes.
+
+**** =models=:
+     :PROPERTIES:
+     :CUSTOM_ID: struct-ode-app-models
+     :END:
+     *Classes representing domain entities* (such as rules, features,
+     and values) *and relationships* between them.
+
+**** =neo4play=:
+     :PROPERTIES:
+     :CUSTOM_ID: struct-ode-app-neo4play
+     :END:
+     Classes that implement a custom *database access layer* for
+     communicating with Neo4j.
+
+**** =utils=:
+     *Utility classes* for manipulating strings and generating Version
+     3 and Version 4 UUIDs. Any additional utility classes that you
+     implement should be added to this folder.
+
+**** =views=:
+     *Server-side templates* for rendering different user interfaces.
+     Controllers will inject relevant data into these templates when
+     users request corresponding interfaces. Note that most rendering
+     operations actually happen on the client; the templates in this
+     folder only provide basic scaffolding for the different
+     interfaces that are part of the current implementation.
+
+**** =Global.java=:
+     Defines *custom global settings* for ODE. Currently, the =Global=
+     class defines how ODE should behave for different types of
+     errors.
+
+*** =conf=
+    :PROPERTIES:
+    :CUSTOM_ID: struct-ode-conf
+    :END:
+    #+BEGIN_EXAMPLE
+    ode/conf/
+    ├── application.conf
+    └── routes
+    #+END_EXAMPLE
+
+    This folder contains configuration files for ODE.
+
+    =application.conf= is the main configuration file; it contains
+    standard configuration parameters. You should not have to touch
+    this file very often during day-to-day development.
+
+    =routes= defines mappings between pairs of the form =<HTTP-verb>
+    <URL>= and [[#struct-ode-app-controllers][controller methods]]:
+
+    #+BEGIN_EXAMPLE
+    # Home page
+    GET     /                           controllers.Application.home()
+
+    # Authentication
+    POST    /register                   controllers.Auth.register()
+    GET     /login                      controllers.Application.login()
+    POST    /login                      controllers.Auth.authenticate()
+    GET     /logout                     controllers.Application.logout()
+
+    # Browsing
+    GET     /rules                      controllers.Rules.browse()
+    GET     /rules/:name                controllers.Rules.details(name: String)
+
+    ...
+    #+END_EXAMPLE
+
+    Every time you add a new controller method that renders an
+    additional interface or serves as an endpoint for AJAX requests,
+    you have to define a URL for it in this file.
+
+*** =logs=
+    #+BEGIN_EXAMPLE
+    ode/logs/
+    └── application.log
+    #+END_EXAMPLE
+
+    This folder contains log files produced by ODE. By default, all
+    logging output is written to =application.log=.
+
+*** =project=
+    #+BEGIN_EXAMPLE
+    ode/project/
+    ├── build.properties
+    └── plugins.sbt
+    #+END_EXAMPLE
+
+    play! applications are built using [[http://www.scala-sbt.org/][=sbt=]] (Scala Build Tool). This
+    folder contains the =sbt= build definitions; =plugins.sbt= defines
+    =sbt= plugins used by ODE, and =build.properties= contains the
+    =sbt= version to use for building the application.
+
+    You should not have to touch the files in this folder very often
+    during day-to-day development.
+
+*** =public=
+    #+BEGIN_EXAMPLE
+    ode/public/
+    ├── css
+    │   ├── lib
+    │   │   └── bootstrap.min.css
+    │   ├── browse.css
+    │   ├── details.css
+    │   ├── features.css
+    │   ├── input.css
+    │   ├── main.css
+    │   ├── output.css
+    │   └── search.css
+    ├── fonts
+    │   └── ...
+    ├── images
+    │   └── ...
+    └── js
+        ├── lib
+        │   ├── backbone-min.js
+        │   ├── bootstrap.min.js
+        │   ├── jquery.min.js
+        │   ├── jquery-ui.min.js
+        │   └── underscore-min.js
+        ├── browse.js
+        ├── combinations.js
+        ├── details.js
+        ├── error.js
+        ├── features.js
+        ├── header.js
+        ├── input.js
+        ├── ode.js
+        ├── output.js
+        └── search.js
+    #+END_EXAMPLE
+
+    This folder contains code that implements client-side
+    functionality of ODE. The following table shows associations
+    between routes, controller methods, server-side templates, and
+    corresponding client-side code (CSS and JavaScript):
+
+    |---------------------------+---------------------+---------------------+--------------+-------------|
+    | *Route*                   | *Controller*        | *Template*          | *CSS*        | *JS*        |
+    |---------------------------+---------------------+---------------------+--------------+-------------|
+    | =GET /=                   | =Application.home=  | home.scala.html     | -            | -           |
+    | =GET /rules=              | =Rules.browse=      | browse.scala.html   | browse.css   | browse.js   |
+    | =GET /rules/:name=        | =Rules.details=     | details.scala.html  | details.css  | details.js  |
+    | =GET /features=           | =Features.features= | features.scala.html | features.css | features.js |
+    | =GET /rules/:name/input=  | =Rules.input=       | input.scala.html    | input.css    | input.js    |
+    | =GET /rules/:name/output= | =Rules.output=      | output.scala.html   | output.css   | output.js   |
+    | =GET /search=             | =Search.search=     | search.scala.html   | search.css   | search.js   |
+    |---------------------------+---------------------+---------------------+--------------+-------------|
+
+    Each of the JS modules listed above makes use of a number of
+    utility functions for
+
+    - operating on strings
+    - creating new DOM elements
+    - operating on existing DOM elements.
+
+    These functions are defined in the =ode.js= module.
+
+*** =test=
+    #+BEGIN_EXAMPLE
+    ode/test/
+    ├── controllers
+    ├── managers
+    ├── models
+    ├── neo4play
+    ├── utils
+    ├── views
+    └── IntegrationTest.java
+    #+END_EXAMPLE
+
+    This folder contains tests for server-side functionality of ODE.
+    Its structure parallels the structure of the =app= folder: Tests
+    for controllers are located in the =controllers= folder, tests for
+    utilities are located in the =utils= folder, etc.
+
+    To run the test suite:
+
+    #+BEGIN_SRC sh
+    cd /path/to/this/repo/ode/
+    play test
+    #+END_SRC
+
+    You can also run the tests from the =play= console. The sequence
+    of commands then becomes:
+
+    #+BEGIN_SRC sh
+    cd /path/to/this/repo/ode/
+    play
+    test
+    #+END_SRC
+
+*** =build.sbt=
+    This file contains the main build declarations for ODE.
+
+** =training-materials=
+   #+BEGIN_EXAMPLE
+   training-materials/
+   ├── assignment
+   │   ├── assignment.html
+   │   ├── gold-standard
+   │   │   ├── input.org
+   │   │   └── output.org
+   │   ├── reference.pdf
+   │   └── reference.tex
+   ├── css
+   │   └── ...
+   ├── js
+   │   └── ...
+   ├── questionaire
+   │   ├── answers
+   │   │   └── data.json
+   │   ├── persist.php
+   │   └── questionaire.html
+   ├── sounds
+   │   └── ...
+   ├── training
+   │   ├── 00-intro.html
+   │   ├── 01-create_rule.html
+   │   ├── 02-add_feature.html
+   │   ├── 03-set_value.html
+   │   ├── 04-remove_feature.html
+   │   ├── 05-rename_rule.html
+   │   ├── 06-change_description.html
+   │   ├── 07-switching.html
+   │   ├── 08-add_output_string.html
+   │   ├── 09-modify_output_string.html
+   │   ├── 10-remove_output_string.html
+   │   ├── 11-split_output_string.html
+   │   ├── 12-add_part.html
+   │   ├── 13-show_output.html
+   │   ├── 14-modify_part.html
+   │   ├── 15-remove_part.html
+   │   ├── 16-add_slot.html
+   │   ├── 17-remove_slot.html
+   │   ├── 18-parts_inventory.html
+   │   ├── 19-multiple_groups.html
+   │   └── 20-browse_rules.html
+   ├── intermission.html
+   └── overview.html
+   #+END_EXAMPLE
+
+   This folder contains materials that can be used to train novice
+   users to use ODE (and to gather feedback about the system). The
+   entry point for starting the training process is [[file:training-materials/overview.html][=overview.html=]].
+
+   Feedback submitted via the questionnaire will be stored in
+   [[file:training-materials/questionaire/answers/data.json][=data.json=]]. *Note* that in order for this to work,
+
+   1. a web server (such as Apache) has to serve the file
+      [[file:training-materials/questionaire/persist.php][=persist.php=]] at [[http://localhost/persist.php]]
+   2. the user under which the web server is running must have write
+      access to [[file:training-materials/questionaire/answers/data.json][=data.json=]].
+
+   Additionally, as a preparatory step the string
+   =/path/to/this/repo/= in line 8 of =persist.php= has to be
+   replaced with the absolute path of this repository.
+
+*** Data
+    In order to use the training materials /as is/, you'll need to
+    prepopulate a fresh database instance (i.e., an instance that only
+    contains nodes listed in [[file:initial-data.cql][=initial-data.sql=]]) with the data shown
+    below.
+
+    If you need to add this data to many different Neo4j instances, you
+    can create a =.cql= script (or simply extend [[file:initial-data.cql][=initial-data.sql=]])
+    and load it as described in Section [[#setup-initial]] above.
+
+**** Features
+     |-------------+--------------------------------------------------------------------+--------|
+     | =name=      | =description=                                                      | =type= |
+     |-------------+--------------------------------------------------------------------+--------|
+     | About       | What is the current SpeechAct about?                               | atomic |
+     | ChildGender | Stores the gender of the current user.                             | atomic |
+     | ChildName   | Stores the name of the current user.                               | atomic |
+     | CurrentGame | Stores the game that the agent and the user are currently playing. | atomic |
+     | Encounter   | Is this the first encounter between the agent and the current user | atomic |
+     |             | or have they met before?                                           |        |
+     | Familiarity | Is the agent familiar with the current user?                       | atomic |
+     | GameQuiz    | Is this the first time the agent and the current user              | atomic |
+     |             | are playing the quiz game or have they played it before?           |        |
+     | SpeechAct   | Type of utterance to perform (e.g. greeting, request)              | atomic |
+     |-------------+--------------------------------------------------------------------+--------|
+
+**** Values
+     |----------------|
+     | =name=         |
+     |----------------|
+     | Emilia         |
+     | Marco          |
+     | answer         |
+     | answerRetry    |
+     | apologize      |
+     | closing        |
+     | dance          |
+     | female         |
+     | first          |
+     | fun            |
+     | greeting       |
+     | imitation      |
+     | male           |
+     | no             |
+     | notfirst       |
+     | play           |
+     | quiz           |
+     | request        |
+     | underspecified |
+     | unknown        |
+     | yes            |
+     |----------------|
+
+     Note that if you use ODE to populate the DB manually, you do
+     /not/ need to create the =underspecified= value yourself:
+     [[file:initial-data.cql][=initial-data.sql=]] already contains an appropriate Cypher query
+     for adding this node. Just make sure you load it as described in
+     Section [[#setup-initial]] above /before/ creating any features.
+
+**** Associations between features and values
+     |-------------+-------------------------------------------------------|
+     | *Feature*   | *Permitted values*                                    |
+     |-------------+-------------------------------------------------------|
+     | About       | underspecified, fun, play, answerRetry, answer        |
+     | ChildGender | underspecified, unknown, female, male                 |
+     | ChildName   | underspecified, unknown, Marco, Emilia                |
+     | CurrentGame | underspecified, quiz, imitation, dance                |
+     | Encounter   | underspecified, notfirst, first                       |
+     | Familiarity | underspecified, no, yes                               |
+     | GameQuiz    | underspecified, notfirst, first                       |
+     | SpeechAct   | underspecified, closing, apologize, request, greeting |
+     |-------------+-------------------------------------------------------|
+
+     Note that if you use ODE to populate the DB manually, you do
+     /not/ need to add the =underspecified= value to the list of
+     permitted values for each feature yourself: For each atomic
+     feature you create, ODE automatically sets up a relationship
+     between the feature in question and the =underspecified= value.
+
+**** Rules
+     |-----------------+-----------------------------------------+-------+-------|
+     | =name=          | =description=                           | *LHS* | *RHS* |
+     |-----------------+-----------------------------------------+-------+-------|
+     | @firstEncounter | Agent meets someone for the first time. | (1)   | (2)   |
+     |-----------------+-----------------------------------------+-------+-------|
+
+***** (1) LHS
+      |-------------+----------|
+      | *Feature*   | *Value*  |
+      |-------------+----------|
+      | SpeechAct   | greeting |
+      | Encounter   | first    |
+      | Familiarity | no       |
+      |-------------+----------|
+
+***** (2) RHS
+      - Group 1:
+
+        |----------+--------------+-----------------|
+        | *Slot 1* | *Slot 2*     | *Slot 3*        |
+        |----------+--------------+-----------------|
+        | Hi,      | how are you? | I am Nao.       |
+        | Hey,     |              | My name is Nao. |
+        | Hello,   |              |                 |
+        |----------+--------------+-----------------|
+
+      - Group 2:
+
+        |------------+-------------------|
+        | *Slot 1*   | *Slot 2*          |
+        |------------+-------------------|
+        | Hola!      | What's up?        |
+        | Hey there! | Nice to meet you. |
+        |------------+-------------------|
+
+* Resources
+** play!
+   - Documentation for =play-2.2.x=:
+     [[https://playframework.com/documentation/2.2.x/Home]]
+   - Deployment:
+     [[https://playframework.com/documentation/2.2.x/Production]]
+   - Java API for =play-2.2.x=:
+     [[https://playframework.com/documentation/2.2.x/api/java/index.html]]
+
+** Neo4j
+   - Manual for Neo4j v2.1.2:
+     [[http://neo4j.com/docs/2.1.2/]]
+   - Cypher Query Language:
+     [[http://neo4j.com/docs/2.1.2/cypher-query-lang.html]]
+
+** JS + CSS Frameworks
+   - Twitter Bootstrap: [[http://getbootstrap.com/]]
+     + CSS: [[http://getbootstrap.com/css/]]
+     + UI components: [[http://getbootstrap.com/components/]]
+     + JavaScript: [[http://getbootstrap.com/javascript/]]
+   - jQuery: [[https://api.jquery.com/]]
+   - jQuery UI: [[http://api.jqueryui.com/]]
+   - Backbone.js: [[http://backbonejs.org/]]
+   - Underscore.js: [[http://underscorejs.org/]]
+
+** ODE
+   In addition to this README, you can consult the following resources
+   for in-depth information about ODE:
+
+   - [[http://www.dfki.de/lt/publication_show.php?id=7689]["A System for Rapid Development of Large-Scale Rule Bases for Template-Based NLG for Conversational Agents"]] (Krones 2014) ([[http://www.dfki.de/lt/bibtex.php?id=7689][BibTeX]], [[http://www.dfki.de/web/forschung/iwi/publikationen/renameFileForDownload?filename=thesis-krones-final.pdf&file_id=uploads_2404][PDF]])
+     + Part III (chapters 6-7): System Architecture + Technologies
+     + Part IV (chapters 9-10), Appendix A: Data Models
+     + Part V (chapters 11-15): User-Facing Functionality
+     + Part VII (chapter 21): Future Work
+     + Appendix B: Algorithms
+   - Documentation generated with Doxygen
+     + Searchable lists of packages, classes, files
+     + Alphabetical index of classes
+     + Textual and graphical class hierarchy
+     + Alphabetical index of class members (with links to classes to
+       which they belong)
+     + Collaboration diagrams for individual classes
+     + Call and caller graphs for member functions
+     + Ability to jump to definitions of class members
+   - =git= commit messages associated with this repository
+
+** Other
+   - Doxygen manual:
+     [[http://www.stack.nl/~dimitri/doxygen/manual/index.html]]
+   - Git:
+     + [[http://git-scm.com/book][Pro Git]]
+     + [[http://gitref.org/][Git Reference]]
+     + [[http://jonas.nitro.dk/git/quick-reference.html][Git Quick Reference]]
+     + [[http://www.ndpsoftware.com/git-cheatsheet.html][Git Cheatsheet]]
+     + [[https://www.codeschool.com/courses/try-git][tryGit]]
+
+* Contact Information
+  Original author: Tim Krones (t.krones@gmx.net)

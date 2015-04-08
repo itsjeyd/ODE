@@ -1,4 +1,4 @@
-% Created 2015-04-08 Wed 15:05
+% Created 2015-04-08 Wed 15:51
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -331,18 +331,18 @@ Enums that define \textbf{node and relationship types}.
 \label{sec-3-3-1-2}
 Classes that implement \textbf{methods for handling user requests}. Each
 controller method is associated with a specific type of HTTP
-request (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) and URL (cf. information
-on \href{https://github.com/itsjeyd/ODE#conf}{conf} directory below).
+request (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) and URL (cf. Section
+\ref{sec-3-3-2} below).
 
 \paragraph{\texttt{managers}:}
 \label{sec-3-3-1-3}
-Classes that \textbf{handle communication with the \href{https://github.com/itsjeyd/ODE#neo4play}{database access layer}}.
+Classes that \textbf{handle communication with the \hyperref[sec-3-3-1-5]{database access layer}}.
 
-Each \href{https://github.com/itsjeyd/ODE#models}{model class} has a static \texttt{nodes} field or a static
+Each \hyperref[sec-3-3-1-4]{model class} has a static \texttt{nodes} field or a static
 \texttt{relationships} field that stores a reference to an appropriate
 Manager object. Managers \textbf{implement appropriate CRUD (Create,
 Read, Update, Delete) methods} for obtaining and operating on
-model data. When handling user requests, \href{https://github.com/itsjeyd/ODE#controllers}{controllers} call these
+model data. When handling user requests, \hyperref[sec-3-3-1-2]{controllers} call these
 methods via the \texttt{nodes} and \texttt{relationships} fields of relevant
 model classes.
 
@@ -392,7 +392,7 @@ standard configuration parameters. You should not have to touch
 this file very often during day-to-day development.
 
 \texttt{routes} defines mappings between pairs of the form \texttt{<HTTP-verb>
-    <URL>} and \href{https://github.com/itsjeyd/ODE#controllers}{controller methods}:
+    <URL>} and \hyperref[sec-3-3-1-2]{controller methods}:
 
 \begin{verbatim}
 # Home page
@@ -623,7 +623,7 @@ below.
 
 If you need to add this data to many different Neo4j instances,
 you can create a \texttt{.cql} script (or simply extend \href{initial-data.cql}{initial-data.sql})
-and load it as described in \href{https://github.com/itsjeyd/ODE#initial-setup}{initial setup} above.
+and load it as described in Section \ref{sec-2-2} above.
 
 \paragraph{Features}
 \label{sec-3-4-1-1}
@@ -682,7 +682,7 @@ Note that if you use ODE to populate the DB manually, you do
 \emph{not} need to create the \texttt{underspecified} value yourself:
 \href{initial-data.cql}{initial-data.sql} already contains an appropriate Cypher query for
 adding this node. Just make sure you load it as described in
-\href{https://github.com/itsjeyd/ODE#initial-setup}{initial setup} above \emph{before} creating any features.
+Section \ref{sec-2-2} above \emph{before} creating any features.
 
 \paragraph{Associations between features and values}
 \label{sec-3-4-1-3}

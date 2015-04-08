@@ -10,7 +10,40 @@
 #+LATEX_HEADER: \DeclareUnicodeCharacter{251C}{\pmboxdrawuni{251C}}
 #+LATEX_HEADER: \renewcommand{\arraystretch}{1.2}
 
+* Table of Contents                                                :noexport:
+  - [[#about][About]]
+  - [[#setting-up][Setting up]]
+    + [[#dependencies][Dependencies]]
+    + [[#initial-setup][Initial setup]]
+    + [[#daily-workflow][Daily workflow]]
+      - [[#before][Before]]
+      - [[#after][After]]
+      - [[#accessing-neo4j-directly][Accessing Neo4j directly]]
+  - [[#project-structure][Project Structure]]
+    + [[#deps][deps]]
+    + [[#doxygen][doxygen]]
+    + [[#ode][ode]]
+      - [[#app][app]]
+      - [[#conf][conf]]
+      - [[#logs][logs]]
+      - [[#project][project]]
+      - [[#public][public]]
+      - [[#test][test]]
+      - [[#buildsbt][build-sbt]]
+    + [[#training-materials][training-materials]]
+      - [[#data][Data]]
+  - [[#resources][Resources]]
+    + [[#play][play!]]
+    + [[#neo4j][Neo4j]]
+    + [[#js--css-frameworks][JS + CSS Frameworks]]
+    + [[#ode-1][ODE]]
+    + [[#other][Other]]
+  - [[#contact-information][Contact Information]]
+
 * About
+  :PROPERTIES:
+  :CUSTOM_ID: about
+  :END:
   ODE (Output DEsigner) is a system for rapid development of
   large-scale rule bases for template-based natural language
   generation for conversational agents.
@@ -20,7 +53,13 @@
   Intelligence ([[http://www.dfki.de/][DFKI]]) and a number of European partners.
 
 * Setting up
+  :PROPERTIES:
+  :CUSTOM_ID: setting-up
+  :END:
 ** Dependencies
+   :PROPERTIES:
+   :CUSTOM_ID: dependencies
+   :END:
    ODE requires:
 
    - *Java SDK 7* (Oracle JDK 7 or OpenJDK 7).
@@ -54,7 +93,7 @@
 
 ** Initial setup
    :PROPERTIES:
-   :CUSTOM_ID: setup-initial
+   :CUSTOM_ID: initial-setup
    :END:
    Follow these steps to prepare your environment for working on ODE:
 
@@ -124,7 +163,13 @@
       modification permanent.
 
 ** Daily workflow
+   :PROPERTIES:
+   :CUSTOM_ID: daily-workflow
+   :END:
 *** Before
+    :PROPERTIES:
+    :CUSTOM_ID: before
+    :END:
     1. Start Neo4j:
 
        #+BEGIN_SRC sh
@@ -164,6 +209,9 @@
        Modifying client-side code will not trigger compilation.
 
 *** After
+    :PROPERTIES:
+    :CUSTOM_ID: after
+    :END:
     1. Stop application (from =play= console): =Ctrl-D=
 
     2. Stop Neo4j:
@@ -174,6 +222,9 @@
        #+END_SRC
 
 *** Accessing Neo4j directly
+    :PROPERTIES:
+    :CUSTOM_ID: accessing-neo4j-directly
+    :END:
     You can access the graph database directly by navigating to
     [[http://localhost:7474/browser/]] in your browser. This gives you a
     graphical interface for entering Cypher commands to interact with
@@ -192,6 +243,9 @@
     found [[http://neo4j.com/docs/2.1.2/shell.html][here]].
 
 * Project Structure
+  :PROPERTIES:
+  :CUSTOM_ID: project-structure
+  :END:
   #+BEGIN_EXAMPLE
   .
   ├── .git
@@ -206,6 +260,9 @@
   #+END_EXAMPLE
 
 ** =deps=
+   :PROPERTIES:
+   :CUSTOM_ID: deps
+   :END:
    #+BEGIN_EXAMPLE
    deps/
    └── neo4j-community-2.1.2-unix.tar.gz
@@ -214,6 +271,9 @@
    This folder contains third-party software that ODE depends on.
 
 ** =doxygen=
+   :PROPERTIES:
+   :CUSTOM_ID: doxygen
+   :END:
    #+BEGIN_EXAMPLE
    doxygen/
    ├── Doxyfile
@@ -242,6 +302,9 @@
    this distribution of ODE was generated using Doxygen 1.8.9.
 
 ** =ode=
+   :PROPERTIES:
+   :CUSTOM_ID: ode
+   :END:
    #+BEGIN_EXAMPLE
    ode/
    ├── app
@@ -259,6 +322,9 @@
    =app=, =public=, and =test= directories.
 
 *** =app=
+    :PROPERTIES:
+    :CUSTOM_ID: app
+    :END:
     #+BEGIN_EXAMPLE
     ode/app/
     ├── constants
@@ -272,48 +338,60 @@
     #+END_EXAMPLE
 
 **** =constants=:
+     :PROPERTIES:
+     :CUSTOM_ID: constants
+     :END:
      Enums that define *node and relationship types*.
 
 **** =controllers=:
      :PROPERTIES:
-     :CUSTOM_ID: struct-ode-app-controllers
+     :CUSTOM_ID: controllers
      :END:
      Classes that implement *methods for handling user requests*. Each
      controller method is associated with a specific type of HTTP
-     request (=GET=, =POST=, =PUT=, =DELETE=) and URL (cf. information
-     on [[https://github.com/itsjeyd/ODE#conf][conf]] directory below).
+     request (=GET=, =POST=, =PUT=, =DELETE=) and URL (cf. Section
+     [[#conf]] below).
 
 **** =managers=:
-     Classes that *handle communication with the [[https://github.com/itsjeyd/ODE#neo4play][database access layer]]*.
+     :PROPERTIES:
+     :CUSTOM_ID: managers
+     :END:
+     Classes that *handle communication with the [[#neo4play][database access layer]]*.
 
-     Each [[https://github.com/itsjeyd/ODE#models][model class]] has a static =nodes= field or a static
+     Each [[#models][model class]] has a static =nodes= field or a static
      =relationships= field that stores a reference to an appropriate
      Manager object. Managers *implement appropriate CRUD (Create,
      Read, Update, Delete) methods* for obtaining and operating on
-     model data. When handling user requests, [[https://github.com/itsjeyd/ODE#controllers][controllers]] call these
+     model data. When handling user requests, [[#controllers][controllers]] call these
      methods via the =nodes= and =relationships= fields of relevant
      model classes.
 
 **** =models=:
      :PROPERTIES:
-     :CUSTOM_ID: struct-ode-app-models
+     :CUSTOM_ID: models
      :END:
      *Classes representing domain entities* (such as rules, features,
      and values) *and relationships* between them.
 
 **** =neo4play=:
      :PROPERTIES:
-     :CUSTOM_ID: struct-ode-app-neo4play
+     :CUSTOM_ID: neo4play
      :END:
      Classes that implement a custom *database access layer* for
      communicating with Neo4j.
 
 **** =utils=:
+     :PROPERTIES:
+     :CUSTOM_ID: utils
+     :END:
      *Utility classes* for manipulating strings and generating Version
      3 and Version 4 UUIDs. Any additional utility classes that you
      implement should be added to this folder.
 
 **** =views=:
+     :PROPERTIES:
+     :CUSTOM_ID: views
+     :END:
      *Server-side templates* for rendering different user interfaces.
      Controllers will inject relevant data into these templates when
      users request corresponding interfaces. Note that most rendering
@@ -322,13 +400,16 @@
      interfaces that are part of the current implementation.
 
 **** =Global.java=:
+     :PROPERTIES:
+     :CUSTOM_ID: globaljava
+     :END:
      Defines *custom global settings* for ODE. Currently, the =Global=
      class defines how ODE should behave for different types of
      errors.
 
 *** =conf=
     :PROPERTIES:
-    :CUSTOM_ID: struct-ode-conf
+    :CUSTOM_ID: conf
     :END:
     #+BEGIN_EXAMPLE
     ode/conf/
@@ -343,7 +424,7 @@
     this file very often during day-to-day development.
 
     =routes= defines mappings between pairs of the form =<HTTP-verb>
-    <URL>= and [[https://github.com/itsjeyd/ODE#controllers][controller methods]]:
+    <URL>= and [[#controllers][controller methods]]:
 
     #+BEGIN_EXAMPLE
     # Home page
@@ -367,6 +448,9 @@
     you have to define a URL for it in this file.
 
 *** =logs=
+    :PROPERTIES:
+    :CUSTOM_ID: logs
+    :END:
     #+BEGIN_EXAMPLE
     ode/logs/
     └── application.log
@@ -376,6 +460,9 @@
     logging output is written to =application.log=.
 
 *** =project=
+    :PROPERTIES:
+    :CUSTOM_ID: project
+    :END:
     #+BEGIN_EXAMPLE
     ode/project/
     ├── build.properties
@@ -391,6 +478,9 @@
     during day-to-day development.
 
 *** =public=
+    :PROPERTIES:
+    :CUSTOM_ID: public
+    :END:
     #+BEGIN_EXAMPLE
     ode/public/
     ├── css
@@ -453,6 +543,9 @@
     These functions are defined in the =ode.js= module.
 
 *** =test=
+    :PROPERTIES:
+    :CUSTOM_ID: test
+    :END:
     #+BEGIN_EXAMPLE
     ode/test/
     ├── controllers
@@ -486,9 +579,15 @@
     #+END_SRC
 
 *** =build.sbt=
+    :PROPERTIES:
+    :CUSTOM_ID: buildsbt
+    :END:
     This file contains the main build declarations for ODE.
 
 ** =training-materials=
+   :PROPERTIES:
+   :CUSTOM_ID: training-materials
+   :END:
    #+BEGIN_EXAMPLE
    training-materials/
    ├── assignment
@@ -552,6 +651,9 @@
    replaced with the absolute path of this repository.
 
 *** Data
+    :PROPERTIES:
+    :CUSTOM_ID: data
+    :END:
     In order to use the training materials /as is/, you'll need to
     prepopulate a fresh database instance (i.e., an instance that only
     contains nodes listed in [[file:initial-data.cql][initial-data.sql]]) with the data shown
@@ -559,9 +661,12 @@
 
     If you need to add this data to many different Neo4j instances,
     you can create a =.cql= script (or simply extend [[file:initial-data.cql][initial-data.sql]])
-    and load it as described in [[https://github.com/itsjeyd/ODE#initial-setup][initial setup]] above.
+    and load it as described in Section [[#initial-setup]] above.
 
 **** Features
+     :PROPERTIES:
+     :CUSTOM_ID: features
+     :END:
      |-------------+--------------------------------------------------------------------+--------|
      | *name*      | *description*                                                      | *type* |
      |-------------+--------------------------------------------------------------------+--------|
@@ -578,6 +683,9 @@
      |-------------+--------------------------------------------------------------------+--------|
 
 **** Values
+     :PROPERTIES:
+     :CUSTOM_ID: values
+     :END:
      |----------------|
      | *name*         |
      |----------------|
@@ -608,9 +716,12 @@
      /not/ need to create the =underspecified= value yourself:
      [[file:initial-data.cql][initial-data.sql]] already contains an appropriate Cypher query for
      adding this node. Just make sure you load it as described in
-     [[https://github.com/itsjeyd/ODE#initial-setup][initial setup]] above /before/ creating any features.
+     Section [[#initial-setup]] above /before/ creating any features.
 
 **** Associations between features and values
+     :PROPERTIES:
+     :CUSTOM_ID: associations-between-features-and-values
+     :END:
      |-------------+-------------------------------------------------------|
      | *Feature*   | *Permitted values*                                    |
      |-------------+-------------------------------------------------------|
@@ -631,6 +742,9 @@
      between the feature in question and the =underspecified= value.
 
 **** Rules
+     :PROPERTIES:
+     :CUSTOM_ID: rules
+     :END:
      |-----------------+-----------------------------------------+-------+-------|
      | *name*          | *description*                           | *LHS* | *RHS* |
      |-----------------+-----------------------------------------+-------+-------|
@@ -638,6 +752,9 @@
      |-----------------+-----------------------------------------+-------+-------|
 
 ***** (1) LHS
+      :PROPERTIES:
+      :CUSTOM_ID: 1-lhs
+      :END:
       |-------------+----------|
       | *Feature*   | *Value*  |
       |-------------+----------|
@@ -647,6 +764,9 @@
       |-------------+----------|
 
 ***** (2) RHS
+      :PROPERTIES:
+      :CUSTOM_ID: 2-rhs
+      :END:
       - Group 1:
 
         |----------+--------------+-----------------|
@@ -667,7 +787,13 @@
         |------------+-------------------|
 
 * Resources
+  :PROPERTIES:
+  :CUSTOM_ID: resources
+  :END:
 ** play!
+   :PROPERTIES:
+   :CUSTOM_ID: play
+   :END:
    - Documentation for =play-2.2.x=:
      [[https://playframework.com/documentation/2.2.x/Home]]
    - Deployment:
@@ -676,12 +802,18 @@
      [[https://playframework.com/documentation/2.2.x/api/java/index.html]]
 
 ** Neo4j
+   :PROPERTIES:
+   :CUSTOM_ID: neo4j
+   :END:
    - Manual for Neo4j v2.1.2:
      [[http://neo4j.com/docs/2.1.2/]]
    - Cypher Query Language:
      [[http://neo4j.com/docs/2.1.2/cypher-query-lang.html]]
 
 ** JS + CSS Frameworks
+   :PROPERTIES:
+   :CUSTOM_ID: js--css-frameworks
+   :END:
    - Twitter Bootstrap: [[http://getbootstrap.com/]]
      + CSS: [[http://getbootstrap.com/css/]]
      + UI components: [[http://getbootstrap.com/components/]]
@@ -692,6 +824,9 @@
    - Underscore.js: [[http://underscorejs.org/]]
 
 ** ODE
+   :PROPERTIES:
+   :CUSTOM_ID: ode-1
+   :END:
    In addition to this README, you can consult the following resources
    for in-depth information about ODE:
 
@@ -713,6 +848,9 @@
    - =git= commit messages associated with this repository
 
 ** Other
+   :PROPERTIES:
+   :CUSTOM_ID: other
+   :END:
    - Doxygen manual:
      [[http://www.stack.nl/~dimitri/doxygen/manual/index.html]]
    - Git:
@@ -723,4 +861,7 @@
      + [[https://www.codeschool.com/courses/try-git][tryGit]]
 
 * Contact Information
+  :PROPERTIES:
+  :CUSTOM_ID: contact-information
+  :END:
   Original author: Tim Krones (t.krones@gmx.net)
